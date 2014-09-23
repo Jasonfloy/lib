@@ -44,66 +44,8 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-public">
-<span id="public-module"></span><h1>public module<a class="headerlink" href="#module-public" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="public.ExtEncoder">
-<em class="property">class </em><tt class="descclassname">public.</tt><tt class="descname">ExtEncoder</tt><big>(</big><em>skipkeys=False</em>, <em>ensure_ascii=True</em>, <em>check_circular=True</em>, <em>allow_nan=True</em>, <em>sort_keys=False</em>, <em>indent=None</em>, <em>separators=None</em>, <em>encoding='utf-8'</em>, <em>default=None</em><big>)</big><a class="reference internal" href="_modules/public.html#ExtEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#public.ExtEncoder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">json.encoder.JSONEncoder</span></tt></p>
-<dl class="method">
-<dt id="public.ExtEncoder.default">
-<tt class="descname">default</tt><big>(</big><em>o</em><big>)</big><a class="reference internal" href="_modules/public.html#ExtEncoder.default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#public.ExtEncoder.default" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="public.Storage">
-<em class="property">class </em><tt class="descclassname">public.</tt><tt class="descname">Storage</tt><a class="reference internal" href="_modules/public.html#Storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#public.Storage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">dict</span></tt></p>
-<p>A Storage object is like a dictionary except <cite>obj.foo</cite> can be used
-in addition to <cite>obj[&#8216;foo&#8217;]</cite>.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">o</span> <span class="o">=</span> <span class="n">storage</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">o</span><span class="o">.</span><span class="n">a</span>
-<span class="go">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">o</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span>
-<span class="go">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">o</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">o</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span>
-<span class="go">2</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">o</span><span class="o">.</span><span class="n">a</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">o</span><span class="o">.</span><span class="n">a</span>
-<span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
-<span class="gr">AttributeError</span>: <span class="n">&#39;a&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="public.getExpInfo">
-<tt class="descclassname">public.</tt><tt class="descname">getExpInfo</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/public.html#getExpInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#public.getExpInfo" title="Permalink to this definition">¶</a></dt>
-<dd><p>得到Exception的异常</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="public.getExpInfoAll">
-<tt class="descclassname">public.</tt><tt class="descname">getExpInfoAll</tt><big>(</big><em>just_info=False</em><big>)</big><a class="reference internal" href="_modules/public.html#getExpInfoAll"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#public.getExpInfoAll" title="Permalink to this definition">¶</a></dt>
-<dd><p>得到Exception的异常</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="public.getURLMap">
-<tt class="descclassname">public.</tt><tt class="descname">getURLMap</tt><big>(</big><em>the_globals</em><big>)</big><a class="reference internal" href="_modules/public.html#getURLMap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#public.getURLMap" title="Permalink to this definition">¶</a></dt>
-<dd><p>根据定义的tornado.web.RequestHandler,自动生成url map</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="public.storage">
-<tt class="descclassname">public.</tt><tt class="descname">storage</tt><a class="headerlink" href="#public.storage" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#public.Storage" title="public.Storage"><tt class="xref py py-class docutils literal"><span class="pre">Storage</span></tt></a></p>
-</dd></dl>
-
+  <div class="section" id="public-module">
+<h1>public module<a class="headerlink" href="#public-module" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
