@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+'''
+tornado 相关的公用代码
+'''
 
 import tornado
 
