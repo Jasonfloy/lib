@@ -56,6 +56,8 @@
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">decimal</span>
 
+<span class="kn">import</span> <span class="nn">os</span>
+
 
 <div class="viewcode-block" id="ExtEncoder"><a class="viewcode-back" href="../public_bz.html#public_bz.ExtEncoder">[docs]</a><span class="k">class</span> <span class="nc">ExtEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
 
@@ -124,6 +126,24 @@
 <span class="n">storage</span> <span class="o">=</span> <span class="n">Storage</span>
 
 
+<div class="viewcode-block" id="getExecutingPathFile"><a class="viewcode-back" href="../public_bz.html#public_bz.getExecutingPathFile">[docs]</a><span class="k">def</span> <span class="nf">getExecutingPathFile</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    返回当前执行的 python 文件,带路径</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c"># return inspect.getfile(inspect.currentframe()) # script filename</span>
+    <span class="c"># (usually with path)</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+</div>
+<div class="viewcode-block" id="getExecutingPath"><a class="viewcode-back" href="../public_bz.html#public_bz.getExecutingPath">[docs]</a><span class="k">def</span> <span class="nf">getExecutingPath</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    返回当前执行的 python 文件所在路径</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c"># return</span>
+    <span class="c"># os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))</span>
+    <span class="c"># # script directory</span>
+    <span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">dirname</span></div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="k">pass</span>
 </pre></div>

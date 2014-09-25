@@ -7,6 +7,8 @@ import time
 import datetime
 import decimal
 
+import os
+
 
 class ExtEncoder(json.JSONEncoder):
 
@@ -75,5 +77,23 @@ class Storage(dict):
 storage = Storage
 
 
+def getExecutingPathFile():
+    '''
+    返回当前执行的 python 文件,带路径
+    '''
+    # return inspect.getfile(inspect.currentframe()) # script filename
+    # (usually with path)
+    return os.path.abspath(sys.argv[0])
+
+
+def getExecutingPath():
+    '''
+    返回当前执行的 python 文件所在路径
+    '''
+    # return
+    # os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+    # # script directory
+    dirname, filename = os.path.split(os.path.abspath(sys.argv[0]))
+    return dirname
 if __name__ == '__main__':
     pass

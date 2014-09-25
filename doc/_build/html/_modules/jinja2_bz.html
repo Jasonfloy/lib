@@ -60,9 +60,11 @@
 
 <div class="viewcode-block" id="getTemplate"><a class="viewcode-back" href="../jinja2_bz.html#jinja2_bz.getTemplate">[docs]</a><span class="k">def</span> <span class="nf">getTemplate</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    返回可以用的 jinja2 template 模板</span>
+<span class="sd">    返回 jinja2 template 模板</span>
+<span class="sd">    模板放在当前目录的 /template 目录</span>
+<span class="sd">    必须是.html 后缀</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">template</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">file_name</span> <span class="o">+</span> <span class="s">&#39;.html&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">template</span>
 </div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>

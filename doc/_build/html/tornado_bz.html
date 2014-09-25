@@ -46,6 +46,17 @@
             
   <div class="section" id="module-tornado_bz">
 <span id="tornado-bz-module"></span><h1>tornado_bz module<a class="headerlink" href="#module-tornado_bz" title="Permalink to this headline">¶</a></h1>
+<p>tornado 相关的公用代码</p>
+<dl class="function">
+<dt id="tornado_bz.getApplication">
+<tt class="descclassname">tornado_bz.</tt><tt class="descname">getApplication</tt><big>(</big><em>url_map</em>, <em>debug=True</em><big>)</big><a class="reference internal" href="_modules/tornado_bz.html#getApplication"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_bz.getApplication" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>返回 tornado 的 application,有一些默认值,省得每次都设置:</dt>
+<dd>debug:  True 则开启调试模式,代码自动部署,但是有语法错误,会导致程序 cash
+login_url: 装饰器 tornado.web.authenticated 未登录时候,重定向的网址</dd>
+</dl>
+</dd></dl>
+
 <dl class="function">
 <dt id="tornado_bz.getURLMap">
 <tt class="descclassname">tornado_bz.</tt><tt class="descname">getURLMap</tt><big>(</big><em>the_globals</em><big>)</big><a class="reference internal" href="_modules/tornado_bz.html#getURLMap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_bz.getURLMap" title="Permalink to this definition">¶</a></dt>
