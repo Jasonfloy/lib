@@ -43,6 +43,9 @@ login = new Vue({
           return location.pathname = '/';
         }
       });
+    },
+    cleanError: function() {
+      return data.error_info = false;
     }
   }
 });

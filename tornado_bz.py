@@ -27,34 +27,40 @@ def getURLMap(the_globals):
     return url_map
 
 
-def getApplication(url_map, debug=True):
+def getSettings():
     '''
-        返回 tornado 的 application,有一些默认值,省得每次都设置:
+        返回 tornado 的 settings ,有一些默认值,省得每次都设置:
             debug:  True 则开启调试模式,代码自动部署,但是有语法错误,会导致程序 cash
+            ui_modules 自定义的 ui 模块,默认会引入 tornado_ui_bz
             login_url: 装饰器 tornado.web.authenticated 未登录时候,重定向的网址
     '''
     settings = {
         'static_path': os.path.join(public_bz.getExecutingPath(), 'static'),
-        'debug': debug,
+        'debug': True,
         'cookie_secret': 'bigzhu so big',
         'autoescape': None,  # 模板自定义转义
         'login_url': "/login",
-        'ui_modules': tornado_ui_bz
+        'ui_modules': [tornado_ui_bz]
     }
-
-    application = tornado.web.Application(url_map, **settings)
-    return application
+    return settings
 
 
-def getTName(self):
+def getTName(self, name=None):
     '''
     取得模板的名字
     与类名保持一致
     '''
-    return 'template/' + self.__class__.__name__ + '.html'
+    if name:
+        return 'template/' + name + '.html'
+    else:
+        return 'template/' + self.__class__.__name__ + '.html'
 
 
 def handError(method):
+    '''
+    出现错误的时候,用json返回错误信息回去
+    很好用的一个装饰器
+    '''
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         try:
@@ -64,5 +70,19 @@ def handError(method):
             print public_bz.getExpInfoAll()
     return wrapper
 
+def mustLogin(method):
+    '''
+    必须要登录,否则弹回登录页面
+    很好用的一个装饰器
+    '''
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        if self.current_user:
+            pass
+        else:
+            self.redirect("/login")
+            return
+        method(self, *args, **kwargs)
+    return wrapper
 if __name__ == '__main__':
     pass

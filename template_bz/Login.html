@@ -1,8 +1,45 @@
+<div class="3 fluid ui buttons">
+    <a class="ui google plus button" href="/GoogleOAuth2LoginHandler">
+        <i class="google plus icon"></i>
+        Google
+    </a>
+
+    <a class="ui twitter button" href="/TwitterLoginHandler">
+        <i class="twitter icon"></i>
+        Twitter
+    </a>
+
+    <div class="ui facebook button">
+        <i class="facebook icon"></i>
+        Facebook
+    </div>
+
+    <!--
+    <div class="ui vk button">
+        <i class="vk icon"></i>
+        VK
+    </div>
+
+    <div class="ui linkedin button">
+        <i class="linkedin icon"></i>
+        LinkedIn
+    </div>
+    <div class="ui instagram button">
+        <i class="instagram icon"></i>
+        Instagram
+    </div>
+    <div class="ui youtube button">
+        <i class="youtube icon"></i>
+        YouTube
+    </div>
+    -->
+</div>
+
 <div id='login' class="ui form segment">
     <div class="field">
         <label>用户名</label>
-        <div class="ui left labeled icon input">
-            <input v-model="user_name" type="text" placeholder="用户名">
+        <div class="ui left icon input">
+            <input v-model="user_name" type="text" placeholder="用户名" v-on="focus:cleanError">
             <i class="user icon"></i>
             <div class="ui corner label">
                 <i class="icon asterisk"></i>
@@ -11,21 +48,22 @@
     </div>
     <div class="field">
         <label>密码</label>
-        <div class="ui left labeled icon input">
-            <input v-model="password" placeholder="注册即登录,只输入一次密码,别弄错了" type="password" v-on="keyup: submit | key enter">
+        <div class="ui left icon input">
+            <input v-model="password" placeholder="注册即登录,只输入一次密码,别弄错了" type="password" v-on="keyup: submit | key enter,focus:cleanError">
             <i class="lock icon"></i>
             <div class="ui corner label">
                 <i class="icon asterisk"></i>
             </div>
         </div>
     </div>
-    <div v-show="error_info" class="ui red message">
-        [[error_info]]
-    </div>
-
     <div class="ui buttons">
         <div v-on="click: submit" class="ui teal submit [[disabled]] button">登录</div>
         <div class="or"></div>
         <div v-on="click: submit" class="ui green submit [[disabled]] button">注册</div>
     </div>
+    <div v-show="error_info" class="ui red message">
+        [[error_info]]
+    </div>
 </div>
+
+

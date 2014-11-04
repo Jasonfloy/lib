@@ -29,3 +29,5 @@ login = new Vue
           data.error_info = result.error
         else
           location.pathname = '/'
+    cleanError:->
+      data.error_info = false
