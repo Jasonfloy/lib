@@ -1,0 +1,13 @@
+*.svn
+*.log
+*.pyc
+*.pid
+*.swp
+.ropeproject
+bin/
+include/
+lib64
+static/upload/*
+node_modules/
+.idea/
+.DS_Store
