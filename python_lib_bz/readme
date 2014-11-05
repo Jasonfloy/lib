@@ -1,0 +1,5 @@
+将python_lib_bz加入 PYTHONPATH 环境变量,然后你就愉快的使用吧.
+
+
+generate.sh 用于生成 API 文档, 请注意编写的时候, 仔细编写 python doc, 以便于生成文档
+

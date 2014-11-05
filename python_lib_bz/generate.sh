@@ -1,5 +1,5 @@
 #! /bin/bash
-rm doc/*.rst
+#rm doc/*.rst
 sphinx-apidoc -o ./doc ./
 cd doc
 make html
