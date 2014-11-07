@@ -30,17 +30,8 @@ class MenuLink(tornado.web.UIModule):
         {% module MenuLink(menu_link) %}
         {% end %}
     需要的参数是这样:
-        menu_links = [
-            storage(title='每日发现', active='', href='/recommend', icon='mail'),
-            storage(title='我的收藏', active='active', href='/haha', icon='home')
-        ]
+        menu_link = storage(title='每日发现', active='', href='/recommend', icon='mail')
     '''
-
-    # def javascript_files(self):
-    #    '''
-    #    高亮当前选中的这个 menu link
-    #    '''
-    #    return 'js_bz/MenuLink.js'
 
     def render(self, menu_link):
         return self.render_string("template_bz/MenuLink.html", **menu_link)
@@ -61,6 +52,25 @@ class Comment(tornado.web.UIModule):
 
     def render(self, comments, id):
         return self.render_string("template_bz/Comment.html", comments=comments, timeLen=time_bz.timeLen, id=id)
+
+
+class SubMenuLink(tornado.web.UIModule):
+
+    '''子菜单的menu 上的 link, 自己去循环生成内容
+    在模板里这样来用:
+        {% for menu_link in menu_links %}
+        {% module SubMenuLink(menu_link) %}
+        {% end %}
+    需要的参数是这样:
+        items = [
+            storage(title='每日发现', items=active='', href='/recommend', icon='mail'),
+            storage(title='我的收藏', active='active', href='/haha', icon='home')
+        ]
+        menu_link = storage(title='我是父节点', items=items)
+    '''
+
+    def render(self, menu_link):
+        return self.render_string("template_bz/SubMenuLink.html", **menu_link)
 
 if __name__ == '__main__':
     pass

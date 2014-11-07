@@ -1,0 +1,8 @@
+<div class="item">
+    {{title}}
+    <div class="menu">
+        {%for item in items%}
+        <a class="item {{item.active}}" href="{{item.href}}"><i class="{{item.icon}} icon"></i>{{item.title}}</a>
+        {%end%}
+    </div>
+</div>
