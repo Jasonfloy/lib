@@ -1,34 +1,30 @@
-<div id="v_comment" class="ui minimal comments">
-    <h3 class="ui dividing header">评论</h3>
+<section class="comment-list block">
     {% for comment in comments %}
-    <div class="comment">
-        <a class="avatar">
-            <img src="/static/image/login-logo.png">
-        </a>
-        <div class="content">
-            <a class="author">某人</a>
-            <div class="metadata">
-                <span class="date">{{timeLen(comment.created_date)}}</span>
+    <article class="comment-item">
+        <a class="pull-left thumb-sm avatar">
+            <img src="http://himg.bdimg.com/sys/portrait/hotitem/wildkid/1" class="img-circle" alt="..."></a>
+        <span class="arrow left"></span>
+        <section class="comment-body panel panel-default">
+            <header class="panel-heading bg-white">
+                <a href="#">某某某</a>
+                <label class="label bg-info m-l-xs">管理员</label>
+                <span class="text-muted m-l-sm pull-right"> <i class="fa fa-clock-o"></i>
+                </span>
+            </header>
+            <div class="panel-body">
+                <div class="description_bz">
+                    {{comment.other_description}}
+                </div>
+                <div class="comment-action m-t-sm">
+                    <a href="#comment-form" class="btn btn-default btn-xs"> <i class="fa fa-mail-reply text-muted"></i>
+                        回复
+                    </a>
+                </div>
             </div>
-            <div class="text">
-                <p class="description">{{comment.other_description}}</p>
-            </div>
-            <div class="actions">
-                <a class="reply">Reply</a>
-            </div>
-        </div>
-    </div>
+        </section>
+    </article>
+    {%if comment.get('comments')%}
+    {% module CommentReply(comment.comments, timeLen) %}
     {% end %}
-
-    <form class="ui reply form">
-        <div class="field">
-            <textarea v-model="comment" v-on="focus:cleanError"></textarea>
-        </div>
-        <div v-on="click: updateComment('{{id}}')" class="ui blue labeled submit icon button">
-            <i class="icon edit"></i>提交评论
-        </div>
-        <div v-show="error_info" class="ui red message">
-            [[error_info]]
-        </div>
-    </form>
-</div>
+    {% end %}
+</section>

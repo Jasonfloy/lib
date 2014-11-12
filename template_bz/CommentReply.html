@@ -1,0 +1,22 @@
+{% for comment in comments %}
+<article class="comment-reply">
+    <a class="pull-left thumb-sm avatar">
+        <img src="http://himg.bdimg.com/sys/portrait/hotitem/wildkid/2" alt="..."></a>
+    <span class="arrow left"></span>
+    <section class="comment-body panel panel-default text-sm">
+        <div class="panel-body">
+            <span class="text-muted m-l-sm pull-right">
+                <i class="fa fa-clock-o"></i>
+                {{timeLen(comment.created_date)}}
+            </span>
+            <a href="#">张三</a>
+            <label class="label bg-dark m-l-xs">新手</label>
+            {{comment.other_description}}
+        </div>
+    </section>
+
+    {%if comment.get('comments')%}
+    {% module CommentReply(comment.comments, timeLen) %}
+    {% end %}
+</article>
+{% end %}
