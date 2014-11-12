@@ -10,6 +10,11 @@ import time_bz
 class Login(tornado.web.UIModule):
 
     '''登录的页面'''
+    def css_files(self):
+        '''
+        Oauth2 按钮的样式
+        '''
+        return 'css_bz/Login.css'
 
     def javascript_files(self):
         '''
