@@ -1,0 +1,28 @@
+#login {
+    max-width: 600px;
+    width: 90%;
+    margin: 0 auto;
+}
+
+.btn-oauth2-google {
+    background-color: rgb(211, 72, 54);
+    color: #FFF;
+}
+
+.btn-oauth2-twitter {
+    background-color: rgb(73, 151, 206);
+    color: #FFF;
+}
+
+.btn-oauth2-facebook {
+    background-color: rgb(59, 87, 157);
+    color: #FFF;
+}
+
+#login > .panel{
+    margin-top: 10px;
+}
+
+#login > .panel > .panel-body {
+    padding-bottom: 0px;
+}
