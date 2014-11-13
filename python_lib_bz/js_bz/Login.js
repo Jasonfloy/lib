@@ -4,11 +4,13 @@ data = {};
 
 data.uploading = false;
 
-data.error_info = '';
+data.error_info = false;
 
 data.button_name = '登录';
 
-Vue.config.delimiters= ["[", "]"];
+Vue.config({
+  delimiters: ["[", "]"]
+});
 
 login = new Vue({
   el: '#login',

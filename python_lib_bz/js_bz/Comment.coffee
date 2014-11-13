@@ -1,6 +1,6 @@
 data = {}
 data.error_info = false
-data.parent_id = ''
+data.parent_id = 0
 
 v_share = new Vue
   el:'#v_comment'
@@ -18,9 +18,9 @@ v_share = new Vue
           key:key
           comment:comment
           parent_id:@$data.parent_id
-      , (error, res) ->
-        result = JSON.parse(res.text)
+      , (result) ->
         if result.error != '0'
+          console.log result.error
           alert result.error
         else
           location.reload()

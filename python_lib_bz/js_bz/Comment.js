@@ -4,7 +4,7 @@ data = {};
 
 data.error_info = false;
 
-data.parent_id = '';
+data.parent_id = 0;
 
 v_share = new Vue({
   el: '#v_comment',
@@ -24,10 +24,9 @@ v_share = new Vue({
         key: key,
         comment: comment,
         parent_id: this.$data.parent_id
-      }), function(error, res) {
-        var result;
-        result = JSON.parse(res.text);
+      }), function(result) {
         if (result.error !== '0') {
+          console.log(result.error);
           return alert(result.error);
         } else {
           return location.reload();
