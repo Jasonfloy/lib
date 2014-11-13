@@ -1,0 +1,61 @@
+@media (max-width: 767px) {
+    #sidebar {
+        width: 0px;
+    }
+    #sidebar > #menu{
+        display: none;
+    }
+}
+@media (min-width: 768px) {
+    #sidebar {
+        width: 200px;
+    }
+    #sidebar > #menu {
+        display: block;
+    }
+}
+
+#sidebar {
+    position: fixed;
+    height: 100%;
+    background-color: #dae4e7;
+    padding-top: 54px;
+    color: #999;
+    z-index: 8;
+}
+
+#sidebar > #menu > li {
+    padding-top: 7px;
+}
+
+#sidebar li span {
+    font-size: 12px;
+    padding-left: 12px;
+}
+
+#sidebar li a {
+    color: #333;
+}
+
+#sidebar > #menu .nav {
+    font-size: 13px;
+    margin-left: 0;
+    padding: 7px 0px;
+    border-bottom: 1px solid #EEE;
+}
+
+#sidebar .nav li {
+    padding: 0px;
+}
+
+#sidebar .nav li a {
+    padding: 7px 24px;
+}
+
+#sidebar .nav li a i {
+    width: 50px;
+}
+
+#sidebar .nav li.active {
+    background-color: #fff;
+}

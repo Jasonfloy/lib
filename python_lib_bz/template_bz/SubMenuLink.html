@@ -1,8 +1,10 @@
-<div class="item">
-    {{title}}
-    <div class="menu">
+<li>
+    <span>{{title}}</span>
+    <ul class="nav">
         {%for item in items%}
-        <a class="item {{item.active}}" href="{{item.href}}"><i class="{{item.icon}} icon"></i>{{item.title}}</a>
+        <li class="{{item.active}}">
+            <a href="{{item.href}}"><i class="fa {{item.icon}}"></i>{{item.title}}</a>
+        </li>
         {%end%}
-    </div>
-</div>
+    </ul>
+</li>
