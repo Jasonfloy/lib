@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Python Module Index &mdash; bz_python_lib 1.0 documentation</title>
+    <title>tree_bz module &mdash; bz_python_lib 1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,14 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="bz_python_lib 1.0 documentation" href="index.html" />
- 
-
-    <script type="text/javascript">
-      DOCUMENTATION_OPTIONS.COLLAPSE_INDEX = true;
-    </script>
-
-
+    <link rel="top" title="bz_python_lib 1.0 documentation" href="index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -40,7 +33,7 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="#" title="Python Module Index"
+          <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li><a href="index.html">bz_python_lib 1.0 documentation</a> &raquo;</li> 
       </ul>
@@ -51,55 +44,32 @@
         <div class="bodywrapper">
           <div class="body">
             
+  <div class="section" id="module-tree_bz">
+<span id="tree-bz-module"></span><h1>tree_bz module<a class="headerlink" href="#module-tree_bz" title="Permalink to this headline">¶</a></h1>
+<p>生成树状结构</p>
+<dl class="function">
+<dt id="tree_bz.addChilren">
+<tt class="descclassname">tree_bz.</tt><tt class="descname">addChilren</tt><big>(</big><em>parent_node</em>, <em>child_node</em><big>)</big><a class="reference internal" href="_modules/tree_bz.html#addChilren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tree_bz.addChilren" title="Permalink to this definition">¶</a></dt>
+<dd><p>加入子节点</p>
+</dd></dl>
 
-   <h1>Python Module Index</h1>
+<dl class="function">
+<dt id="tree_bz.findNode">
+<tt class="descclassname">tree_bz.</tt><tt class="descname">findNode</tt><big>(</big><em>nodes</em>, <em>id</em><big>)</big><a class="reference internal" href="_modules/tree_bz.html#findNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tree_bz.findNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>在树里面查找节点</p>
+</dd></dl>
 
-   <div class="modindex-jumpbox">
-   <a href="#cap-j"><strong>j</strong></a> | 
-   <a href="#cap-p"><strong>p</strong></a> | 
-   <a href="#cap-t"><strong>t</strong></a> | 
-   <a href="#cap-u"><strong>u</strong></a>
-   </div>
+<dl class="function">
+<dt id="tree_bz.makeTree">
+<tt class="descclassname">tree_bz.</tt><tt class="descname">makeTree</tt><big>(</big><em>nodes</em><big>)</big><a class="reference internal" href="_modules/tree_bz.html#makeTree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tree_bz.makeTree" title="Permalink to this definition">¶</a></dt>
+<dd><p>node.id = 0
+node.parent_id = 0
+node.chilren = []</p>
+<p>根据 node.id 和 node.parent_id 将铺平的数据组织成树状
+放到 chilren 节点</p>
+</dd></dl>
 
-   <table class="indextable modindextable" cellspacing="0" cellpadding="2">
-     <tr class="pcap"><td></td><td>&nbsp;</td><td></td></tr>
-     <tr class="cap" id="cap-j"><td></td><td>
-       <strong>j</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="jinja2_bz.html#module-jinja2_bz"><tt class="xref">jinja2_bz</tt></a></td><td>
-       <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&nbsp;</td><td></td></tr>
-     <tr class="cap" id="cap-p"><td></td><td>
-       <strong>p</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="public_bz.html#module-public_bz"><tt class="xref">public_bz</tt></a></td><td>
-       <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&nbsp;</td><td></td></tr>
-     <tr class="cap" id="cap-t"><td></td><td>
-       <strong>t</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="time_bz.html#module-time_bz"><tt class="xref">time_bz</tt></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="tree_bz.html#module-tree_bz"><tt class="xref">tree_bz</tt></a></td><td>
-       <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&nbsp;</td><td></td></tr>
-     <tr class="cap" id="cap-u"><td></td><td>
-       <strong>u</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="user_bz.html#module-user_bz"><tt class="xref">user_bz</tt></a></td><td>
-       <em></em></td></tr>
-   </table>
+</div>
 
 
           </div>
@@ -107,6 +77,11 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/tree_bz.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
@@ -131,7 +106,7 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="#" title="Python Module Index"
+          <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li><a href="index.html">bz_python_lib 1.0 documentation</a> &raquo;</li> 
       </ul>

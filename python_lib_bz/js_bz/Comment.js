@@ -1,28 +1,30 @@
 var data, v_share;
 
-Vue.config({
-  delimiters: ["[", "]"]
-});
-
 data = {};
 
 data.error_info = false;
 
+data.parent_id = '';
+
 v_share = new Vue({
   el: '#v_comment',
-  data: data,
+  data: function() {
+    return data;
+  },
   methods: {
-    updateComment: function(id) {
+    submit: function(key_type, key) {
       var comment;
       comment = this.$data.comment;
       if (comment.trim() === '') {
         data.error_info = '好歹说点什么吧!';
         return;
       }
-      return window.superagent.post('/UpdateMyDescription', {
-        id: id,
-        description: comment
-      }, function(error, res) {
+      return $.post('/comment', JSON.stringify({
+        key_type: key_type,
+        key: key,
+        comment: comment,
+        parent_id: this.$data.parent_id
+      }), function(error, res) {
         var result;
         result = JSON.parse(res.text);
         if (result.error !== '0') {
@@ -30,10 +32,13 @@ v_share = new Vue({
         } else {
           return location.reload();
         }
-      });
+      }, "");
     },
     cleanError: function() {
       return data.error_info = false;
+    },
+    reply: function(parent_id) {
+      return this.$data.parent_id = parent_id;
     }
   }
 });
