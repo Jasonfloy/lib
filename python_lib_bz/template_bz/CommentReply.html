@@ -9,14 +9,20 @@
                 <i class="fa fa-clock-o"></i>
                 {{timeLen(comment.created_date)}}
             </span>
+            <div class="comment-action">
+                <a v-on="click:reply({{comment.id}})" class="btn btn-default btn-xs">
+                    <i class="fa fa-mail-reply text-muted"></i>
+                    回复
+                </a>
+            </div>
             <a href="#">张三</a>
             <label class="label bg-dark m-l-xs">新手</label>
-            {{comment.other_description}}
+            {{comment.comment}}
         </div>
     </section>
-
-    {%if comment.get('comments')%}
-    {% module CommentReply(comment.comments, timeLen) %}
+    {%if comment.get('chilren')%}
+    {% module CommentReply(comment.chilren, timeLen) %}
     {% end %}
 </article>
+
 {% end %}

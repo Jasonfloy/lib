@@ -1,30 +1,33 @@
-<section class="comment-list block">
-    {% for comment in comments %}
-    <article class="comment-item">
+<section id="v_comment" class="comment-list block">
+
+    {% module CommentReply(comments, timeLen) %}
+
+    <article class="comment-item" id="comment-form">
         <a class="pull-left thumb-sm avatar">
-            <img src="http://himg.bdimg.com/sys/portrait/hotitem/wildkid/1" class="img-circle" alt="..."></a>
-        <span class="arrow left"></span>
-        <section class="comment-body panel panel-default">
-            <header class="panel-heading bg-white">
-                <a href="#">某某某</a>
-                <label class="label bg-info m-l-xs">管理员</label>
-                <span class="text-muted m-l-sm pull-right"> <i class="fa fa-clock-o"></i>
-                </span>
-            </header>
-            <div class="panel-body">
-                <div class="description_bz">
-                    {{comment.other_description}}
-                </div>
-                <div class="comment-action m-t-sm">
-                    <a href="#comment-form" class="btn btn-default btn-xs"> <i class="fa fa-mail-reply text-muted"></i>
-                        回复
-                    </a>
-                </div>
-            </div>
+            <img src="http://himg.bdimg.com/sys/portrait/hotitem/wildkid/5" alt="..."></a>
+        <section>
+            <form>
+                <!-- <div class="input-group">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                回复 张三
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="#">回复全部</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <input type="text" class="form-control">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">提交</button>
+                        </span>
+                    </div>
+                    -->
+                <textarea v-model="comment" class="comment-textarea" rows="3" placeholder="求评论"></textarea>
+                <button  v-on="click:submit('{{key_type}}',{{key}})" type="button" class="btn btn-default">发表评论</button>
+            </form>
         </section>
     </article>
-    {%if comment.get('comments')%}
-    {% module CommentReply(comment.comments, timeLen) %}
-    {% end %}
-    {% end %}
 </section>

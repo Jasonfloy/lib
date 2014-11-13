@@ -5,6 +5,7 @@
 '''
 from public_bz import storage
 
+
 def makeTree(nodes):
     '''
     node.id = 0
@@ -22,7 +23,7 @@ def makeTree(nodes):
             parent_node = findNode(tree, node.parent_id)
             if parent_node:
                 addChilren(parent_node, node)
-            #父节点还没加入到 tree 中
+            # 父节点还没加入到 tree 中
             else:
                 parent_node = findNode(nodes, node.parent_id)
                 addChilren(parent_node, node)
@@ -47,7 +48,7 @@ def findNode(nodes, id):
         if node.id == id:
             return node
         # 递归查找其子节点
-        if node.chilren:
+        if node.get('chilren'):
             target_node = findNode(node.chilren, id)
             if target_node:
                 return target_node

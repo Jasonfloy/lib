@@ -10,6 +10,7 @@ import time_bz
 class Login(tornado.web.UIModule):
 
     '''登录的页面'''
+
     def css_files(self):
         '''
         Oauth2 按钮的样式
@@ -41,11 +42,11 @@ class MenuLink(tornado.web.UIModule):
     def render(self, menu_link):
         return self.render_string("template_bz/MenuLink.html", **menu_link)
 
+
 class CommentReply(tornado.web.UIModule):
+
     def render(self, comments, timeLen):
         return self.render_string("template_bz/CommentReply.html", comments=comments, timeLen=timeLen)
-
-
 
 class Comment(tornado.web.UIModule):
 
@@ -54,6 +55,7 @@ class Comment(tornado.web.UIModule):
     comments: 评论组, 包括评论内容,以及评论时间
     id: 评论附着于哪个东西, 这个东西的 id
     '''
+
     def embedded_css(self):
         return '''
 .comment-list {
@@ -62,7 +64,7 @@ position: relative;
 .comment-list:before {
 position: absolute;
 top: 0;
-bottom: 35px;
+bottom: 100px;
 left: 18px;
 width: 1px;
 background: #e0e4e8;
@@ -73,6 +75,9 @@ margin-top: 0;
 position: relative;
 padding-left: 40px;
 }
+.comment-list .comment-item .comment-item {
+padding-left: 46px;
+}
 .comment-list .thumb-sm {
 width: 36px;
 }
@@ -81,12 +86,14 @@ position: relative;
 display: block;
 border-radius: 5px;
 white-space: nowrap;
-margin-right: 10px;
 margin-left: -40px;
 }
 .comment-list .arrow.left {
 top: 20px;
 left: 39px;
+}
+.comment-list .comment-item .comment-item .arrow.left {
+left: 45px;
 }
 .comment-list .comment-reply .arrow.left {
 top: 20px;
@@ -124,6 +131,9 @@ border-width: 8px;
 z-index: 10;
 }
 .comment-list .comment-item .comment-body {
+margin-left: 6px;
+}
+.comment-list .comment-reply .comment-body {
 margin-left: 6px;
 }
 .panel.panel-default {
@@ -177,8 +187,11 @@ vertical-align: baseline;
 border-radius: .25em;
 }
 .comment-list .comment-reply {
-margin-left: 46px;
+margin-left: 40px;
 position: relative;
+}
+.comment-list .comment-item .comment-reply,.comment-list .comment-reply .comment-reply {
+margin-left: 46px;
 }
 .input-group {
 position: relative;
@@ -194,15 +207,44 @@ z-index: 2;
 float: left;
 width: 100%;
 margin-bottom: 0;
-}    '''
+}
+.comment-textarea{
+    width: 100%;
+    display: table-cell;
+    box-sizing:border-box;
+    resize: none;
+    border: solid 1px #ccc;
+    padding: 10px;
+    outline: none;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    line-height: 24px;
+}
+.comment-textarea:focus{
+    border: solid 1px #00a5fb;
+}
+.btn{
+    outline: none;
+}
+.comment-list .comment-action{
+    float: right;
+    visibility: hidden;
+}
+.comment-list .comment-reply .comment-action{
+    margin-right: 15px;
+}
+.comment-list .panel-body:hover .comment-action{
+    visibility: visible;
+}
+    '''
 
     def javascript_files(self):
         '''
         '''
         return 'js_bz/Comment.js'
 
-    def render(self, comments, id):
-        return self.render_string("template_bz/Comment.html", comments=comments, timeLen=time_bz.timeLen, id=id)
+    def render(self, comments, key_type, key):
+        return self.render_string("template_bz/Comment.html", comments=comments, timeLen=time_bz.timeLen, key_type=key_type, key=key)
 
 
 class SubMenuLink(tornado.web.UIModule):
