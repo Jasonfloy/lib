@@ -19,6 +19,21 @@
     color: #FFF;
 }
 
+.btn-oauth2-weibo {
+    background-color: rgb(243, 121, 7);
+    color: #FFF;
+}
+
+.btn-oauth2-qq {
+    background-color: rgb(20, 145, 224);
+    color: #FFF;
+}
+
+.btn-oauth2-douban {
+    background-color: rgb(62, 152, 70);
+    color: #FFF;
+}
+
 #login > .panel{
     margin-top: 10px;
 }
