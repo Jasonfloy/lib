@@ -219,11 +219,6 @@ class SubMenuLink(tornado.web.UIModule):
         ]
         menu_link = storage(title='我是父节点', items=items)
     '''
-    def css_files(self):
-        '''
-        sidebar的样式
-        '''
-        return 'css_bz/Submenu.css'
 
     def render(self, menu_link):
         return self.render_string("template_bz/SubMenuLink.html", **menu_link)

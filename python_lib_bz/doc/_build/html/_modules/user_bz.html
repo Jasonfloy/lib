@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>user_bz &mdash; bz_python_lib 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="bz_python_lib 1.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">bz_python_lib 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for user_bz</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+
+<div class="viewcode-block" id="login"><a class="viewcode-back" href="../user_bz.html#user_bz.login">[docs]</a><span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="n">user_name</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">pg</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    登录模块,如果不存在这个用户名,则注册</span>
+<span class="sd">    数据模型:</span>
+
+<span class="sd">    CREATE TABLE user_info</span>
+<span class="sd">    (</span>
+<span class="sd">      user_type text, -- google or other</span>
+<span class="sd">      out_id text, -- google id or other</span>
+<span class="sd">      email text,</span>
+<span class="sd">      user_name text,</span>
+<span class="sd">      link text,</span>
+<span class="sd">      picture text,</span>
+<span class="sd">      gender text, -- mail?</span>
+<span class="sd">      locale text, --zh-CN</span>
+<span class="sd">      password text,</span>
+<span class="sd">      original_json text --用来存放原始返回的 json 字段,避免有内容没存到</span>
+<span class="sd">    -- 继承 from table base:  user_id integer</span>
+<span class="sd">    )</span>
+<span class="sd">    INHERITS (base)</span>
+
+
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">user_infos</span> <span class="o">=</span> <span class="n">getUserInfo</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_name</span><span class="o">=</span><span class="n">user_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">user_infos</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">user_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">password</span> <span class="o">==</span> <span class="n">password</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">user_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;密码错误!&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;user_info&#39;</span><span class="p">,</span> <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;my&#39;</span><span class="p">,</span> <span class="n">user_name</span><span class="o">=</span><span class="n">user_name</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">login</span><span class="p">(</span><span class="n">user_name</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">pg</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="getUserInfo"><a class="viewcode-back" href="../user_bz.html#user_bz.getUserInfo">[docs]</a><span class="k">def</span> <span class="nf">getUserInfo</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;my&#39;</span><span class="p">,</span> <span class="n">user_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">out_id</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;select * from user_info where user_type=&#39;</span><span class="si">%s</span><span class="s">&#39; &quot;</span> <span class="o">%</span> <span class="n">user_type</span>
+    <span class="k">if</span> <span class="n">user_name</span><span class="p">:</span>
+        <span class="n">sql</span> <span class="o">+=</span> <span class="s">&quot; and user_name=&#39;</span><span class="si">%s</span><span class="s">&#39; &quot;</span> <span class="o">%</span> <span class="n">user_name</span>
+    <span class="k">if</span> <span class="n">out_id</span><span class="p">:</span>
+        <span class="n">sql</span> <span class="o">+=</span> <span class="s">&quot; and out_id=&#39;</span><span class="si">%s</span><span class="s">&#39; &quot;</span> <span class="o">%</span> <span class="n">out_id</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="getUserInfoById"><a class="viewcode-back" href="../user_bz.html#user_bz.getUserInfoById">[docs]</a><span class="k">def</span> <span class="nf">getUserInfoById</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;select * from user_info where id=</span><span class="si">%s</span><span class="s"> &quot;</span> <span class="o">%</span> <span class="n">user_id</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="googleLogin"><a class="viewcode-back" href="../user_bz.html#user_bz.googleLogin">[docs]</a><span class="k">def</span> <span class="nf">googleLogin</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_info</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    google 登录信息存到 db 中</span>
+<span class="sd">        {</span>
+<span class="sd">         &quot;id&quot;: &quot;112340346785758313259&quot;,</span>
+<span class="sd">         &quot;email&quot;: &quot;vermiliondun@gmail.com&quot;,</span>
+<span class="sd">         &quot;verified_email&quot;: true,</span>
+<span class="sd">         &quot;name&quot;: &quot;朱一凡&quot;,</span>
+<span class="sd">         &quot;given_name&quot;: &quot;一凡&quot;,</span>
+<span class="sd">         &quot;family_name&quot;: &quot;朱&quot;,</span>
+<span class="sd">         &quot;link&quot;: &quot;https://plus.google.com/112340346785758313259&quot;,</span>
+<span class="sd">         &quot;picture&quot;: &quot;https://lh5.googleusercontent.com/-E4rb72RaQHE/AAAAAAAAAAI/AAAAAAAAJzQ/p-tx9D78Mik/photo.jpg&quot;,</span>
+<span class="sd">         &quot;gender&quot;: &quot;male&quot;,</span>
+<span class="sd">         &quot;locale&quot;: &quot;zh-CN&quot;</span>
+<span class="sd">        }</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">user_infos</span> <span class="o">=</span> <span class="n">getUserInfo</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;google&#39;</span><span class="p">,</span> <span class="n">out_id</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">user_infos</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">user_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;user_info&#39;</span><span class="p">,</span>
+                     <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;google&#39;</span><span class="p">,</span>
+                     <span class="n">out_id</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">],</span>
+                     <span class="n">email</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;email&#39;</span><span class="p">],</span>
+                     <span class="n">user_name</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span>
+                     <span class="n">link</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;link&#39;</span><span class="p">],</span>
+                     <span class="n">picture</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;picture&#39;</span><span class="p">],</span>
+                     <span class="n">gender</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;gender&#39;</span><span class="p">],</span>
+                     <span class="n">locale</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;locale&#39;</span><span class="p">]</span>
+                     <span class="p">)</span>
+        <span class="k">return</span> <span class="n">googleLogin</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_info</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="twitterLogin"><a class="viewcode-back" href="../user_bz.html#user_bz.twitterLogin">[docs]</a><span class="k">def</span> <span class="nf">twitterLogin</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_info</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    twitter 登录信息存到 db 中</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">user_infos</span> <span class="o">=</span> <span class="n">getUserInfo</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;twitter&#39;</span><span class="p">,</span> <span class="n">out_id</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">user_infos</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">user_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;user_info&#39;</span><span class="p">,</span>
+                     <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;twitter&#39;</span><span class="p">,</span>
+                     <span class="n">out_id</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">],</span>
+                     <span class="c"># email=user_info[&#39;email&#39;],</span>
+                     <span class="n">user_name</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;username&#39;</span><span class="p">],</span>
+                     <span class="c"># link=user_info[&#39;link&#39;],</span>
+                     <span class="n">picture</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;profile_image_url_https&#39;</span><span class="p">],</span>
+                     <span class="c"># gender=user_info[&#39;gender&#39;],</span>
+                     <span class="n">locale</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;profile_location&#39;</span><span class="p">]</span>
+                     <span class="p">)</span>
+        <span class="k">return</span> <span class="n">twitterLogin</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_info</span><span class="p">)</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">bz_python_lib 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, bigzhu.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

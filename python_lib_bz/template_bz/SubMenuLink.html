@@ -1,0 +1,10 @@
+<li>
+    <span>{{title}}</span>
+    <ul class="nav">
+        {%for item in items%}
+        <li class="{{item.active}}">
+            <a href="{{item.href}}"><i class="fa {{item.icon}}"></i>{{item.title}}</a>
+        </li>
+        {%end%}
+    </ul>
+</li>
