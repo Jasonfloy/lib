@@ -1,5 +1,24 @@
 var data, v_share;
 
+Vue.config.delimiters = ['(%', '%)'];
+
+Vue.directive("show-bz", {
+  bind: function(value) {
+    if (value && value.length !== 0) {
+      return $(this.el).removeClass('hide_bz');
+    } else {
+      return $(this.el).addClass('hide_bz');
+    }
+  },
+  update: function(value) {
+    if (value && value.length !== 0) {
+      return $(this.el).removeClass('hide_bz');
+    } else {
+      return $(this.el).addClass('hide_bz');
+    }
+  }
+});
+
 data = {};
 
 data.error_info = false;
@@ -12,11 +31,14 @@ v_share = new Vue({
     return data;
   },
   methods: {
+    clean: function() {
+      return this.$data.error_info = false;
+    },
     submit: function(key_type, key) {
       var comment;
       comment = this.$data.comment;
-      if (comment.trim() === '') {
-        data.error_info = '好歹说点什么吧!';
+      if (comment === void 0 || comment.trim() === '') {
+        this.$data.error_info = '好歹说点什么吧!';
         return;
       }
       return $.post('/comment', JSON.stringify({
@@ -32,9 +54,6 @@ v_share = new Vue({
           return location.reload();
         }
       }, "");
-    },
-    cleanError: function() {
-      return data.error_info = false;
     },
     reply: function(event, parent_id) {
       var comment_reply;

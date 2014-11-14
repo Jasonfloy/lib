@@ -197,3 +197,19 @@
 .comment-item form {
   margin-bottom: 1em;
 }
+.comment-error {
+  display: inline-block;
+  margin-bottom: 0px;
+  padding-top: 6px;
+  padding-bottom: 5px;
+  float: left;
+}
+.comment-submit {
+  display: inline-block;
+  float: left;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+.clear {
+  clear: both;
+}
