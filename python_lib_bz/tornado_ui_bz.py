@@ -146,5 +146,25 @@ class SubMenuLink(tornado.web.UIModule):
     def render(self, menu_link):
         return self.render_string("template_bz/SubMenuLink.html", **menu_link)
 
+
+class MenuLink_zxy(tornado.web.UIModule):
+
+    '''子菜单的menu 上的 link, 自己去循环生成内容
+    在模板里这样来用:
+        {% for menu_link in menu_links %}
+        {% module MenuLink(menu_link) %}
+        {% end %}
+    需要的参数是这样:
+        items = [
+            storage(title='每日发现', items=active='', href='/recommend', icon='mail'),
+            storage(title='我的收藏', active='active', href='/haha', icon='home')
+        ]
+        menu_link = storage(title='我是父节点', items=items)
+    '''
+
+    def render(self, menu_link):
+        return self.render_string("template_bz/MenuLink_zxy.html", **menu_link)
+
+
 if __name__ == '__main__':
     pass
