@@ -36,8 +36,12 @@ v_share = new Vue({
     cleanError: function() {
       return data.error_info = false;
     },
-    reply: function(parent_id) {
-      return this.$data.parent_id = parent_id;
+    reply: function(event, parent_id) {
+      var comment_reply;
+      comment_reply = $(event.target).closest('.comment-reply');
+      $(comment_reply).append($('#comment_text_area'));
+      this.$data.parent_id = parent_id;
+      return $(".comment-textarea").focus();
     }
   }
 });

@@ -28,5 +28,8 @@ v_share = new Vue
     cleanError:->
       data.error_info = false
     #要回复哪条评论
-    reply:(parent_id)->
+    reply:(event, parent_id)->
+      comment_reply = $(event.target).closest('.comment-reply')
+      $(comment_reply).append($('#comment_text_area'))
       @$data.parent_id = parent_id
+      $(".comment-textarea").focus()

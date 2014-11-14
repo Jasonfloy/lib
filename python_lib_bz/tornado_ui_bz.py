@@ -236,6 +236,9 @@ margin-bottom: 0;
 .comment-list .panel-body:hover .comment-action{
     visibility: visible;
 }
+.comment-item form{
+    margin-bottom: 1em;
+}
     '''
 
     def javascript_files(self):
