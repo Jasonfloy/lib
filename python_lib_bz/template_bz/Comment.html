@@ -4,7 +4,7 @@
     {%if parm.user_info%}
     <article id="comment_text_area" class="comment-item" id="comment-form">
         <a class="pull-left thumb-sm avatar">
-            <img src="" alt="{{parm.user_info.user_name}}"></a>
+            <img src="" onerror="this.src='/static/images/avatar.jpg'"alt="{{parm.user_info.user_name}}"></a>
         <section>
             <form>
                 <textarea v-model="comment" class="comment-textarea" rows="3" placeholder="求评论"></textarea>

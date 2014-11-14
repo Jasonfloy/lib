@@ -75,7 +75,7 @@ class Comment(tornado.web.UIModule):
       key_type text, -- 用于那个类型....
       key text, -- 比如填入 site_id,...
       user_name text, -- 用户名...
-      user_picture text, -- 用户头像...
+      picture text, -- 用户头像...
       comment text, -- 评论
       parent_id integer -- 可空,父节点 id
     )
@@ -95,7 +95,7 @@ class Comment(tornado.web.UIModule):
     使用这个评论的元素';
     COMMENT ON COLUMN comment.user_name IS '用户名
     可以为空,如果你用 user_id 去关联其他表的话';
-    COMMENT ON COLUMN comment.user_picture IS '用户头像
+    COMMENT ON COLUMN comment.picture IS '用户头像
 
     可空';
     COMMENT ON COLUMN comment.comment IS '评论';
