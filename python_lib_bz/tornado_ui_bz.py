@@ -23,8 +23,8 @@ class Login(tornado.web.UIModule):
         '''
         return 'js_bz/Login.js'
 
-    def render(self):
-        return self.render_string("template_bz/Login.html")
+    def render(self, oauth2):
+        return self.render_string("template_bz/Login.html", oauth2=oauth2)
 
 
 class MenuLink(tornado.web.UIModule):
