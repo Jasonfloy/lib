@@ -1,5 +1,5 @@
 <div class="container">
-    <div id='login'>
+    <div id='v_login'>
         <div class="btn-group btn-group-justified">
             <a class="btn btn-default btn-oauth2-google" href="/GoogleOAuth2LoginHandler">
                 <i class="fa fa-google-plus"></i>
@@ -73,11 +73,11 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <button v-on="click: submit" class="btn btn-primary btn-lg btn-block">登录&nbsp;|&nbsp;注册</button>
+                        <a v-on="click: submit" class="btn btn-primary btn-lg btn-block">登录&nbsp;|&nbsp;注册</a>
                     </div>
                 </form>
             </div>
         </div>
-        <div class="alert alert-danger">[[error_info]]</div>
+        <div v-show-bz="error_info" class="alert alert-danger hide_bz">(%error_info%)</div>
     </div>
 </div>
