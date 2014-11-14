@@ -44,8 +44,163 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="tornado-ui-bz-module">
-<h1>tornado_ui_bz module<a class="headerlink" href="#tornado-ui-bz-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-tornado_ui_bz">
+<span id="tornado-ui-bz-module"></span><h1>tornado_ui_bz module<a class="headerlink" href="#module-tornado_ui_bz" title="Permalink to this headline">¶</a></h1>
+<p>利用Tornado 的 ui 模块,来对 html 和 js 做一些模块化处理
+以利于复用</p>
+<dl class="class">
+<dt id="tornado_ui_bz.Comment">
+<em class="property">class </em><tt class="descclassname">tornado_ui_bz.</tt><tt class="descname">Comment</tt><big>(</big><em>handler</em><big>)</big><a class="reference internal" href="_modules/tornado_ui_bz.html#Comment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_ui_bz.Comment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">tornado.web.UIModule</span></tt></p>
+<p>评论,需要传入参数
+comments: 评论组, 包括评论内容,以及评论时间,具体参见 comment 表
+key_type: 一个网站有多个地方有评论时候,用于区分哪个模块,可空
+key: 关键字,一般就是 id, 比如 site_id,定位是哪个东西的评论
+user_info:用户信息,发评论的人的信息</p>
+<p>&#8211; Table: comment</p>
+<p>&#8211; DROP TABLE comment;</p>
+<p>CREATE TABLE comment
+(
+&#8211; 继承 from table base:  id integer NOT NULL DEFAULT nextval(&#8216;base_id_seq&#8217;::regclass),
+&#8211; 继承 from table base:  created_date timestamp without time zone DEFAULT now(),
+&#8211; 继承 from table base:  stat_date timestamp without time zone DEFAULT now(),</p>
+<blockquote>
+<div>user_id integer, &#8211; 填写的用户 id
+key_type text, &#8211; 用于那个类型....
+key text, &#8211; 比如填入 site_id,...
+user_name text, &#8211; 用户名...
+user_picture text, &#8211; 用户头像...
+comment text, &#8211; 评论
+parent_id integer &#8211; 可空,父节点 id</div></blockquote>
+<p>)
+INHERITS (base)
+WITH (</p>
+<blockquote>
+<div>OIDS=FALSE</div></blockquote>
+<p>);
+ALTER TABLE comment</p>
+<blockquote>
+<div>OWNER TO monitor;</div></blockquote>
+<p>COMMENT ON COLUMN comment.user_id IS &#8216;填写的用户 id&#8217;;
+COMMENT ON COLUMN comment.key_type IS &#8216;用于那个类型.</p>
+<p>比如一个系统有多个地方都要有评论,则用这个来区别</p>
+<p>为了站点可以填为 site&#8217;;
+COMMENT ON COLUMN comment.key IS &#8216;比如填入 site_id,
+使用这个评论的元素&#8217;;
+COMMENT ON COLUMN comment.user_name IS &#8216;用户名
+可以为空,如果你用 user_id 去关联其他表的话&#8217;;
+COMMENT ON COLUMN comment.user_picture IS &#8216;用户头像</p>
+<p>可空&#8217;;
+COMMENT ON COLUMN comment.comment IS &#8216;评论&#8217;;
+COMMENT ON COLUMN comment.parent_id IS &#8216;可空,父节点 id&#8217;;</p>
+<dl class="method">
+<dt id="tornado_ui_bz.Comment.css_files">
+<tt class="descname">css_files</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/tornado_ui_bz.html#Comment.css_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_ui_bz.Comment.css_files" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="tornado_ui_bz.Comment.javascript_files">
+<tt class="descname">javascript_files</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/tornado_ui_bz.html#Comment.javascript_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_ui_bz.Comment.javascript_files" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="tornado_ui_bz.Comment.render">
+<tt class="descname">render</tt><big>(</big><em>comments</em>, <em>key_type</em>, <em>key</em>, <em>user_info=None</em><big>)</big><a class="reference internal" href="_modules/tornado_ui_bz.html#Comment.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_ui_bz.Comment.render" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tornado_ui_bz.CommentReply">
+<em class="property">class </em><tt class="descclassname">tornado_ui_bz.</tt><tt class="descname">CommentReply</tt><big>(</big><em>handler</em><big>)</big><a class="reference internal" href="_modules/tornado_ui_bz.html#CommentReply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_ui_bz.CommentReply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">tornado.web.UIModule</span></tt></p>
+<dl class="method">
+<dt id="tornado_ui_bz.CommentReply.render">
+<tt class="descname">render</tt><big>(</big><em>comments</em>, <em>timeLen</em><big>)</big><a class="reference internal" href="_modules/tornado_ui_bz.html#CommentReply.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_ui_bz.CommentReply.render" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tornado_ui_bz.Login">
+<em class="property">class </em><tt class="descclassname">tornado_ui_bz.</tt><tt class="descname">Login</tt><big>(</big><em>handler</em><big>)</big><a class="reference internal" href="_modules/tornado_ui_bz.html#Login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_ui_bz.Login" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">tornado.web.UIModule</span></tt></p>
+<p>登录的页面</p>
+<dl class="method">
+<dt id="tornado_ui_bz.Login.css_files">
+<tt class="descname">css_files</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/tornado_ui_bz.html#Login.css_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_ui_bz.Login.css_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Oauth2 按钮的样式</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tornado_ui_bz.Login.javascript_files">
+<tt class="descname">javascript_files</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/tornado_ui_bz.html#Login.javascript_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_ui_bz.Login.javascript_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>登录的逻辑</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tornado_ui_bz.Login.render">
+<tt class="descname">render</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/tornado_ui_bz.html#Login.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_ui_bz.Login.render" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tornado_ui_bz.MenuLink">
+<em class="property">class </em><tt class="descclassname">tornado_ui_bz.</tt><tt class="descname">MenuLink</tt><big>(</big><em>handler</em><big>)</big><a class="reference internal" href="_modules/tornado_ui_bz.html#MenuLink"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_ui_bz.MenuLink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">tornado.web.UIModule</span></tt></p>
+<p>menu 上的 link, 自己去循环生成内容
+似乎有些多余的样子
+在模板里这样来用:</p>
+<blockquote>
+<div>{% for menu_link in menu_links %}
+{% module MenuLink(menu_link) %}
+{% end %}</div></blockquote>
+<dl class="docutils">
+<dt>需要的参数是这样:</dt>
+<dd>menu_link = storage(title=&#8217;每日发现&#8217;, active=&#8217;&#8216;, href=&#8217;/recommend&#8217;, icon=&#8217;mail&#8217;)</dd>
+</dl>
+<dl class="method">
+<dt id="tornado_ui_bz.MenuLink.render">
+<tt class="descname">render</tt><big>(</big><em>menu_link</em><big>)</big><a class="reference internal" href="_modules/tornado_ui_bz.html#MenuLink.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_ui_bz.MenuLink.render" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tornado_ui_bz.SubMenuLink">
+<em class="property">class </em><tt class="descclassname">tornado_ui_bz.</tt><tt class="descname">SubMenuLink</tt><big>(</big><em>handler</em><big>)</big><a class="reference internal" href="_modules/tornado_ui_bz.html#SubMenuLink"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_ui_bz.SubMenuLink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">tornado.web.UIModule</span></tt></p>
+<p>子菜单的menu 上的 link, 自己去循环生成内容
+在模板里这样来用:</p>
+<blockquote>
+<div>{% for menu_link in menu_links %}
+{% module SubMenuLink(menu_link) %}
+{% end %}</div></blockquote>
+<dl class="docutils">
+<dt>需要的参数是这样:</dt>
+<dd><dl class="first docutils">
+<dt>items = [</dt>
+<dd>storage(title=&#8217;每日发现&#8217;, items=active=&#8217;&#8216;, href=&#8217;/recommend&#8217;, icon=&#8217;mail&#8217;),
+storage(title=&#8217;我的收藏&#8217;, active=&#8217;active&#8217;, href=&#8217;/haha&#8217;, icon=&#8217;home&#8217;)</dd>
+</dl>
+<p class="last">]
+menu_link = storage(title=&#8217;我是父节点&#8217;, items=items)</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="tornado_ui_bz.SubMenuLink.css_files">
+<tt class="descname">css_files</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/tornado_ui_bz.html#SubMenuLink.css_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_ui_bz.SubMenuLink.css_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>sidebar的样式</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tornado_ui_bz.SubMenuLink.render">
+<tt class="descname">render</tt><big>(</big><em>menu_link</em><big>)</big><a class="reference internal" href="_modules/tornado_ui_bz.html#SubMenuLink.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_ui_bz.SubMenuLink.render" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 
 

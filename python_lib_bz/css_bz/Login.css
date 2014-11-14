@@ -1,43 +1,38 @@
-#login {
-    max-width: 600px;
-    width: 90%;
-    margin: 0 auto;
+.hide_bz {
+  visibility: hidden;
 }
-
+#v_login {
+  max-width: 600px;
+  width: 90%;
+  margin: 0 auto;
+}
 .btn-oauth2-google {
-    background-color: rgb(211, 72, 54);
-    color: #FFF;
+  background-color: #d34836;
+  color: #FFF;
 }
-
 .btn-oauth2-twitter {
-    background-color: rgb(73, 151, 206);
-    color: #FFF;
+  background-color: #4997ce;
+  color: #FFF;
 }
-
 .btn-oauth2-facebook {
-    background-color: rgb(59, 87, 157);
-    color: #FFF;
+  background-color: #3b579d;
+  color: #FFF;
 }
-
 .btn-oauth2-weibo {
-    background-color: rgb(243, 121, 7);
-    color: #FFF;
+  background-color: #f37907;
+  color: #FFF;
 }
-
 .btn-oauth2-qq {
-    background-color: rgb(20, 145, 224);
-    color: #FFF;
+  background-color: #1491e0;
+  color: #FFF;
 }
-
 .btn-oauth2-douban {
-    background-color: rgb(62, 152, 70);
-    color: #FFF;
+  background-color: #3e9846;
+  color: #FFF;
 }
-
-#login > .panel{
-    margin-top: 10px;
+#v_login > .panel {
+  margin-top: 10px;
 }
-
-#login > .panel > .panel-body {
-    padding-bottom: 0px;
+#v_login > .panel > .panel-body {
+  padding-bottom: 0px;
 }
