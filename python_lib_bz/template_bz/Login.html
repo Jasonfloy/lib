@@ -1,35 +1,43 @@
 <div class="container">
     <div id='v_login'>
+        {% if oauth2 %}
         <div class="btn-group btn-group-justified">
-            <a class="btn btn-default btn-oauth2-google" href="/GoogleOAuth2LoginHandler">
+            {% if oauth2.get('google') and oauth2.get('google').get('enabled') %}
+            <a class="btn btn-default btn-oauth2-google" href="{{ oauth2.get('google').get('url') }}">
                 <i class="fa fa-google-plus"></i>
                 <span class="visible-md-inline-block visible-lg-inline-block">Google</span>
             </a>
-
-            <a class="btn btn-default btn-oauth2-twitter" href="/TwitterLoginHandler">
+            {% end %}
+            {% if oauth2.get('twitter') and oauth2.get('twitter').get('enabled') %}
+            <a class="btn btn-default btn-oauth2-twitter" href="{{ oauth2.get('twitter').get('url') }}">
                 <i class="fa fa-twitter"></i>
                 <span class="visible-md-inline-block visible-lg-inline-block">Twitter</span>
             </a>
-
-            <a class="btn btn-default btn-oauth2-facebook" href="#">
+            {% end %}
+            {% if oauth2.get('facebook') and oauth2.get('facebook').get('enabled') %}
+            <a class="btn btn-default btn-oauth2-facebook" href="{{ oauth2.get('facebook').get('url') }}">
                 <i class="fa fa-facebook"></i>
                 <span class="visible-md-inline-block visible-lg-inline-block">Facebook</span>
             </a>
-
-            <a class="btn btn-default btn-oauth2-weibo" href="#">
+            {% end %}
+            {% if oauth2.get('weibo') and oauth2.get('weibo').get('enabled') %}
+            <a class="btn btn-default btn-oauth2-weibo" href="{{ oauth2.get('weibo').get('url') }}">
                 <i class="fa fa-weibo"></i>
                 <span class="visible-md-inline-block visible-lg-inline-block">Weibo</span>
             </a>
-
-            <a class="btn btn-default btn-oauth2-qq" href="#">
+            {% end %}
+            {% if oauth2.get('qq') and oauth2.get('qq').get('enabled') %}
+            <a class="btn btn-default btn-oauth2-qq" href="{{ oauth2.get('qq').get('url') }}">
                 <i class="fa fa-qq"></i>
                 <span class="visible-md-inline-block visible-lg-inline-block">QQ</span>
             </a>
-
-            <a class="btn btn-default btn-oauth2-douban" href="#">
+            {% end %}
+            {% if oauth2.get('douban') and oauth2.get('douban').get('enabled') %}
+            <a class="btn btn-default btn-oauth2-douban" href="{{ oauth2.get('douban').get('url') }}">
                 豆
                 <span class="visible-md-inline-block visible-lg-inline-block">瓣</span>
             </a>
+            {% end %}
             <!--
             <div class="ui vk button">
                 <i class="vk icon"></i>
@@ -50,6 +58,7 @@
             </div>
             -->
         </div>
+        {% end %}
         <div class="panel panel-default">
             <div class="panel-body">
                 <form class="form">
