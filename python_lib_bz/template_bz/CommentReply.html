@@ -1,7 +1,7 @@
 {% for comment in comments %}
 <article class="comment-reply">
     <a class="pull-left thumb-sm avatar">
-        <img src="http://himg.bdimg.com/sys/portrait/hotitem/wildkid/2" alt="..."></a>
+        <img src="{{comment.user_picture}}" alt="..."></a>
     <span class="arrow left"></span>
     <section class="comment-body panel panel-default text-sm">
         <div class="panel-body">
@@ -15,8 +15,10 @@
                     回复
                 </a>
             </div>
-            <a href="#">张三</a>
+            <a href="#">{{comment.user_name}}</a>
+            <!--
             <label class="label bg-dark m-l-xs">新手</label>
+            -->
             <div class="description_bz">
                 {{comment.comment}}
             </div>
