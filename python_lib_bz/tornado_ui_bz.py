@@ -50,6 +50,7 @@ class CommentReply(tornado.web.UIModule):
     def render(self, comments, timeLen):
         return self.render_string("template_bz/CommentReply.html", comments=comments, timeLen=timeLen)
 
+
 class Comment(tornado.web.UIModule):
 
     '''
@@ -111,7 +112,7 @@ class Comment(tornado.web.UIModule):
         '''
         return 'js_bz/Comment.js'
 
-    def render(self, comments, key_type, key, user_info=None):
+    def render(self, comments, key_type, key, user_info):
         parm = storage()
         parm.comments = comments
         parm.key_type = key_type
@@ -135,12 +136,12 @@ class SubMenuLink(tornado.web.UIModule):
         ]
         menu_link = storage(title='我是父节点', items=items)
     '''
+
     def css_files(self):
         '''
         sidebar的样式
         '''
         return 'css_bz/Submenu.css'
-
 
     def render(self, menu_link):
         return self.render_string("template_bz/SubMenuLink.html", **menu_link)
