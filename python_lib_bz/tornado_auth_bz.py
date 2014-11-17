@@ -3,110 +3,96 @@
 '''
 基于 Oauth2 的登录
 '''
+import tornado.httputil
+import tornado.httpclient
+import tornado.web
+import tornado.gen
+from tornado.auth import AuthError
 import urllib
-from core.options import options
-from tornado import httpclient
+from tornado.concurrent import return_future
+from tornado.auth import _auth_return_future
+from tornado import escape
+import functools
 
 
-class oAuth2Base:
-    authurl = user_info_url = tokenurl = ''
+class DoubanMixin(object):
 
-    def get_params(self, params={}):
-        """
-        生成参数
-        """
-        def_params = {
-            "client_id": self.client_id,
-            "redirect_uri": options.oAuth2_redirect_url,
-        }
-        def_params.update(params)
-        return urllib.urlencode(def_params)
-
-    def request(self, HTTPRequest, callback):
-        """
-         异步请求数据
-        """
-        client = httpclient.AsyncHTTPClient()
-        client.fetch(HTTPRequest, callback)
-
-    def get_authorization_code(self, state, scope=None):
-        """
-        第一步：
-        获取 authorization code
-        得到一个URL，需要重定向到此地址
-        """
-        params = {
-            "response_type": "code",
-            "state": state
+    @return_future
+    def authorize_redirect(self, redirect_uri=None, client_id=None,
+                           client_secret=None, extra_params=None,
+                           callback=None, scope=None, response_type="code"):
+        args = {
+            'client_id': client_id,
+            'redirect_uri': redirect_uri,
+            'response_type': response_type
         }
         if scope:
-            params.update({"scope": scope})
-        return self.authurl + '?' + self.get_params(params)
+            args['scope'] = ' '.join(scope)
 
-    def get_access_token(self, code, callback):
-        """
-        第二步：
-        返回到 redirect_uri之后会获取到一个code
-        此方法可以根据code换取access_token，然后访问API
-        """
-        params = {
-            "client_secret": self.client_secret,
+        self.redirect(
+            tornado.httputil.url_concat(self._OAUTH_AUTHORIZE_URL, args))  # 跳转到认证页面
+        callback()
+
+    def _oauth_request_token_url(self, redirect_uri=None, client_id=None, client_secret=None, code=None):
+        url = self._OAUTH_ACCESS_TOKEN_URL
+        args = dict(
+            client_id=client_id,
+            redirect_uri=redirect_uri,
+            client_secret=client_secret,
+            grant_type="authorization_code",
+            code=code
+        )
+        return tornado.httputil.url_concat(url, args)
+
+
+class DoubanOAuth2Mixin(DoubanMixin):
+    _OAUTH_ACCESS_TOKEN_URL = 'https://www.douban.com/service/auth2/token'
+    _OAUTH_AUTHORIZE_URL = 'https://www.douban.com/service/auth2/auth?'
+
+    def get_auth_http_client(self):
+        return tornado.httpclient.AsyncHTTPClient()
+
+    @_auth_return_future
+    def get_authenticated_user(self, redirect_uri, code, callback):
+        http = self.get_auth_http_client()
+        body = urllib.urlencode({
+            'redirect_uri': redirect_uri,
+            'code': code,
+            'client_id': self.settings['douban_api_key'],
+            'client_secret': self.settings['douban_api_secret'],
             "grant_type": "authorization_code",
-            "code": code,
-        }
-        request = httpclient.HTTPRequest(
-            self.tokenurl,
-            method='POST',
-            body=self.get_params(params)
-        )
-        self.request(request, callback)
+        })
 
+        http.fetch(self._OAUTH_ACCESS_TOKEN_URL, functools.partial(self._on_access_token, callback),
+                   method="POST", body=body)
 
-class douban(oAuth2Base):
-    authurl = 'https://www.douban.com/service/auth2/auth'
-    tokenurl = "https://www.douban.com/service/auth2/token"
-    user_info_url = 'https://api.douban.com/v2/user/~me'
+    def _on_access_token(self, future, response):
+        if response.error:
+            future.set_exception(AuthError('Douban Auth Error: %s' % str(response)))
+            return
+        args = escape.json_decode(response.body)
+        # future.set_result(args)
+        self.get_user_info(access_token=args['access_token'],
+                           callback=functools.partial(self._on_get_user_info, future))
 
-    @property
-    def client_id(self):
-        return options.oAuth2_douban_key
+    def _on_get_user_info(self, future, user):
+        if user is None:
+            future.set_result(None)
+            return
+        future.set_result(user)
 
-    @property
-    def client_secret(self):
-        return options.oAuth2_douban_secret
-
-    @property
-    def scope(self):
-        return options.oAuth2_douban_scope
-
+    @_auth_return_future
     def get_user_info(self, access_token, callback):
-        """
-        获取用户资料
-        """
-        request = httpclient.HTTPRequest(
-            'https://api.douban.com/v2/user/~me',
-            headers={"Authorization": "Bearer " + access_token}
-        )
-        self.request(request, callback)
+        url = 'https://api.douban.com/v2/user/~me'
+        http = tornado.httpclient.AsyncHTTPClient()
+        req = tornado.httpclient.HTTPRequest(url, headers={"Authorization": "Bearer " + access_token})
+        http.fetch(req, functools.partial(self._on_get_user_request, callback))
 
-
-class qq(oAuth2Base):
-    authurl = "https://graph.qq.com/oauth2.0/authorize"
-    tokenurl = "https://graph.qq.com/oauth2.0/token"
-    user_info_url = "https://graph.qq.com/user/get_user_info"
-
-    @property
-    def client_id(self):
-        return options.oAuth2_qq_appid
-
-    @property
-    def client_secret(self):
-        return options.oAuth2_qq_key
-
-    @property
-    def scope(self):
-        return options.oAuth2_qq_scope
-
-
+    def _on_get_user_request(self, future, response):
+        if response.error:
+            future.set_exception(AuthError('Error response fetching',
+                                           response.error, response.request.url))
+            return
+        future.set_result(escape.json_decode(response.body))
 if __name__ == '__main__':
     pass
