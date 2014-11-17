@@ -21,7 +21,7 @@
     background-color: #dae4e7;
     padding-top: 54px;
     color: #999;
-    z-index: 8;
+    z-index: 99;
 }
 
 #sidebar > #menu > li {
