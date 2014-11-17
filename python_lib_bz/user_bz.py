@@ -104,5 +104,25 @@ def twitterLogin(pg, user_info):
                      )
         return twitterLogin(pg, user_info)
 
+
+def doubanLogin(pg, user_info):
+    '''
+    douban 登录信息存到 db 中
+    '''
+    user_infos = getUserInfo(pg, user_type='douban', out_id=user_info['id'])
+    if user_infos:
+        return user_infos[0]
+    else:
+        pg.db.insert('user_info',
+                     user_type='douban',
+                     out_id=user_info['id'],
+                     # email=user_info['email'],
+                     user_name=user_info['name'],
+                     link=user_info['alt'],
+                     picture=user_info['avatar'],
+                     # gender=user_info['gender'],
+                     locale=user_info['loc_name']
+                     )
+        return doubanLogin(pg, user_info)
 if __name__ == '__main__':
     pass
