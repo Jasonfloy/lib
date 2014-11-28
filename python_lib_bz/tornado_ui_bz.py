@@ -71,7 +71,6 @@ class Comment(tornado.web.UIModule):
     -- 继承 from table base:  id integer NOT NULL DEFAULT nextval('base_id_seq'::regclass),
     -- 继承 from table base:  created_date timestamp without time zone DEFAULT now(),
     -- 继承 from table base:  stat_date timestamp without time zone DEFAULT now(),
-      user_id integer, -- 填写的用户 id
       key_type text, -- 用于那个类型....
       key text, -- 比如填入 site_id,...
       user_name text, -- 用户名...
@@ -83,8 +82,6 @@ class Comment(tornado.web.UIModule):
     WITH (
       OIDS=FALSE
     );
-    ALTER TABLE comment
-      OWNER TO monitor;
     COMMENT ON COLUMN comment.user_id IS '填写的用户 id';
     COMMENT ON COLUMN comment.key_type IS '用于那个类型.
 
