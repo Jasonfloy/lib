@@ -85,5 +85,18 @@ def mustLogin(method):
             return
         method(self, *args, **kwargs)
     return wrapper
+
+
+def getUserId(request):
+    '''
+    获取当前 user_id
+    未登录则为 1
+    '''
+    user_id = request.current_user
+    if user_id:
+        pass
+    else:
+        user_id = 1
+    return user_id
 if __name__ == '__main__':
     pass
