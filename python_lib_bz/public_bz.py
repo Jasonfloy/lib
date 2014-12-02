@@ -77,6 +77,32 @@ class Storage(dict):
 storage = Storage
 
 
+def analyzeStrTable(str_table, title_list, start_with, end_with=None):
+    '''
+    解析抓取回来的 str table
+    转换为 storage 列表,类似从数据库中查出的 data list
+
+    :str_table 需要拆分的 str
+    :title_list title 指定切片的对应的 title, 对并表的列名
+    :start_with 从哪一行开始,一般会自己带着一列 title, 那么要从1行开始
+    :end_with 一些末尾会有多余的空行,需要抛弃
+    '''
+    title_len = len(title_list)
+    li = str_table.split('\n')
+    li = li[start_with:end_with]
+    li = [i.split() for i in li]
+    table = []
+    for i in li:
+        d = storage()
+        for n, v in enumerate(i):
+            if n >= title_len:
+                d[title_list[title_len - 1]] += ' ' + v
+            else:
+                d[title_list[n]] = v
+        table.append(d)
+    return table
+
+
 def getExecutingPathFile():
     '''
     返回当前执行的 python 文件,带路径
@@ -92,7 +118,7 @@ def getExecutingPath():
     '''
     # return
     # os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-    # # script directory
+    # script directory
     dirname, filename = os.path.split(os.path.abspath(sys.argv[0]))
     return dirname
 if __name__ == '__main__':
