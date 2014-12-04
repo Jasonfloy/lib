@@ -121,5 +121,18 @@ def getExecutingPath():
     # script directory
     dirname, filename = os.path.split(os.path.abspath(sys.argv[0]))
     return dirname
+
+def runCommand(command):
+    '''
+    运行命令
+    '''
+    try:
+        p = os.popen(command)
+        content = p.read()
+        p.close()
+    except Exception:
+        content = 'djoin_error:' + getExpInfo(True)
+    return content
+
 if __name__ == '__main__':
     pass
