@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import time
 import calendar
-from datetime import datetime
+import datetime
 
 
 def datetimeToTimestamp(date_time):
@@ -34,7 +34,7 @@ def timeLen(date_time):
     month = day * 30
     year = month * 12
 
-    now = datetimeToTimestamp(datetime.now())
+    now = datetimeToTimestamp(datetime.datetime.now())
     that_time = datetimeToTimestamp(date_time)
     interval = now - that_time
 
@@ -71,10 +71,10 @@ def getYearMonth(months=0, fmt='%Y%m'):
     date = datetime.datetime.now()
     for i in range(0, abs(months)):
         if months < 0:
-            date = date - datetime.timedelta(days=date.day)
+            date = date - datetime.datetime.timedelta(days=date.day)
         elif months > 0:
             max_days = calendar.monthrange(date.year, date.month)[1]
-            date = date + datetime.timedelta(days=max_days - date.day + 1)
+            date = date + datetime.datetime.timedelta(days=max_days - date.day + 1)
     return date.strftime(fmt)
 if __name__ == '__main__':
-    print timeLen(datetime(2014, 10, 3))
+    print timeLen(datetime.datetime(2014, 10, 3))
