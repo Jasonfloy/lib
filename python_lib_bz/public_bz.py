@@ -16,7 +16,7 @@ class ExtEncoder(json.JSONEncoder):
         if isinstance(o, datetime.datetime) or isinstance(o, datetime.date):
             return time.mktime(o.timetuple()) * 1000
         elif isinstance(o, decimal.Decimal):
-            return int(o)
+            return "%.2f" % o
         # Defer to the superclass method
         return json.JSONEncoder(self, o)
 
@@ -121,6 +121,7 @@ def getExecutingPath():
     # script directory
     dirname, filename = os.path.split(os.path.abspath(sys.argv[0]))
     return dirname
+
 
 def runCommand(command):
     '''
