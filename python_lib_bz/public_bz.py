@@ -16,7 +16,7 @@ class ExtEncoder(json.JSONEncoder):
         if isinstance(o, datetime.datetime) or isinstance(o, datetime.date):
             return time.mktime(o.timetuple()) * 1000
         elif isinstance(o, decimal.Decimal):
-            return "%.2f" % o
+            return float(o)
         # Defer to the superclass method
         return json.JSONEncoder(self, o)
 
