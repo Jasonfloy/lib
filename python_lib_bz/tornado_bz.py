@@ -57,7 +57,7 @@ def getTName(self, name=None):
         return 'template/' + self.__class__.__name__ + '.html'
 
 
-def handError(method):
+def handleError(method):
     '''
     出现错误的时候,用json返回错误信息回去
     很好用的一个装饰器
