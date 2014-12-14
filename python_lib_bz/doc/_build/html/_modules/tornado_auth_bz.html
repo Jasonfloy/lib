@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>tornado_auth_bz &mdash; bz_python_lib 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="bz_python_lib 1.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">bz_python_lib 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for tornado_auth_bz</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">基于 Oauth2 的登录</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">tornado.httputil</span>
+<span class="kn">import</span> <span class="nn">tornado.httpclient</span>
+<span class="kn">import</span> <span class="nn">tornado.web</span>
+<span class="kn">import</span> <span class="nn">tornado.gen</span>
+<span class="kn">from</span> <span class="nn">tornado.auth</span> <span class="kn">import</span> <span class="n">AuthError</span>
+<span class="kn">import</span> <span class="nn">urllib</span>
+<span class="kn">from</span> <span class="nn">tornado.concurrent</span> <span class="kn">import</span> <span class="n">return_future</span>
+<span class="kn">from</span> <span class="nn">tornado.auth</span> <span class="kn">import</span> <span class="n">_auth_return_future</span>
+<span class="kn">from</span> <span class="nn">tornado</span> <span class="kn">import</span> <span class="n">escape</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+
+
+<div class="viewcode-block" id="DoubanMixin"><a class="viewcode-back" href="../tornado_auth_bz.html#tornado_auth_bz.DoubanMixin">[docs]</a><span class="k">class</span> <span class="nc">DoubanMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="nd">@return_future</span>
+<div class="viewcode-block" id="DoubanMixin.authorize_redirect"><a class="viewcode-back" href="../tornado_auth_bz.html#tornado_auth_bz.DoubanMixin.authorize_redirect">[docs]</a>    <span class="k">def</span> <span class="nf">authorize_redirect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">redirect_uri</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">client_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">client_secret</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">extra_params</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">callback</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">response_type</span><span class="o">=</span><span class="s">&quot;code&quot;</span><span class="p">):</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;client_id&#39;</span><span class="p">:</span> <span class="n">client_id</span><span class="p">,</span>
+            <span class="s">&#39;redirect_uri&#39;</span><span class="p">:</span> <span class="n">redirect_uri</span><span class="p">,</span>
+            <span class="s">&#39;response_type&#39;</span><span class="p">:</span> <span class="n">response_type</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">scope</span><span class="p">:</span>
+            <span class="n">args</span><span class="p">[</span><span class="s">&#39;scope&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">redirect</span><span class="p">(</span>
+            <span class="n">tornado</span><span class="o">.</span><span class="n">httputil</span><span class="o">.</span><span class="n">url_concat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_OAUTH_AUTHORIZE_URL</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>  <span class="c"># 跳转到认证页面</span>
+        <span class="n">callback</span><span class="p">()</span>
+</div>
+    <span class="k">def</span> <span class="nf">_oauth_request_token_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">redirect_uri</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">client_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">client_secret</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_OAUTH_ACCESS_TOKEN_URL</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">client_id</span><span class="o">=</span><span class="n">client_id</span><span class="p">,</span>
+            <span class="n">redirect_uri</span><span class="o">=</span><span class="n">redirect_uri</span><span class="p">,</span>
+            <span class="n">client_secret</span><span class="o">=</span><span class="n">client_secret</span><span class="p">,</span>
+            <span class="n">grant_type</span><span class="o">=</span><span class="s">&quot;authorization_code&quot;</span><span class="p">,</span>
+            <span class="n">code</span><span class="o">=</span><span class="n">code</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">tornado</span><span class="o">.</span><span class="n">httputil</span><span class="o">.</span><span class="n">url_concat</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="DoubanOAuth2Mixin"><a class="viewcode-back" href="../tornado_auth_bz.html#tornado_auth_bz.DoubanOAuth2Mixin">[docs]</a><span class="k">class</span> <span class="nc">DoubanOAuth2Mixin</span><span class="p">(</span><span class="n">DoubanMixin</span><span class="p">):</span>
+    <span class="n">_OAUTH_ACCESS_TOKEN_URL</span> <span class="o">=</span> <span class="s">&#39;https://www.douban.com/service/auth2/token&#39;</span>
+    <span class="n">_OAUTH_AUTHORIZE_URL</span> <span class="o">=</span> <span class="s">&#39;https://www.douban.com/service/auth2/auth?&#39;</span>
+
+<div class="viewcode-block" id="DoubanOAuth2Mixin.get_auth_http_client"><a class="viewcode-back" href="../tornado_auth_bz.html#tornado_auth_bz.DoubanOAuth2Mixin.get_auth_http_client">[docs]</a>    <span class="k">def</span> <span class="nf">get_auth_http_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">tornado</span><span class="o">.</span><span class="n">httpclient</span><span class="o">.</span><span class="n">AsyncHTTPClient</span><span class="p">()</span>
+</div>
+    <span class="nd">@_auth_return_future</span>
+<div class="viewcode-block" id="DoubanOAuth2Mixin.get_authenticated_user"><a class="viewcode-back" href="../tornado_auth_bz.html#tornado_auth_bz.DoubanOAuth2Mixin.get_authenticated_user">[docs]</a>    <span class="k">def</span> <span class="nf">get_authenticated_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">redirect_uri</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+        <span class="n">http</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_auth_http_client</span><span class="p">()</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">({</span>
+            <span class="s">&#39;redirect_uri&#39;</span><span class="p">:</span> <span class="n">redirect_uri</span><span class="p">,</span>
+            <span class="s">&#39;code&#39;</span><span class="p">:</span> <span class="n">code</span><span class="p">,</span>
+            <span class="s">&#39;client_id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;douban_api_key&#39;</span><span class="p">],</span>
+            <span class="s">&#39;client_secret&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;douban_api_secret&#39;</span><span class="p">],</span>
+            <span class="s">&quot;grant_type&quot;</span><span class="p">:</span> <span class="s">&quot;authorization_code&quot;</span><span class="p">,</span>
+        <span class="p">})</span>
+
+        <span class="n">http</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_OAUTH_ACCESS_TOKEN_URL</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_access_token</span><span class="p">,</span> <span class="n">callback</span><span class="p">),</span>
+                   <span class="n">method</span><span class="o">=</span><span class="s">&quot;POST&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_on_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+            <span class="n">future</span><span class="o">.</span><span class="n">set_exception</span><span class="p">(</span><span class="n">AuthError</span><span class="p">(</span><span class="s">&#39;Douban Auth Error: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="p">)))</span>
+            <span class="k">return</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">escape</span><span class="o">.</span><span class="n">json_decode</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
+        <span class="c"># future.set_result(args)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_user_info</span><span class="p">(</span><span class="n">access_token</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s">&#39;access_token&#39;</span><span class="p">],</span>
+                           <span class="n">callback</span><span class="o">=</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_get_user_info</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_on_get_user_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">future</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">future</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+
+    <span class="nd">@_auth_return_future</span>
+<div class="viewcode-block" id="DoubanOAuth2Mixin.get_user_info"><a class="viewcode-back" href="../tornado_auth_bz.html#tornado_auth_bz.DoubanOAuth2Mixin.get_user_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_user_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;https://api.douban.com/v2/user/~me&#39;</span>
+        <span class="n">http</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">httpclient</span><span class="o">.</span><span class="n">AsyncHTTPClient</span><span class="p">()</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">httpclient</span><span class="o">.</span><span class="n">HTTPRequest</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;Authorization&quot;</span><span class="p">:</span> <span class="s">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">access_token</span><span class="p">})</span>
+        <span class="n">http</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_get_user_request</span><span class="p">,</span> <span class="n">callback</span><span class="p">))</span>
+</div>
+    <span class="k">def</span> <span class="nf">_on_get_user_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+            <span class="n">future</span><span class="o">.</span><span class="n">set_exception</span><span class="p">(</span><span class="n">AuthError</span><span class="p">(</span><span class="s">&#39;Error response fetching&#39;</span><span class="p">,</span>
+                                           <span class="n">response</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="p">))</span>
+            <span class="k">return</span>
+        <span class="n">future</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="n">escape</span><span class="o">.</span><span class="n">json_decode</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">body</span><span class="p">))</span></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">bz_python_lib 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, bigzhu.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>
