@@ -74,8 +74,8 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="s">&#39;js_bz/Login.js&#39;</span>
 </div>
-<div class="viewcode-block" id="Login.render"><a class="viewcode-back" href="../tornado_ui_bz.html#tornado_ui_bz.Login.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_string</span><span class="p">(</span><span class="s">&quot;template_bz/Login.html&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="Login.render"><a class="viewcode-back" href="../tornado_ui_bz.html#tornado_ui_bz.Login.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">oauth2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_string</span><span class="p">(</span><span class="s">&quot;template_bz/Login.html&quot;</span><span class="p">,</span> <span class="n">oauth2</span><span class="o">=</span><span class="n">oauth2</span><span class="p">)</span>
 
 </div></div>
 <div class="viewcode-block" id="MenuLink"><a class="viewcode-back" href="../tornado_ui_bz.html#tornado_ui_bz.MenuLink">[docs]</a><span class="k">class</span> <span class="nc">MenuLink</span><span class="p">(</span><span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">UIModule</span><span class="p">):</span>
@@ -98,6 +98,7 @@
 
 <div class="viewcode-block" id="CommentReply.render"><a class="viewcode-back" href="../tornado_ui_bz.html#tornado_ui_bz.CommentReply.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comments</span><span class="p">,</span> <span class="n">timeLen</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_string</span><span class="p">(</span><span class="s">&quot;template_bz/CommentReply.html&quot;</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="n">comments</span><span class="p">,</span> <span class="n">timeLen</span><span class="o">=</span><span class="n">timeLen</span><span class="p">)</span>
+
 </div></div>
 <div class="viewcode-block" id="Comment"><a class="viewcode-back" href="../tornado_ui_bz.html#tornado_ui_bz.Comment">[docs]</a><span class="k">class</span> <span class="nc">Comment</span><span class="p">(</span><span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">UIModule</span><span class="p">):</span>
 
@@ -119,11 +120,10 @@
 <span class="sd">    -- 继承 from table base:  id integer NOT NULL DEFAULT nextval(&#39;base_id_seq&#39;::regclass),</span>
 <span class="sd">    -- 继承 from table base:  created_date timestamp without time zone DEFAULT now(),</span>
 <span class="sd">    -- 继承 from table base:  stat_date timestamp without time zone DEFAULT now(),</span>
-<span class="sd">      user_id integer, -- 填写的用户 id</span>
 <span class="sd">      key_type text, -- 用于那个类型....</span>
 <span class="sd">      key text, -- 比如填入 site_id,...</span>
 <span class="sd">      user_name text, -- 用户名...</span>
-<span class="sd">      user_picture text, -- 用户头像...</span>
+<span class="sd">      picture text, -- 用户头像...</span>
 <span class="sd">      comment text, -- 评论</span>
 <span class="sd">      parent_id integer -- 可空,父节点 id</span>
 <span class="sd">    )</span>
@@ -131,8 +131,6 @@
 <span class="sd">    WITH (</span>
 <span class="sd">      OIDS=FALSE</span>
 <span class="sd">    );</span>
-<span class="sd">    ALTER TABLE comment</span>
-<span class="sd">      OWNER TO monitor;</span>
 <span class="sd">    COMMENT ON COLUMN comment.user_id IS &#39;填写的用户 id&#39;;</span>
 <span class="sd">    COMMENT ON COLUMN comment.key_type IS &#39;用于那个类型.</span>
 
@@ -143,7 +141,7 @@
 <span class="sd">    使用这个评论的元素&#39;;</span>
 <span class="sd">    COMMENT ON COLUMN comment.user_name IS &#39;用户名</span>
 <span class="sd">    可以为空,如果你用 user_id 去关联其他表的话&#39;;</span>
-<span class="sd">    COMMENT ON COLUMN comment.user_picture IS &#39;用户头像</span>
+<span class="sd">    COMMENT ON COLUMN comment.picture IS &#39;用户头像</span>
 
 <span class="sd">    可空&#39;;</span>
 <span class="sd">    COMMENT ON COLUMN comment.comment IS &#39;评论&#39;;</span>
@@ -160,7 +158,7 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="s">&#39;js_bz/Comment.js&#39;</span>
 </div>
-<div class="viewcode-block" id="Comment.render"><a class="viewcode-back" href="../tornado_ui_bz.html#tornado_ui_bz.Comment.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comments</span><span class="p">,</span> <span class="n">key_type</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">user_info</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Comment.render"><a class="viewcode-back" href="../tornado_ui_bz.html#tornado_ui_bz.Comment.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comments</span><span class="p">,</span> <span class="n">key_type</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">user_info</span><span class="p">):</span>
         <span class="n">parm</span> <span class="o">=</span> <span class="n">storage</span><span class="p">()</span>
         <span class="n">parm</span><span class="o">.</span><span class="n">comments</span> <span class="o">=</span> <span class="n">comments</span>
         <span class="n">parm</span><span class="o">.</span><span class="n">key_type</span> <span class="o">=</span> <span class="n">key_type</span>
@@ -184,15 +182,35 @@
 <span class="sd">        ]</span>
 <span class="sd">        menu_link = storage(title=&#39;我是父节点&#39;, items=items)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+
 <div class="viewcode-block" id="SubMenuLink.css_files"><a class="viewcode-back" href="../tornado_ui_bz.html#tornado_ui_bz.SubMenuLink.css_files">[docs]</a>    <span class="k">def</span> <span class="nf">css_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        sidebar的样式</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="s">&#39;css_bz/Submenu.css&#39;</span>
-
 </div>
 <div class="viewcode-block" id="SubMenuLink.render"><a class="viewcode-back" href="../tornado_ui_bz.html#tornado_ui_bz.SubMenuLink.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">menu_link</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_string</span><span class="p">(</span><span class="s">&quot;template_bz/SubMenuLink.html&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">menu_link</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="MenuLink_zxy"><a class="viewcode-back" href="../tornado_ui_bz.html#tornado_ui_bz.MenuLink_zxy">[docs]</a><span class="k">class</span> <span class="nc">MenuLink_zxy</span><span class="p">(</span><span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">UIModule</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;子菜单的menu 上的 link, 自己去循环生成内容</span>
+<span class="sd">    在模板里这样来用:</span>
+<span class="sd">        {% for menu_link in menu_links %}</span>
+<span class="sd">        {% module MenuLink(menu_link) %}</span>
+<span class="sd">        {% end %}</span>
+<span class="sd">    需要的参数是这样:</span>
+<span class="sd">        items = [</span>
+<span class="sd">            storage(title=&#39;每日发现&#39;, items=active=&#39;&#39;, href=&#39;/recommend&#39;, icon=&#39;mail&#39;),</span>
+<span class="sd">            storage(title=&#39;我的收藏&#39;, active=&#39;active&#39;, href=&#39;/haha&#39;, icon=&#39;home&#39;)</span>
+<span class="sd">        ]</span>
+<span class="sd">        menu_link = storage(title=&#39;我是父节点&#39;, items=items)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="MenuLink_zxy.render"><a class="viewcode-back" href="../tornado_ui_bz.html#tornado_ui_bz.MenuLink_zxy.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">menu_link</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_string</span><span class="p">(</span><span class="s">&quot;template_bz/MenuLink_zxy.html&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">menu_link</span><span class="p">)</span>
+
 </div></div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="k">pass</span>

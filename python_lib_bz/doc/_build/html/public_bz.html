@@ -81,6 +81,17 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="public_bz.analyzeStrTable">
+<tt class="descclassname">public_bz.</tt><tt class="descname">analyzeStrTable</tt><big>(</big><em>str_table</em>, <em>title_list</em>, <em>start_with</em>, <em>end_with=None</em><big>)</big><a class="reference internal" href="_modules/public_bz.html#analyzeStrTable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#public_bz.analyzeStrTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>解析抓取回来的 str table
+转换为 storage 列表,类似从数据库中查出的 data list</p>
+<p>:str_table 需要拆分的 str
+:title_list title 指定切片的对应的 title, 对并表的列名
+:start_with 从哪一行开始,一般会自己带着一列 title, 那么要从1行开始
+:end_with 一些末尾会有多余的空行,需要抛弃</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="public_bz.getExecutingPath">
 <tt class="descclassname">public_bz.</tt><tt class="descname">getExecutingPath</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/public_bz.html#getExecutingPath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#public_bz.getExecutingPath" title="Permalink to this definition">¶</a></dt>
 <dd><p>返回当前执行的 python 文件所在路径</p>
@@ -102,6 +113,12 @@
 <dt id="public_bz.getExpInfoAll">
 <tt class="descclassname">public_bz.</tt><tt class="descname">getExpInfoAll</tt><big>(</big><em>just_info=False</em><big>)</big><a class="reference internal" href="_modules/public_bz.html#getExpInfoAll"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#public_bz.getExpInfoAll" title="Permalink to this definition">¶</a></dt>
 <dd><p>得到Exception的异常</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="public_bz.runCommand">
+<tt class="descclassname">public_bz.</tt><tt class="descname">runCommand</tt><big>(</big><em>command</em><big>)</big><a class="reference internal" href="_modules/public_bz.html#runCommand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#public_bz.runCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>运行命令</p>
 </dd></dl>
 
 <dl class="attribute">

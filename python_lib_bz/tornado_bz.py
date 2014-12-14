@@ -12,6 +12,14 @@ import functools
 import json
 
 
+class BaseHandler(tornado.web.RequestHandler):
+    def initialize(self):
+        self.pg = self.settings['pg']
+
+    def get_current_user(self):
+        return self.get_secure_cookie("user_id")
+
+
 def getURLMap(the_globals):
     '''
         根据定义的tornado.web.RequestHandler,自动生成url map

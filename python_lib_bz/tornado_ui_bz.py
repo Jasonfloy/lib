@@ -9,26 +9,6 @@ import time_bz
 from public_bz import storage
 
 
-class Login(tornado.web.UIModule):
-
-    '''登录的页面'''
-
-    def css_files(self):
-        '''
-        Oauth2 按钮的样式
-        '''
-        return 'css_bz/Login.css'
-
-    def javascript_files(self):
-        '''
-        登录的逻辑
-        '''
-        return 'js_bz/Login.js'
-
-    def render(self, oauth2):
-        return self.render_string("template_bz/Login.html", oauth2=oauth2)
-
-
 class MenuLink(tornado.web.UIModule):
 
     '''menu 上的 link, 自己去循环生成内容

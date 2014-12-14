@@ -65,7 +65,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">timetuple</span><span class="p">())</span> <span class="o">*</span> <span class="mi">1000</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">):</span>
-            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
         <span class="c"># Defer to the superclass method</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span>
 
@@ -126,6 +126,32 @@
 <span class="n">storage</span> <span class="o">=</span> <span class="n">Storage</span>
 
 
+<div class="viewcode-block" id="analyzeStrTable"><a class="viewcode-back" href="../public_bz.html#public_bz.analyzeStrTable">[docs]</a><span class="k">def</span> <span class="nf">analyzeStrTable</span><span class="p">(</span><span class="n">str_table</span><span class="p">,</span> <span class="n">title_list</span><span class="p">,</span> <span class="n">start_with</span><span class="p">,</span> <span class="n">end_with</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    解析抓取回来的 str table</span>
+<span class="sd">    转换为 storage 列表,类似从数据库中查出的 data list</span>
+
+<span class="sd">    :str_table 需要拆分的 str</span>
+<span class="sd">    :title_list title 指定切片的对应的 title, 对并表的列名</span>
+<span class="sd">    :start_with 从哪一行开始,一般会自己带着一列 title, 那么要从1行开始</span>
+<span class="sd">    :end_with 一些末尾会有多余的空行,需要抛弃</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">title_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">title_list</span><span class="p">)</span>
+    <span class="n">li</span> <span class="o">=</span> <span class="n">str_table</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="n">li</span> <span class="o">=</span> <span class="n">li</span><span class="p">[</span><span class="n">start_with</span><span class="p">:</span><span class="n">end_with</span><span class="p">]</span>
+    <span class="n">li</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">li</span><span class="p">]</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">li</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">storage</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="n">title_len</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">title_list</span><span class="p">[</span><span class="n">title_len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="s">&#39; &#39;</span> <span class="o">+</span> <span class="n">v</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">title_list</span><span class="p">[</span><span class="n">n</span><span class="p">]]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">table</span>
+
+</div>
 <div class="viewcode-block" id="getExecutingPathFile"><a class="viewcode-back" href="../public_bz.html#public_bz.getExecutingPathFile">[docs]</a><span class="k">def</span> <span class="nf">getExecutingPathFile</span><span class="p">():</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    返回当前执行的 python 文件,带路径</span>
@@ -141,9 +167,23 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c"># return</span>
     <span class="c"># os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))</span>
-    <span class="c"># # script directory</span>
+    <span class="c"># script directory</span>
     <span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    <span class="k">return</span> <span class="n">dirname</span></div>
+    <span class="k">return</span> <span class="n">dirname</span>
+
+</div>
+<div class="viewcode-block" id="runCommand"><a class="viewcode-back" href="../public_bz.html#public_bz.runCommand">[docs]</a><span class="k">def</span> <span class="nf">runCommand</span><span class="p">(</span><span class="n">command</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    运行命令</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="s">&#39;djoin_error:&#39;</span> <span class="o">+</span> <span class="n">getExpInfo</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">content</span>
+</div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="k">pass</span>
 </pre></div>

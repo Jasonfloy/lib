@@ -1,0 +1,42 @@
+/*描述,保留空格,还有换行*/
+.description_bz {
+  white-space: pre-wrap;
+}
+.hide_bz {
+  visibility: hidden;
+}
+#v_login {
+  max-width: 600px;
+  width: 90%;
+  margin: 0 auto;
+}
+.btn-oauth2-google {
+  background-color: #d34836;
+  color: #FFF;
+}
+.btn-oauth2-twitter {
+  background-color: #4997ce;
+  color: #FFF;
+}
+.btn-oauth2-facebook {
+  background-color: #3b579d;
+  color: #FFF;
+}
+.btn-oauth2-weibo {
+  background-color: #f37907;
+  color: #FFF;
+}
+.btn-oauth2-qq {
+  background-color: #1491e0;
+  color: #FFF;
+}
+.btn-oauth2-douban {
+  background-color: #3e9846;
+  color: #FFF;
+}
+#v_login > .panel {
+  margin-top: 10px;
+}
+#v_login > .panel > .panel-body {
+  padding-bottom: 0px;
+}

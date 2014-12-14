@@ -72,8 +72,15 @@ login_url: 装饰器 tornado.web.authenticated 未登录时候,重定向的网�
 </dd></dl>
 
 <dl class="function">
-<dt id="tornado_bz.handError">
-<tt class="descclassname">tornado_bz.</tt><tt class="descname">handError</tt><big>(</big><em>method</em><big>)</big><a class="reference internal" href="_modules/tornado_bz.html#handError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_bz.handError" title="Permalink to this definition">¶</a></dt>
+<dt id="tornado_bz.getUserId">
+<tt class="descclassname">tornado_bz.</tt><tt class="descname">getUserId</tt><big>(</big><em>request</em><big>)</big><a class="reference internal" href="_modules/tornado_bz.html#getUserId"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_bz.getUserId" title="Permalink to this definition">¶</a></dt>
+<dd><p>获取当前 user_id
+未登录则为 1</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tornado_bz.handleError">
+<tt class="descclassname">tornado_bz.</tt><tt class="descname">handleError</tt><big>(</big><em>method</em><big>)</big><a class="reference internal" href="_modules/tornado_bz.html#handleError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_bz.handleError" title="Permalink to this definition">¶</a></dt>
 <dd><p>出现错误的时候,用json返回错误信息回去
 很好用的一个装饰器</p>
 </dd></dl>

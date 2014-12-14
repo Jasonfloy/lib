@@ -70,7 +70,8 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">the_globals</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">RequestHandler</span><span class="p">):</span>
                 <span class="n">url_map</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">r&#39;/&#39;</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">the_globals</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-                <span class="n">url_map</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">r&quot;/</span><span class="si">%s</span><span class="s">/([0-9]+)&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">,</span> <span class="n">the_globals</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="c">#url_map.append((r&quot;/%s/([0-9]+)&quot; % i, the_globals[i]))</span>
+                <span class="n">url_map</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">r&quot;/</span><span class="si">%s</span><span class="s">/(.*)&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">,</span> <span class="n">the_globals</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">continue</span>
     <span class="k">return</span> <span class="n">url_map</span>
@@ -105,7 +106,7 @@
         <span class="k">return</span> <span class="s">&#39;template/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span> <span class="o">+</span> <span class="s">&#39;.html&#39;</span>
 
 </div>
-<div class="viewcode-block" id="handError"><a class="viewcode-back" href="../tornado_bz.html#tornado_bz.handError">[docs]</a><span class="k">def</span> <span class="nf">handError</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+<div class="viewcode-block" id="handleError"><a class="viewcode-back" href="../tornado_bz.html#tornado_bz.handleError">[docs]</a><span class="k">def</span> <span class="nf">handleError</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    出现错误的时候,用json返回错误信息回去</span>
 <span class="sd">    很好用的一个装饰器</span>
@@ -118,6 +119,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">&#39;error&#39;</span><span class="p">:</span> <span class="n">public_bz</span><span class="o">.</span><span class="n">getExpInfo</span><span class="p">()}))</span>
             <span class="k">print</span> <span class="n">public_bz</span><span class="o">.</span><span class="n">getExpInfoAll</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">wrapper</span>
+
 </div>
 <div class="viewcode-block" id="mustLogin"><a class="viewcode-back" href="../tornado_bz.html#tornado_bz.mustLogin">[docs]</a><span class="k">def</span> <span class="nf">mustLogin</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -132,7 +134,20 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">redirect</span><span class="p">(</span><span class="s">&quot;/login&quot;</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="n">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">wrapper</span></div>
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+</div>
+<div class="viewcode-block" id="getUserId"><a class="viewcode-back" href="../tornado_bz.html#tornado_bz.getUserId">[docs]</a><span class="k">def</span> <span class="nf">getUserId</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    获取当前 user_id</span>
+<span class="sd">    未登录则为 1</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">current_user</span>
+    <span class="k">if</span> <span class="n">user_id</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">user_id</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">user_id</span></div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="k">pass</span>
 </pre></div>
