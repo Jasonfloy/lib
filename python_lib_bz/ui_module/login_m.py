@@ -13,12 +13,6 @@ from tornado_bz import BaseHandler
 from public_bz import storage
 
 
-oauth2 = storage()
-oauth2.google = storage(enabled=False, url='/google')
-oauth2.twitter = storage(enabled=False, url='/twitter')
-oauth2.douban = storage(enabled=False, url='/douban')
-
-
 class login_m(my_ui_module.MyUIModule):
 
     '''登录的页面'''
@@ -35,6 +29,25 @@ class login(BaseHandler):
     '''
 
     def initialize(self):
+        '''
+        针对 oauth2 ,需要你重载的时候来设置为你自己的参数, 以下是 google twitter douban 的例子
+
+        # google 登录的参数
+        CLIENT_ID = '413021385046-mgcrb8l8qnc3kdg8h9tq3857ae71idke.apps.googleusercontent.com'
+        CLIENT_SECRET = 'hygluwSg-7L_WsifSC5-4OZ5'
+        self.settings["google_oauth"] = {
+            "key": CLIENT_ID,
+            "secret": CLIENT_SECRET,
+            "redirect_uri": "http://www.highwe.net/google",
+        }
+        # twitter
+        self.settings["twitter_consumer_key"] = 'YmQK6YdczdtjMPLsHjoVs8QgH'
+        self.settings["twitter_consumer_secret"] = 'ZM1fklU38SBQN5RBwvRH1yRttrrHjBS5uuOtqIqUObIGafgeRG'
+        # douban
+        self.settings["douban_api_key"] = '01be463aa2868092053ad2afe79381b6'
+        self.settings["douban_api_secret"] = 'a957e7c9cc366f86'
+        self.settings["redirect_uri"] = 'http://highwe.net/douban'
+        '''
         BaseHandler.initialize(self)
         oauth2 = storage()
         oauth2.google = storage(enabled=False, url='/google')
@@ -42,8 +55,10 @@ class login(BaseHandler):
         oauth2.douban = storage(enabled=False, url='/douban')
         self.oauth2 = oauth2
 
+
+
     def get(self):
-        self.render(tornado_bz.getTName(self), oauth2=oauth2)
+        self.render(tornado_bz.getTName(self), oauth2=self.oauth2)
 
     @tornado_bz.handleError
     def post(self):

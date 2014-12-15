@@ -43,7 +43,7 @@ login = new Vue({
         this.$data.error_info = '请输入用密码';
         return;
       }
-      return $.post('/login', JSON.stringify({
+      return $.post('{{action_url}}', JSON.stringify({
         user_name: data.user_name,
         password: data.password
       }), function(result, done) {
