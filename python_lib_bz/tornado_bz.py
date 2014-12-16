@@ -49,7 +49,7 @@ def getSettings():
         'cookie_secret': 'bigzhu so big',
         'autoescape': None,  # 模板自定义转义
         'login_url': "/login",
-        'ui_modules': [tornado_ui_bz]
+        'ui_modules': []
     }
     return settings
 
