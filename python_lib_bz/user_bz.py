@@ -46,6 +46,19 @@ def getUserInfo(pg, user_type='my', user_name=None, out_id=None):
     return list(pg.db.query(sql))
 
 
+def resetPassword(pg, user_id, old_password, new_password):
+    users = list(pg.db.select("user_info", where="id=%s" % user_id))
+    if len(users) == 0:
+        return "该用户不存在，请重新登录"
+    else:
+        user = users[0]
+        if user.get('password') == old_password:
+            pg.db.update("user_info", where="id=%s" % user_id, password=new_password)
+            return "0"
+        else:
+            return "密码错误"
+
+
 def getUserInfoById(pg, user_id):
     sql = "select * from user_info where id=%s " % user_id
     return list(pg.db.query(sql))

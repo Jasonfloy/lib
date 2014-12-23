@@ -6,11 +6,14 @@ from . import my_ui_module
 import tornado.web
 import tornado_bz
 import json
+import hashlib
 import user_bz
 import public_bz
 import tornado_auth_bz
 from tornado_bz import BaseHandler
 from public_bz import storage
+
+salt = "hold is watching you"
 
 
 class login_m(my_ui_module.MyUIModule):
@@ -55,8 +58,6 @@ class login(BaseHandler):
         oauth2.douban = storage(enabled=False, url='/douban')
         self.oauth2 = oauth2
 
-
-
     def get(self):
         self.render(tornado_bz.getTName(self), oauth2=self.oauth2)
 
@@ -66,9 +67,24 @@ class login(BaseHandler):
         login_info = json.loads(self.request.body)
         user_name = login_info.get("user_name")
         password = login_info.get("password")
-        user_info = user_bz.login(user_name, password, self.pg)
+        # 密码加密
+        hashed_password = hashlib(password + salt).hexdigest()
+        user_info = user_bz.login(user_name, hashed_password, self.pg)
         self.set_secure_cookie("user_id", str(user_info.id))
         self.write(json.dumps({'error': '0'}, cls=public_bz.ExtEncoder))
+
+    @tornado_bz.handleError
+    def put(self):
+        self.set_header("Content-Type", "application/json")
+        reset_data = json.loads(self.request.body)
+        user_id = self.get_secure_cookie("user_id")
+        old_password = reset_data.get("old_password")
+        new_password = reset_data.get("new_password")
+        # 加密
+        hashed_old_pwd = hashlib(old_password + salt).hexdigest()
+        hashed_new_pwd = hashlib(new_password + salt).hexdigest()
+        error_msg = user_bz.resetPassword(user_id, hashed_old_pwd, hashed_new_pwd)
+        self.write(json.dumps({'error': error_msg}, cls=public_bz.ExtEncoder))
 
 
 class logout(BaseHandler):
