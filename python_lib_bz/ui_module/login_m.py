@@ -83,7 +83,7 @@ class login(BaseHandler):
         # 加密
         hashed_old_pwd = hashlib.md5(old_password + salt).hexdigest()
         hashed_new_pwd = hashlib.md5(new_password + salt).hexdigest()
-        error_msg = user_bz.resetPassword(user_id, hashed_old_pwd, hashed_new_pwd)
+        error_msg = user_bz.resetPassword(self.pg, user_id, hashed_old_pwd, hashed_new_pwd)
         self.write(json.dumps({'error': error_msg}, cls=public_bz.ExtEncoder))
 
 
