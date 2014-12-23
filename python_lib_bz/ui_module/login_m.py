@@ -68,7 +68,7 @@ class login(BaseHandler):
         user_name = login_info.get("user_name")
         password = login_info.get("password")
         # 密码加密
-        hashed_password = hashlib(password + salt).hexdigest()
+        hashed_password = hashlib.md5(password + salt).hexdigest()
         user_info = user_bz.login(user_name, hashed_password, self.pg)
         self.set_secure_cookie("user_id", str(user_info.id))
         self.write(json.dumps({'error': '0'}, cls=public_bz.ExtEncoder))
@@ -81,8 +81,8 @@ class login(BaseHandler):
         old_password = reset_data.get("old_password")
         new_password = reset_data.get("new_password")
         # 加密
-        hashed_old_pwd = hashlib(old_password + salt).hexdigest()
-        hashed_new_pwd = hashlib(new_password + salt).hexdigest()
+        hashed_old_pwd = hashlib.md5(old_password + salt).hexdigest()
+        hashed_new_pwd = hashlib.md5(new_password + salt).hexdigest()
         error_msg = user_bz.resetPassword(user_id, hashed_old_pwd, hashed_new_pwd)
         self.write(json.dumps({'error': error_msg}, cls=public_bz.ExtEncoder))
 
