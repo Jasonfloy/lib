@@ -103,7 +103,8 @@ class google(BaseHandler, tornado.auth.GoogleOAuth2Mixin):
 
     @tornado.gen.coroutine
     def get(self):
-        redirect_uri = self.settings['google_oauth']['redirect_uri'],
+        redirect_uri = self.settings['google_oauth']['redirect_uri']
+        print redirect_uri
         if self.get_argument('code', False):
             user = yield self.get_authenticated_user(
                 redirect_uri=redirect_uri,
