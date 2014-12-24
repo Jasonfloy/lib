@@ -132,12 +132,12 @@ class google(BaseHandler, tornado.auth.GoogleOAuth2Mixin):
 
 
 class twitter(BaseHandler, tornado.auth.TwitterMixin):
-    _OAUTH_REQUEST_TOKEN_URL = "https://api.twitter.bigzhu.org/oauth/request_token"
-    _OAUTH_ACCESS_TOKEN_URL = "https://api.twitter.bigzhu.org/oauth/access_token"
-    _OAUTH_AUTHORIZE_URL = "https://api.twitter.bigzhu.org/oauth/authorize"
-    _OAUTH_AUTHENTICATE_URL = "https://api.twitter.bigzhu.org/oauth/authenticate"
+    _OAUTH_REQUEST_TOKEN_URL = "https://api.twitter.com/oauth/request_token"
+    _OAUTH_ACCESS_TOKEN_URL = "https://api.twitter.com/oauth/access_token"
+    _OAUTH_AUTHORIZE_URL = "https://api.twitter.com/oauth/authorize"
+    _OAUTH_AUTHENTICATE_URL = "https://api.twitter.com/oauth/authenticate"
     _OAUTH_NO_CALLBACKS = False
-    _TWITTER_BASE_URL = "https://api.twitter.bigzhu.org/1.1"
+    _TWITTER_BASE_URL = "https://api.twitter.com/1.1"
 
     @tornado.gen.coroutine
     def get(self):
