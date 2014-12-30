@@ -10,27 +10,27 @@
   width: 90%;
   margin: 0 auto;
 }
-.btn-oauth2-google {
+.btn.btn-default.btn-oauth2-google {
   background-color: #d34836;
   color: #FFF;
 }
-.btn-oauth2-twitter {
+.btn.btn-default.btn-oauth2-twitter {
   background-color: #4997ce;
   color: #FFF;
 }
-.btn-oauth2-facebook {
+.btn.btn-default.btn-oauth2-facebook {
   background-color: #3b579d;
   color: #FFF;
 }
-.btn-oauth2-weibo {
+.btn.btn-default.btn-oauth2-weibo {
   background-color: #f37907;
   color: #FFF;
 }
-.btn-oauth2-qq {
+.btn.btn-default.btn-oauth2-qq {
   background-color: #1491e0;
   color: #FFF;
 }
-.btn-oauth2-douban {
+.btn.btn-default.btn-oauth2-douban {
   background-color: #3e9846;
   color: #FFF;
 }
