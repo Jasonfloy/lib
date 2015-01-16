@@ -92,7 +92,7 @@ def mustLogin(method):
         else:
             self.redirect("/login")
             return
-        method(self, *args, **kwargs)
+        return method(self, *args, **kwargs)
     return wrapper
 
 

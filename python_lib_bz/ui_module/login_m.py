@@ -58,6 +58,9 @@ class login(BaseHandler):
         oauth2.douban = storage(enabled=False, url='/douban')
         self.oauth2 = oauth2
 
+        #用户操作相关的
+        self.user_oper = user_bz.UserOper(self.pg)
+
     def get(self):
         self.render(tornado_bz.getTName(self), oauth2=self.oauth2)
 
@@ -69,7 +72,7 @@ class login(BaseHandler):
         password = login_info.get("password")
         # 密码加密
         hashed_password = hashlib.md5(password + salt).hexdigest()
-        user_info = user_bz.login(user_name, hashed_password, self.pg)
+        user_info = self.user_oper.login(user_name, hashed_password)
         self.set_secure_cookie("user_id", str(user_info.id))
         self.write(json.dumps({'error': '0'}, cls=public_bz.ExtEncoder))
 
@@ -83,7 +86,7 @@ class login(BaseHandler):
         # 加密
         hashed_old_pwd = hashlib.md5(old_password + salt).hexdigest()
         hashed_new_pwd = hashlib.md5(new_password + salt).hexdigest()
-        error_msg = user_bz.resetPassword(self.pg, user_id, hashed_old_pwd, hashed_new_pwd)
+        error_msg = self.user_oper.resetPassword(user_id, hashed_old_pwd, hashed_new_pwd)
         self.write(json.dumps({'error': error_msg}, cls=public_bz.ExtEncoder))
 
 
@@ -103,7 +106,6 @@ class google(BaseHandler, tornado.auth.GoogleOAuth2Mixin):
 
     @tornado.gen.coroutine
     def get(self):
-        print self.settings
         redirect_uri = self.settings['google_oauth']['redirect_uri']
         if self.get_argument('code', False):
             user = yield self.get_authenticated_user(
@@ -112,7 +114,8 @@ class google(BaseHandler, tornado.auth.GoogleOAuth2Mixin):
             )
             self.user = user
             user_info = self.getUserInfo()
-            user_info = user_bz.googleLogin(self.pg, user_info)
+            self.user_oper = user_bz.UserOper(self.pg)
+            user_info = self.user_oper.googleLogin(self.pg, user_info)
             self.set_secure_cookie("user_id", str(user_info.id))
             self.redirect("/")
             # Save the user with e.g. set_secure_cookie
@@ -145,7 +148,8 @@ class twitter(BaseHandler, tornado.auth.TwitterMixin):
         if self.get_argument("oauth_token", None):
             user_info = yield self.get_authenticated_user()
 
-            user_info = user_bz.twitterLogin(self.pg, user_info)
+            self.user_oper = user_bz.UserOper(self.pg)
+            user_info = self.user_oper.twitterLogin(user_info)
             self.set_secure_cookie("user_id", str(user_info.id))
             self.redirect("/")
 
@@ -165,7 +169,9 @@ class douban(BaseHandler, tornado_auth_bz.DoubanOAuth2Mixin):
                 code=self.get_argument('code')
             )
             if user:
-                user_info = user_bz.doubanLogin(self.pg, user)
+
+                self.user_oper = user_bz.UserOper(self.pg)
+                user_info = self.user_oper.doubanLogin(self.pg, user)
                 self.set_secure_cookie("user_id", str(user_info.id))
                 self.redirect("/")
 
