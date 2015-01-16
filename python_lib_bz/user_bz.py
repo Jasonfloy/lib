@@ -57,7 +57,7 @@ class UserOper:
         return list(self.pg.db.query(sql))
 
     @daemonDB
-    def googleLogin(user_info):
+    def googleLogin(self, user_info):
         '''
         google 登录信息存到 db 中
             {
@@ -90,7 +90,7 @@ class UserOper:
             return self.googleLogin(user_info)
 
     @daemonDB
-    def twitterLogin(user_info):
+    def twitterLogin(self, user_info):
         '''
         twitter 登录信息存到 db 中
         '''
@@ -111,7 +111,7 @@ class UserOper:
             return self.twitterLogin(user_info)
 
     @daemonDB
-    def doubanLogin(pg, user_info):
+    def doubanLogin(self, user_info):
         '''
         douban 登录信息存到 db 中
         '''
