@@ -115,7 +115,7 @@ class google(BaseHandler, tornado.auth.GoogleOAuth2Mixin):
             self.user = user
             user_info = self.getUserInfo()
             self.user_oper = user_bz.UserOper(self.pg)
-            user_info = self.user_oper.googleLogin(self.pg, user_info)
+            user_info = self.user_oper.googleLogin(user_info)
             self.set_secure_cookie("user_id", str(user_info.id))
             self.redirect("/")
             # Save the user with e.g. set_secure_cookie
