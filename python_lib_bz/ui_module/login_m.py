@@ -171,7 +171,7 @@ class douban(BaseHandler, tornado_auth_bz.DoubanOAuth2Mixin):
             if user:
 
                 self.user_oper = user_bz.UserOper(self.pg)
-                user_info = self.user_oper.doubanLogin(self.pg, user)
+                user_info = self.user_oper.doubanLogin(user)
                 self.set_secure_cookie("user_id", str(user_info.id))
                 self.redirect("/")
 
