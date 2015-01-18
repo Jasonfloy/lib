@@ -104,6 +104,8 @@ class google(BaseHandler, tornado.auth.GoogleOAuth2Mixin):
     显而易见, google 登录
     '''
 
+    def initialize(self):
+        BaseHandler.initialize(self)
     @tornado.gen.coroutine
     def get(self):
         redirect_uri = self.settings['google_oauth']['redirect_uri']
@@ -142,7 +144,8 @@ class twitter(BaseHandler, tornado.auth.TwitterMixin):
     _OAUTH_AUTHENTICATE_URL = "https://api.twitter.com/oauth/authenticate"
     _OAUTH_NO_CALLBACKS = False
     _TWITTER_BASE_URL = "https://api.twitter.com/1.1"
-
+    def initialize(self):
+        BaseHandler.initialize(self)
     @tornado.gen.coroutine
     def get(self):
         if self.get_argument("oauth_token", None):
@@ -159,7 +162,8 @@ class twitter(BaseHandler, tornado.auth.TwitterMixin):
 
 
 class douban(BaseHandler, tornado_auth_bz.DoubanOAuth2Mixin):
-
+    def initialize(self):
+        BaseHandler.initialize(self)
     @tornado.gen.coroutine
     def get(self):
         if self.get_argument('code', False):
