@@ -77,7 +77,7 @@ class UserOper:
         if user_infos:
             return user_infos[0]
         else:
-            pg.db.insert('user_info',
+            self.pg.db.insert('user_info',
                          user_type='google',
                          out_id=user_info['id'],
                          email=user_info['email'],
