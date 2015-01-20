@@ -121,13 +121,13 @@ class UserOper:
         else:
             self.pg.db.insert('user_info',
                          user_type='douban',
-                         out_id=user_info['id'],
+                         out_id=user_info.get('id'),
                          # email=user_info['email'],
-                         user_name=user_info['name'],
-                         link=user_info['alt'],
-                         picture=user_info['avatar'],
+                         user_name=user_info.get('name'),
+                         link=user_info.get('alt'),
+                         picture=user_info.get('avatar'),
                          # gender=user_info['gender'],
-                         locale=user_info['loc_name']
+                         locale=user_info.get('loc_name')
                          )
             return self.doubanLogin(user_info)
 
