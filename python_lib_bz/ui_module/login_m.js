@@ -51,6 +51,9 @@ login = new Vue({
           return data.error_info = result.error;
         } else if (result.error === void 0) {
           return data.error_info = '未知错误';
+        } else if (result.back_to) {
+          console.log(result.back_to)
+          window.location.href = result.back_to
         } else {
           return location.pathname = '/';
         }
