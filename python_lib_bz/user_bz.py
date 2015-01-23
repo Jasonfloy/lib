@@ -134,7 +134,7 @@ class UserOper:
     @daemonDB
     def resetPassword(self, user_id, old_password, new_password):
         users = self.getUserInfoById(user_id)
-        if users:
+        if not users:
             return "该用户不存在，请重新登录"
         else:
             user = users[0]
@@ -146,8 +146,8 @@ class UserOper:
 
     @daemonDB
     def getUserInfoById(self, user_id):
-        sql = "select * from user_info where id=%s " % user_id
-        return list(self.pg.db.query(sql))
+        users = list(self.pg.db.select("user_info", where="id=%s" % user_id, limit=1))
+        return users
 
 
 if __name__ == '__main__':
