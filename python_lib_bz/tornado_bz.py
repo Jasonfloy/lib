@@ -7,17 +7,45 @@ tornado 相关的公用代码
 import tornado
 import os
 import public_bz
-import tornado_ui_bz
 import functools
 import json
+import user_bz
 
 
 class BaseHandler(tornado.web.RequestHandler):
+
+    '''
+    create by bigzhu at 15/01/29 22:53:07 自定义一些基础的方法
+    modify by bigzhu at 15/01/30 09:59:46 直接返回 user_info
+    modify by bigzhu at 15/01/30 10:32:37 默认返回 user_info 的拆离出去
+    '''
+
     def initialize(self):
         self.pg = self.settings['pg']
 
     def get_current_user(self):
         return self.get_secure_cookie("user_id")
+
+
+class UserInfoHandler(BaseHandler):
+
+    '''
+    create by bigzhu at 15/01/30 10:32:00 默认返回 user_info 的类单独拆离出来, 某些不需要返回 user_info 的可以继续用 base
+    '''
+
+    def get_user_info(self):
+        if self.current_user:
+            user_info = user_bz.UserOper(self.pg).getUserInfoById(self.current_user)
+            if user_info:
+                return user_info[0]
+
+    def get_template_namespace(self):
+        ns = super(UserInfoHandler, self).get_template_namespace()
+        ns.update({
+            'user_info': self.get_user_info(),
+        })
+
+        return ns
 
 
 def getURLMap(the_globals):
