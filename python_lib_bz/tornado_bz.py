@@ -16,6 +16,8 @@ class BaseHandler(tornado.web.RequestHandler):
 
     '''
     create by bigzhu at 15/01/29 22:53:07 自定义一些基础的方法
+        设置 pg
+        设定 current_user 为 cookie user_id
     modify by bigzhu at 15/01/30 09:59:46 直接返回 user_info
     modify by bigzhu at 15/01/30 10:32:37 默认返回 user_info 的拆离出去
     '''

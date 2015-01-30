@@ -7,17 +7,23 @@ import time
 import datetime
 import decimal
 import urllib2
+import utils
 
 import os
 
 
 class ExtEncoder(json.JSONEncoder):
+    '''
+    modify by bigzhu at 15/01/30 11:25:22 增加对 utils.IterBetter 的支持
+    '''
 
     def default(self, o):
         if isinstance(o, datetime.datetime) or isinstance(o, datetime.date):
             return time.mktime(o.timetuple()) * 1000
         elif isinstance(o, decimal.Decimal):
             return float(o)
+        elif isinstance(o, utils.IterBetter):
+            return list(o)
         # Defer to the superclass method
         return json.JSONEncoder(self, o)
 
