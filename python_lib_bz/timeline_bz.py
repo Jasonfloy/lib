@@ -50,7 +50,7 @@ class TimeLine():
 
     def getTimeLineByTargetID(self, target_type, target_id):
         sql = '''
-        select t.*,u.user_name from timeline t, user_info u
+        select t.*, u.user_name, u.picture from timeline t, user_info u
             where t.user_id = u.id
             and t.target_type = '%s'
             and t.target_id = %s
@@ -66,7 +66,7 @@ class TimeLine():
             day = timeline.created_date.strftime('%Y年%m月%d日')
             this_day_timeline = group_time_line.get(day)
             if this_day_timeline:
-                this_day_timeline.append(timeline)
+                this_day_timeline.insert(0, timeline)
             else:
                 group_time_line[day] = [timeline]
         return group_time_line
