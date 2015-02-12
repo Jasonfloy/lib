@@ -57,19 +57,34 @@ class TimeLine():
             order by t.created_date desc
         ''' % (target_type, target_id)
         return self.groupByCreatedDateDay(self.pg.db.query(sql))
+
+    def getTimeLineByToday(self, target_type):
+        sql = '''
+        select t.*, u.user_name, u.picture from timeline t, user_info u
+            where t.user_id = u.id
+            and t.target_type = '%s'
+            and date_trunc('day', t.created_date) = date_trunc('day', now())
+            order by t.created_date desc
+        ''' % (target_type)
+        return self.groupByCreatedDateDay(self.pg.db.query(sql))
+
     def groupByCreatedDateDay(self, timelines):
         '''
         create by bigzhu at 15/02/03 13:44:24 按照天的精度,归并timeline
+        modify by bigzhu at 15/02/06 13:29:58 修改为返回 list 而不是一个 dic, 以便于对时间按天的排序
         '''
+        day_time_lines = []
         group_time_line = {}
         for timeline in timelines:
             day = timeline.created_date.strftime('%Y年%m月%d日')
             this_day_timeline = group_time_line.get(day)
             if this_day_timeline:
-                this_day_timeline.insert(0, timeline)
+                #this_day_timeline.insert(0, timeline)
+                this_day_timeline.append(timeline)
             else:
                 group_time_line[day] = [timeline]
-        return group_time_line
+                day_time_lines.append(storage(day = day, timelines = group_time_line[day]))
+        return day_time_lines
 
 if __name__ == '__main__':
     pass
