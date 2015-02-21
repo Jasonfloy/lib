@@ -53,7 +53,8 @@ class BaseHandler(RequestHandler):
         for module in getattr(self, "_active_modules", {}).values():
             embed_part = module.embedded_javascript()
             if embed_part:
-                js_embed.append(utf8(embed_part))
+                #js_embed.append(utf8(embed_part))
+                js_embed.insert(0, utf8(embed_part))
             file_part = module.javascript_files()
             if file_part:
                 if isinstance(file_part, (unicode_type, bytes_type)):

@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import tornado.web
+from tornado.web import UIModule
 action = ''
 
 
-class MyUIModule(tornado.web.UIModule):
+class MyUIModule(UIModule):
     action_url = ''
 
     def __init__(self, handler):
-        tornado.web.UIModule.__init__(self, handler)
+        UIModule.__init__(self, handler)
 
         self.class_name = self.__class__.__name__
         self.css_name = self.class_name + '.css'
@@ -23,3 +23,17 @@ class MyUIModule(tornado.web.UIModule):
 
     def render(self):
         return self.render_string(self.html_name)
+
+class JsUIModule(UIModule):
+
+    def __init__(self, handler):
+        UIModule.__init__(self, handler)
+
+        self.class_name = self.__class__.__name__
+        self.js_name = self.class_name + '.js'
+
+    def embedded_javascript(self):
+        return self.render_string(self.js_name)
+
+    def render(self):
+        pass
