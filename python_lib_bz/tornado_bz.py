@@ -53,7 +53,7 @@ class BaseHandler(RequestHandler):
         for module in getattr(self, "_active_modules", {}).values():
             embed_part = module.embedded_javascript()
             if embed_part:
-                #js_embed.append(utf8(embed_part))
+                # js_embed.append(utf8(embed_part))
                 js_embed.insert(0, utf8(embed_part))
             file_part = module.javascript_files()
             if file_part:
@@ -206,6 +206,8 @@ def getAllUIModules():
             module = importer.find_module(modname).load_module(modname)
             ui_modules.append(module)
     return ui_modules
+
+
 def getSettings():
     '''
         返回 tornado 的 settings ,有一些默认值,省得每次都设置:

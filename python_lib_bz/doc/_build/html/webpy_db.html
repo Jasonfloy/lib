@@ -1,0 +1,447 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>webpy_db module &mdash; bz_python_lib 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="bz_python_lib 1.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">bz_python_lib 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-webpy_db">
+<span id="webpy-db-module"></span><h1>webpy_db module<a class="headerlink" href="#module-webpy_db" title="Permalink to this headline">¶</a></h1>
+<p>Database API
+(part of web.py)</p>
+<dl class="exception">
+<dt id="webpy_db.UnknownParamstyle">
+<em class="property">exception </em><tt class="descclassname">webpy_db.</tt><tt class="descname">UnknownParamstyle</tt><a class="reference internal" href="_modules/webpy_db.html#UnknownParamstyle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.UnknownParamstyle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>raised for unsupported db paramstyles</p>
+<p>(currently supported: qmark, numeric, format, pyformat)</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="webpy_db.UnknownDB">
+<em class="property">exception </em><tt class="descclassname">webpy_db.</tt><tt class="descname">UnknownDB</tt><a class="reference internal" href="_modules/webpy_db.html#UnknownDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.UnknownDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>raised for unsupported dbms</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="webpy_db.TransactionError">
+<em class="property">exception </em><tt class="descclassname">webpy_db.</tt><tt class="descname">TransactionError</tt><a class="reference internal" href="_modules/webpy_db.html#TransactionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.TransactionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="webpy_db.sqllist">
+<tt class="descclassname">webpy_db.</tt><tt class="descname">sqllist</tt><big>(</big><em>lst</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#sqllist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.sqllist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the arguments for use in something like a WHERE clause.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sqllist</span><span class="p">([</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">])</span>
+<span class="go">&#39;a, b&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sqllist</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">)</span>
+<span class="go">&#39;a&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sqllist</span><span class="p">(</span><span class="s">u&#39;abc&#39;</span><span class="p">)</span>
+<span class="go">u&#39;abc&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="webpy_db.sqlors">
+<tt class="descclassname">webpy_db.</tt><tt class="descname">sqlors</tt><big>(</big><em>left</em>, <em>lst</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#sqlors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.sqlors" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>left is a SQL clause like `tablename.arg = ` 
+and `lst</cite> is a list of values. Returns a reparam-style
+pair featuring the SQL that ORs together the clause
+for each item in the lst.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sqlors</span><span class="p">(</span><span class="s">&#39;foo = &#39;</span><span class="p">,</span> <span class="p">[])</span>
+<span class="go">&lt;sql: &#39;1=2&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sqlors</span><span class="p">(</span><span class="s">&#39;foo = &#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">&lt;sql: &#39;foo = 1&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sqlors</span><span class="p">(</span><span class="s">&#39;foo = &#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">&lt;sql: &#39;foo = 1&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sqlors</span><span class="p">(</span><span class="s">&#39;foo = &#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="go">&lt;sql: &#39;(foo = 1 OR foo = 2 OR foo = 3 OR 1=2)&#39;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="webpy_db.reparam">
+<tt class="descclassname">webpy_db.</tt><tt class="descname">reparam</tt><big>(</big><em>string_</em>, <em>dictionary</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#reparam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.reparam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a string and a dictionary and interpolates the string
+using values from the dictionary. Returns an <cite>SQLQuery</cite> for the result.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">reparam</span><span class="p">(</span><span class="s">&quot;s = $s&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+<span class="go">&lt;sql: &quot;s = &#39;t&#39;&quot;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reparam</span><span class="p">(</span><span class="s">&quot;s IN $s&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]))</span>
+<span class="go">&lt;sql: &#39;s IN (1, 2)&#39;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="webpy_db.sqlquote">
+<tt class="descclassname">webpy_db.</tt><tt class="descname">sqlquote</tt><big>(</big><em>a</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#sqlquote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.sqlquote" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensures <cite>a</cite> is quoted properly for use in a SQL query.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="s">&#39;WHERE x = &#39;</span> <span class="o">+</span> <span class="n">sqlquote</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39; AND y = &#39;</span> <span class="o">+</span> <span class="n">sqlquote</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">&lt;sql: &quot;WHERE x = &#39;t&#39; AND y = 3&quot;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s">&#39;WHERE x = &#39;</span> <span class="o">+</span> <span class="n">sqlquote</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39; AND y IN &#39;</span> <span class="o">+</span> <span class="n">sqlquote</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="go">&lt;sql: &quot;WHERE x = &#39;t&#39; AND y IN (2, 3)&quot;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="webpy_db.SQLQuery">
+<em class="property">class </em><tt class="descclassname">webpy_db.</tt><tt class="descname">SQLQuery</tt><big>(</big><em>items=None</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#SQLQuery"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.SQLQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>You can pass this sort of thing as a clause in any db function.
+Otherwise, you can pass a dictionary to the keyword argument <cite>vars</cite>
+and the function will call reparam for you.</p>
+<p>Internally, consists of <cite>items</cite>, which is a list of strings and
+SQLParams, which get concatenated to produce the actual query.</p>
+<dl class="method">
+<dt id="webpy_db.SQLQuery.append">
+<tt class="descname">append</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#SQLQuery.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.SQLQuery.append" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="webpy_db.SQLQuery.items">
+<tt class="descname">items</tt><a class="headerlink" href="#webpy_db.SQLQuery.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="webpy_db.SQLQuery.join">
+<em class="property">static </em><tt class="descname">join</tt><big>(</big><em>items</em>, <em>sep=' '</em>, <em>prefix=None</em>, <em>suffix=None</em>, <em>target=None</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#SQLQuery.join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.SQLQuery.join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Joins multiple queries.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">SQLQuery</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">],</span> <span class="s">&#39;, &#39;</span><span class="p">)</span>
+<span class="go">&lt;sql: &#39;a, b&#39;&gt;</span>
+</pre></div>
+</div>
+<p>Optinally, prefix and suffix arguments can be provided.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">SQLQuery</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">],</span> <span class="s">&#39;, &#39;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s">&#39;(&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s">&#39;)&#39;</span><span class="p">)</span>
+<span class="go">&lt;sql: &#39;(a, b)&#39;&gt;</span>
+</pre></div>
+</div>
+<p>If target argument is provided, the items are appended to target instead of creating a new SQLQuery.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="webpy_db.SQLQuery.query">
+<tt class="descname">query</tt><big>(</big><em>paramstyle=None</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#SQLQuery.query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.SQLQuery.query" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Returns the query part of the sql query.</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">SQLQuery</span><span class="p">([</span><span class="s">&quot;SELECT * FROM test WHERE name=&quot;</span><span class="p">,</span> <span class="n">SQLParam</span><span class="p">(</span><span class="s">&#39;joe&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="go">&#39;SELECT * FROM test WHERE name=%s&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">paramstyle</span><span class="o">=</span><span class="s">&#39;qmark&#39;</span><span class="p">)</span>
+<span class="go">&#39;SELECT * FROM test WHERE name=?&#39;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="webpy_db.SQLQuery.values">
+<tt class="descname">values</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/webpy_db.html#SQLQuery.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.SQLQuery.values" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Returns the values of the parameters used in the sql query.</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">SQLQuery</span><span class="p">([</span><span class="s">&quot;SELECT * FROM test WHERE name=&quot;</span><span class="p">,</span> <span class="n">SQLParam</span><span class="p">(</span><span class="s">&#39;joe&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+<span class="go">[&#39;joe&#39;]</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="webpy_db.SQLParam">
+<em class="property">class </em><tt class="descclassname">webpy_db.</tt><tt class="descname">SQLParam</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#SQLParam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.SQLParam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Parameter in SQLQuery.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">SQLQuery</span><span class="p">([</span><span class="s">&quot;SELECT * FROM test WHERE name=&quot;</span><span class="p">,</span> <span class="n">SQLParam</span><span class="p">(</span><span class="s">&quot;joe&quot;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span>
+<span class="go">&lt;sql: &quot;SELECT * FROM test WHERE name=&#39;joe&#39;&quot;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="go">&#39;SELECT * FROM test WHERE name=%s&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+<span class="go">[&#39;joe&#39;]</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="webpy_db.SQLParam.get_marker">
+<tt class="descname">get_marker</tt><big>(</big><em>paramstyle='pyformat'</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#SQLParam.get_marker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.SQLParam.get_marker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="webpy_db.SQLParam.sqlquery">
+<tt class="descname">sqlquery</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/webpy_db.html#SQLParam.sqlquery"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.SQLParam.sqlquery" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="webpy_db.SQLParam.value">
+<tt class="descname">value</tt><a class="headerlink" href="#webpy_db.SQLParam.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webpy_db.sqlparam">
+<tt class="descclassname">webpy_db.</tt><tt class="descname">sqlparam</tt><a class="headerlink" href="#webpy_db.sqlparam" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#webpy_db.SQLParam" title="webpy_db.SQLParam"><tt class="xref py py-class docutils literal"><span class="pre">SQLParam</span></tt></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="webpy_db.SQLLiteral">
+<em class="property">class </em><tt class="descclassname">webpy_db.</tt><tt class="descname">SQLLiteral</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#SQLLiteral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.SQLLiteral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Protects a string from <cite>sqlquote</cite>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sqlquote</span><span class="p">(</span><span class="s">&#39;NOW()&#39;</span><span class="p">)</span>
+<span class="go">&lt;sql: &quot;&#39;NOW()&#39;&quot;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sqlquote</span><span class="p">(</span><span class="n">SQLLiteral</span><span class="p">(</span><span class="s">&#39;NOW()&#39;</span><span class="p">))</span>
+<span class="go">&lt;sql: &#39;NOW()&#39;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webpy_db.sqlliteral">
+<tt class="descclassname">webpy_db.</tt><tt class="descname">sqlliteral</tt><a class="headerlink" href="#webpy_db.sqlliteral" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#webpy_db.SQLLiteral" title="webpy_db.SQLLiteral"><tt class="xref py py-class docutils literal"><span class="pre">SQLLiteral</span></tt></a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="webpy_db.database">
+<tt class="descclassname">webpy_db.</tt><tt class="descname">database</tt><big>(</big><em>dburl=None</em>, <em>**params</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates appropriate database using params.</p>
+<p>Pooling will be enabled if DBUtils module is available. 
+Pooling can be disabled by passing pooling=False in params.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="webpy_db.DB">
+<em class="property">class </em><tt class="descclassname">webpy_db.</tt><tt class="descname">DB</tt><big>(</big><em>db_module</em>, <em>keywords</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#DB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.DB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Database</p>
+<dl class="attribute">
+<dt id="webpy_db.DB.ctx">
+<tt class="descname">ctx</tt><a class="headerlink" href="#webpy_db.DB.ctx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="webpy_db.DB.delete">
+<tt class="descname">delete</tt><big>(</big><em>table</em>, <em>where</em>, <em>using=None</em>, <em>vars=None</em>, <em>_test=False</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#DB.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.DB.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes from <cite>table</cite> with clauses <cite>where</cite> and <cite>using</cite>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">DB</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;Joe&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s">&#39;foo&#39;</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="s">&#39;name = $name&#39;</span><span class="p">,</span> <span class="nb">vars</span><span class="o">=</span><span class="nb">locals</span><span class="p">(),</span> <span class="n">_test</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">&lt;sql: &quot;DELETE FROM foo WHERE name = &#39;Joe&#39;&quot;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="webpy_db.DB.gen_clause">
+<tt class="descname">gen_clause</tt><big>(</big><em>sql</em>, <em>val</em>, <em>vars</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#DB.gen_clause"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.DB.gen_clause" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="webpy_db.DB.insert">
+<tt class="descname">insert</tt><big>(</big><em>tablename</em>, <em>seqname=None</em>, <em>_test=False</em>, <em>**values</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#DB.insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.DB.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts <cite>values</cite> into <cite>tablename</cite>. Returns current sequence ID.
+Set <cite>seqname</cite> to the ID if it&#8217;s not the default, or to <cite>False</cite>
+if there isn&#8217;t one.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">DB</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;foo&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;bob&#39;</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">created</span><span class="o">=</span><span class="n">SQLLiteral</span><span class="p">(</span><span class="s">&#39;NOW()&#39;</span><span class="p">),</span> <span class="n">_test</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span>
+<span class="go">&lt;sql: &quot;INSERT INTO foo (age, name, created) VALUES (2, &#39;bob&#39;, NOW())&quot;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="go">&#39;INSERT INTO foo (age, name, created) VALUES (%s, %s, NOW())&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+<span class="go">[2, &#39;bob&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="webpy_db.DB.multiple_insert">
+<tt class="descname">multiple_insert</tt><big>(</big><em>tablename</em>, <em>values</em>, <em>seqname=None</em>, <em>_test=False</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#DB.multiple_insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.DB.multiple_insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts multiple rows into <cite>tablename</cite>. The <cite>values</cite> must be a list of dictioanries, 
+one for each row to be inserted, each with the same set of keys.
+Returns the list of ids of the inserted rows.        
+Set <cite>seqname</cite> to the ID if it&#8217;s not the default, or to <cite>False</cite>
+if there isn&#8217;t one.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">DB</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">supports_multiple_insert</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">values</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;foo&quot;</span><span class="p">,</span> <span class="s">&quot;email&quot;</span><span class="p">:</span> <span class="s">&quot;foo@example.com&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;bar&quot;</span><span class="p">,</span> <span class="s">&quot;email&quot;</span><span class="p">:</span> <span class="s">&quot;bar@example.com&quot;</span><span class="p">}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">multiple_insert</span><span class="p">(</span><span class="s">&#39;person&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">_test</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">&lt;sql: &quot;INSERT INTO person (name, email) VALUES (&#39;foo&#39;, &#39;foo@example.com&#39;), (&#39;bar&#39;, &#39;bar@example.com&#39;)&quot;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="webpy_db.DB.query">
+<tt class="descname">query</tt><big>(</big><em>sql_query</em>, <em>vars=None</em>, <em>processed=False</em>, <em>_test=False</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#DB.query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.DB.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute SQL query <cite>sql_query</cite> using dictionary <cite>vars</cite> to interpolate it.
+If <cite>processed=True</cite>, <cite>vars</cite> is a <cite>reparam</cite>-style list to use 
+instead of interpolating.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">DB</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;SELECT * FROM foo&quot;</span><span class="p">,</span> <span class="n">_test</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">&lt;sql: &#39;SELECT * FROM foo&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;SELECT * FROM foo WHERE x = $x&quot;</span><span class="p">,</span> <span class="nb">vars</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&#39;f&#39;</span><span class="p">),</span> <span class="n">_test</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">&lt;sql: &quot;SELECT * FROM foo WHERE x = &#39;f&#39;&quot;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;SELECT * FROM foo WHERE x = &quot;</span> <span class="o">+</span> <span class="n">sqlquote</span><span class="p">(</span><span class="s">&#39;f&#39;</span><span class="p">),</span> <span class="n">_test</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">&lt;sql: &quot;SELECT * FROM foo WHERE x = &#39;f&#39;&quot;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="webpy_db.DB.select">
+<tt class="descname">select</tt><big>(</big><em>tables</em>, <em>vars=None</em>, <em>what='*'</em>, <em>where=None</em>, <em>order=None</em>, <em>group=None</em>, <em>limit=None</em>, <em>offset=None</em>, <em>_test=False</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#DB.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.DB.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects <cite>what</cite> from <cite>tables</cite> with clauses <cite>where</cite>, <cite>order</cite>, 
+<cite>group</cite>, <cite>limit</cite>, and <cite>offset</cite>. Uses vars to interpolate. 
+Otherwise, each clause can be a SQLQuery.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">DB</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s">&#39;foo&#39;</span><span class="p">,</span> <span class="n">_test</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">&lt;sql: &#39;SELECT * FROM foo&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s">&#39;foo&#39;</span><span class="p">,</span> <span class="s">&#39;bar&#39;</span><span class="p">],</span> <span class="n">where</span><span class="o">=</span><span class="s">&quot;foo.bar_id = bar.id&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">_test</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">&lt;sql: &#39;SELECT * FROM foo, bar WHERE foo.bar_id = bar.id LIMIT 5&#39;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="webpy_db.DB.sql_clauses">
+<tt class="descname">sql_clauses</tt><big>(</big><em>what</em>, <em>tables</em>, <em>where</em>, <em>group</em>, <em>order</em>, <em>limit</em>, <em>offset</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#DB.sql_clauses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.DB.sql_clauses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="webpy_db.DB.transaction">
+<tt class="descname">transaction</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/webpy_db.html#DB.transaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.DB.transaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start a transaction.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="webpy_db.DB.update">
+<tt class="descname">update</tt><big>(</big><em>tables</em>, <em>where</em>, <em>vars=None</em>, <em>_test=False</em>, <em>**values</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#DB.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.DB.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update <cite>tables</cite> with clause <cite>where</cite> (interpolated using <cite>vars</cite>)
+and setting <cite>values</cite>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">DB</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;Joseph&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s">&#39;foo&#39;</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="s">&#39;name = $name&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;bob&#39;</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">created</span><span class="o">=</span><span class="n">SQLLiteral</span><span class="p">(</span><span class="s">&#39;NOW()&#39;</span><span class="p">),</span> <span class="nb">vars</span><span class="o">=</span><span class="nb">locals</span><span class="p">(),</span> <span class="n">_test</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span>
+<span class="go">&lt;sql: &quot;UPDATE foo SET age = 2, name = &#39;bob&#39;, created = NOW() WHERE name = &#39;Joseph&#39;&quot;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="go">&#39;UPDATE foo SET age = %s, name = %s, created = NOW() WHERE name = %s&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+<span class="go">[2, &#39;bob&#39;, &#39;Joseph&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="webpy_db.DB.where">
+<tt class="descname">where</tt><big>(</big><em>table</em>, <em>what='*'</em>, <em>order=None</em>, <em>group=None</em>, <em>limit=None</em>, <em>offset=None</em>, <em>_test=False</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/webpy_db.html#DB.where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webpy_db.DB.where" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects from <cite>table</cite> where keys are equal to values in <cite>kwargs</cite>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">DB</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s">&#39;foo&#39;</span><span class="p">,</span> <span class="n">bar_id</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">_test</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">&lt;sql: &#39;SELECT * FROM foo WHERE bar_id = 3&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s">&#39;foo&#39;</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">crust</span><span class="o">=</span><span class="s">&#39;dewey&#39;</span><span class="p">,</span> <span class="n">_test</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">&lt;sql: &quot;SELECT * FROM foo WHERE source = 2 AND crust = &#39;dewey&#39;&quot;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s">&#39;foo&#39;</span><span class="p">,</span> <span class="n">_test</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">&lt;sql: &#39;SELECT * FROM foo&#39;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/webpy_db.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">bz_python_lib 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, bigzhu.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

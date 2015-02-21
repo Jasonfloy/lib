@@ -50,6 +50,7 @@
 <dt id="public_bz.ExtEncoder">
 <em class="property">class </em><tt class="descclassname">public_bz.</tt><tt class="descname">ExtEncoder</tt><big>(</big><em>skipkeys=False</em>, <em>ensure_ascii=True</em>, <em>check_circular=True</em>, <em>allow_nan=True</em>, <em>sort_keys=False</em>, <em>indent=None</em>, <em>separators=None</em>, <em>encoding='utf-8'</em>, <em>default=None</em><big>)</big><a class="reference internal" href="_modules/public_bz.html#ExtEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#public_bz.ExtEncoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">json.encoder.JSONEncoder</span></tt></p>
+<p>modify by bigzhu at 15/01/30 11:25:22 增加对 utils.IterBetter 的支持</p>
 <dl class="method">
 <dt id="public_bz.ExtEncoder.default">
 <tt class="descname">default</tt><big>(</big><em>o</em><big>)</big><a class="reference internal" href="_modules/public_bz.html#ExtEncoder.default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#public_bz.ExtEncoder.default" title="Permalink to this definition">¶</a></dt>
@@ -89,6 +90,12 @@
 :title_list title 指定切片的对应的 title, 对并表的列名
 :start_with 从哪一行开始,一般会自己带着一列 title, 那么要从1行开始
 :end_with 一些末尾会有多余的空行,需要抛弃</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="public_bz.getCountryCodeByIP">
+<tt class="descclassname">public_bz.</tt><tt class="descname">getCountryCodeByIP</tt><big>(</big><em>ip</em><big>)</big><a class="reference internal" href="_modules/public_bz.html#getCountryCodeByIP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#public_bz.getCountryCodeByIP" title="Permalink to this definition">¶</a></dt>
+<dd><p>根据 ip 地址取到所属的国家编码</p>
 </dd></dl>
 
 <dl class="function">

@@ -1,0 +1,338 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>tornado_template module &mdash; bz_python_lib 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="bz_python_lib 1.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">bz_python_lib 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-tornado_template">
+<span id="tornado-template-module"></span><h1>tornado_template module<a class="headerlink" href="#module-tornado_template" title="Permalink to this headline">¶</a></h1>
+<p>A simple template system that compiles templates to Python code.</p>
+<p>Basic usage looks like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">t</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="s">&quot;&lt;html&gt;{{ myvalue }}&lt;/html&gt;&quot;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">t</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">myvalue</span><span class="o">=</span><span class="s">&quot;XXX&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><cite>Loader</cite> is a class that loads templates from a root directory and caches
+the compiled templates:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">loader</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">Loader</span><span class="p">(</span><span class="s">&quot;/home/btaylor&quot;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">loader</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;test.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">myvalue</span><span class="o">=</span><span class="s">&quot;XXX&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We compile all templates to raw Python. Error-reporting is currently... uh,
+interesting. Syntax for the templates:</p>
+<div class="highlight-python"><div class="highlight"><pre>### base.html
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;{% block title %}Default title{% end %}&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;ul&gt;
+      {% for student in students %}
+        {% block student %}
+          &lt;li&gt;{{ escape(student.name) }}&lt;/li&gt;
+        {% end %}
+      {% end %}
+    &lt;/ul&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+
+### bold.html
+{% extends &quot;base.html&quot; %}
+
+{% block title %}A bolder title{% end %}
+
+{% block student %}
+  &lt;li&gt;&lt;span style=&quot;bold&quot;&gt;{{ escape(student.name) }}&lt;/span&gt;&lt;/li&gt;
+{% end %}
+</pre></div>
+</div>
+<p>Unlike most other template systems, we do not put any restrictions on the
+expressions you can include in your statements. <tt class="docutils literal"><span class="pre">if</span></tt> and <tt class="docutils literal"><span class="pre">for</span></tt> blocks get
+translated exactly into Python, so you can do complex expressions like:</p>
+<div class="highlight-python"><div class="highlight"><pre>{% for student in [p for p in people if p.student and p.age &gt; 23] %}
+  &lt;li&gt;{{ escape(student.name) }}&lt;/li&gt;
+{% end %}
+</pre></div>
+</div>
+<p>Translating directly to Python means you can apply functions to expressions
+easily, like the <tt class="docutils literal"><span class="pre">escape()</span></tt> function in the examples above. You can pass
+functions in to your template just like any other variable
+(In a <cite>.RequestHandler</cite>, override <cite>.RequestHandler.get_template_namespace</cite>):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">### Python code</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+   <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+<span class="n">template</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">add</span><span class="o">=</span><span class="n">add</span><span class="p">)</span>
+
+<span class="c">### The template</span>
+<span class="p">{{</span> <span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="p">}}</span>
+</pre></div>
+</div>
+<p>We provide the functions <cite>escape() &lt;.xhtml_escape&gt;</cite>, <cite>.url_escape()</cite>,
+<cite>.json_encode()</cite>, and <cite>.squeeze()</cite> to all templates by default.</p>
+<p>Typical applications do not create <cite>Template</cite> or <cite>Loader</cite> instances by
+hand, but instead use the <cite>~.RequestHandler.render</cite> and
+<cite>~.RequestHandler.render_string</cite> methods of
+<cite>tornado.web.RequestHandler</cite>, which load templates automatically based
+on the <tt class="docutils literal"><span class="pre">template_path</span></tt> <cite>.Application</cite> setting.</p>
+<p>Variable names beginning with <tt class="docutils literal"><span class="pre">_tt_</span></tt> are reserved by the template
+system and should not be used by application code.</p>
+<div class="section" id="syntax-reference">
+<h2>Syntax Reference<a class="headerlink" href="#syntax-reference" title="Permalink to this headline">¶</a></h2>
+<p>Template expressions are surrounded by double curly braces: <tt class="docutils literal"><span class="pre">{{</span> <span class="pre">...</span> <span class="pre">}}</span></tt>.
+The contents may be any python expression, which will be escaped according
+to the current autoescape setting and inserted into the output.  Other
+template directives use <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">%}</span></tt>.  These tags may be escaped as <tt class="docutils literal"><span class="pre">{{!</span></tt>
+and <tt class="docutils literal"><span class="pre">{%!</span></tt> if you need to include a literal <tt class="docutils literal"><span class="pre">{{</span></tt> or <tt class="docutils literal"><span class="pre">{%</span></tt> in the output.</p>
+<p>To comment out a section so that it is omitted from the output, surround it
+with <tt class="docutils literal"><span class="pre">{#</span> <span class="pre">...</span> <span class="pre">#}</span></tt>.</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">{%</span> <span class="pre">apply</span> <span class="pre">*function*</span> <span class="pre">%}...{%</span> <span class="pre">end</span> <span class="pre">%}</span></tt></dt>
+<dd><p class="first">Applies a function to the output of all template code between <tt class="docutils literal"><span class="pre">apply</span></tt>
+and <tt class="docutils literal"><span class="pre">end</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre>{% apply linkify %}{{name}} said: {{message}}{% end %}
+</pre></div>
+</div>
+<p class="last">Note that as an implementation detail apply blocks are implemented
+as nested functions and thus may interact strangely with variables
+set via <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">set</span> <span class="pre">%}</span></tt>, or the use of <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">break</span> <span class="pre">%}</span></tt> or <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">continue</span> <span class="pre">%}</span></tt>
+within loops.</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">{%</span> <span class="pre">autoescape</span> <span class="pre">*function*</span> <span class="pre">%}</span></tt></dt>
+<dd><p class="first">Sets the autoescape mode for the current file.  This does not affect
+other files, even those referenced by <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">include</span> <span class="pre">%}</span></tt>.  Note that
+autoescaping can also be configured globally, at the <cite>.Application</cite>
+or <cite>Loader</cite>.:</p>
+<div class="last highlight-python"><div class="highlight"><pre>{% autoescape xhtml_escape %}
+{% autoescape None %}
+</pre></div>
+</div>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">{%</span> <span class="pre">block</span> <span class="pre">*name*</span> <span class="pre">%}...{%</span> <span class="pre">end</span> <span class="pre">%}</span></tt></dt>
+<dd><p class="first">Indicates a named, replaceable block for use with <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">extends</span> <span class="pre">%}</span></tt>.
+Blocks in the parent template will be replaced with the contents of
+the same-named block in a child template.:</p>
+<div class="last highlight-python"><div class="highlight"><pre>&lt;!-- base.html --&gt;
+&lt;title&gt;{% block title %}Default title{% end %}&lt;/title&gt;
+
+&lt;!-- mypage.html --&gt;
+{% extends &quot;base.html&quot; %}
+{% block title %}My page title{% end %}
+</pre></div>
+</div>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">{%</span> <span class="pre">comment</span> <span class="pre">...</span> <span class="pre">%}</span></tt></dt>
+<dd>A comment which will be removed from the template output.  Note that
+there is no <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">end</span> <span class="pre">%}</span></tt> tag; the comment goes from the word <tt class="docutils literal"><span class="pre">comment</span></tt>
+to the closing <tt class="docutils literal"><span class="pre">%}</span></tt> tag.</dd>
+<dt><tt class="docutils literal"><span class="pre">{%</span> <span class="pre">extends</span> <span class="pre">*filename*</span> <span class="pre">%}</span></tt></dt>
+<dd>Inherit from another template.  Templates that use <tt class="docutils literal"><span class="pre">extends</span></tt> should
+contain one or more <tt class="docutils literal"><span class="pre">block</span></tt> tags to replace content from the parent
+template.  Anything in the child template not contained in a <tt class="docutils literal"><span class="pre">block</span></tt>
+tag will be ignored.  For an example, see the <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">block</span> <span class="pre">%}</span></tt> tag.</dd>
+<dt><tt class="docutils literal"><span class="pre">{%</span> <span class="pre">for</span> <span class="pre">*var*</span> <span class="pre">in</span> <span class="pre">*expr*</span> <span class="pre">%}...{%</span> <span class="pre">end</span> <span class="pre">%}</span></tt></dt>
+<dd>Same as the python <tt class="docutils literal"><span class="pre">for</span></tt> statement.  <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">break</span> <span class="pre">%}</span></tt> and
+<tt class="docutils literal"><span class="pre">{%</span> <span class="pre">continue</span> <span class="pre">%}</span></tt> may be used inside the loop.</dd>
+<dt><tt class="docutils literal"><span class="pre">{%</span> <span class="pre">from</span> <span class="pre">*x*</span> <span class="pre">import</span> <span class="pre">*y*</span> <span class="pre">%}</span></tt></dt>
+<dd>Same as the python <tt class="docutils literal"><span class="pre">import</span></tt> statement.</dd>
+<dt><tt class="docutils literal"><span class="pre">{%</span> <span class="pre">if</span> <span class="pre">*condition*</span> <span class="pre">%}...{%</span> <span class="pre">elif</span> <span class="pre">*condition*</span> <span class="pre">%}...{%</span> <span class="pre">else</span> <span class="pre">%}...{%</span> <span class="pre">end</span> <span class="pre">%}</span></tt></dt>
+<dd>Conditional statement - outputs the first section whose condition is
+true.  (The <tt class="docutils literal"><span class="pre">elif</span></tt> and <tt class="docutils literal"><span class="pre">else</span></tt> sections are optional)</dd>
+<dt><tt class="docutils literal"><span class="pre">{%</span> <span class="pre">import</span> <span class="pre">*module*</span> <span class="pre">%}</span></tt></dt>
+<dd>Same as the python <tt class="docutils literal"><span class="pre">import</span></tt> statement.</dd>
+<dt><tt class="docutils literal"><span class="pre">{%</span> <span class="pre">include</span> <span class="pre">*filename*</span> <span class="pre">%}</span></tt></dt>
+<dd>Includes another template file.  The included file can see all the local
+variables as if it were copied directly to the point of the <tt class="docutils literal"><span class="pre">include</span></tt>
+directive (the <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">autoescape</span> <span class="pre">%}</span></tt> directive is an exception).
+Alternately, <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">module</span> <span class="pre">Template(filename,</span> <span class="pre">**kwargs)</span> <span class="pre">%}</span></tt> may be used
+to include another template with an isolated namespace.</dd>
+<dt><tt class="docutils literal"><span class="pre">{%</span> <span class="pre">module</span> <span class="pre">*expr*</span> <span class="pre">%}</span></tt></dt>
+<dd><p class="first">Renders a <cite>~tornado.web.UIModule</cite>.  The output of the <tt class="docutils literal"><span class="pre">UIModule</span></tt> is
+not escaped:</p>
+<div class="highlight-python"><div class="highlight"><pre>{% module Template(&quot;foo.html&quot;, arg=42) %}
+</pre></div>
+</div>
+<p class="last"><tt class="docutils literal"><span class="pre">UIModules</span></tt> are a feature of the <cite>tornado.web.RequestHandler</cite>
+class (and specifically its <tt class="docutils literal"><span class="pre">render</span></tt> method) and will not work
+when the template system is used on its own in other contexts.</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">{%</span> <span class="pre">raw</span> <span class="pre">*expr*</span> <span class="pre">%}</span></tt></dt>
+<dd>Outputs the result of the given expression without autoescaping.</dd>
+<dt><tt class="docutils literal"><span class="pre">{%</span> <span class="pre">set</span> <span class="pre">*x*</span> <span class="pre">=</span> <span class="pre">*y*</span> <span class="pre">%}</span></tt></dt>
+<dd>Sets a local variable.</dd>
+<dt><tt class="docutils literal"><span class="pre">{%</span> <span class="pre">try</span> <span class="pre">%}...{%</span> <span class="pre">except</span> <span class="pre">%}...{%</span> <span class="pre">else</span> <span class="pre">%}...{%</span> <span class="pre">finally</span> <span class="pre">%}...{%</span> <span class="pre">end</span> <span class="pre">%}</span></tt></dt>
+<dd>Same as the python <tt class="docutils literal"><span class="pre">try</span></tt> statement.</dd>
+<dt><tt class="docutils literal"><span class="pre">{%</span> <span class="pre">while</span> <span class="pre">*condition*</span> <span class="pre">%}...</span> <span class="pre">{%</span> <span class="pre">end</span> <span class="pre">%}</span></tt></dt>
+<dd>Same as the python <tt class="docutils literal"><span class="pre">while</span></tt> statement.  <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">break</span> <span class="pre">%}</span></tt> and
+<tt class="docutils literal"><span class="pre">{%</span> <span class="pre">continue</span> <span class="pre">%}</span></tt> may be used inside the loop.</dd>
+</dl>
+<dl class="class">
+<dt id="tornado_template.BaseLoader">
+<em class="property">class </em><tt class="descclassname">tornado_template.</tt><tt class="descname">BaseLoader</tt><big>(</big><em>autoescape='xhtml_escape'</em>, <em>namespace=None</em><big>)</big><a class="reference internal" href="_modules/tornado_template.html#BaseLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_template.BaseLoader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Base class for template loaders.</p>
+<p>You must use a template loader to use template constructs like
+<tt class="docutils literal"><span class="pre">{%</span> <span class="pre">extends</span> <span class="pre">%}</span></tt> and <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">include</span> <span class="pre">%}</span></tt>. The loader caches all
+templates after they are loaded the first time.</p>
+<dl class="method">
+<dt id="tornado_template.BaseLoader.load">
+<tt class="descname">load</tt><big>(</big><em>name</em>, <em>parent_path=None</em><big>)</big><a class="reference internal" href="_modules/tornado_template.html#BaseLoader.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_template.BaseLoader.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a template.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tornado_template.BaseLoader.reset">
+<tt class="descname">reset</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/tornado_template.html#BaseLoader.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_template.BaseLoader.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets the cache of compiled templates.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tornado_template.BaseLoader.resolve_path">
+<tt class="descname">resolve_path</tt><big>(</big><em>name</em>, <em>parent_path=None</em><big>)</big><a class="reference internal" href="_modules/tornado_template.html#BaseLoader.resolve_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_template.BaseLoader.resolve_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a possibly-relative path to absolute (used internally).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tornado_template.DictLoader">
+<em class="property">class </em><tt class="descclassname">tornado_template.</tt><tt class="descname">DictLoader</tt><big>(</big><em>dict</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/tornado_template.html#DictLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_template.DictLoader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tornado_template.BaseLoader" title="tornado_template.BaseLoader"><tt class="xref py py-class docutils literal"><span class="pre">tornado_template.BaseLoader</span></tt></a></p>
+<p>A template loader that loads from a dictionary.</p>
+<dl class="method">
+<dt id="tornado_template.DictLoader.resolve_path">
+<tt class="descname">resolve_path</tt><big>(</big><em>name</em>, <em>parent_path=None</em><big>)</big><a class="reference internal" href="_modules/tornado_template.html#DictLoader.resolve_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_template.DictLoader.resolve_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tornado_template.Loader">
+<em class="property">class </em><tt class="descclassname">tornado_template.</tt><tt class="descname">Loader</tt><big>(</big><em>root_directory</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/tornado_template.html#Loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_template.Loader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tornado_template.BaseLoader" title="tornado_template.BaseLoader"><tt class="xref py py-class docutils literal"><span class="pre">tornado_template.BaseLoader</span></tt></a></p>
+<p>A template loader that loads from a single root directory.</p>
+<dl class="method">
+<dt id="tornado_template.Loader.resolve_path">
+<tt class="descname">resolve_path</tt><big>(</big><em>name</em>, <em>parent_path=None</em><big>)</big><a class="reference internal" href="_modules/tornado_template.html#Loader.resolve_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_template.Loader.resolve_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="tornado_template.ParseError">
+<em class="property">exception </em><tt class="descclassname">tornado_template.</tt><tt class="descname">ParseError</tt><a class="reference internal" href="_modules/tornado_template.html#ParseError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_template.ParseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Raised for template syntax errors.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tornado_template.Template">
+<em class="property">class </em><tt class="descclassname">tornado_template.</tt><tt class="descname">Template</tt><big>(</big><em>template_string</em>, <em>name='&lt;string&gt;'</em>, <em>loader=None</em>, <em>compress_whitespace=None</em>, <em>autoescape=&lt;object object at 0x10efac750&gt;</em><big>)</big><a class="reference internal" href="_modules/tornado_template.html#Template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_template.Template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>A compiled template.</p>
+<p>We compile into Python from the given template_string. You can generate
+the template from variables with generate().</p>
+<dl class="method">
+<dt id="tornado_template.Template.generate">
+<tt class="descname">generate</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/tornado_template.html#Template.generate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tornado_template.Template.generate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate this template with the given arguments.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">tornado_template module</a><ul>
+<li><a class="reference internal" href="#syntax-reference">Syntax Reference</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/tornado_template.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">bz_python_lib 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, bigzhu.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

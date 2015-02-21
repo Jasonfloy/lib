@@ -46,25 +46,29 @@
             
   <div class="section" id="module-user_bz">
 <span id="user-bz-module"></span><h1>user_bz module<a class="headerlink" href="#module-user_bz" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="user_bz.doubanLogin">
-<tt class="descclassname">user_bz.</tt><tt class="descname">doubanLogin</tt><big>(</big><em>pg</em>, <em>user_info</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#doubanLogin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.doubanLogin" title="Permalink to this definition">¶</a></dt>
+<dl class="class">
+<dt id="user_bz.UserOper">
+<em class="property">class </em><tt class="descclassname">user_bz.</tt><tt class="descname">UserOper</tt><big>(</big><em>pg</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#UserOper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.UserOper" title="Permalink to this definition">¶</a></dt>
+<dd><p>对用户相关的操作</p>
+<dl class="method">
+<dt id="user_bz.UserOper.doubanLogin">
+<tt class="descname">doubanLogin</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#UserOper.doubanLogin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.UserOper.doubanLogin" title="Permalink to this definition">¶</a></dt>
 <dd><p>douban 登录信息存到 db 中</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="user_bz.getUserInfo">
-<tt class="descclassname">user_bz.</tt><tt class="descname">getUserInfo</tt><big>(</big><em>pg</em>, <em>user_type='my'</em>, <em>user_name=None</em>, <em>out_id=None</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#getUserInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.getUserInfo" title="Permalink to this definition">¶</a></dt>
+<dl class="method">
+<dt id="user_bz.UserOper.getUserInfo">
+<tt class="descname">getUserInfo</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#UserOper.getUserInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.UserOper.getUserInfo" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="function">
-<dt id="user_bz.getUserInfoById">
-<tt class="descclassname">user_bz.</tt><tt class="descname">getUserInfoById</tt><big>(</big><em>pg</em>, <em>user_id</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#getUserInfoById"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.getUserInfoById" title="Permalink to this definition">¶</a></dt>
+<dl class="method">
+<dt id="user_bz.UserOper.getUserInfoById">
+<tt class="descname">getUserInfoById</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#UserOper.getUserInfoById"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.UserOper.getUserInfoById" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="function">
-<dt id="user_bz.googleLogin">
-<tt class="descclassname">user_bz.</tt><tt class="descname">googleLogin</tt><big>(</big><em>pg</em>, <em>user_info</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#googleLogin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.googleLogin" title="Permalink to this definition">¶</a></dt>
+<dl class="method">
+<dt id="user_bz.UserOper.googleLogin">
+<tt class="descname">googleLogin</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#UserOper.googleLogin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.UserOper.googleLogin" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>google 登录信息存到 db 中</dt>
 <dd><dl class="first docutils">
@@ -85,9 +89,9 @@
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="user_bz.login">
-<tt class="descclassname">user_bz.</tt><tt class="descname">login</tt><big>(</big><em>user_name</em>, <em>password</em>, <em>pg</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.login" title="Permalink to this definition">¶</a></dt>
+<dl class="method">
+<dt id="user_bz.UserOper.login">
+<tt class="descname">login</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#UserOper.login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.UserOper.login" title="Permalink to this definition">¶</a></dt>
 <dd><p>登录模块,如果不存在这个用户名,则注册
 数据模型:</p>
 <p>CREATE TABLE user_info
@@ -108,10 +112,17 @@ original_json text &#8211;用来存放原始返回的 json 字段,避免有内�
 INHERITS (base)</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="user_bz.twitterLogin">
-<tt class="descclassname">user_bz.</tt><tt class="descname">twitterLogin</tt><big>(</big><em>pg</em>, <em>user_info</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#twitterLogin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.twitterLogin" title="Permalink to this definition">¶</a></dt>
+<dl class="method">
+<dt id="user_bz.UserOper.resetPassword">
+<tt class="descname">resetPassword</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#UserOper.resetPassword"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.UserOper.resetPassword" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="user_bz.UserOper.twitterLogin">
+<tt class="descname">twitterLogin</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#UserOper.twitterLogin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.UserOper.twitterLogin" title="Permalink to this definition">¶</a></dt>
 <dd><p>twitter 登录信息存到 db 中</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>

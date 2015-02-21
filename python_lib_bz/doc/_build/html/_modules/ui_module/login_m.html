@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ui_module.login_m &mdash; bz_python_lib 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="bz_python_lib 1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">bz_python_lib 1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for ui_module.login_m</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+
+<span class="kn">from</span> <span class="nn">ui_module</span> <span class="kn">import</span> <span class="n">my_ui_module</span>
+<span class="kn">import</span> <span class="nn">tornado.web</span>
+<span class="kn">import</span> <span class="nn">tornado_bz</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">user_bz</span>
+<span class="kn">import</span> <span class="nn">public_bz</span>
+<span class="kn">import</span> <span class="nn">tornado_auth_bz</span>
+<span class="kn">from</span> <span class="nn">tornado_bz</span> <span class="kn">import</span> <span class="n">BaseHandler</span>
+<span class="kn">from</span> <span class="nn">public_bz</span> <span class="kn">import</span> <span class="n">storage</span>
+
+<span class="n">salt</span> <span class="o">=</span> <span class="s">&quot;hold is watching you&quot;</span>
+
+
+<div class="viewcode-block" id="login_m"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.login_m">[docs]</a><span class="k">class</span> <span class="nc">login_m</span><span class="p">(</span><span class="n">my_ui_module</span><span class="o">.</span><span class="n">MyUIModule</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;登录的页面&#39;&#39;&#39;</span>
+    <span class="n">action_url</span> <span class="o">=</span> <span class="s">&#39;/login&#39;</span>
+
+<div class="viewcode-block" id="login_m.render"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.login_m.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">oauth2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">html_name</span><span class="p">,</span> <span class="n">oauth2</span><span class="o">=</span><span class="n">oauth2</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="login"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.login">[docs]</a><span class="k">class</span> <span class="nc">login</span><span class="p">(</span><span class="n">BaseHandler</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    登录后台的方法</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="login.initialize"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.login.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        针对 oauth2 ,需要你重载的时候来设置为你自己的参数, 以下是 google twitter douban 的例子</span>
+
+<span class="sd">        # google 登录的参数</span>
+<span class="sd">        CLIENT_ID = &#39;413021385046-mgcrb8l8qnc3kdg8h9tq3857ae71idke.apps.googleusercontent.com&#39;</span>
+<span class="sd">        CLIENT_SECRET = &#39;hygluwSg-7L_WsifSC5-4OZ5&#39;</span>
+<span class="sd">        self.settings[&quot;google_oauth&quot;] = {</span>
+<span class="sd">            &quot;key&quot;: CLIENT_ID,</span>
+<span class="sd">            &quot;secret&quot;: CLIENT_SECRET,</span>
+<span class="sd">            &quot;redirect_uri&quot;: &quot;http://www.highwe.net/google&quot;,</span>
+<span class="sd">        }</span>
+<span class="sd">        # twitter</span>
+<span class="sd">        self.settings[&quot;twitter_consumer_key&quot;] = &#39;YmQK6YdczdtjMPLsHjoVs8QgH&#39;</span>
+<span class="sd">        self.settings[&quot;twitter_consumer_secret&quot;] = &#39;ZM1fklU38SBQN5RBwvRH1yRttrrHjBS5uuOtqIqUObIGafgeRG&#39;</span>
+<span class="sd">        # douban</span>
+<span class="sd">        self.settings[&quot;douban_api_key&quot;] = &#39;01be463aa2868092053ad2afe79381b6&#39;</span>
+<span class="sd">        self.settings[&quot;douban_api_secret&quot;] = &#39;a957e7c9cc366f86&#39;</span>
+<span class="sd">        self.settings[&quot;redirect_uri&quot;] = &#39;http://highwe.net/douban&#39;</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">BaseHandler</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">oauth2</span> <span class="o">=</span> <span class="n">storage</span><span class="p">()</span>
+        <span class="n">oauth2</span><span class="o">.</span><span class="n">google</span> <span class="o">=</span> <span class="n">storage</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s">&#39;/google&#39;</span><span class="p">)</span>
+        <span class="n">oauth2</span><span class="o">.</span><span class="n">twitter</span> <span class="o">=</span> <span class="n">storage</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s">&#39;/twitter&#39;</span><span class="p">)</span>
+        <span class="n">oauth2</span><span class="o">.</span><span class="n">douban</span> <span class="o">=</span> <span class="n">storage</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s">&#39;/douban&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oauth2</span> <span class="o">=</span> <span class="n">oauth2</span>
+
+        <span class="c">#用户操作相关的</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_oper</span> <span class="o">=</span> <span class="n">user_bz</span><span class="o">.</span><span class="n">UserOper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="login.get"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.login.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">tornado_bz</span><span class="o">.</span><span class="n">getTName</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">oauth2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">oauth2</span><span class="p">)</span>
+</div>
+    <span class="nd">@tornado_bz.handleError</span>
+<div class="viewcode-block" id="login.post"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.login.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s">&quot;application/json&quot;</span><span class="p">)</span>
+        <span class="n">login_info</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
+        <span class="n">user_name</span> <span class="o">=</span> <span class="n">login_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;user_name&quot;</span><span class="p">)</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="n">login_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;password&quot;</span><span class="p">)</span>
+        <span class="c"># 密码加密</span>
+        <span class="n">hashed_password</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">password</span> <span class="o">+</span> <span class="n">salt</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+        <span class="n">user_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_oper</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">user_name</span><span class="p">,</span> <span class="n">hashed_password</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_secure_cookie</span><span class="p">(</span><span class="s">&quot;user_id&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">user_info</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">&#39;error&#39;</span><span class="p">:</span> <span class="s">&#39;0&#39;</span><span class="p">},</span> <span class="n">cls</span><span class="o">=</span><span class="n">public_bz</span><span class="o">.</span><span class="n">ExtEncoder</span><span class="p">))</span>
+</div>
+    <span class="nd">@tornado_bz.handleError</span>
+<div class="viewcode-block" id="login.put"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.login.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s">&quot;application/json&quot;</span><span class="p">)</span>
+        <span class="n">reset_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
+        <span class="n">user_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_secure_cookie</span><span class="p">(</span><span class="s">&quot;user_id&quot;</span><span class="p">)</span>
+        <span class="n">old_password</span> <span class="o">=</span> <span class="n">reset_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;old_password&quot;</span><span class="p">)</span>
+        <span class="n">new_password</span> <span class="o">=</span> <span class="n">reset_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;new_password&quot;</span><span class="p">)</span>
+        <span class="c"># 加密</span>
+        <span class="n">hashed_old_pwd</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">old_password</span> <span class="o">+</span> <span class="n">salt</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+        <span class="n">hashed_new_pwd</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">new_password</span> <span class="o">+</span> <span class="n">salt</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_oper</span><span class="o">.</span><span class="n">resetPassword</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">hashed_old_pwd</span><span class="p">,</span> <span class="n">hashed_new_pwd</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">&#39;error&#39;</span><span class="p">:</span> <span class="n">error_msg</span><span class="p">},</span> <span class="n">cls</span><span class="o">=</span><span class="n">public_bz</span><span class="o">.</span><span class="n">ExtEncoder</span><span class="p">))</span>
+
+</div></div>
+<div class="viewcode-block" id="logout"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.logout">[docs]</a><span class="k">class</span> <span class="nc">logout</span><span class="p">(</span><span class="n">BaseHandler</span><span class="p">):</span>
+
+    <span class="nd">@tornado_bz.handleError</span>
+<div class="viewcode-block" id="logout.get"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.logout.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_cookie</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;user_id&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">redirect</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="google"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.google">[docs]</a><span class="k">class</span> <span class="nc">google</span><span class="p">(</span><span class="n">BaseHandler</span><span class="p">,</span> <span class="n">tornado</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">GoogleOAuth2Mixin</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    显而易见, google 登录</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="google.initialize"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.google.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">BaseHandler</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+    <span class="nd">@tornado.gen.coroutine</span>
+<div class="viewcode-block" id="google.get"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.google.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">redirect_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;google_oauth&#39;</span><span class="p">][</span><span class="s">&#39;redirect_uri&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s">&#39;code&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">):</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_authenticated_user</span><span class="p">(</span>
+                <span class="n">redirect_uri</span><span class="o">=</span><span class="n">redirect_uri</span><span class="p">,</span>
+                <span class="n">code</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s">&#39;code&#39;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
+            <span class="n">user_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getUserInfo</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">user_oper</span> <span class="o">=</span> <span class="n">user_bz</span><span class="o">.</span><span class="n">UserOper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="p">)</span>
+            <span class="n">user_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_oper</span><span class="o">.</span><span class="n">googleLogin</span><span class="p">(</span><span class="n">user_info</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_secure_cookie</span><span class="p">(</span><span class="s">&quot;user_id&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">user_info</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">redirect</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+            <span class="c"># Save the user with e.g. set_secure_cookie</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorize_redirect</span><span class="p">(</span>
+                <span class="n">redirect_uri</span><span class="o">=</span><span class="n">redirect_uri</span><span class="p">,</span>
+                <span class="n">client_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;google_oauth&#39;</span><span class="p">][</span><span class="s">&#39;key&#39;</span><span class="p">],</span>
+                <span class="n">scope</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;profile&#39;</span><span class="p">,</span> <span class="s">&#39;email&#39;</span><span class="p">],</span>
+                <span class="n">response_type</span><span class="o">=</span><span class="s">&#39;code&#39;</span><span class="p">,</span>
+                <span class="n">extra_params</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;approval_prompt&#39;</span><span class="p">:</span> <span class="s">&#39;auto&#39;</span><span class="p">})</span>
+</div>
+<div class="viewcode-block" id="google.getUserInfo"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.google.getUserInfo">[docs]</a>    <span class="k">def</span> <span class="nf">getUserInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;access_token&#39;</span><span class="p">)</span>
+        <span class="kn">import</span> <span class="nn">requests</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;https://www.googleapis.com/oauth2/v1/userinfo?alt=json&amp;access_token=</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">token</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+</div></div>
+<div class="viewcode-block" id="twitter"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.twitter">[docs]</a><span class="k">class</span> <span class="nc">twitter</span><span class="p">(</span><span class="n">BaseHandler</span><span class="p">,</span> <span class="n">tornado</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">TwitterMixin</span><span class="p">):</span>
+    <span class="n">_OAUTH_REQUEST_TOKEN_URL</span> <span class="o">=</span> <span class="s">&quot;https://api.twitter.com/oauth/request_token&quot;</span>
+    <span class="n">_OAUTH_ACCESS_TOKEN_URL</span> <span class="o">=</span> <span class="s">&quot;https://api.twitter.com/oauth/access_token&quot;</span>
+    <span class="n">_OAUTH_AUTHORIZE_URL</span> <span class="o">=</span> <span class="s">&quot;https://api.twitter.com/oauth/authorize&quot;</span>
+    <span class="n">_OAUTH_AUTHENTICATE_URL</span> <span class="o">=</span> <span class="s">&quot;https://api.twitter.com/oauth/authenticate&quot;</span>
+    <span class="n">_OAUTH_NO_CALLBACKS</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">_TWITTER_BASE_URL</span> <span class="o">=</span> <span class="s">&quot;https://api.twitter.com/1.1&quot;</span>
+<div class="viewcode-block" id="twitter.initialize"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.twitter.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">BaseHandler</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+    <span class="nd">@tornado.gen.coroutine</span>
+<div class="viewcode-block" id="twitter.get"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.twitter.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s">&quot;oauth_token&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="n">user_info</span> <span class="o">=</span> <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_authenticated_user</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">user_oper</span> <span class="o">=</span> <span class="n">user_bz</span><span class="o">.</span><span class="n">UserOper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="p">)</span>
+            <span class="n">user_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_oper</span><span class="o">.</span><span class="n">twitterLogin</span><span class="p">(</span><span class="n">user_info</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_secure_cookie</span><span class="p">(</span><span class="s">&quot;user_id&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">user_info</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">redirect</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+
+            <span class="c"># Save the user using e.g. set_secure_cookie()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorize_redirect</span><span class="p">()</span>
+
+</div></div>
+<div class="viewcode-block" id="douban"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.douban">[docs]</a><span class="k">class</span> <span class="nc">douban</span><span class="p">(</span><span class="n">BaseHandler</span><span class="p">,</span> <span class="n">tornado_auth_bz</span><span class="o">.</span><span class="n">DoubanOAuth2Mixin</span><span class="p">):</span>
+<div class="viewcode-block" id="douban.initialize"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.douban.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">BaseHandler</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+    <span class="nd">@tornado.gen.coroutine</span>
+<div class="viewcode-block" id="douban.get"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.douban.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s">&#39;code&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">):</span>
+            <span class="c"># 获取到个人信息</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_authenticated_user</span><span class="p">(</span>
+                <span class="n">redirect_uri</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;redirect_uri&#39;</span><span class="p">],</span>
+                <span class="n">code</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s">&#39;code&#39;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">user</span><span class="p">:</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">user_oper</span> <span class="o">=</span> <span class="n">user_bz</span><span class="o">.</span><span class="n">UserOper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="p">)</span>
+                <span class="n">user_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_oper</span><span class="o">.</span><span class="n">doubanLogin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_secure_cookie</span><span class="p">(</span><span class="s">&quot;user_id&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">user_info</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">redirect</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+
+                <span class="c"># self.set_secure_cookie(&quot;user_id&quot;, str(user[&#39;uid&#39;]))</span>
+                <span class="c"># self.redirect(self.get_argument(&quot;next&quot;, &quot;/&quot;))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorize_redirect</span><span class="p">(</span>
+                <span class="n">redirect_uri</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;redirect_uri&#39;</span><span class="p">],</span>
+                <span class="n">client_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;douban_api_key&#39;</span><span class="p">],</span>
+                <span class="n">scope</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>  <span class="c"># 使用默认的scope权限</span>
+                <span class="n">response_type</span><span class="o">=</span><span class="s">&#39;code&#39;</span>
+            <span class="p">)</span>
+
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">bz_python_lib 1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, bigzhu.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>timeline_bz &mdash; bz_python_lib 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="bz_python_lib 1.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">bz_python_lib 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for timeline_bz</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">create by bigzhu at 15/02/03 11:39:54 用于存放系统操作的 timeline, 或者更类似于日志. 发起项目:叶脉</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">public_bz</span> <span class="kn">import</span> <span class="n">storage</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">public_bz</span>
+
+
+<div class="viewcode-block" id="TimeLine"><a class="viewcode-back" href="../timeline_bz.html#timeline_bz.TimeLine">[docs]</a><span class="k">class</span> <span class="nc">TimeLine</span><span class="p">():</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    CREATE TABLE timeline</span>
+<span class="sd">    (</span>
+<span class="sd">    -- 继承 from table base:  id integer NOT NULL DEFAULT nextval(&#39;base_id_seq&#39;::regclass),</span>
+<span class="sd">    -- 继承 from table base:  created_date timestamp without time zone DEFAULT now(),</span>
+<span class="sd">    -- 继承 from table base:  stat_date timestamp without time zone DEFAULT now(),</span>
+<span class="sd">      oper text, -- 执行的动作</span>
+<span class="sd">      user_id integer, -- 执行的用户</span>
+<span class="sd">      target_type text, -- 执行的目标对象</span>
+<span class="sd">      target_id integer, -- 目标的 id, 用于表关联</span>
+<span class="sd">      other_info json -- 其他的附加信息, 使用 json 来存放</span>
+<span class="sd">    )</span>
+<span class="sd">    INHERITS (base)</span>
+<span class="sd">    WITH (</span>
+<span class="sd">      OIDS=FALSE</span>
+<span class="sd">    );</span>
+<span class="sd">    ALTER TABLE timeline</span>
+<span class="sd">      OWNER TO yemai;</span>
+<span class="sd">    COMMENT ON COLUMN timeline.oper IS &#39;执行的动作&#39;;</span>
+<span class="sd">    COMMENT ON COLUMN timeline.user_id IS &#39;执行的用户&#39;;</span>
+<span class="sd">    COMMENT ON COLUMN timeline.target_type IS &#39;执行的目标对象&#39;;</span>
+<span class="sd">    COMMENT ON COLUMN timeline.target_id IS &#39;目标的 id, 用于表关联&#39;;</span>
+<span class="sd">    COMMENT ON COLUMN timeline.other_info IS &#39;其他的附加信息, 使用 json 来存放&#39;;</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pg</span> <span class="o">=</span> <span class="n">pg</span>
+
+<div class="viewcode-block" id="TimeLine.addTimeLine"><a class="viewcode-back" href="../timeline_bz.html#timeline_bz.TimeLine.addTimeLine">[docs]</a>    <span class="k">def</span> <span class="nf">addTimeLine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">oper</span><span class="p">,</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">target_type</span><span class="p">,</span> <span class="n">target_id</span><span class="p">,</span> <span class="n">other_info</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">timeline</span> <span class="o">=</span> <span class="n">storage</span><span class="p">()</span>
+        <span class="n">timeline</span><span class="o">.</span><span class="n">oper</span> <span class="o">=</span> <span class="n">oper</span>
+        <span class="n">timeline</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="n">user_id</span>
+        <span class="n">timeline</span><span class="o">.</span><span class="n">target_type</span> <span class="o">=</span> <span class="n">target_type</span>
+        <span class="n">timeline</span><span class="o">.</span><span class="n">target_id</span> <span class="o">=</span> <span class="n">target_id</span>
+        <span class="k">if</span> <span class="n">other_info</span><span class="p">:</span>
+            <span class="n">timeline</span><span class="o">.</span><span class="n">other_info</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">other_info</span><span class="p">,</span> <span class="n">cls</span><span class="o">=</span><span class="n">public_bz</span><span class="o">.</span><span class="n">ExtEncoder</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;timeline&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">timeline</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="TimeLine.getTimeLineByTargetID"><a class="viewcode-back" href="../timeline_bz.html#timeline_bz.TimeLine.getTimeLineByTargetID">[docs]</a>    <span class="k">def</span> <span class="nf">getTimeLineByTargetID</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_type</span><span class="p">,</span> <span class="n">target_id</span><span class="p">):</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        select t.*, u.user_name, u.picture from timeline t, user_info u</span>
+<span class="s">            where t.user_id = u.id</span>
+<span class="s">            and t.target_type = &#39;</span><span class="si">%s</span><span class="s">&#39;</span>
+<span class="s">            and t.target_id = </span><span class="si">%s</span><span class="s"></span>
+<span class="s">            order by t.created_date desc</span>
+<span class="s">        &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">target_type</span><span class="p">,</span> <span class="n">target_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupByCreatedDateDay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="TimeLine.getTimeLineByToday"><a class="viewcode-back" href="../timeline_bz.html#timeline_bz.TimeLine.getTimeLineByToday">[docs]</a>    <span class="k">def</span> <span class="nf">getTimeLineByToday</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_type</span><span class="p">):</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        select t.*, u.user_name, u.picture from timeline t, user_info u</span>
+<span class="s">            where t.user_id = u.id</span>
+<span class="s">            and t.target_type = &#39;</span><span class="si">%s</span><span class="s">&#39;</span>
+<span class="s">            and date_trunc(&#39;day&#39;, t.created_date) = date_trunc(&#39;day&#39;, now())</span>
+<span class="s">            order by t.created_date desc</span>
+<span class="s">        &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">target_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupByCreatedDateDay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="TimeLine.groupByCreatedDateDay"><a class="viewcode-back" href="../timeline_bz.html#timeline_bz.TimeLine.groupByCreatedDateDay">[docs]</a>    <span class="k">def</span> <span class="nf">groupByCreatedDateDay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timelines</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        create by bigzhu at 15/02/03 13:44:24 按照天的精度,归并timeline</span>
+<span class="sd">        modify by bigzhu at 15/02/06 13:29:58 修改为返回 list 而不是一个 dic, 以便于对时间按天的排序</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">day_time_lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">group_time_line</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">timeline</span> <span class="ow">in</span> <span class="n">timelines</span><span class="p">:</span>
+            <span class="n">day</span> <span class="o">=</span> <span class="n">timeline</span><span class="o">.</span><span class="n">created_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&#39;%Y年%m月</span><span class="si">%d</span><span class="s">日&#39;</span><span class="p">)</span>
+            <span class="n">this_day_timeline</span> <span class="o">=</span> <span class="n">group_time_line</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">day</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">this_day_timeline</span><span class="p">:</span>
+                <span class="c">#this_day_timeline.insert(0, timeline)</span>
+                <span class="n">this_day_timeline</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">timeline</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">group_time_line</span><span class="p">[</span><span class="n">day</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">timeline</span><span class="p">]</span>
+                <span class="n">day_time_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">storage</span><span class="p">(</span><span class="n">day</span> <span class="o">=</span> <span class="n">day</span><span class="p">,</span> <span class="n">timelines</span> <span class="o">=</span> <span class="n">group_time_line</span><span class="p">[</span><span class="n">day</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">day_time_lines</span>
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">bz_python_lib 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, bigzhu.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

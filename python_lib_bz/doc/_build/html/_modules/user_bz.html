@@ -49,130 +49,156 @@
   <h1>Source code for user_bz</h1><div class="highlight"><pre>
 <span class="c">#!/usr/bin/env python</span>
 <span class="c"># -*- coding: utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">db_bz</span> <span class="kn">import</span> <span class="n">daemonDB</span>
 
 
-<div class="viewcode-block" id="login"><a class="viewcode-back" href="../user_bz.html#user_bz.login">[docs]</a><span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="n">user_name</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">pg</span><span class="p">):</span>
+<div class="viewcode-block" id="UserOper"><a class="viewcode-back" href="../user_bz.html#user_bz.UserOper">[docs]</a><span class="k">class</span> <span class="nc">UserOper</span><span class="p">:</span>
+
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    登录模块,如果不存在这个用户名,则注册</span>
-<span class="sd">    数据模型:</span>
-
-<span class="sd">    CREATE TABLE user_info</span>
-<span class="sd">    (</span>
-<span class="sd">      user_type text, -- google or other</span>
-<span class="sd">      out_id text, -- google id or other</span>
-<span class="sd">      email text,</span>
-<span class="sd">      user_name text,</span>
-<span class="sd">      link text,</span>
-<span class="sd">      picture text,</span>
-<span class="sd">      gender text, -- mail?</span>
-<span class="sd">      locale text, --zh-CN</span>
-<span class="sd">      password text,</span>
-<span class="sd">      original_json text --用来存放原始返回的 json 字段,避免有内容没存到</span>
-<span class="sd">    -- 继承 from table base:  user_id integer</span>
-<span class="sd">    )</span>
-<span class="sd">    INHERITS (base)</span>
-
-
-
+<span class="sd">    对用户相关的操作</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">user_infos</span> <span class="o">=</span> <span class="n">getUserInfo</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_name</span><span class="o">=</span><span class="n">user_name</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">user_infos</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">user_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">password</span> <span class="o">==</span> <span class="n">password</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pg</span> <span class="o">=</span> <span class="n">pg</span>
+
+    <span class="nd">@daemonDB</span>
+<div class="viewcode-block" id="UserOper.login"><a class="viewcode-back" href="../user_bz.html#user_bz.UserOper.login">[docs]</a>    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_name</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        登录模块,如果不存在这个用户名,则注册</span>
+<span class="sd">        数据模型:</span>
+
+<span class="sd">        CREATE TABLE user_info</span>
+<span class="sd">        (</span>
+<span class="sd">          user_type text, -- google or other</span>
+<span class="sd">          out_id text, -- google id or other</span>
+<span class="sd">          email text,</span>
+<span class="sd">          user_name text,</span>
+<span class="sd">          link text,</span>
+<span class="sd">          picture text,</span>
+<span class="sd">          gender text, -- mail?</span>
+<span class="sd">          locale text, --zh-CN</span>
+<span class="sd">          password text,</span>
+<span class="sd">          original_json text --用来存放原始返回的 json 字段,避免有内容没存到</span>
+<span class="sd">        -- 继承 from table base:  user_id integer</span>
+<span class="sd">        )</span>
+<span class="sd">        INHERITS (base)</span>
+
+
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">user_infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getUserInfo</span><span class="p">(</span><span class="n">user_name</span><span class="o">=</span><span class="n">user_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">user_infos</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">user_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">password</span> <span class="o">==</span> <span class="n">password</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">user_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;密码错误!&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;user_info&#39;</span><span class="p">,</span> <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;my&#39;</span><span class="p">,</span> <span class="n">user_name</span><span class="o">=</span><span class="n">user_name</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">user_name</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+</div>
+    <span class="nd">@daemonDB</span>
+<div class="viewcode-block" id="UserOper.getUserInfo"><a class="viewcode-back" href="../user_bz.html#user_bz.UserOper.getUserInfo">[docs]</a>    <span class="k">def</span> <span class="nf">getUserInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;my&#39;</span><span class="p">,</span> <span class="n">user_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">out_id</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;select * from user_info where user_type=&#39;</span><span class="si">%s</span><span class="s">&#39; &quot;</span> <span class="o">%</span> <span class="n">user_type</span>
+        <span class="k">if</span> <span class="n">user_name</span><span class="p">:</span>
+            <span class="n">sql</span> <span class="o">+=</span> <span class="s">&quot; and user_name=&#39;</span><span class="si">%s</span><span class="s">&#39; &quot;</span> <span class="o">%</span> <span class="n">user_name</span>
+        <span class="k">if</span> <span class="n">out_id</span><span class="p">:</span>
+            <span class="n">sql</span> <span class="o">+=</span> <span class="s">&quot; and out_id=&#39;</span><span class="si">%s</span><span class="s">&#39; &quot;</span> <span class="o">%</span> <span class="n">out_id</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
+</div>
+    <span class="nd">@daemonDB</span>
+<div class="viewcode-block" id="UserOper.googleLogin"><a class="viewcode-back" href="../user_bz.html#user_bz.UserOper.googleLogin">[docs]</a>    <span class="k">def</span> <span class="nf">googleLogin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_info</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        google 登录信息存到 db 中</span>
+<span class="sd">            {</span>
+<span class="sd">             &quot;id&quot;: &quot;112340346785758313259&quot;,</span>
+<span class="sd">             &quot;email&quot;: &quot;vermiliondun@gmail.com&quot;,</span>
+<span class="sd">             &quot;verified_email&quot;: true,</span>
+<span class="sd">             &quot;name&quot;: &quot;朱一凡&quot;,</span>
+<span class="sd">             &quot;given_name&quot;: &quot;一凡&quot;,</span>
+<span class="sd">             &quot;family_name&quot;: &quot;朱&quot;,</span>
+<span class="sd">             &quot;link&quot;: &quot;https://plus.google.com/112340346785758313259&quot;,</span>
+<span class="sd">             &quot;picture&quot;: &quot;https://lh5.googleusercontent.com/-E4rb72RaQHE/AAAAAAAAAAI/AAAAAAAAJzQ/p-tx9D78Mik/photo.jpg&quot;,</span>
+<span class="sd">             &quot;gender&quot;: &quot;male&quot;,</span>
+<span class="sd">             &quot;locale&quot;: &quot;zh-CN&quot;</span>
+<span class="sd">            }</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">user_infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getUserInfo</span><span class="p">(</span><span class="n">user_type</span><span class="o">=</span><span class="s">&#39;google&#39;</span><span class="p">,</span> <span class="n">out_id</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">user_infos</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">user_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;密码错误!&#39;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;user_info&#39;</span><span class="p">,</span> <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;my&#39;</span><span class="p">,</span> <span class="n">user_name</span><span class="o">=</span><span class="n">user_name</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">login</span><span class="p">(</span><span class="n">user_name</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">pg</span><span class="p">)</span>
-
+            <span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;user_info&#39;</span><span class="p">,</span>
+                         <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;google&#39;</span><span class="p">,</span>
+                         <span class="n">out_id</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">],</span>
+                         <span class="n">email</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;email&#39;</span><span class="p">],</span>
+                         <span class="n">user_name</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span>
+                         <span class="n">link</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;link&#39;</span><span class="p">],</span>
+                         <span class="n">picture</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;picture&#39;</span><span class="p">],</span>
+                         <span class="n">gender</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;gender&#39;</span><span class="p">],</span>
+                         <span class="n">locale</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;locale&#39;</span><span class="p">]</span>
+                         <span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">googleLogin</span><span class="p">(</span><span class="n">user_info</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="getUserInfo"><a class="viewcode-back" href="../user_bz.html#user_bz.getUserInfo">[docs]</a><span class="k">def</span> <span class="nf">getUserInfo</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;my&#39;</span><span class="p">,</span> <span class="n">user_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">out_id</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-    <span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;select * from user_info where user_type=&#39;</span><span class="si">%s</span><span class="s">&#39; &quot;</span> <span class="o">%</span> <span class="n">user_type</span>
-    <span class="k">if</span> <span class="n">user_name</span><span class="p">:</span>
-        <span class="n">sql</span> <span class="o">+=</span> <span class="s">&quot; and user_name=&#39;</span><span class="si">%s</span><span class="s">&#39; &quot;</span> <span class="o">%</span> <span class="n">user_name</span>
-    <span class="k">if</span> <span class="n">out_id</span><span class="p">:</span>
-        <span class="n">sql</span> <span class="o">+=</span> <span class="s">&quot; and out_id=&#39;</span><span class="si">%s</span><span class="s">&#39; &quot;</span> <span class="o">%</span> <span class="n">out_id</span>
-    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
-
+    <span class="nd">@daemonDB</span>
+<div class="viewcode-block" id="UserOper.twitterLogin"><a class="viewcode-back" href="../user_bz.html#user_bz.UserOper.twitterLogin">[docs]</a>    <span class="k">def</span> <span class="nf">twitterLogin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_info</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        twitter 登录信息存到 db 中</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">user_infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getUserInfo</span><span class="p">(</span><span class="n">user_type</span><span class="o">=</span><span class="s">&#39;twitter&#39;</span><span class="p">,</span> <span class="n">out_id</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">user_infos</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">user_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;user_info&#39;</span><span class="p">,</span>
+                              <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;twitter&#39;</span><span class="p">,</span>
+                              <span class="n">out_id</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">],</span>
+                              <span class="c"># email=user_info[&#39;email&#39;],</span>
+                              <span class="n">user_name</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;username&#39;</span><span class="p">],</span>
+                              <span class="c"># link=user_info[&#39;link&#39;],</span>
+                              <span class="n">picture</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;profile_image_url_https&#39;</span><span class="p">],</span>
+                              <span class="c"># gender=user_info[&#39;gender&#39;],</span>
+                              <span class="n">locale</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;profile_location&#39;</span><span class="p">]</span>
+                              <span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">twitterLogin</span><span class="p">(</span><span class="n">user_info</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="getUserInfoById"><a class="viewcode-back" href="../user_bz.html#user_bz.getUserInfoById">[docs]</a><span class="k">def</span> <span class="nf">getUserInfoById</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
-    <span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;select * from user_info where id=</span><span class="si">%s</span><span class="s"> &quot;</span> <span class="o">%</span> <span class="n">user_id</span>
-    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
-
+    <span class="nd">@daemonDB</span>
+<div class="viewcode-block" id="UserOper.doubanLogin"><a class="viewcode-back" href="../user_bz.html#user_bz.UserOper.doubanLogin">[docs]</a>    <span class="k">def</span> <span class="nf">doubanLogin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_info</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        douban 登录信息存到 db 中</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">user_infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getUserInfo</span><span class="p">(</span><span class="n">user_type</span><span class="o">=</span><span class="s">&#39;douban&#39;</span><span class="p">,</span> <span class="n">out_id</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">user_infos</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">user_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;user_info&#39;</span><span class="p">,</span>
+                         <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;douban&#39;</span><span class="p">,</span>
+                         <span class="n">out_id</span><span class="o">=</span><span class="n">user_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">),</span>
+                         <span class="c"># email=user_info[&#39;email&#39;],</span>
+                         <span class="n">user_name</span><span class="o">=</span><span class="n">user_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">),</span>
+                         <span class="n">link</span><span class="o">=</span><span class="n">user_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;alt&#39;</span><span class="p">),</span>
+                         <span class="n">picture</span><span class="o">=</span><span class="n">user_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;avatar&#39;</span><span class="p">),</span>
+                         <span class="c"># gender=user_info[&#39;gender&#39;],</span>
+                         <span class="n">locale</span><span class="o">=</span><span class="n">user_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;loc_name&#39;</span><span class="p">)</span>
+                         <span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">doubanLogin</span><span class="p">(</span><span class="n">user_info</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="googleLogin"><a class="viewcode-back" href="../user_bz.html#user_bz.googleLogin">[docs]</a><span class="k">def</span> <span class="nf">googleLogin</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_info</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    google 登录信息存到 db 中</span>
-<span class="sd">        {</span>
-<span class="sd">         &quot;id&quot;: &quot;112340346785758313259&quot;,</span>
-<span class="sd">         &quot;email&quot;: &quot;vermiliondun@gmail.com&quot;,</span>
-<span class="sd">         &quot;verified_email&quot;: true,</span>
-<span class="sd">         &quot;name&quot;: &quot;朱一凡&quot;,</span>
-<span class="sd">         &quot;given_name&quot;: &quot;一凡&quot;,</span>
-<span class="sd">         &quot;family_name&quot;: &quot;朱&quot;,</span>
-<span class="sd">         &quot;link&quot;: &quot;https://plus.google.com/112340346785758313259&quot;,</span>
-<span class="sd">         &quot;picture&quot;: &quot;https://lh5.googleusercontent.com/-E4rb72RaQHE/AAAAAAAAAAI/AAAAAAAAJzQ/p-tx9D78Mik/photo.jpg&quot;,</span>
-<span class="sd">         &quot;gender&quot;: &quot;male&quot;,</span>
-<span class="sd">         &quot;locale&quot;: &quot;zh-CN&quot;</span>
-<span class="sd">        }</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">user_infos</span> <span class="o">=</span> <span class="n">getUserInfo</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;google&#39;</span><span class="p">,</span> <span class="n">out_id</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">user_infos</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">user_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;user_info&#39;</span><span class="p">,</span>
-                     <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;google&#39;</span><span class="p">,</span>
-                     <span class="n">out_id</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">],</span>
-                     <span class="n">email</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;email&#39;</span><span class="p">],</span>
-                     <span class="n">user_name</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span>
-                     <span class="n">link</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;link&#39;</span><span class="p">],</span>
-                     <span class="n">picture</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;picture&#39;</span><span class="p">],</span>
-                     <span class="n">gender</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;gender&#39;</span><span class="p">],</span>
-                     <span class="n">locale</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;locale&#39;</span><span class="p">]</span>
-                     <span class="p">)</span>
-        <span class="k">return</span> <span class="n">googleLogin</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_info</span><span class="p">)</span>
-
+    <span class="nd">@daemonDB</span>
+<div class="viewcode-block" id="UserOper.resetPassword"><a class="viewcode-back" href="../user_bz.html#user_bz.UserOper.resetPassword">[docs]</a>    <span class="k">def</span> <span class="nf">resetPassword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">old_password</span><span class="p">,</span> <span class="n">new_password</span><span class="p">):</span>
+        <span class="n">users</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getUserInfoById</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">users</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;该用户不存在，请重新登录&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">users</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;password&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">old_password</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s">&quot;user_info&quot;</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="s">&quot;id=</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">new_password</span><span class="p">)</span>
+                <span class="k">return</span> <span class="s">&quot;0&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s">&quot;密码错误&quot;</span>
 </div>
-<div class="viewcode-block" id="twitterLogin"><a class="viewcode-back" href="../user_bz.html#user_bz.twitterLogin">[docs]</a><span class="k">def</span> <span class="nf">twitterLogin</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_info</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    twitter 登录信息存到 db 中</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">user_infos</span> <span class="o">=</span> <span class="n">getUserInfo</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;twitter&#39;</span><span class="p">,</span> <span class="n">out_id</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">user_infos</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">user_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;user_info&#39;</span><span class="p">,</span>
-                     <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;twitter&#39;</span><span class="p">,</span>
-                     <span class="n">out_id</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">],</span>
-                     <span class="c"># email=user_info[&#39;email&#39;],</span>
-                     <span class="n">user_name</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;username&#39;</span><span class="p">],</span>
-                     <span class="c"># link=user_info[&#39;link&#39;],</span>
-                     <span class="n">picture</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;profile_image_url_https&#39;</span><span class="p">],</span>
-                     <span class="c"># gender=user_info[&#39;gender&#39;],</span>
-                     <span class="n">locale</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;profile_location&#39;</span><span class="p">]</span>
-                     <span class="p">)</span>
-        <span class="k">return</span> <span class="n">twitterLogin</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_info</span><span class="p">)</span>
+    <span class="nd">@daemonDB</span>
+<div class="viewcode-block" id="UserOper.getUserInfoById"><a class="viewcode-back" href="../user_bz.html#user_bz.UserOper.getUserInfoById">[docs]</a>    <span class="k">def</span> <span class="nf">getUserInfoById</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
+        <span class="n">users</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s">&quot;user_info&quot;</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="s">&quot;id=</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">users</span>
 
-</div>
-<div class="viewcode-block" id="doubanLogin"><a class="viewcode-back" href="../user_bz.html#user_bz.doubanLogin">[docs]</a><span class="k">def</span> <span class="nf">doubanLogin</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_info</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    douban 登录信息存到 db 中</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">user_infos</span> <span class="o">=</span> <span class="n">getUserInfo</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;douban&#39;</span><span class="p">,</span> <span class="n">out_id</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">user_infos</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">user_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;user_info&#39;</span><span class="p">,</span>
-                     <span class="n">user_type</span><span class="o">=</span><span class="s">&#39;douban&#39;</span><span class="p">,</span>
-                     <span class="n">out_id</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">],</span>
-                     <span class="c"># email=user_info[&#39;email&#39;],</span>
-                     <span class="n">user_name</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span>
-                     <span class="n">link</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;alt&#39;</span><span class="p">],</span>
-                     <span class="n">picture</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;avatar&#39;</span><span class="p">],</span>
-                     <span class="c"># gender=user_info[&#39;gender&#39;],</span>
-                     <span class="n">locale</span><span class="o">=</span><span class="n">user_info</span><span class="p">[</span><span class="s">&#39;loc_name&#39;</span><span class="p">]</span>
-                     <span class="p">)</span>
-        <span class="k">return</span> <span class="n">doubanLogin</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">user_info</span><span class="p">)</span></div>
+</div></div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="k">pass</span>
 </pre></div>

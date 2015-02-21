@@ -1,0 +1,1006 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>utils module &mdash; bz_python_lib 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="bz_python_lib 1.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">bz_python_lib 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-utils">
+<span id="utils-module"></span><h1>utils module<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h1>
+<p>General Utilities
+(part of web.py)</p>
+<dl class="class">
+<dt id="utils.Storage">
+<em class="property">class </em><tt class="descclassname">utils.</tt><tt class="descname">Storage</tt><a class="reference internal" href="_modules/utils.html#Storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.Storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">dict</span></tt></p>
+<p>A Storage object is like a dictionary except <cite>obj.foo</cite> can be used
+in addition to <cite>obj[&#8216;foo&#8217;]</cite>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">o</span> <span class="o">=</span> <span class="n">storage</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">o</span><span class="o">.</span><span class="n">a</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">o</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">o</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">o</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">o</span><span class="o">.</span><span class="n">a</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">o</span><span class="o">.</span><span class="n">a</span>
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">AttributeError</span>: <span class="n">&#39;a&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="utils.storage">
+<tt class="descclassname">utils.</tt><tt class="descname">storage</tt><a class="headerlink" href="#utils.storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#utils.Storage" title="utils.Storage"><tt class="xref py py-class docutils literal"><span class="pre">Storage</span></tt></a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.storify">
+<tt class="descclassname">utils.</tt><tt class="descname">storify</tt><big>(</big><em>mapping</em>, <em>*requireds</em>, <em>**defaults</em><big>)</big><a class="reference internal" href="_modules/utils.html#storify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.storify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a <cite>storage</cite> object from dictionary <cite>mapping</cite>, raising <cite>KeyError</cite> if
+d doesn&#8217;t have all of the keys in <cite>requireds</cite> and using the default
+values for keys found in <cite>defaults</cite>.</p>
+<p>For example, <cite>storify({&#8216;a&#8217;:1, &#8216;c&#8217;:3}, b=2, c=0)</cite> will return the equivalent of
+<cite>storage({&#8216;a&#8217;:1, &#8216;b&#8217;:2, &#8216;c&#8217;:3})</cite>.</p>
+<p>If a <cite>storify</cite> value is a list (e.g. multiple values in a form submission),
+<cite>storify</cite> returns the last element of the list, unless the key appears in
+<cite>defaults</cite> as a list. Thus:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">storify</span><span class="p">({</span><span class="s">&#39;a&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]})</span><span class="o">.</span><span class="n">a</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storify</span><span class="p">({</span><span class="s">&#39;a&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]},</span> <span class="n">a</span><span class="o">=</span><span class="p">[])</span><span class="o">.</span><span class="n">a</span>
+<span class="go">[1, 2]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storify</span><span class="p">({</span><span class="s">&#39;a&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">},</span> <span class="n">a</span><span class="o">=</span><span class="p">[])</span><span class="o">.</span><span class="n">a</span>
+<span class="go">[1]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storify</span><span class="p">({},</span> <span class="n">a</span><span class="o">=</span><span class="p">[])</span><span class="o">.</span><span class="n">a</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+<p>Similarly, if the value has a <cite>value</cite> attribute, <cite>storify will return _its_
+value, unless the key appears in `defaults</cite> as a dictionary.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">storify</span><span class="p">({</span><span class="s">&#39;a&#39;</span><span class="p">:</span><span class="n">storage</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">)})</span><span class="o">.</span><span class="n">a</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storify</span><span class="p">({</span><span class="s">&#39;a&#39;</span><span class="p">:</span><span class="n">storage</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">)},</span> <span class="n">a</span><span class="o">=</span><span class="p">{})</span><span class="o">.</span><span class="n">a</span>
+<span class="go">&lt;Storage {&#39;value&#39;: 1}&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storify</span><span class="p">({},</span> <span class="n">a</span><span class="o">=</span><span class="p">{})</span><span class="o">.</span><span class="n">a</span>
+<span class="go">{}</span>
+</pre></div>
+</div>
+<p>Optionally, keyword parameter <cite>_unicode</cite> can be passed to convert all values to unicode.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">storify</span><span class="p">({</span><span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="s">&#39;a&#39;</span><span class="p">},</span> <span class="n">_unicode</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">&lt;Storage {&#39;x&#39;: u&#39;a&#39;}&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storify</span><span class="p">({</span><span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="n">storage</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">)},</span> <span class="n">x</span><span class="o">=</span><span class="p">{},</span> <span class="n">_unicode</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">&lt;Storage {&#39;x&#39;: &lt;Storage {&#39;value&#39;: &#39;a&#39;}&gt;}&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storify</span><span class="p">({</span><span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="n">storage</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">)},</span> <span class="n">_unicode</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">&lt;Storage {&#39;x&#39;: u&#39;a&#39;}&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="utils.Counter">
+<em class="property">class </em><tt class="descclassname">utils.</tt><tt class="descname">Counter</tt><a class="reference internal" href="_modules/utils.html#Counter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.Counter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#utils.Storage" title="utils.Storage"><tt class="xref py py-class docutils literal"><span class="pre">utils.Storage</span></tt></a></p>
+<p>Keeps count of how many times something is added.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">counter</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;y&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
+<span class="go">&lt;Counter {&#39;y&#39;: 1, &#39;x&#39;: 5}&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">most</span><span class="p">()</span>
+<span class="go">[&#39;x&#39;]</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="utils.Counter.add">
+<tt class="descname">add</tt><big>(</big><em>n</em><big>)</big><a class="reference internal" href="_modules/utils.html#Counter.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.Counter.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.Counter.least">
+<tt class="descname">least</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/utils.html#Counter.least"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.Counter.least" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the keys with mininum count.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Counter.most">
+<tt class="descname">most</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/utils.html#Counter.most"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.Counter.most" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the keys with maximum count.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Counter.percent">
+<tt class="descname">percent</tt><big>(</big><em>key</em><big>)</big><a class="reference internal" href="_modules/utils.html#Counter.percent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.Counter.percent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns what percentage a certain key is of all entries.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">counter</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;y&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">percent</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
+<span class="go">0.75</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">percent</span><span class="p">(</span><span class="s">&#39;y&#39;</span><span class="p">)</span>
+<span class="go">0.25</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Counter.sorted_items">
+<tt class="descname">sorted_items</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/utils.html#Counter.sorted_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.Counter.sorted_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns items sorted by value.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">counter</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;y&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">sorted_items</span><span class="p">()</span>
+<span class="go">[(&#39;x&#39;, 2), (&#39;y&#39;, 1)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Counter.sorted_keys">
+<tt class="descname">sorted_keys</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/utils.html#Counter.sorted_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.Counter.sorted_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns keys sorted by value.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">counter</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;y&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">sorted_keys</span><span class="p">()</span>
+<span class="go">[&#39;x&#39;, &#39;y&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Counter.sorted_values">
+<tt class="descname">sorted_values</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/utils.html#Counter.sorted_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.Counter.sorted_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns values sorted by value.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">counter</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;y&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">sorted_values</span><span class="p">()</span>
+<span class="go">[2, 1]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="utils.counter">
+<tt class="descclassname">utils.</tt><tt class="descname">counter</tt><a class="headerlink" href="#utils.counter" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#utils.Counter" title="utils.Counter"><tt class="xref py py-class docutils literal"><span class="pre">Counter</span></tt></a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.rstrips">
+<tt class="descclassname">utils.</tt><tt class="descname">rstrips</tt><big>(</big><em>text</em>, <em>remove</em><big>)</big><a class="reference internal" href="_modules/utils.html#rstrips"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.rstrips" title="Permalink to this definition">¶</a></dt>
+<dd><p>removes the string <cite>remove</cite> from the right of <cite>text</cite></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">rstrips</span><span class="p">(</span><span class="s">&quot;foobar&quot;</span><span class="p">,</span> <span class="s">&quot;bar&quot;</span><span class="p">)</span>
+<span class="go">&#39;foo&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.lstrips">
+<tt class="descclassname">utils.</tt><tt class="descname">lstrips</tt><big>(</big><em>text</em>, <em>remove</em><big>)</big><a class="reference internal" href="_modules/utils.html#lstrips"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.lstrips" title="Permalink to this definition">¶</a></dt>
+<dd><p>removes the string <cite>remove</cite> from the left of <cite>text</cite></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">lstrips</span><span class="p">(</span><span class="s">&quot;foobar&quot;</span><span class="p">,</span> <span class="s">&quot;foo&quot;</span><span class="p">)</span>
+<span class="go">&#39;bar&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lstrips</span><span class="p">(</span><span class="s">&#39;http://foo.org/&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;http://&#39;</span><span class="p">,</span> <span class="s">&#39;https://&#39;</span><span class="p">])</span>
+<span class="go">&#39;foo.org/&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lstrips</span><span class="p">(</span><span class="s">&#39;FOOBARBAZ&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;FOO&#39;</span><span class="p">,</span> <span class="s">&#39;BAR&#39;</span><span class="p">])</span>
+<span class="go">&#39;BAZ&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lstrips</span><span class="p">(</span><span class="s">&#39;FOOBARBAZ&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;BAR&#39;</span><span class="p">,</span> <span class="s">&#39;FOO&#39;</span><span class="p">])</span>
+<span class="go">&#39;BARBAZ&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.strips">
+<tt class="descclassname">utils.</tt><tt class="descname">strips</tt><big>(</big><em>text</em>, <em>remove</em><big>)</big><a class="reference internal" href="_modules/utils.html#strips"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.strips" title="Permalink to this definition">¶</a></dt>
+<dd><p>removes the string <cite>remove</cite> from the both sides of <cite>text</cite></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">strips</span><span class="p">(</span><span class="s">&quot;foobarfoo&quot;</span><span class="p">,</span> <span class="s">&quot;foo&quot;</span><span class="p">)</span>
+<span class="go">&#39;bar&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.safeunicode">
+<tt class="descclassname">utils.</tt><tt class="descname">safeunicode</tt><big>(</big><em>obj</em>, <em>encoding='utf-8'</em><big>)</big><a class="reference internal" href="_modules/utils.html#safeunicode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.safeunicode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts any given object to unicode string.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">safeunicode</span><span class="p">(</span><span class="s">&#39;hello&#39;</span><span class="p">)</span>
+<span class="go">u&#39;hello&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">safeunicode</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">u&#39;2&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">safeunicode</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\xe1\x88\xb4</span><span class="s">&#39;</span><span class="p">)</span>
+<span class="go">u&#39;\u1234&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.safestr">
+<tt class="descclassname">utils.</tt><tt class="descname">safestr</tt><big>(</big><em>obj</em>, <em>encoding='utf-8'</em><big>)</big><a class="reference internal" href="_modules/utils.html#safestr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.safestr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts any given object to utf-8 encoded string.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">safestr</span><span class="p">(</span><span class="s">&#39;hello&#39;</span><span class="p">)</span>
+<span class="go">&#39;hello&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">safestr</span><span class="p">(</span><span class="s">u&#39;</span><span class="se">\u1234</span><span class="s">&#39;</span><span class="p">)</span>
+<span class="go">&#39;\xe1\x88\xb4&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">safestr</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">&#39;2&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.utf8">
+<tt class="descclassname">utils.</tt><tt class="descname">utf8</tt><big>(</big><em>obj</em>, <em>encoding='utf-8'</em><big>)</big><a class="headerlink" href="#utils.utf8" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts any given object to utf-8 encoded string.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">safestr</span><span class="p">(</span><span class="s">&#39;hello&#39;</span><span class="p">)</span>
+<span class="go">&#39;hello&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">safestr</span><span class="p">(</span><span class="s">u&#39;</span><span class="se">\u1234</span><span class="s">&#39;</span><span class="p">)</span>
+<span class="go">&#39;\xe1\x88\xb4&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">safestr</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">&#39;2&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="exception">
+<dt id="utils.TimeoutError">
+<em class="property">exception </em><tt class="descclassname">utils.</tt><tt class="descname">TimeoutError</tt><a class="reference internal" href="_modules/utils.html#TimeoutError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.TimeoutError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.timelimit">
+<tt class="descclassname">utils.</tt><tt class="descname">timelimit</tt><big>(</big><em>timeout</em><big>)</big><a class="reference internal" href="_modules/utils.html#timelimit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.timelimit" title="Permalink to this definition">¶</a></dt>
+<dd><p>A decorator to limit a function to <cite>timeout</cite> seconds, raising <cite>TimeoutError</cite>
+if it takes longer.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">time</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">meaningoflife</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="mi">42</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">timelimit</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)(</span><span class="n">meaningoflife</span><span class="p">)()</span>
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">TimeoutError</span>: <span class="n">took too long</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">timelimit</span><span class="p">(</span><span class="mi">1</span><span class="p">)(</span><span class="n">meaningoflife</span><span class="p">)()</span>
+<span class="go">42</span>
+</pre></div>
+</div>
+<p>_Caveat:_ The function isn&#8217;t stopped after <cite>timeout</cite> seconds but continues
+executing in a separate thread. (There seems to be no way to kill a thread.)</p>
+<p>inspired by &lt;<a class="reference external" href="http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/473878">http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/473878</a>&gt;</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="utils.Memoize">
+<em class="property">class </em><tt class="descclassname">utils.</tt><tt class="descname">Memoize</tt><big>(</big><em>func</em>, <em>expires=None</em>, <em>background=True</em><big>)</big><a class="reference internal" href="_modules/utils.html#Memoize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.Memoize" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#8216;Memoizes&#8217; a function, caching its return values for each input.
+If <cite>expires</cite> is specified, values are recalculated after <cite>expires</cite> seconds.
+If <cite>background</cite> is specified, values are recalculated in a separate thread.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">calls</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">howmanytimeshaveibeencalled</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">global</span> <span class="n">calls</span>
+<span class="gp">... </span>    <span class="n">calls</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">calls</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fastcalls</span> <span class="o">=</span> <span class="n">memoize</span><span class="p">(</span><span class="n">howmanytimeshaveibeencalled</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">howmanytimeshaveibeencalled</span><span class="p">()</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">howmanytimeshaveibeencalled</span><span class="p">()</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fastcalls</span><span class="p">()</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fastcalls</span><span class="p">()</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">time</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fastcalls</span> <span class="o">=</span> <span class="n">memoize</span><span class="p">(</span><span class="n">howmanytimeshaveibeencalled</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fastcalls</span><span class="p">()</span>
+<span class="go">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fastcalls</span><span class="p">()</span>
+<span class="go">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fastcalls</span><span class="p">()</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">slowfunc</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">howmanytimeshaveibeencalled</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fastcalls</span> <span class="o">=</span> <span class="n">memoize</span><span class="p">(</span><span class="n">slowfunc</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fastcalls</span><span class="p">()</span>
+<span class="go">6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">timelimit</span><span class="p">(</span><span class="o">.</span><span class="mo">05</span><span class="p">)(</span><span class="n">fastcalls</span><span class="p">)()</span>
+<span class="go">6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">timelimit</span><span class="p">(</span><span class="o">.</span><span class="mo">05</span><span class="p">)(</span><span class="n">fastcalls</span><span class="p">)()</span>
+<span class="go">6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">timelimit</span><span class="p">(</span><span class="o">.</span><span class="mo">05</span><span class="p">)(</span><span class="n">fastcalls</span><span class="p">)()</span>
+<span class="go">6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">timelimit</span><span class="p">(</span><span class="o">.</span><span class="mo">05</span><span class="p">)(</span><span class="n">fastcalls</span><span class="p">)()</span>
+<span class="go">7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fastcalls</span> <span class="o">=</span> <span class="n">memoize</span><span class="p">(</span><span class="n">slowfunc</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">fastcalls</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mo">01</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fastcalls</span><span class="p">()</span>
+<span class="go">9</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="utils.memoize">
+<tt class="descclassname">utils.</tt><tt class="descname">memoize</tt><a class="headerlink" href="#utils.memoize" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#utils.Memoize" title="utils.Memoize"><tt class="xref py py-class docutils literal"><span class="pre">Memoize</span></tt></a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.re_subm">
+<tt class="descclassname">utils.</tt><tt class="descname">re_subm</tt><big>(</big><em>pat</em>, <em>repl</em>, <em>string</em><big>)</big><a class="reference internal" href="_modules/utils.html#re_subm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.re_subm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like re.sub, but returns the replacement _and_ the match object.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">re_subm</span><span class="p">(</span><span class="s">&#39;g(oo+)fball&#39;</span><span class="p">,</span> <span class="s">r&#39;f\1lish&#39;</span><span class="p">,</span> <span class="s">&#39;goooooofball&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
+<span class="go">&#39;foooooolish&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+<span class="go">(&#39;oooooo&#39;,)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.group">
+<tt class="descclassname">utils.</tt><tt class="descname">group</tt><big>(</big><em>seq</em>, <em>size</em><big>)</big><a class="reference internal" href="_modules/utils.html#group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an iterator over a series of lists of length size from iterable.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">group</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
+<span class="go">[[1, 2], [3, 4]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">group</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
+<span class="go">[[1, 2], [3, 4], [5]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.uniq">
+<tt class="descclassname">utils.</tt><tt class="descname">uniq</tt><big>(</big><em>seq</em>, <em>key=None</em><big>)</big><a class="reference internal" href="_modules/utils.html#uniq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.uniq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes duplicate elements from a list while preserving the order of the rest.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">uniq</span><span class="p">([</span><span class="mi">9</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">[9, 0, 2, 1]</span>
+</pre></div>
+</div>
+<p>The value of the optional <cite>key</cite> parameter should be a function that
+takes a single argument and returns a key to test the uniqueness.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">uniq</span><span class="p">([</span><span class="s">&quot;Foo&quot;</span><span class="p">,</span> <span class="s">&quot;foo&quot;</span><span class="p">,</span> <span class="s">&quot;bar&quot;</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+<span class="go">[&#39;Foo&#39;, &#39;bar&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.iterview">
+<tt class="descclassname">utils.</tt><tt class="descname">iterview</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="_modules/utils.html#iterview"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.iterview" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes an iterable <cite>x</cite> and returns an iterator over it
+which prints its progress to stderr as it iterates through.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="utils.IterBetter">
+<em class="property">class </em><tt class="descclassname">utils.</tt><tt class="descname">IterBetter</tt><big>(</big><em>iterator</em><big>)</big><a class="reference internal" href="_modules/utils.html#IterBetter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.IterBetter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an object that can be used as an iterator
+but can also be used via __getitem__ (although it
+cannot go backwards &#8211; that is, you cannot request
+<cite>iterbetter[0]</cite> after requesting <cite>iterbetter[1]</cite>).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">itertools</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">iterbetter</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">IndexError</span>: <span class="n">already passed 3</span>
+</pre></div>
+</div>
+<p>For boolean test, IterBetter peeps at first value in the itertor without effecting the iteration.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">iterbetter</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">bool</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="go">[0, 1, 2, 3, 4]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">iterbetter</span><span class="p">(</span><span class="nb">iter</span><span class="p">([]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">bool</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="utils.iterbetter">
+<tt class="descclassname">utils.</tt><tt class="descname">iterbetter</tt><a class="headerlink" href="#utils.iterbetter" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#utils.IterBetter" title="utils.IterBetter"><tt class="xref py py-class docutils literal"><span class="pre">IterBetter</span></tt></a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.safeiter">
+<tt class="descclassname">utils.</tt><tt class="descname">safeiter</tt><big>(</big><em>it</em>, <em>cleanup=None</em>, <em>ignore_errors=True</em><big>)</big><a class="reference internal" href="_modules/utils.html#safeiter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.safeiter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes an iterator safe by ignoring the exceptions occured during the iteration.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.safewrite">
+<tt class="descclassname">utils.</tt><tt class="descname">safewrite</tt><big>(</big><em>filename</em>, <em>content</em><big>)</big><a class="reference internal" href="_modules/utils.html#safewrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.safewrite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the content to a temp file and then moves the temp file to
+given filename to avoid overwriting the existing file in case of errors.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.dictreverse">
+<tt class="descclassname">utils.</tt><tt class="descname">dictreverse</tt><big>(</big><em>mapping</em><big>)</big><a class="reference internal" href="_modules/utils.html#dictreverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.dictreverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new dictionary with keys and values swapped.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dictreverse</span><span class="p">({</span><span class="mi">1</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">4</span><span class="p">})</span>
+<span class="go">{2: 1, 4: 3}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.dictfind">
+<tt class="descclassname">utils.</tt><tt class="descname">dictfind</tt><big>(</big><em>dictionary</em>, <em>element</em><big>)</big><a class="reference internal" href="_modules/utils.html#dictfind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.dictfind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a key whose value in <cite>dictionary</cite> is <cite>element</cite>
+or, if none exists, None.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">4</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dictfind</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dictfind</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.dictfindall">
+<tt class="descclassname">utils.</tt><tt class="descname">dictfindall</tt><big>(</big><em>dictionary</em>, <em>element</em><big>)</big><a class="reference internal" href="_modules/utils.html#dictfindall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.dictfindall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the keys whose values in <cite>dictionary</cite> are <cite>element</cite>
+or, if none exists, [].</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">4</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dictfindall</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="go">[1, 3]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dictfindall</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.dictincr">
+<tt class="descclassname">utils.</tt><tt class="descname">dictincr</tt><big>(</big><em>dictionary</em>, <em>element</em><big>)</big><a class="reference internal" href="_modules/utils.html#dictincr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.dictincr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Increments <cite>element</cite> in <cite>dictionary</cite>,
+setting it to one if it doesn&#8217;t exist.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">4</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dictincr</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dictincr</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.dictadd">
+<tt class="descclassname">utils.</tt><tt class="descname">dictadd</tt><big>(</big><em>*dicts</em><big>)</big><a class="reference internal" href="_modules/utils.html#dictadd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.dictadd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary consisting of the keys in the argument dictionaries.
+If they share a key, the value from the last argument is used.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dictadd</span><span class="p">({</span><span class="mi">1</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="mi">2</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+<span class="go">{1: 0, 2: 1, 3: 1}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.requeue">
+<tt class="descclassname">utils.</tt><tt class="descname">requeue</tt><big>(</big><em>queue</em>, <em>index=-1</em><big>)</big><a class="reference internal" href="_modules/utils.html#requeue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.requeue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the element at index after moving it to the beginning of the queue.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">requeue</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">[4, 1, 2, 3]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.restack">
+<tt class="descclassname">utils.</tt><tt class="descname">restack</tt><big>(</big><em>stack</em>, <em>index=0</em><big>)</big><a class="reference internal" href="_modules/utils.html#restack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.restack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the element at index after moving it to the top of stack.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">restack</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">[2, 3, 4, 1]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.listget">
+<tt class="descclassname">utils.</tt><tt class="descname">listget</tt><big>(</big><em>lst</em>, <em>ind</em>, <em>default=None</em><big>)</big><a class="reference internal" href="_modules/utils.html#listget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.listget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <cite>lst[ind]</cite> if it exists, <cite>default</cite> otherwise.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">listget</span><span class="p">([</span><span class="s">&#39;a&#39;</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">&#39;a&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">listget</span><span class="p">([</span><span class="s">&#39;a&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">listget</span><span class="p">([</span><span class="s">&#39;a&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">)</span>
+<span class="go">&#39;b&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.intget">
+<tt class="descclassname">utils.</tt><tt class="descname">intget</tt><big>(</big><em>integer</em>, <em>default=None</em><big>)</big><a class="reference internal" href="_modules/utils.html#intget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.intget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <cite>integer</cite> as an int or <cite>default</cite> if it can&#8217;t.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">intget</span><span class="p">(</span><span class="s">&#39;3&#39;</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">intget</span><span class="p">(</span><span class="s">&#39;3a&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">intget</span><span class="p">(</span><span class="s">&#39;3a&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.datestr">
+<tt class="descclassname">utils.</tt><tt class="descname">datestr</tt><big>(</big><em>then</em>, <em>now=None</em><big>)</big><a class="reference internal" href="_modules/utils.html#datestr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.datestr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a (UTC) datetime object to a nice string representation.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">datestr</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">now</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
+<span class="go">&#39;0 microseconds ago&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">{</span>
+<span class="gp">... </span>  <span class="n">timedelta</span><span class="p">(</span><span class="n">microseconds</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span> <span class="s">&#39;1 microsecond ago&#39;</span><span class="p">,</span>
+<span class="gp">... </span>  <span class="n">timedelta</span><span class="p">(</span><span class="n">microseconds</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span> <span class="s">&#39;2 microseconds ago&#39;</span><span class="p">,</span>
+<span class="gp">... </span>  <span class="o">-</span><span class="n">timedelta</span><span class="p">(</span><span class="n">microseconds</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span> <span class="s">&#39;1 microsecond from now&#39;</span><span class="p">,</span>
+<span class="gp">... </span>  <span class="o">-</span><span class="n">timedelta</span><span class="p">(</span><span class="n">microseconds</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span> <span class="s">&#39;2 microseconds from now&#39;</span><span class="p">,</span>
+<span class="gp">... </span>  <span class="n">timedelta</span><span class="p">(</span><span class="n">microseconds</span><span class="o">=</span><span class="mi">2000</span><span class="p">):</span> <span class="s">&#39;2 milliseconds ago&#39;</span><span class="p">,</span>
+<span class="gp">... </span>  <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span> <span class="s">&#39;2 seconds ago&#39;</span><span class="p">,</span>
+<span class="gp">... </span>  <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="mi">60</span><span class="p">):</span> <span class="s">&#39;2 minutes ago&#39;</span><span class="p">,</span>
+<span class="gp">... </span>  <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span><span class="p">):</span> <span class="s">&#39;2 hours ago&#39;</span><span class="p">,</span>
+<span class="gp">... </span>  <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span> <span class="s">&#39;2 days ago&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">}</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">assert</span> <span class="n">datestr</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">now</span><span class="o">=</span><span class="n">d</span><span class="o">+</span><span class="n">t</span><span class="p">)</span> <span class="o">==</span> <span class="n">v</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">datestr</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">now</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
+<span class="go">&#39;January  1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">datestr</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1969</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">now</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
+<span class="go">&#39;January  1, 1969&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">datestr</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">now</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
+<span class="go">&#39;June  1, 1970&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">datestr</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+<span class="go">&#39;&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.numify">
+<tt class="descclassname">utils.</tt><tt class="descname">numify</tt><big>(</big><em>string</em><big>)</big><a class="reference internal" href="_modules/utils.html#numify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.numify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes all non-digit characters from <cite>string</cite>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">numify</span><span class="p">(</span><span class="s">&#39;800-555-1212&#39;</span><span class="p">)</span>
+<span class="go">&#39;8005551212&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numify</span><span class="p">(</span><span class="s">&#39;800.555.1212&#39;</span><span class="p">)</span>
+<span class="go">&#39;8005551212&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.denumify">
+<tt class="descclassname">utils.</tt><tt class="descname">denumify</tt><big>(</big><em>string</em>, <em>pattern</em><big>)</big><a class="reference internal" href="_modules/utils.html#denumify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.denumify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats <cite>string</cite> according to <cite>pattern</cite>, where the letter X gets replaced
+by characters from <cite>string</cite>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">denumify</span><span class="p">(</span><span class="s">&quot;8005551212&quot;</span><span class="p">,</span> <span class="s">&quot;(XXX) XXX-XXXX&quot;</span><span class="p">)</span>
+<span class="go">&#39;(800) 555-1212&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.commify">
+<tt class="descclassname">utils.</tt><tt class="descname">commify</tt><big>(</big><em>n</em><big>)</big><a class="reference internal" href="_modules/utils.html#commify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.commify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add commas to an integer <cite>n</cite>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">commify</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">commify</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="go">&#39;123&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">commify</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
+<span class="go">&#39;1,234&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">commify</span><span class="p">(</span><span class="mi">1234567890</span><span class="p">)</span>
+<span class="go">&#39;1,234,567,890&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">commify</span><span class="p">(</span><span class="mf">123.0</span><span class="p">)</span>
+<span class="go">&#39;123.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">commify</span><span class="p">(</span><span class="mf">1234.5</span><span class="p">)</span>
+<span class="go">&#39;1,234.5&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">commify</span><span class="p">(</span><span class="mf">1234.56789</span><span class="p">)</span>
+<span class="go">&#39;1,234.56789&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">commify</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%.2f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="mf">1234.5</span><span class="p">)</span>
+<span class="go">&#39;1,234.50&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">commify</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.dateify">
+<tt class="descclassname">utils.</tt><tt class="descname">dateify</tt><big>(</big><em>datestring</em><big>)</big><a class="reference internal" href="_modules/utils.html#dateify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.dateify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats a numified <cite>datestring</cite> properly.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.nthstr">
+<tt class="descclassname">utils.</tt><tt class="descname">nthstr</tt><big>(</big><em>n</em><big>)</big><a class="reference internal" href="_modules/utils.html#nthstr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.nthstr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats an ordinal.
+Doesn&#8217;t handle negative numbers.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">nthstr</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">&#39;1st&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nthstr</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">&#39;0th&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">nthstr</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">]]</span>
+<span class="go">[&#39;2nd&#39;, &#39;3rd&#39;, &#39;4th&#39;, &#39;5th&#39;, &#39;10th&#39;, &#39;11th&#39;, &#39;12th&#39;, &#39;13th&#39;, &#39;14th&#39;, &#39;15th&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">nthstr</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">91</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">93</span><span class="p">,</span> <span class="mi">94</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">]]</span>
+<span class="go">[&#39;91st&#39;, &#39;92nd&#39;, &#39;93rd&#39;, &#39;94th&#39;, &#39;99th&#39;, &#39;100th&#39;, &#39;101st&#39;, &#39;102nd&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">nthstr</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">111</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">113</span><span class="p">,</span> <span class="mi">114</span><span class="p">,</span> <span class="mi">115</span><span class="p">]]</span>
+<span class="go">[&#39;111th&#39;, &#39;112th&#39;, &#39;113th&#39;, &#39;114th&#39;, &#39;115th&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.cond">
+<tt class="descclassname">utils.</tt><tt class="descname">cond</tt><big>(</big><em>predicate</em>, <em>consequence</em>, <em>alternative=None</em><big>)</big><a class="reference internal" href="_modules/utils.html#cond"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.cond" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function replacement for if-else to use in expressions.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cond</span><span class="p">(</span><span class="n">x</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;even&quot;</span><span class="p">,</span> <span class="s">&quot;odd&quot;</span><span class="p">)</span>
+<span class="go">&#39;even&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cond</span><span class="p">(</span><span class="n">x</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;even&quot;</span><span class="p">,</span> <span class="s">&quot;odd&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;_row&#39;</span>
+<span class="go">&#39;even_row&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="utils.CaptureStdout">
+<em class="property">class </em><tt class="descclassname">utils.</tt><tt class="descname">CaptureStdout</tt><big>(</big><em>func</em><big>)</big><a class="reference internal" href="_modules/utils.html#CaptureStdout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.CaptureStdout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Captures everything <cite>func</cite> prints to stdout and returns it instead.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">idiot</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="s">&quot;foo&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">capturestdout</span><span class="p">(</span><span class="n">idiot</span><span class="p">)()</span>
+<span class="go">&#39;foo\n&#39;</span>
+</pre></div>
+</div>
+<p><strong>WARNING:</strong> Not threadsafe!</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="utils.capturestdout">
+<tt class="descclassname">utils.</tt><tt class="descname">capturestdout</tt><a class="headerlink" href="#utils.capturestdout" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#utils.CaptureStdout" title="utils.CaptureStdout"><tt class="xref py py-class docutils literal"><span class="pre">CaptureStdout</span></tt></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="utils.Profile">
+<em class="property">class </em><tt class="descclassname">utils.</tt><tt class="descname">Profile</tt><big>(</big><em>func</em><big>)</big><a class="reference internal" href="_modules/utils.html#Profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.Profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Profiles <cite>func</cite> and returns a tuple containing its output
+and a string with human-readable profiling information.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">time</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span><span class="p">,</span> <span class="n">inf</span> <span class="o">=</span> <span class="n">profile</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">)(</span><span class="o">.</span><span class="mo">001</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inf</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+<span class="go">&#39;took 0.0&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="utils.profile">
+<tt class="descclassname">utils.</tt><tt class="descname">profile</tt><a class="headerlink" href="#utils.profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#utils.Profile" title="utils.Profile"><tt class="xref py py-class docutils literal"><span class="pre">Profile</span></tt></a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.tryall">
+<tt class="descclassname">utils.</tt><tt class="descname">tryall</tt><big>(</big><em>context</em>, <em>prefix=None</em><big>)</big><a class="reference internal" href="_modules/utils.html#tryall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.tryall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tries a series of functions and prints their results.
+<cite>context</cite> is a dictionary mapping names to values;
+the value will only be tried if it&#8217;s callable.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tryall</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">True</span><span class="p">))</span>
+<span class="go">j: True</span>
+<span class="go">----------------------------------------</span>
+<span class="go">results:</span>
+<span class="go">   True: 1</span>
+</pre></div>
+</div>
+<p>For example, you might have a file <cite>test/stuff.py</cite>
+with a series of functions testing various things in it.
+At the bottom, have a line:</p>
+<blockquote>
+<div>if __name__ == &#8220;__main__&#8221;: tryall(globals())</div></blockquote>
+<p>Then you can run <cite>python test/stuff.py</cite> and get the results of
+all the tests.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="utils.ThreadedDict">
+<em class="property">class </em><tt class="descclassname">utils.</tt><tt class="descname">ThreadedDict</tt><a class="reference internal" href="_modules/utils.html#ThreadedDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.ThreadedDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">thread._local</span></tt></p>
+<p>Thread local storage.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">ThreadedDict</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">x</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">threading</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">f</span><span class="p">():</span> <span class="n">d</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">x</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="utils.ThreadedDict.clear">
+<tt class="descname">clear</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/utils.html#ThreadedDict.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.ThreadedDict.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="utils.ThreadedDict.clear_all">
+<em class="property">static </em><tt class="descname">clear_all</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/utils.html#ThreadedDict.clear_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.ThreadedDict.clear_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears all ThreadedDict instances.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.ThreadedDict.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/utils.html#ThreadedDict.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.ThreadedDict.copy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.ThreadedDict.get">
+<tt class="descname">get</tt><big>(</big><em>key</em>, <em>default=None</em><big>)</big><a class="reference internal" href="_modules/utils.html#ThreadedDict.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.ThreadedDict.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.ThreadedDict.has_key">
+<tt class="descname">has_key</tt><big>(</big><em>key</em><big>)</big><a class="headerlink" href="#utils.ThreadedDict.has_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.ThreadedDict.items">
+<tt class="descname">items</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/utils.html#ThreadedDict.items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.ThreadedDict.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.ThreadedDict.iter">
+<tt class="descname">iter</tt><big>(</big><big>)</big><a class="headerlink" href="#utils.ThreadedDict.iter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.ThreadedDict.iteritems">
+<tt class="descname">iteritems</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/utils.html#ThreadedDict.iteritems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.ThreadedDict.iteritems" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.ThreadedDict.iterkeys">
+<tt class="descname">iterkeys</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/utils.html#ThreadedDict.iterkeys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.ThreadedDict.iterkeys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.ThreadedDict.itervalues">
+<tt class="descname">itervalues</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/utils.html#ThreadedDict.itervalues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.ThreadedDict.itervalues" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.ThreadedDict.keys">
+<tt class="descname">keys</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/utils.html#ThreadedDict.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.ThreadedDict.keys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.ThreadedDict.pop">
+<tt class="descname">pop</tt><big>(</big><em>key</em>, <em>*args</em><big>)</big><a class="reference internal" href="_modules/utils.html#ThreadedDict.pop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.ThreadedDict.pop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.ThreadedDict.popitem">
+<tt class="descname">popitem</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/utils.html#ThreadedDict.popitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.ThreadedDict.popitem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.ThreadedDict.setdefault">
+<tt class="descname">setdefault</tt><big>(</big><em>key</em>, <em>default=None</em><big>)</big><a class="reference internal" href="_modules/utils.html#ThreadedDict.setdefault"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.ThreadedDict.setdefault" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.ThreadedDict.update">
+<tt class="descname">update</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/utils.html#ThreadedDict.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.ThreadedDict.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.ThreadedDict.values">
+<tt class="descname">values</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/utils.html#ThreadedDict.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.ThreadedDict.values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="utils.threadeddict">
+<tt class="descclassname">utils.</tt><tt class="descname">threadeddict</tt><a class="headerlink" href="#utils.threadeddict" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#utils.ThreadedDict" title="utils.ThreadedDict"><tt class="xref py py-class docutils literal"><span class="pre">ThreadedDict</span></tt></a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.autoassign">
+<tt class="descclassname">utils.</tt><tt class="descname">autoassign</tt><big>(</big><em>self</em>, <em>locals</em><big>)</big><a class="reference internal" href="_modules/utils.html#autoassign"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.autoassign" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatically assigns local variables to <cite>self</cite>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span> <span class="o">=</span> <span class="n">storage</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">autoassign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span>
+<span class="go">&lt;Storage {&#39;a&#39;: 1, &#39;b&#39;: 2}&gt;</span>
+</pre></div>
+</div>
+<p>Generally used in <cite>__init__</cite> methods, as in:</p>
+<blockquote>
+<div>def __init__(self, foo, bar, baz=1): autoassign(self, locals())</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.to36">
+<tt class="descclassname">utils.</tt><tt class="descname">to36</tt><big>(</big><em>q</em><big>)</big><a class="reference internal" href="_modules/utils.html#to36"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.to36" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an integer to base 36 (a useful scheme for human-sayable IDs).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">to36</span><span class="p">(</span><span class="mi">35</span><span class="p">)</span>
+<span class="go">&#39;z&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">to36</span><span class="p">(</span><span class="mi">119292</span><span class="p">)</span>
+<span class="go">&#39;2k1o&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">int</span><span class="p">(</span><span class="n">to36</span><span class="p">(</span><span class="mi">939387374</span><span class="p">),</span> <span class="mi">36</span><span class="p">)</span>
+<span class="go">939387374</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">to36</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">&#39;0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">to36</span><span class="p">(</span><span class="o">-</span><span class="mi">393</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">ValueError</span>: <span class="n">must supply a positive integer</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.safemarkdown">
+<tt class="descclassname">utils.</tt><tt class="descname">safemarkdown</tt><big>(</big><em>text</em><big>)</big><a class="reference internal" href="_modules/utils.html#safemarkdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.safemarkdown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts text to HTML following the rules of Markdown, but blocking any
+outside HTML input, so that only the things supported by Markdown
+can be used. Also converts raw URLs to links.</p>
+<p>(requires [markdown.py](<a class="reference external" href="http://webpy.org/markdown.py">http://webpy.org/markdown.py</a>))</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.sendmail">
+<tt class="descclassname">utils.</tt><tt class="descname">sendmail</tt><big>(</big><em>from_address</em>, <em>to_address</em>, <em>subject</em>, <em>message</em>, <em>headers=None</em>, <em>**kw</em><big>)</big><a class="reference internal" href="_modules/utils.html#sendmail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.sendmail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends the email message <cite>message</cite> with mail and envelope headers
+for from <cite>from_address_</cite> to <cite>to_address</cite> with <cite>subject</cite>.
+Additional email headers can be specified with the dictionary
+<a href="#id1"><span class="problematic" id="id2">`</span></a>headers.</p>
+<p>Optionally cc, bcc and attachments can be specified as keyword arguments.
+Attachments must be an iterable and each attachment can be either a
+filename or a file object or a dictionary with filename, content and
+optionally content_type keys.</p>
+<p>If <cite>web.config.smtp_server</cite> is set, it will send the message
+to that SMTP server. Otherwise it will look for
+<cite>/usr/sbin/sendmail</cite>, the typical location for the sendmail-style
+binary. To use sendmail from a different path, set <cite>web.config.sendmail_path</cite>.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/utils.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">bz_python_lib 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, bigzhu.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,391 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ui_module package &mdash; bz_python_lib 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="bz_python_lib 1.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">bz_python_lib 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="ui-module-package">
+<h1>ui_module package<a class="headerlink" href="#ui-module-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ui_module.comment_m">
+<span id="ui-module-comment-m-module"></span><h2>ui_module.comment_m module<a class="headerlink" href="#module-ui_module.comment_m" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ui_module.comment_m.comment">
+<em class="property">class </em><tt class="descclassname">ui_module.comment_m.</tt><tt class="descname">comment</tt><big>(</big><em>application</em>, <em>request</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/ui_module/comment_m.html#comment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.comment_m.comment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="tornado_bz.html#tornado_bz.BaseHandler" title="tornado_bz.BaseHandler"><tt class="xref py py-class docutils literal"><span class="pre">tornado_bz.BaseHandler</span></tt></a></p>
+<p>公用的评论系统
+key_type 评论的挂载类型
+key 评论的挂载 id</p>
+<dl class="method">
+<dt id="ui_module.comment_m.comment.get">
+<tt class="descname">get</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui_module/comment_m.html#comment.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.comment_m.comment.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_module.comment_m.comment.initialize">
+<tt class="descname">initialize</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui_module/comment_m.html#comment.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.comment_m.comment.initialize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_module.comment_m.comment.post">
+<tt class="descname">post</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/ui_module/comment_m.html#comment.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.comment_m.comment.post" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ui_module.comment_m.comment_m">
+<em class="property">class </em><tt class="descclassname">ui_module.comment_m.</tt><tt class="descname">comment_m</tt><big>(</big><em>handler</em><big>)</big><a class="reference internal" href="_modules/ui_module/comment_m.html#comment_m"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.comment_m.comment_m" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ui_module.my_ui_module.MyUIModule" title="ui_module.my_ui_module.MyUIModule"><tt class="xref py py-class docutils literal"><span class="pre">ui_module.my_ui_module.MyUIModule</span></tt></a></p>
+<p>评论,需要传入参数
+comments: 评论组, 包括评论内容,以及评论时间,具体参见 comment 表
+key_type: 一个网站有多个地方有评论时候,用于区分哪个模块,可空
+key: 关键字,一般就是 id, 比如 site_id,定位是哪个东西的评论
+user_info:用户信息,发评论的人的信息</p>
+<p>&#8211; Table: comment</p>
+<p>&#8211; DROP TABLE comment;</p>
+<p>CREATE TABLE comment
+(
+&#8211; 继承 from table base:  id integer NOT NULL DEFAULT nextval(&#8216;base_id_seq&#8217;::regclass),
+&#8211; 继承 from table base:  created_date timestamp without time zone DEFAULT now(),
+&#8211; 继承 from table base:  stat_date timestamp without time zone DEFAULT now(),</p>
+<blockquote>
+<div>key_type text, &#8211; 用于那个类型....
+key text, &#8211; 比如填入 site_id,...
+user_name text, &#8211; 用户名...
+picture text, &#8211; 用户头像...
+comment text, &#8211; 评论
+parent_id integer &#8211; 可空,父节点 id</div></blockquote>
+<p>)
+INHERITS (base)
+WITH (</p>
+<blockquote>
+<div>OIDS=FALSE</div></blockquote>
+<p>);
+COMMENT ON COLUMN comment.user_id IS &#8216;填写的用户 id&#8217;;
+COMMENT ON COLUMN comment.key_type IS &#8216;用于那个类型.</p>
+<p>比如一个系统有多个地方都要有评论,则用这个来区别</p>
+<p>为了站点可以填为 site&#8217;;
+COMMENT ON COLUMN comment.key IS &#8216;比如填入 site_id,
+使用这个评论的元素&#8217;;
+COMMENT ON COLUMN comment.user_name IS &#8216;用户名
+可以为空,如果你用 user_id 去关联其他表的话&#8217;;
+COMMENT ON COLUMN comment.picture IS &#8216;用户头像</p>
+<p>可空&#8217;;
+COMMENT ON COLUMN comment.comment IS &#8216;评论&#8217;;
+COMMENT ON COLUMN comment.parent_id IS &#8216;可空,父节点 id&#8217;;</p>
+<dl class="method">
+<dt id="ui_module.comment_m.comment_m.render">
+<tt class="descname">render</tt><big>(</big><em>comments</em>, <em>key_type</em>, <em>key</em>, <em>user_info</em><big>)</big><a class="reference internal" href="_modules/ui_module/comment_m.html#comment_m.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.comment_m.comment_m.render" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ui_module.loading_m">
+<span id="ui-module-loading-m-module"></span><h2>ui_module.loading_m module<a class="headerlink" href="#module-ui_module.loading_m" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ui_module.loading_m.loading_m">
+<em class="property">class </em><tt class="descclassname">ui_module.loading_m.</tt><tt class="descname">loading_m</tt><big>(</big><em>handler</em><big>)</big><a class="reference internal" href="_modules/ui_module/loading_m.html#loading_m"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.loading_m.loading_m" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ui_module.my_ui_module.MyUIModule" title="ui_module.my_ui_module.MyUIModule"><tt class="xref py py-class docutils literal"><span class="pre">ui_module.my_ui_module.MyUIModule</span></tt></a></p>
+<p>create by bigzhu at 15/02/20 23:20:30 loading 的 module</p>
+<dl class="method">
+<dt id="ui_module.loading_m.loading_m.render">
+<tt class="descname">render</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui_module/loading_m.html#loading_m.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.loading_m.loading_m.render" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ui_module.login_m">
+<span id="ui-module-login-m-module"></span><h2>ui_module.login_m module<a class="headerlink" href="#module-ui_module.login_m" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ui_module.login_m.douban">
+<em class="property">class </em><tt class="descclassname">ui_module.login_m.</tt><tt class="descname">douban</tt><big>(</big><em>application</em>, <em>request</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#douban"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.douban" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="tornado_bz.html#tornado_bz.BaseHandler" title="tornado_bz.BaseHandler"><tt class="xref py py-class docutils literal"><span class="pre">tornado_bz.BaseHandler</span></tt></a>, <a class="reference internal" href="tornado_auth_bz.html#tornado_auth_bz.DoubanOAuth2Mixin" title="tornado_auth_bz.DoubanOAuth2Mixin"><tt class="xref py py-class docutils literal"><span class="pre">tornado_auth_bz.DoubanOAuth2Mixin</span></tt></a></p>
+<dl class="method">
+<dt id="ui_module.login_m.douban.get">
+<tt class="descname">get</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#douban.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.douban.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_module.login_m.douban.initialize">
+<tt class="descname">initialize</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#douban.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.douban.initialize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ui_module.login_m.google">
+<em class="property">class </em><tt class="descclassname">ui_module.login_m.</tt><tt class="descname">google</tt><big>(</big><em>application</em>, <em>request</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#google"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.google" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="tornado_bz.html#tornado_bz.BaseHandler" title="tornado_bz.BaseHandler"><tt class="xref py py-class docutils literal"><span class="pre">tornado_bz.BaseHandler</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">tornado.auth.GoogleOAuth2Mixin</span></tt></p>
+<p>显而易见, google 登录</p>
+<dl class="method">
+<dt id="ui_module.login_m.google.get">
+<tt class="descname">get</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#google.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.google.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_module.login_m.google.getUserInfo">
+<tt class="descname">getUserInfo</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#google.getUserInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.google.getUserInfo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_module.login_m.google.initialize">
+<tt class="descname">initialize</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#google.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.google.initialize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ui_module.login_m.login">
+<em class="property">class </em><tt class="descclassname">ui_module.login_m.</tt><tt class="descname">login</tt><big>(</big><em>application</em>, <em>request</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.login" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="tornado_bz.html#tornado_bz.BaseHandler" title="tornado_bz.BaseHandler"><tt class="xref py py-class docutils literal"><span class="pre">tornado_bz.BaseHandler</span></tt></a></p>
+<p>登录后台的方法</p>
+<dl class="method">
+<dt id="ui_module.login_m.login.get">
+<tt class="descname">get</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#login.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.login.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_module.login_m.login.initialize">
+<tt class="descname">initialize</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#login.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.login.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>针对 oauth2 ,需要你重载的时候来设置为你自己的参数, 以下是 google twitter douban 的例子</p>
+<p># google 登录的参数
+CLIENT_ID = &#8216;413021385046-mgcrb8l8qnc3kdg8h9tq3857ae71idke.apps.googleusercontent.com&#8217;
+CLIENT_SECRET = &#8216;hygluwSg-7L_WsifSC5-4OZ5&#8217;
+self.settings[&#8220;google_oauth&#8221;] = {</p>
+<blockquote>
+<div>&#8220;key&#8221;: CLIENT_ID,
+&#8220;secret&#8221;: CLIENT_SECRET,
+&#8220;redirect_uri&#8221;: &#8220;<a class="reference external" href="http://www.highwe.net/google">http://www.highwe.net/google</a>&#8221;,</div></blockquote>
+<p>}
+# twitter
+self.settings[&#8220;twitter_consumer_key&#8221;] = &#8216;YmQK6YdczdtjMPLsHjoVs8QgH&#8217;
+self.settings[&#8220;twitter_consumer_secret&#8221;] = &#8216;ZM1fklU38SBQN5RBwvRH1yRttrrHjBS5uuOtqIqUObIGafgeRG&#8217;
+# douban
+self.settings[&#8220;douban_api_key&#8221;] = &#8216;01be463aa2868092053ad2afe79381b6&#8217;
+self.settings[&#8220;douban_api_secret&#8221;] = &#8216;a957e7c9cc366f86&#8217;
+self.settings[&#8220;redirect_uri&#8221;] = &#8216;<a class="reference external" href="http://highwe.net/douban">http://highwe.net/douban</a>&#8216;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui_module.login_m.login.post">
+<tt class="descname">post</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#login.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.login.post" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_module.login_m.login.put">
+<tt class="descname">put</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#login.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.login.put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ui_module.login_m.login_m">
+<em class="property">class </em><tt class="descclassname">ui_module.login_m.</tt><tt class="descname">login_m</tt><big>(</big><em>handler</em><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#login_m"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.login_m" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ui_module.my_ui_module.MyUIModule" title="ui_module.my_ui_module.MyUIModule"><tt class="xref py py-class docutils literal"><span class="pre">ui_module.my_ui_module.MyUIModule</span></tt></a></p>
+<p>登录的页面</p>
+<dl class="attribute">
+<dt id="ui_module.login_m.login_m.action_url">
+<tt class="descname">action_url</tt><em class="property"> = '/login'</em><a class="headerlink" href="#ui_module.login_m.login_m.action_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_module.login_m.login_m.render">
+<tt class="descname">render</tt><big>(</big><em>oauth2</em><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#login_m.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.login_m.render" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ui_module.login_m.logout">
+<em class="property">class </em><tt class="descclassname">ui_module.login_m.</tt><tt class="descname">logout</tt><big>(</big><em>application</em>, <em>request</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#logout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.logout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="tornado_bz.html#tornado_bz.BaseHandler" title="tornado_bz.BaseHandler"><tt class="xref py py-class docutils literal"><span class="pre">tornado_bz.BaseHandler</span></tt></a></p>
+<dl class="method">
+<dt id="ui_module.login_m.logout.get">
+<tt class="descname">get</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#logout.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.logout.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ui_module.login_m.twitter">
+<em class="property">class </em><tt class="descclassname">ui_module.login_m.</tt><tt class="descname">twitter</tt><big>(</big><em>application</em>, <em>request</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#twitter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.twitter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="tornado_bz.html#tornado_bz.BaseHandler" title="tornado_bz.BaseHandler"><tt class="xref py py-class docutils literal"><span class="pre">tornado_bz.BaseHandler</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">tornado.auth.TwitterMixin</span></tt></p>
+<dl class="method">
+<dt id="ui_module.login_m.twitter.get">
+<tt class="descname">get</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#twitter.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.twitter.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_module.login_m.twitter.initialize">
+<tt class="descname">initialize</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui_module/login_m.html#twitter.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.login_m.twitter.initialize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ui_module.my_ui_module">
+<span id="ui-module-my-ui-module-module"></span><h2>ui_module.my_ui_module module<a class="headerlink" href="#module-ui_module.my_ui_module" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ui_module.my_ui_module.JsUIModule">
+<em class="property">class </em><tt class="descclassname">ui_module.my_ui_module.</tt><tt class="descname">JsUIModule</tt><big>(</big><em>handler</em><big>)</big><a class="reference internal" href="_modules/ui_module/my_ui_module.html#JsUIModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.my_ui_module.JsUIModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">tornado.web.UIModule</span></tt></p>
+<p>create by bigzhu at 15/02/22 03:40:44 用于只有 js 的 ui module</p>
+<dl class="method">
+<dt id="ui_module.my_ui_module.JsUIModule.embedded_javascript">
+<tt class="descname">embedded_javascript</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui_module/my_ui_module.html#JsUIModule.embedded_javascript"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.my_ui_module.JsUIModule.embedded_javascript" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_module.my_ui_module.JsUIModule.render">
+<tt class="descname">render</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui_module/my_ui_module.html#JsUIModule.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.my_ui_module.JsUIModule.render" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ui_module.my_ui_module.MyUIModule">
+<em class="property">class </em><tt class="descclassname">ui_module.my_ui_module.</tt><tt class="descname">MyUIModule</tt><big>(</big><em>handler</em><big>)</big><a class="reference internal" href="_modules/ui_module/my_ui_module.html#MyUIModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.my_ui_module.MyUIModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">tornado.web.UIModule</span></tt></p>
+<dl class="attribute">
+<dt id="ui_module.my_ui_module.MyUIModule.action_url">
+<tt class="descname">action_url</tt><em class="property"> = ''</em><a class="headerlink" href="#ui_module.my_ui_module.MyUIModule.action_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_module.my_ui_module.MyUIModule.embedded_css">
+<tt class="descname">embedded_css</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui_module/my_ui_module.html#MyUIModule.embedded_css"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.my_ui_module.MyUIModule.embedded_css" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_module.my_ui_module.MyUIModule.embedded_javascript">
+<tt class="descname">embedded_javascript</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui_module/my_ui_module.html#MyUIModule.embedded_javascript"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.my_ui_module.MyUIModule.embedded_javascript" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_module.my_ui_module.MyUIModule.render">
+<tt class="descname">render</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui_module/my_ui_module.html#MyUIModule.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.my_ui_module.MyUIModule.render" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ui_module.public_m">
+<span id="ui-module-public-m-module"></span><h2>ui_module.public_m module<a class="headerlink" href="#module-ui_module.public_m" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ui_module.public_m.public_m">
+<em class="property">class </em><tt class="descclassname">ui_module.public_m.</tt><tt class="descname">public_m</tt><big>(</big><em>handler</em><big>)</big><a class="reference internal" href="_modules/ui_module/public_m.html#public_m"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui_module.public_m.public_m" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ui_module.my_ui_module.JsUIModule" title="ui_module.my_ui_module.JsUIModule"><tt class="xref py py-class docutils literal"><span class="pre">ui_module.my_ui_module.JsUIModule</span></tt></a></p>
+<p>create by bigzhu at 15/02/21 18:34:46 就是为了提供 public.js 来用</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ui_module">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ui_module" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ui_module package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-ui_module.comment_m">ui_module.comment_m module</a></li>
+<li><a class="reference internal" href="#module-ui_module.loading_m">ui_module.loading_m module</a></li>
+<li><a class="reference internal" href="#module-ui_module.login_m">ui_module.login_m module</a></li>
+<li><a class="reference internal" href="#module-ui_module.my_ui_module">ui_module.my_ui_module module</a></li>
+<li><a class="reference internal" href="#module-ui_module.public_m">ui_module.public_m module</a></li>
+<li><a class="reference internal" href="#module-ui_module">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/ui_module.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">bz_python_lib 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, bigzhu.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

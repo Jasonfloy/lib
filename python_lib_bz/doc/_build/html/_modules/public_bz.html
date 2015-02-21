@@ -55,17 +55,24 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">decimal</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+<span class="kn">import</span> <span class="nn">utils</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
 
 
 <div class="viewcode-block" id="ExtEncoder"><a class="viewcode-back" href="../public_bz.html#public_bz.ExtEncoder">[docs]</a><span class="k">class</span> <span class="nc">ExtEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    modify by bigzhu at 15/01/30 11:25:22 增加对 utils.IterBetter 的支持</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
 <div class="viewcode-block" id="ExtEncoder.default"><a class="viewcode-back" href="../public_bz.html#public_bz.ExtEncoder.default">[docs]</a>    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">timetuple</span><span class="p">())</span> <span class="o">*</span> <span class="mi">1000</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">IterBetter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
         <span class="c"># Defer to the superclass method</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span>
 
@@ -183,9 +190,25 @@
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="n">content</span> <span class="o">=</span> <span class="s">&#39;djoin_error:&#39;</span> <span class="o">+</span> <span class="n">getExpInfo</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">content</span>
+
+</div>
+<div class="viewcode-block" id="getCountryCodeByIP"><a class="viewcode-back" href="../public_bz.html#public_bz.getCountryCodeByIP">[docs]</a><span class="k">def</span> <span class="nf">getCountryCodeByIP</span><span class="p">(</span><span class="n">ip</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    根据 ip 地址取到所属的国家编码</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">country_code</span> <span class="o">=</span> <span class="s">&quot;not found&quot;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;http://freegeoip.net/json/&#39;</span> <span class="o">+</span> <span class="n">ip</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;country_code&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">country_code</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;country_code&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">getExpInfoAll</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">country_code</span>
 </div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="k">pass</span>
+    <span class="n">getCountryCodeByIP</span><span class="p">(</span><span class="s">&#39;www.douban.com&#39;</span><span class="p">)</span>
 </pre></div>
 
           </div>
