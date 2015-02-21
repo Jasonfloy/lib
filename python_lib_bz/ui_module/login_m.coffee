@@ -1,27 +1,10 @@
-Vue.config.delimiters = ['(%', '%)']
-Vue.directive "show-bz",
-  bind: (value) ->
-    if value and value.length != 0
-      $(@el).removeClass('hide_bz')
-    else
-      $(@el).addClass('hide_bz')
-  update: (value) ->
-    if value and value.length != 0
-      $(@el).removeClass('hide_bz')
-    else
-      $(@el).addClass('hide_bz')
-
-data = {}
-data.uploading = false
-data.error_info = false
-data.button_name = '登录'
-
-login = new Vue
+v_login = new Vue
   el:'#v_login'
-  data:->
-    data
+  data:
+    error_info:false
   methods:
     submit:(e)->
+      log 'bigzhu'
       data.error_info = false
       if @$data.user_name == '' or @$data.user_name == undefined
         @$data.error_info = '请输入用户名'

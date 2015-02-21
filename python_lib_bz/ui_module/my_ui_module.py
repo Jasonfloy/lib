@@ -11,8 +11,8 @@ class MyUIModule(UIModule):
         UIModule.__init__(self, handler)
 
         self.class_name = self.__class__.__name__
-        self.css_name = self.class_name + '.css'
-        self.js_name = self.class_name + '.js'
+        self.css_name = self.class_name + '.min.css'
+        self.js_name = self.class_name + '.min.js'
         self.html_name = self.class_name + '.html'
 
     def embedded_css(self):
@@ -33,7 +33,7 @@ class JsUIModule(UIModule):
         UIModule.__init__(self, handler)
 
         self.class_name = self.__class__.__name__
-        self.js_name = self.class_name + '.js'
+        self.js_name = self.class_name + '.min.js'
 
     def embedded_javascript(self):
         return self.render_string(self.js_name)
