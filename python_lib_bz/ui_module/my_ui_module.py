@@ -25,6 +25,9 @@ class MyUIModule(UIModule):
         return self.render_string(self.html_name)
 
 class JsUIModule(UIModule):
+    '''
+    create by bigzhu at 15/02/22 03:40:44 用于只有 js 的 ui module
+    '''
 
     def __init__(self, handler):
         UIModule.__init__(self, handler)
@@ -36,4 +39,4 @@ class JsUIModule(UIModule):
         return self.render_string(self.js_name)
 
     def render(self):
-        pass
+        return ''
