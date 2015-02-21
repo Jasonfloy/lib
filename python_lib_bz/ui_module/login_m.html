@@ -1,5 +1,7 @@
+
+{% module loading_m() %}
 <div class="container">
-    <div id='v_login'>
+    <div id='v_login' v-loading="loading">
         {% if oauth2 %}
         <div class="btn-group btn-group-justified">
             {% if oauth2.get('google') and oauth2.get('google').get('enabled') %}
