@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from . import my_ui_module
-
+from ui_module import my_ui_module
 
 class public_m(my_ui_module.JsUIModule):
 

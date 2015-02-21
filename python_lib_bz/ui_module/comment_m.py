@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-from . import my_ui_module
+from ui_module import my_ui_module
 import time_bz
+import tornado_bz
 from public_bz import storage
 from tornado_bz import BaseHandler
 

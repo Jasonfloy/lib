@@ -194,6 +194,18 @@ def getURLMap(the_globals):
     return url_map
 
 
+def getAllUIModules():
+    '''create by bigzhu at 15/02/22 05:58:07 获取所有的 ui module
+    '''
+    ui_modules = []
+    import ui_module
+    import pkgutil
+    for importer, modname, ispkg in pkgutil.iter_modules(ui_module.__path__):
+        if not ispkg:
+            print modname
+            module = importer.find_module(modname).load_module(modname)
+            ui_modules.append(module)
+    return ui_modules
 def getSettings():
     '''
         返回 tornado 的 settings ,有一些默认值,省得每次都设置:
@@ -207,7 +219,7 @@ def getSettings():
         'cookie_secret': 'bigzhu so big',
         'autoescape': None,  # 模板自定义转义
         'login_url': "/login",
-        'ui_modules': []
+        'ui_modules': getAllUIModules()
     }
     return settings
 

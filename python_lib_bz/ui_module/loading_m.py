@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from . import my_ui_module
+from ui_module import my_ui_module
 
 
 class loading_m(my_ui_module.MyUIModule):

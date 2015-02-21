@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from . import my_ui_module
+from ui_module import my_ui_module
 import tornado.web
 import tornado_bz
 import json
