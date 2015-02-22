@@ -1,5 +1,5 @@
 $(->
-  login = new Vue
+  v_login = new Vue
     el:'#v_login'
     data:
       error_info:false

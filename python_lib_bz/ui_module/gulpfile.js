@@ -54,9 +54,9 @@ gulp.task('coffee', function () {
   .pipe(coffee().on('error', function (err) {
     console.log(err);
   }))
-  .pipe(jsmin().on('error', function(err) {
-    console.log(err);
-  }))
+  //.pipe(jsmin().on('error', function(err) {
+  //  console.log(err);
+  //}))
   .pipe(rename({suffix: '.min'}))
   .pipe(gulp.dest('./'));
 });

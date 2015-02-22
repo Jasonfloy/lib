@@ -1,14 +1,15 @@
+{%import time_bz%}
 {% for comment in comments %}
 <article class="comment-reply">
     <a class="pull-left thumb-sm avatar">
-        <img {% if comment.picture %} src="{{comment.picture}}" {% else %} src="/static/images/avatar.jpg" {% end %} class="img-circle">
+        <img {% if user_info.picture %} src="{{user_info.picture}}" {% else %} src="/static/images/avatar.jpg" {% end %} title="{{user_info.user_name}}">
     </a>
     <span class="arrow left"></span>
     <section class="comment-body panel panel-default text-sm">
         <div class="panel-body">
             <span class="text-muted m-l-sm pull-right">
                 <i class="fa fa-clock-o"></i>
-                {{timeLen(comment.created_date)}}
+                {{time_bz.timeLen(comment.created_date)}}
             </span>
             <div class="comment-action">
                 <a v-on="click:reply($event,{{comment.id}})" class="btn btn-default btn-xs">
@@ -26,7 +27,7 @@
         </div>
     </section>
     {%if comment.get('chilren')%}
-    {% module CommentReply(comment.chilren, timeLen) %}
+    {% module comment_reply_m(comment.chilren) %}
     {% end %}
 </article>
 
