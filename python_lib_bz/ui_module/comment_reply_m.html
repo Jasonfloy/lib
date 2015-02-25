@@ -2,7 +2,7 @@
 {% for comment in comments %}
 <article class="comment-reply">
     <a class="pull-left thumb-sm avatar">
-        <img {% if user_info.picture %} src="{{user_info.picture}}" {% else %} src="/static/images/avatar.jpg" {% end %} title="{{user_info.user_name}}">
+        <img {% if comment.picture %} src="{{comment.picture}}" {% else %} src="/static/images/avatar.jpg" {% end %} title="{{comment.user_name}}">
     </a>
     <span class="arrow left"></span>
     <section class="comment-body panel panel-default text-sm">
@@ -21,9 +21,7 @@
             <!--
             <label class="label bg-dark m-l-xs">新手</label>
             -->
-            <div class="description_bz">
-                {{comment.comment}}
-            </div>
+            <div class="description_bz">{{comment.comment}}</div>
         </div>
     </section>
     {%if comment.get('chilren')%}

@@ -49,6 +49,9 @@ class comment(UserInfoHandler):
     key 评论的挂载 id
     modify by bigzhu at 15/02/22 12:22:45 放入公用库中
     '''
+    def initialize(self):
+        UserInfoHandler.initialize(self)
+
     @tornado_bz.handleError
     @tornado_bz.mustLogin
     def post(self):
