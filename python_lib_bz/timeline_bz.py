@@ -59,15 +59,27 @@ class TimeLine():
         return self.groupByCreatedDateDay(self.pg.db.query(sql))
 
     def getTimeLineByToday(self, target_type):
+        # and date_trunc('day', t.created_date) = date_trunc('day', now())
         sql = '''
         select t.*, u.user_name, u.picture from timeline t, user_info u
             where t.user_id = u.id
             and t.target_type = '%s'
-            and date_trunc('day', t.created_date) = date_trunc('day', now())
             order by t.created_date desc
+            limit 40
         ''' % (target_type)
         return self.groupByCreatedDateDay(self.pg.db.query(sql))
-
+    def getTimeLineByUserLast40(self, target_type, user_id):
+        '''modify by bigzhu at 15/02/25 14:28:14 查询我的时间线,最近40条
+        '''
+        sql = '''
+        select t.*, u.user_name, u.picture from timeline t, user_info u
+            where t.user_id = u.id
+            and t.user_id=%s
+            and t.target_type = '%s'
+            order by t.created_date desc
+            limit 40
+        ''' % (user_id, target_type)
+        return self.groupByCreatedDateDay(self.pg.db.query(sql))
     def groupByCreatedDateDay(self, timelines):
         '''
         create by bigzhu at 15/02/03 13:44:24 按照天的精度,归并timeline

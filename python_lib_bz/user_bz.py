@@ -15,25 +15,37 @@ class UserOper:
     @daemonDB
     def login(self, user_name, password):
         '''
+        modify by bigzhu at 15/02/25 13:57:19 加入唯一约束
+
         登录模块,如果不存在这个用户名,则注册
         数据模型:
 
+
+        -- Table: user_info
+
+        -- DROP TABLE user_info;
+
         CREATE TABLE user_info
         (
-          user_type text, -- google or other
-          out_id text, -- google id or other
+        -- 继承 from table base:  id integer NOT NULL DEFAULT nextval('base_id_seq'::regclass),
+        -- 继承 from table base:  created_date timestamp without time zone DEFAULT now(),
+        -- 继承 from table base:  stat_date timestamp without time zone DEFAULT now(),
+          user_type text,
+          out_id text,
           email text,
           user_name text,
           link text,
           picture text,
-          gender text, -- mail?
-          locale text, --zh-CN
+          gender text,
+          locale text,
           password text,
-          original_json text --用来存放原始返回的 json 字段,避免有内容没存到
-        -- 继承 from table base:  user_id integer
+          original_json text,
+          CONSTRAINT user_info_out_id_key UNIQUE (out_id)
         )
         INHERITS (base)
-
+        WITH (
+          OIDS=FALSE
+        );
 
 
         '''
@@ -78,15 +90,15 @@ class UserOper:
             return user_infos[0]
         else:
             self.pg.db.insert('user_info',
-                         user_type='google',
-                         out_id=user_info['id'],
-                         email=user_info['email'],
-                         user_name=user_info['name'],
-                         link=user_info['link'],
-                         picture=user_info['picture'],
-                         gender=user_info['gender'],
-                         locale=user_info['locale']
-                         )
+                              user_type='google',
+                              out_id=user_info['id'],
+                              email=user_info['email'],
+                              user_name=user_info['name'],
+                              link=user_info['link'],
+                              picture=user_info['picture'],
+                              gender=user_info['gender'],
+                              locale=user_info['locale']
+                              )
             return self.googleLogin(user_info)
 
     @daemonDB
@@ -120,15 +132,15 @@ class UserOper:
             return user_infos[0]
         else:
             self.pg.db.insert('user_info',
-                         user_type='douban',
-                         out_id=user_info.get('id'),
-                         # email=user_info['email'],
-                         user_name=user_info.get('name'),
-                         link=user_info.get('alt'),
-                         picture=user_info.get('avatar'),
-                         # gender=user_info['gender'],
-                         locale=user_info.get('loc_name')
-                         )
+                              user_type='douban',
+                              out_id=user_info.get('id'),
+                              # email=user_info['email'],
+                              user_name=user_info.get('name'),
+                              link=user_info.get('alt'),
+                              picture=user_info.get('avatar'),
+                              # gender=user_info['gender'],
+                              locale=user_info.get('loc_name')
+                              )
             return self.doubanLogin(user_info)
 
     @daemonDB

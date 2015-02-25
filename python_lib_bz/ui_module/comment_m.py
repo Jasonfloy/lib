@@ -3,17 +3,16 @@
 
 from ui_module import my_ui_module
 import comment_bz
-import time_bz
 import tornado_bz
 from public_bz import storage
 from tornado_bz import UserInfoHandler
-import tree_bz
 import json
-import public_bz
-import pg_bz
 import tornado
 OK = '0'
+
+
 class comment_reply_m(tornado.web.UIModule):
+
     '''modify by bigzhu at 15/02/22 14:22:10 因为要递归,所以得单独独立出来
     '''
 
@@ -49,6 +48,7 @@ class comment(UserInfoHandler):
     key 评论的挂载 id
     modify by bigzhu at 15/02/22 12:22:45 放入公用库中
     '''
+
     def initialize(self):
         UserInfoHandler.initialize(self)
 
@@ -68,23 +68,4 @@ class comment(UserInfoHandler):
 
         self.write(json.dumps({'error': OK}))
 if __name__ == "__main__":
-
-    import sys
-    if len(sys.argv) == 2:
-        port = int(sys.argv[1])
-    else:
-        port = 8888
-    print port
-
-    url_map = tornado_bz.getURLMap(globals().copy())
-
-    settings = tornado_bz.getSettings()
-
-    settings["pg"] = pg_bz
-
-    application = tornado.web.Application(url_map, **settings)
-
-    application.listen(port)
-    ioloop = tornado.ioloop.IOLoop().instance()
-    tornado.autoreload.start(ioloop)
-    ioloop.start()
+    pass
