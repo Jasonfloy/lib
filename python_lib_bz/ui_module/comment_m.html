@@ -1,23 +1,41 @@
 <section id="v_comment" class="comment-list block">
     {% module comment_reply_m(parm.comments) %}
-
     {%if user_info%}
-    <article id="comment_text_area" class="comment-item" id="comment-form">
+    <article id="reply_text_area" class="comment-reply hide row">
         <a class="pull-left thumb-sm avatar">
-            <img {% if user_info.picture %} src="{{user_info.picture}}" {% else %} src="/static/images/avatar.jpg" {% end %} title="{{user_info.user_name}}">
-</a>
-        <section>
-            <form>
-                <textarea v-model="comment" class="comment-textarea" rows="3" placeholder="求评论"></textarea>
-                <button  v-on="click:clickLink('{{parm.key_type}}','{{parm.key}}')" type="button" class="btn btn-default comment-submit">发表评论</button>
-                <div v-show="error_info" class="alert alert-danger alert-dismissible comment-error" role="alert">
-                    <button v-on="click:clean" type="button" class="close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    (%error_info%)
-                </div>
-            </form>
+        <img {% if user_info.picture %} src="{{user_info.picture}}" {% else %} src="/static/images/avatar.jpg" {% end %} title="{{user_info.user_name}}"/>
+        </a>
+        <section class="comment-editable text-sm" v-on="focus:commentEdit" contenteditable="true">
+            <div class="placeholder-text">回复</div>
         </section>
+        <div class="comment-bar">
+            <button  v-on="click:clickLink('{{parm.key_type}}','{{parm.key}}', 'reply')" type="button" class="btn btn-default comment-submit">回复
+            </button>
+            <div v-show="error_info" class="alert alert-danger alert-dismissible comment-error" role="alert">
+                <button v-on="click:clean" type="button" class="close">
+                <span aria-hidden="true">×</span>
+                </button>
+                (%error_info%)
+            </div>
+        </div>
+    </article>
+    <article id="comment_text_area" class="comment-reply row">
+        <a class="pull-left thumb-sm avatar">
+        <img {% if user_info.picture %} src="{{user_info.picture}}" {% else %} src="/static/images/avatar.jpg" {% end %} title="{{user_info.user_name}}"/>
+        </a>
+        <section class="comment-editable text-sm" v-on="focus:commentEdit" contenteditable="true">
+            <div class="placeholder-text">求评论</div>
+        </section>
+        <div class="comment-bar">
+            <button  v-on="click:clickLink('{{parm.key_type}}','{{parm.key}}', 'comment')" type="button" class="btn btn-default comment-submit">发表评论
+            </button>
+            <div v-show="error_info" class="alert alert-danger alert-dismissible comment-error" role="alert">
+                <button v-on="click:clean" type="button" class="close">
+                <span aria-hidden="true">×</span>
+                </button>
+                (%error_info%)
+            </div>
+        </div>
     </article>
     {%end%}
 </section>
