@@ -1,5 +1,15 @@
 Vue.config.delimiters = ['(%', '%)']
 window.log = (parm)-> console.log parm
+#按钮上的 loading
+Vue.directive('btn-loading', (value)->
+    el = $(@el)
+    if !!value
+        el.children().hide()
+        el.prepend("<i class='fa fa-spin fa-spinner'></i>")
+    else
+        el.children(".fa.fa-spin.fa-spinner").remove()
+        el.children().show()
+)
 #进程的图标
 Vue.directive "process-icon",
   update: (value) ->

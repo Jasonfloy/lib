@@ -9,9 +9,9 @@
         <section>
             <form>
                 <textarea v-model="comment" class="comment-textarea" rows="3" placeholder="求评论"></textarea>
-                <button  v-on="click:clickLink('{{parm.key_type}}','{{parm.key}}')" type="button" class="btn btn-default comment-submit">发表评论</button>
+                <button  v-disable="btn_loading" v-btn-loading="btn_loading" v-on="click:clickLink('{{parm.key_type}}','{{parm.key}}')" type="button" class="btn btn-default comment-submit">发表评论</button>
                 <div v-show="error_info" class="alert alert-danger alert-dismissible comment-error" role="alert">
-                    <button v-on="click:clean" type="button" class="close">
+                    <button  v-on="click:clean" type="button" class="close">
                         <span aria-hidden="true">×</span>
                     </button>
                     (%error_info%)

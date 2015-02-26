@@ -3,6 +3,7 @@ $(->
     el:'#v_comment'
     data:
       error_info:false
+      btn_loading: false
       loading:false
       parent_id:0
     methods:
@@ -10,9 +11,11 @@ $(->
         @$data.error_info=false
       clickLink:(key_type, key)->
         comment = @$data.comment
+        data = @$data
         if comment == undefined or comment.trim() == ''
-          @$data.error_info = '好歹说点什么吧!'
+          data.error_info = '好歹说点什么吧!'
           return
+        data.btn_loading = true
         $.post '/comment',
           JSON.stringify
             key_type:key_type
@@ -20,6 +23,8 @@ $(->
             comment:comment
             parent_id:@$data.parent_id
         , (result) ->
+
+          data.btn_loading = false
           if result.error != '0'
             console.log result.error
             alert result.error
