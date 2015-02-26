@@ -24,9 +24,9 @@ $(->
             parent_id:@$data.parent_id
         , (result) ->
 
-          data.btn_loading = false
           if result.error != '0'
             console.log result.error
+            data.btn_loading = false
             alert result.error
           else
             location.reload()
