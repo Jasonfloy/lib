@@ -87,6 +87,12 @@ Vue.directive('active', (value)->
     $(this.el).removeClass("active")
 )
 
+$().toastmessage(
+  sticky: false
+  position: 'top-right'
+  stayTime: 5000
+)
+
 window.bz =
   #计算距今的时间间隔
   timeLen : (that_time)->
@@ -125,7 +131,8 @@ window.bz =
     setTimeout(->
       $().toastmessage('removeToast', myToast)
     , 5000)
-    
+  showError5:(message)->
+    errorToast = $().toastmessage('showErrorToast', message)
   preZero:(num, len)->
     numStr = num.toString()
     if len < numStr.length
