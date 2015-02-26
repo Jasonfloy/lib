@@ -125,12 +125,12 @@ window.bz =
     return parms[parms.length-1]
   #显示一个消息提示5s
   #依赖 https://github.com/akquinet/jquery-toastmessage-plugin
+  showSuccess5:(message)->
+    successToast = $().toastmessage('showSuccessToast', message)
   showNotice5:(message)->
-    $().toastmessage({sticky : true})
     myToast =  $().toastmessage('showNoticeToast', message)
-    setTimeout(->
-      $().toastmessage('removeToast', myToast)
-    , 5000)
+  showWarning5:(message)->
+    warningToast = $().toastmessage('showNoticeToast', message)
   showError5:(message)->
     errorToast = $().toastmessage('showErrorToast', message)
   preZero:(num, len)->
