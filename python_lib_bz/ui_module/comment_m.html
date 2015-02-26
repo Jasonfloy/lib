@@ -9,7 +9,7 @@
             <div class="placeholder-text">回复</div>
         </section>
         <div class="comment-bar">
-            <button  v-on="click:clickLink('{{parm.key_type}}','{{parm.key}}', 'reply')" type="button" class="btn btn-default comment-submit">回复
+            <button v-disable="btn_loading" v-btn-loading="btn_loading" v-on="click:clickLink('{{parm.key_type}}','{{parm.key}}', 'reply')" type="button" class="btn btn-default comment-submit">回复
             </button>
             <div v-show="error_info" class="alert alert-danger alert-dismissible comment-error" role="alert">
                 <button v-on="click:clean" type="button" class="close">
@@ -27,7 +27,7 @@
             <div class="placeholder-text">求评论</div>
         </section>
         <div class="comment-bar">
-            <button  v-on="click:clickLink('{{parm.key_type}}','{{parm.key}}', 'comment')" type="button" class="btn btn-default comment-submit">发表评论
+            <button v-disable="btn_loading" v-btn-loading="btn_loading" v-on="click:clickLink('{{parm.key_type}}','{{parm.key}}', 'comment')" type="button" class="btn btn-default comment-submit">发表评论
             </button>
             <div v-show="error_info" class="alert alert-danger alert-dismissible comment-error" role="alert">
                 <button v-on="click:clean" type="button" class="close">
