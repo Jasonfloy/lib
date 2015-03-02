@@ -150,6 +150,11 @@ window.bz =
     else
       a = new Array(len + 1).join("0") + numStr
       return a.substr(a.length - len, a.length - 1)
+  # 清除html标签
+  HTMLEncode:(value)->
+    return $("<div/>").html(value).text()
+  HTMLDecode:(value)->
+    return $("<div/>").text(value).html()
 
   #时间格式化工具 timestramp -> string
   #支持 y - 年,M - 月,d - 日,h - 小时,m - 分钟,s - 秒 根据mask中对应字符的数量自动补0
