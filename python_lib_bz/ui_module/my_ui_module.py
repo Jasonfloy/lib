@@ -11,8 +11,8 @@ class MyUIModule(UIModule):
         UIModule.__init__(self, handler)
 
         self.class_name = self.__class__.__name__
-        self.css_name = self.class_name + '.min.css'
-        self.js_name = self.class_name + '.min.js'
+        self.css_name = self.class_name + '.css'
+        self.js_name = self.class_name + '.js'
         self.html_name = self.class_name + '.html'
 
     def embedded_css(self):

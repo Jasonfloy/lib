@@ -1,0 +1,27 @@
+<section class="content-header">
+<div id="v_profile" class="col-xs-12">
+        <h3 class="box-title col-xs-12">个人资料</h3>
+        <div class="col-sm-4 col-md-2 profile-img">
+            <input id="img" type="file" v-on="change:previewImg"/>
+            <div>
+                <img {% if user_info.picture %} src="{{user_info.picture}}" {% else %} src="/static/images/avatar.jpg" {% end %} class="img-thumbnail"/>
+            </div>
+            <div class="tips">点击更换头像</div>
+        </div>
+        <div class="col-sm-8 col-md-10">
+            <div class="prifile-username">{{user_info.user_name}}</div>
+            <form role="form">
+                <div class="form-group">
+                    <label for="slogan">签名</label>
+                    <input type="email" class="form-control" v-model="slogan" v-on="keypress:modify" id="slogan" value="{% if user_info.slogan %} {{ user_info.slogan }} {% end %}"  placeholder="随便说点什么吧...">
+                </div>
+                <div class="form-group">
+                    <label for="email">邮箱</label>
+                    <input type="email" class="form-control" v-model="email" v-on="keypress:modify" id="email" value="{% if user_info.email %} {{ user_info.email }} {% end %}" placeholder="请填写邮箱地址">
+                </div>
+                <button v-disable="btn_loading" v-btn-loading="btn_loading" type="button" class="btn btn-primary" v-on="click: save">保存</button>
+            </form>
+        </div>
+    </div>
+</div>
+</section>
