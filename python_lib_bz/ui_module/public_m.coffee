@@ -133,6 +133,10 @@ window.bz =
   getLastParm:->
     parms = window.location.pathname.split( '/' )
     return parms[parms.length-1]
+  #获取hash参数，返回数组
+  getHashParms:->
+    parms = window.location.hash.split('/')
+    return parms
   #显示一个消息提示5s
   #依赖 https://github.com/akquinet/jquery-toastmessage-plugin
   showSuccess5:(message)->

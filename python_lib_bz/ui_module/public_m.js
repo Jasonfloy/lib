@@ -158,6 +158,11 @@
       parms = window.location.pathname.split('/');
       return parms[parms.length - 1];
     },
+    getHashParms: function() {
+      var parms;
+      parms = window.location.hash.split('/');
+      return parms;
+    },
     showSuccess5: function(message) {
       var successToast;
       return successToast = $().toastmessage('showSuccessToast', message);
@@ -184,8 +189,14 @@
         return a.substr(a.length - len, a.length - 1);
       }
     },
+    HTMLEncode: function(value) {
+      return $("<div/>").html(value).text();
+    },
+    HTMLDecode: function(value) {
+      return $("<div/>").text(value).html();
+    },
     dateFormat: function(timestramp, mask) {
-      var date, matched_array, o, regStr, res, _this;
+      var _this, date, matched_array, o, regStr, res;
       date = new Date(timestramp);
       _this = this;
       o = {
