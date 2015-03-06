@@ -61,7 +61,7 @@ class BaseHandler(RequestHandler):
             if file_part:
                 if isinstance(file_part, (unicode_type, bytes_type)):
                     #js_files.append(file_part)
-                    js_embed.insert(0, utf8(embed_part))
+                    js_files.insert(0, file_part)
                 else:
                     js_files.extend(file_part)
             embed_part = module.embedded_css()
