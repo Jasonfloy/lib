@@ -47,3 +47,23 @@ class JsCssUIModule(UIModule):
 
     def render(self):
         return ''
+class HtmlUIModule(UIModule):
+
+    '''
+    create by bigzhu at 15/03/05 10:22:54 只要返回 html 就可以了
+    '''
+
+    def __init__(self, handler):
+        UIModule.__init__(self, handler)
+
+        self.class_name = self.__class__.__name__
+        self.html_name = self.class_name + '.html'
+
+    def embedded_javascript(self):
+        return ''
+
+    def embedded_css(self):
+        return ''
+
+    def render(self):
+        return self.render_string(self.html_name)

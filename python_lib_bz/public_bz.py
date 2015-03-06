@@ -13,6 +13,7 @@ import os
 
 
 class ExtEncoder(json.JSONEncoder):
+
     '''
     modify by bigzhu at 15/01/30 11:25:22 增加对 utils.IterBetter 的支持
     '''
@@ -127,6 +128,14 @@ def getExecutingPath():
     # os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
     # script directory
     dirname, filename = os.path.split(os.path.abspath(sys.argv[0]))
+    return dirname
+
+
+def getLibPath():
+    '''
+    create by bigzhu at 15/03/06 15:56:48 返回 Lib,也就是现在这段代码所在的路径
+    '''
+    dirname, filename = os.path.split(os.path.abspath(__file__))
     return dirname
 
 
