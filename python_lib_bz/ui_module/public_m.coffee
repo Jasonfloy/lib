@@ -1,5 +1,16 @@
 Vue.config.delimiters = ['(%', '%)']
 window.log = (parm)-> console.log parm
+
+# 字符串显示省略
+Vue.directive('ellipsis', (str)->
+  if str
+    el = $(@el)
+    len = @arg
+    if len < str.length
+      el.html(str.substring(0, len) + "...")
+    else
+      el.html(str)
+)
 #按钮上的 loading
 Vue.directive('btn-loading', (value)->
     el = $(@el)
@@ -185,7 +196,6 @@ window.bz =
         res = o[regStr](matched_array[0].length)
         mask = mask.replace(matched_array[0], res)
     return mask
-
   #转换单位
   #传入kb
   #超过1024kb为m

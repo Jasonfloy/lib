@@ -5,6 +5,19 @@
     return console.log(parm);
   };
 
+  Vue.directive('ellipsis', function(str) {
+    var el, len;
+    if (str) {
+      el = $(this.el);
+      len = this.arg;
+      if (len < str.length) {
+        return el.html(str.substring(0, len) + "...");
+      } else {
+        return el.html(str);
+      }
+    }
+  });
+
   Vue.directive('btn-loading', function(value) {
     var el;
     el = $(this.el);
