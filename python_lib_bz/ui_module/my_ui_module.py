@@ -47,6 +47,8 @@ class JsCssUIModule(UIModule):
 
     def render(self):
         return ''
+
+
 class HtmlUIModule(UIModule):
 
     '''
