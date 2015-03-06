@@ -28,6 +28,7 @@ class BaseHandler(RequestHandler):
     modify by bigzhu at 15/01/30 09:59:46 直接返回 user_info
     modify by bigzhu at 15/01/30 10:32:37 默认返回 user_info 的拆离出去
     modify by bigzhu at 15/02/21 00:41:23 修改 js_embed 的位置到 </head> 前
+    create by bigzhu at 15/03/06 17:13:21 修改 js_file 的位置到 </head> 前
     '''
 
     def initialize(self):
@@ -39,6 +40,7 @@ class BaseHandler(RequestHandler):
     def render(self, template_name, **kwargs):
         """Renders the template with the given arguments as the response.
         create by bigzhu at 15/02/21 01:50:52 就是为了把embedded_javascript 的位置换一下
+        modify by bigzhu at 15/03/06 17:14:23 调整 js 插入的次序,早出来的先插入
         """
 
         html = self.render_string(template_name, **kwargs)
@@ -58,7 +60,8 @@ class BaseHandler(RequestHandler):
             file_part = module.javascript_files()
             if file_part:
                 if isinstance(file_part, (unicode_type, bytes_type)):
-                    js_files.append(file_part)
+                    #js_files.append(file_part)
+                    js_embed.insert(0, utf8(embed_part))
                 else:
                     js_files.extend(file_part)
             embed_part = module.embedded_css()
@@ -92,7 +95,8 @@ class BaseHandler(RequestHandler):
             js = ''.join('<script src="' + escape.xhtml_escape(p) +
                          '" type="text/javascript"></script>'
                          for p in paths)
-            sloc = html.rindex(b'</body>')
+            #sloc = html.rindex(b'</body>')
+            sloc = html.rindex(b'</head>')
             html = html[:sloc] + utf8(js) + b'\n' + html[sloc:]
         if js_embed:
             js = b'<script type="text/javascript">\n//<![CDATA[\n' + \

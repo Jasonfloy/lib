@@ -19,7 +19,7 @@ gulp.task('less', function () {
     console.log(err);
   }))
   //.pipe(rename({suffix: '.min'}))
-  .pipe(gulp.dest('./'));
+  .pipe(gulp.dest('../static/css/'));
 
 });
 
@@ -32,6 +32,6 @@ gulp.task('coffee', function () {
   //  console.log(err);
   //}))
   //.pipe(rename({suffix: '.min'}))
-  .pipe(gulp.dest('./'));
+  .pipe(gulp.dest('../static/js'));
 });
 gulp.task('default', ['less','coffee', 'watch']);
