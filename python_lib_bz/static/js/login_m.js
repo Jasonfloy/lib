@@ -21,7 +21,7 @@
             return;
           }
           data.loading = true;
-          return $.post('{{action_url}}', JSON.stringify({
+          return $.post('/login', JSON.stringify({
             user_name: data.user_name,
             password: data.password
           }), function(result, done) {
