@@ -19,8 +19,6 @@ salt = "hold is watching you"
 class login_m(my_ui_module.MyUIModule):
 
     '''登录的页面'''
-    action_url = '/login'
-
     def render(self, oauth2):
         return self.render_string(self.html_name, oauth2=oauth2)
 

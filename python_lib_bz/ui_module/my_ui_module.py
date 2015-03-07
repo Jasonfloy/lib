@@ -10,8 +10,8 @@ class MyUIModule(UIModule):
 
     '''
     modify by bigzhu at 15/03/06 17:04:03 加入file
+    create by bigzhu at 15/03/07 21:12:30 改成 file 了,没法用模板了
     '''
-    action_url = ''
 
     def __init__(self, handler):
         UIModule.__init__(self, handler)

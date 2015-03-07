@@ -16,7 +16,7 @@ $(->
           return
   
         data.loading=true
-        $.post '{{action_url}}',
+        $.post '/login',
           JSON.stringify
             user_name:data.user_name
             password:data.password
