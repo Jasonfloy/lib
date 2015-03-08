@@ -10,6 +10,7 @@ import hashlib
 import user_bz
 import public_bz
 import tornado_auth_bz
+from tornado_bz import UserInfoHandler
 from tornado_bz import BaseHandler
 from public_bz import storage
 
@@ -23,7 +24,7 @@ class login_m(my_ui_module.MyUIModule):
         return self.render_string(self.html_name, oauth2=oauth2)
 
 
-class login(BaseHandler):
+class login(UserInfoHandler):
 
     '''
     登录后台的方法
@@ -49,7 +50,7 @@ class login(BaseHandler):
         self.settings["douban_api_secret"] = 'a957e7c9cc366f86'
         self.settings["redirect_uri"] = 'http://highwe.net/douban'
         '''
-        BaseHandler.initialize(self)
+        UserInfoHandler.initialize(self)
         oauth2 = storage()
         oauth2.google = storage(enabled=False, url='/google')
         oauth2.twitter = storage(enabled=False, url='/twitter')
