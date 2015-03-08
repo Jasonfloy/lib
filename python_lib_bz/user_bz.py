@@ -13,9 +13,10 @@ class UserOper:
         self.pg = pg
 
     @daemonDB
-    def login(self, user_name, password):
+    def login(self, user_name, password, email=None):
         '''
         modify by bigzhu at 15/02/25 13:57:19 加入唯一约束
+        modify by bigzhu at 15/03/08 14:24:57 加入 email; 根据 email 来判断是注册还是登陆
 
         登录模块,如果不存在这个用户名,则注册
         数据模型:
@@ -54,9 +55,12 @@ class UserOper:
             if user_infos[0].password == password:
                 return user_infos[0]
             else:
-                raise Exception('密码错误!')
+                if email is None:
+                    raise Exception('密码错误!')
+                else:
+                    raise Exception('用户已经存在!')
         else:
-            self.pg.db.insert('user_info', user_type='my', user_name=user_name, password=password)
+            self.pg.db.insert('user_info', user_type='my', user_name=user_name, password=password, email=email)
             return self.login(user_name, password)
 
     @daemonDB

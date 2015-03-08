@@ -5,7 +5,7 @@ $(->
       error_info:false
       loading:false
     methods:
-      submit:(e)->
+      submit:->
         data = @$data
         data.error_info = false
         if data.user_name == '' or data.user_name == undefined
@@ -20,6 +20,7 @@ $(->
           JSON.stringify
             user_name:data.user_name
             password:data.password
+            email:data.email
         ,(result, done)->
             data.loading=false
             if result.error!='0'
@@ -28,6 +29,13 @@ $(->
               data.error_info = '未知错误'
             else
               location.pathname = '/'
+      signup:->
+        data = @$data
+        if data.password != data.repassword
+          data.error_info = '两次密码不一致'
+          return
+        @submit()
+
       cleanError:->
         @$data.error_info = false
 )

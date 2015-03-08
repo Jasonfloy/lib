@@ -8,7 +8,7 @@
         loading: false
       },
       methods: {
-        submit: function(e) {
+        submit: function() {
           var data;
           data = this.$data;
           data.error_info = false;
@@ -23,7 +23,8 @@
           data.loading = true;
           return $.post('/login', JSON.stringify({
             user_name: data.user_name,
-            password: data.password
+            password: data.password,
+            email: data.email
           }), function(result, done) {
             data.loading = false;
             if (result.error !== '0') {
@@ -34,6 +35,15 @@
               return location.pathname = '/';
             }
           });
+        },
+        signup: function() {
+          var data;
+          data = this.$data;
+          if (data.password !== data.repassword) {
+            data.error_info = '两次密码不一致';
+            return;
+          }
+          return this.submit();
         },
         cleanError: function() {
           return this.$data.error_info = false;

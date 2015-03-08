@@ -68,9 +68,10 @@ class login(BaseHandler):
         login_info = json.loads(self.request.body)
         user_name = login_info.get("user_name")
         password = login_info.get("password")
+        email = login_info.get("email")
         # 密码加密
         hashed_password = hashlib.md5(password + salt).hexdigest()
-        user_info = self.user_oper.login(user_name, hashed_password)
+        user_info = self.user_oper.login(user_name, hashed_password, email)
         self.set_secure_cookie("user_id", str(user_info.id))
         self.write(json.dumps({'error': '0'}, cls=public_bz.ExtEncoder))
 
