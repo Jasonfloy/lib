@@ -1,7 +1,7 @@
 (function() {
   $(function() {
-    var v_crud;
-    return v_crud = new Vue({
+    var id, parm, table_name, v_crud;
+    v_crud = new Vue({
       el: '#v_crud',
       data: {
         editable: true,
@@ -32,7 +32,7 @@
           }), function(result, done) {
             data.loading = false;
             if (result.error !== '0') {
-              return data.error_info = result.error;
+              return window.bz.showError5(result.error);
             } else if (result.error === void 0) {
               return data.error_info = '未知错误';
             } else {
@@ -42,6 +42,28 @@
         }
       }
     });
+    table_name = v_crud.getTableName();
+    parm = window.bz.getHashParms();
+    id = parm[0].replace('#', '');
+    if (id !== '') {
+      id = parseInt(id);
+      return $.post('/crud_query', JSON.stringify({
+        table_name: table_name,
+        id: id
+      }), function(result, done) {
+        if (result.error !== '0') {
+          return window.bz.showError5(result.error);
+        } else {
+          log(result.data.length);
+          if (result.data.length > 0) {
+            v_crud.$data.record = result.data[0];
+            return v_crud.$data.record.id = id;
+          } else {
+            return window.bz.showError5('未找到这条数据!');
+          }
+        }
+      });
+    }
   });
 
 }).call(this);
