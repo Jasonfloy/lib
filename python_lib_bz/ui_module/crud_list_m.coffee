@@ -22,13 +22,12 @@ $(->
         methods:
             detail: (event, index)->
                 if index == "new"
-                    window.location.href = "#detail/new"
-                    @$set("current_record", null)
+                    window.location.href = "/crud/" + table_name
                     return
                 record = @list[index]
                 if @module == 'normal'
-                    window.location.href = "#detail/" + record.id
-                    @$set("current_record", record)
+                    window.location.href = "/crud/" + table_name + "#" + record.id
+                    return
                 else if record.checked
                     record.checked = false
                     $(event.target).siblings(".check-column").find("input[type=checkbox]").prop('checked', false)
@@ -48,6 +47,7 @@ $(->
                     data:  del_array.join(",")
                 .done((data)->
                     if data.error = "0"
+                        window.bz.showSuccess5("删除成功。")
                         load()
                     else
                         window.bz.showError5(data.error)

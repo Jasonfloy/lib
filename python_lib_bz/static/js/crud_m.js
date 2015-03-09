@@ -51,11 +51,17 @@
         table_name: table_name,
         id: id
       }), function(result, done) {
+        var field, record;
         if (result.error !== '0') {
           return window.bz.showError5(result.error);
         } else {
-          log(result.data.length);
           if (result.data.length > 0) {
+            record = result.data[0];
+            for (field in record) {
+              if (record[field] !== null && typeof record[field] === "object") {
+                record[field] = JSON.stringify(record[field]);
+              }
+            }
             v_crud.$data.record = result.data[0];
             return v_crud.$data.record.id = id;
           } else {

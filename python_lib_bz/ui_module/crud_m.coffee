@@ -45,8 +45,11 @@ $(->
             if result.error!='0'
                 window.bz.showError5(result.error)
             else
-                log result.data.length
                 if result.data.length>0
+                    record = result.data[0]
+                    for field of record
+                        if record[field] != null and typeof record[field] == "object"
+                            record[field] = JSON.stringify(record[field])
                     v_crud.$data.record = result.data[0]
                     v_crud.$data.record.id = id
                 else

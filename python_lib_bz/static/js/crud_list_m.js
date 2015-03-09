@@ -27,14 +27,12 @@
         detail: function(event, index) {
           var record;
           if (index === "new") {
-            window.location.href = "#detail/new";
-            this.$set("current_record", null);
+            window.location.href = "/crud/" + table_name;
             return;
           }
           record = this.list[index];
           if (this.module === 'normal') {
-            window.location.href = "#detail/" + record.id;
-            return this.$set("current_record", record);
+            window.location.href = "/crud/" + table_name + "#" + record.id;
           } else if (record.checked) {
             record.checked = false;
             return $(event.target).siblings(".check-column").find("input[type=checkbox]").prop('checked', false);
@@ -61,6 +59,7 @@
             data: del_array.join(",")
           }).done(function(data) {
             if (data.error = "0") {
+              window.bz.showSuccess5("删除成功。");
               return load();
             } else {
               return window.bz.showError5(data.error);
