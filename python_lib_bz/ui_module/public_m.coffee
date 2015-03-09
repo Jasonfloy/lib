@@ -144,6 +144,9 @@ window.bz =
   getLastParm:->
     parms = window.location.pathname.split( '/' )
     return parms[parms.length-1]
+  getUrlParm:->
+    parms = window.location.pathname.split( '/' )
+    return parms
   #获取hash参数，返回数组
   getHashParms:->
     parms = window.location.hash.split('/')

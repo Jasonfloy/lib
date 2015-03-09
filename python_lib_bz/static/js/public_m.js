@@ -171,6 +171,11 @@
       parms = window.location.pathname.split('/');
       return parms[parms.length - 1];
     },
+    getUrlParm: function() {
+      var parms;
+      parms = window.location.pathname.split('/');
+      return parms;
+    },
     getHashParms: function() {
       var parms;
       parms = window.location.hash.split('/');
