@@ -9,6 +9,7 @@ from tornado_bz import BaseHandler
 import tornado_bz
 import json
 import public_bz
+from webpy_db import SQLLiteral
 
 
 class CrudOper:
@@ -20,11 +21,35 @@ class CrudOper:
     def __init__(self, pg):
         self.pg = pg
 
-    def getCrudConf(self, table_name):
+    def getCrudConf(self, table_name, isTime=None):
         sql = '''
         select * from crud_conf where table_name='%s'
         ''' % table_name
+        if isTime:
+            sql += " and c_type='timestamp' "
         return list(self.pg.db.query(sql))
+
+    def getWhat(self, table_name):
+        '''
+        create by bigzhu at 15/03/09 14:22:37 查询出配置了哪些字段,用来 select 时候的 what
+        '''
+        fields = self.getCrudConf(table_name)
+
+        field_list = []
+        for field in fields:
+            field_list.append(field.name)
+        return ','.join(field_list)
+
+    def preparedTimeData(self, table_name, record):
+        '''
+        取出字段类型是时间的,来加工处理要 insert 的数据
+        '''
+        # 取出字段是时间类型的
+        fields = self.getCrudConf(table_name, True)
+        if fields:
+            for field in fields:
+                record[field.name] = SQLLiteral("to_timestamp(%s)" % record[field.name])
+        return record
 
 
 class crud_m(my_ui_module.MyUIModule):
@@ -72,7 +97,28 @@ class crud(BaseHandler):
         self.set_header("Content-Type", "application/json")
         info = json.loads(self.request.body)
         table_name = info["table_name"]
+        id = info["id"]
+
+        crud_oper = CrudOper(self.pg)
+        what = crud_oper.getWhat(table_name)
+
+        data = list(self.pg.db.select(table_name, what=what, where="id=%s" % id))
+
+        self.write(json.dumps({'error': '0', 'data': data}, cls=public_bz.ExtEncoder))
+
+
+class crud_api(BaseHandler):
+
+    @tornado_bz.handleError
+    def post(self):
+        self.set_header("Content-Type", "application/json")
+        info = json.loads(self.request.body)
+        table_name = info["table_name"]
         record = info["record"]
+
+        crud_oper = CrudOper(self.pg)
+        record = crud_oper.preparedTimeData(table_name, record)
+
         id = record.get("id")
         if id:
             self.pg.db.update(table_name, where="id=%s" % id, **record)
@@ -81,24 +127,5 @@ class crud(BaseHandler):
 
         self.write(json.dumps({'error': '0'}))
 
-
-class crud_query(BaseHandler):
-
-    @tornado_bz.handleError
-    def post(self):
-        self.set_header("Content-Type", "application/json")
-        info = json.loads(self.request.body)
-        table_name = info["table_name"]
-        id = info["id"]
-
-        what = self.pg.db.select('crud_conf', what='name', where="table_name='%s'" % table_name)
-        l = []
-        for i in what:
-            l.append(i.name)
-
-        data = list(self.pg.db.select(table_name, what=','.join(l), where="id=%s" % id))
-        print data
-
-        self.write(json.dumps({'error': '0', 'data': data}, cls=public_bz.ExtEncoder))
 if __name__ == '__main__':
     pass

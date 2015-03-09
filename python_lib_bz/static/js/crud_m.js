@@ -26,7 +26,7 @@
           data = this.$data;
           data.loading = true;
           table_name = this.getTableName();
-          return $.post('/crud', JSON.stringify({
+          return $.post('/crud_api', JSON.stringify({
             table_name: table_name,
             record: data.record
           }), function(result, done) {
@@ -47,7 +47,7 @@
     id = parm[0].replace('#', '');
     if (id !== '') {
       id = parseInt(id);
-      return $.post('/crud_query', JSON.stringify({
+      return $.post('/crud', JSON.stringify({
         table_name: table_name,
         id: id
       }), function(result, done) {

@@ -20,7 +20,7 @@ $(->
 
                 table_name = @getTableName()
 
-                $.post '/crud',
+                $.post '/crud_api',
                   JSON.stringify {table_name:table_name, record:data.record}
                 ,(result, done)->
                     data.loading=false
@@ -39,7 +39,7 @@ $(->
     if id!=''
         id = parseInt(id)
 
-        $.post '/crud_query',
+        $.post '/crud',
           JSON.stringify {table_name:table_name, id:id}
         ,(result, done)->
             if result.error!='0'
