@@ -42,6 +42,21 @@ class crud_m(my_ui_module.MyUIModule):
         return self.render_string(self.html_name, fields=fields)
 
 
+class crud_list_m(my_ui_module.MyUIModule):
+    '''
+    create by bigzhu at 15/03/09 11:17:17 显示 list
+    '''
+
+    def render(self, table_name, editable='false'):
+        self.editable = editable
+        print self.editable
+
+        pg = self.handler.settings['pg']
+        crud_oper = CrudOper(pg)
+        fields = crud_oper.getCrudConf(table_name)
+        return self.render_string(self.html_name, fields=fields)
+
+
 class crud(BaseHandler):
     '''
     crud 的实现方法,因为可能要匹配两个参数,那么得自己写 url,  (r'/user/(.*)/(.*)', ProfileHandler)
