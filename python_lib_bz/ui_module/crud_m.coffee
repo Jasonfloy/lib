@@ -32,7 +32,7 @@ $(->
                         window.bz.showSuccess5('成功提交')
 
                     #  location.pathname = '/'
-                   
+
     table_name = v_crud.getTableName()
     parm = window.bz.getHashParms()
     id = parm[0].replace('#','')

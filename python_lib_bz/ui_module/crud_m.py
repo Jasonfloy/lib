@@ -29,6 +29,14 @@ class CrudOper:
             sql += " and c_type='timestamp' "
         return list(self.pg.db.query(sql))
 
+    def getCrudListConf(self, table_name, isTime=None):
+        sql = '''
+        select * from crud_conf where table_name='%s' and grid_show=1
+        ''' % table_name
+        if isTime:
+            sql += " and c_type='timestamp' "
+        return list(self.pg.db.query(sql))
+
     def getWhat(self, table_name):
         '''
         create by bigzhu at 15/03/09 14:22:37 查询出配置了哪些字段,用来 select 时候的 what
@@ -77,16 +85,38 @@ class crud_list_m(my_ui_module.MyUIModule):
 
         pg = self.handler.settings['pg']
         crud_oper = CrudOper(pg)
-        fields = crud_oper.getCrudConf(table_name)
+        fields = crud_oper.getCrudListConf(table_name)
         return self.render_string(self.html_name, fields=fields)
 
 
-class crud(BaseHandler):
+class crud_list(BaseHandler):
+    '''
+    crud list 实现
+    '''
+    def get(self, table_name, id=None):
+        if id is None:
+            self.render(tornado_bz.getTName(self), table_name=table_name)
 
+
+class crud_list_api(BaseHandler):
+
+    @tornado_bz.handleError
+    def get(self, table_name):
+        self.set_header("Content-Type", "application/json")
+        cert_array = list(self.pg.db.select(table_name, where="is_delete='f'"))
+        self.write(json.dumps({'error': '0', "array": cert_array}, cls=public_bz.ExtEncoder))
+
+    def delete(self, table_name):
+        self.set_header("Content-Type", "application/json")
+        ids = self.request.body
+        self.pg.db.update(table_name, where="id in (%s)" % ids, is_delete=True)
+        self.write(json.dumps({'error': '0'}))
+
+
+class crud(BaseHandler):
     '''
     crud 的实现方法
     '''
-
     def get(self, table_name, id=None):
         # 新建
         if id is None:
