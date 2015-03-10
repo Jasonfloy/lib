@@ -24,13 +24,12 @@
         return load();
       },
       methods: {
-        detail: function(event, index) {
-          var record;
-          if (index === "new") {
+        detail: function(event, record) {
+          console.log(record);
+          if (record === "new") {
             window.location.href = "/crud/" + table_name;
             return;
           }
-          record = this.list[index];
           if (this.module === 'normal') {
             window.location.href = "/crud/" + table_name + "#" + record.id;
           } else if (record.checked) {
