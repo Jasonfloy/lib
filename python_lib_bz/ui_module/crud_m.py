@@ -85,7 +85,8 @@ class crud_list_m(my_ui_module.MyUIModule):
 
         crud_oper = CrudOper(self.pg)
         fields = crud_oper.getCrudListConf(table_name)
-        return self.render_string(self.html_name, fields=fields, table_name=table_name)
+        table_desc = db_bz.getTableDesc(self.pg, table_name)
+        return self.render_string(self.html_name, fields=fields, table_desc=table_desc)
 
 
 class crud_list(BaseHandler):
