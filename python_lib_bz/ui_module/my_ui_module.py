@@ -15,6 +15,7 @@ class MyUIModule(UIModule):
 
     def __init__(self, handler):
         UIModule.__init__(self, handler)
+        self.pg = self.handler.settings['pg']
 
         self.class_name = self.__class__.__name__
         self.css_name = self.class_name + '.css'
@@ -52,6 +53,7 @@ class JsCssUIModule(UIModule):
 
     def __init__(self, handler):
         UIModule.__init__(self, handler)
+        self.pg = self.handler.settings['pg']
 
         self.class_name = self.__class__.__name__
         self.js_name = self.class_name + '.js'
@@ -86,6 +88,7 @@ class HtmlUIModule(UIModule):
 
     def __init__(self, handler):
         UIModule.__init__(self, handler)
+        self.pg = self.handler.settings['pg']
 
         self.class_name = self.__class__.__name__
         self.html_name = self.class_name + '.html'

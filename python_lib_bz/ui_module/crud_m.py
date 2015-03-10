@@ -70,8 +70,7 @@ class crud_m(my_ui_module.MyUIModule):
 
     def render(self, table_name):
 
-        pg = self.handler.settings['pg']
-        crud_oper = CrudOper(pg)
+        crud_oper = CrudOper(self.pg)
         fields = crud_oper.getCrudConf(table_name)
         return self.render_string(self.html_name, fields=fields)
 
@@ -84,10 +83,9 @@ class crud_list_m(my_ui_module.MyUIModule):
 
     def render(self, table_name):
 
-        pg = self.handler.settings['pg']
-        crud_oper = CrudOper(pg)
+        crud_oper = CrudOper(self.pg)
         fields = crud_oper.getCrudListConf(table_name)
-        return self.render_string(self.html_name, fields=fields)
+        return self.render_string(self.html_name, fields=fields, table_name=table_name)
 
 
 class crud_list(BaseHandler):
