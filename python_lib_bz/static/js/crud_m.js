@@ -39,7 +39,8 @@
             record: data.record
           }), function(result, done) {
             if (result.error !== '0') {
-              return window.bz.showError5(result.error);
+              window.bz.showError5(result.error);
+              return log(result.error);
             } else if (result.error === void 0) {
               return data.error_info = '未知错误';
             } else {

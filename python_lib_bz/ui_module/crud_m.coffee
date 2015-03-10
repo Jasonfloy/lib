@@ -32,6 +32,7 @@ $(->
                     #data.loading=false
                     if result.error!='0'
                         window.bz.showError5(result.error)
+                        log result.error
                     else if result.error == undefined
                         data.error_info = '未知错误'
                     else
