@@ -27,8 +27,8 @@ def getTableDesc(pg, table_name):
     create by bigzhu at 15/03/10 10:05:45 查询表的描述
     '''
     sql = '''
-        select obj_description('public.crud_conf'::regclass)
-    '''
+        select obj_description('public.%s'::regclass)
+    '''%table_name
     data = pg.db.query(sql)
     if data:
         return data[0].obj_description
