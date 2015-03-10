@@ -214,7 +214,7 @@
       return $("<div/>").text(value).html();
     },
     dateFormat: function(timestramp, mask) {
-      var _this, date, matched_array, o, regStr, res;
+      var date, matched_array, o, regStr, res, _this;
       date = new Date(timestramp);
       _this = this;
       o = {

@@ -21,5 +21,17 @@ def daemonDB(method):
             return wrapper(self, *args, **kwargs)
             print '重新连接数据库'
     return wrapper
+
+def getTableDesc(pg, table_name):
+    '''
+    create by bigzhu at 15/03/10 10:05:45 查询表的描述
+    '''
+    sql = '''
+        select obj_description('public.crud_conf'::regclass)
+    '''
+    data = pg.db.query(sql)
+    if data:
+        return data[0].obj_description
+
 if __name__ == '__main__':
     pass

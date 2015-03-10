@@ -1,30 +1,49 @@
-<div id="v_crud" class="box-body">
-    <button class="btn btn-default pull-right" v-on="click:toggleEdit">编辑</button>
-    <br>
-    <br>
+<div id="v_crud" class="box">
+    <div class="box-header with-border">
+        <div class="box-title">crud 操作 {{table_name}}</div>
+    </div>
+    <div  class="box-body">
+        <button class="btn btn-default pull-right" v-on="click:toggleEdit">编辑</button>
+        <br>
+        <br>
 
-    <form class="form-horizontal">
-        {% for field in fields %}
-        <div class="form-group">
-            <label class="col-sm-4 col-md-3 col-lg-2 control-label">{{field.description}}</label>
-            <div class="col-sm-8 col-md-9 col-lg-10">
-                {% if field.get("options")%}
-                <select class="form-control" v-disable="!editable" v-model="record.{{field.name}}">
-                    {% for option in field.options%}
-                    <option value="{{option.get('value')}}">{{option.get('text')}}</option>
-                    {% end %}
-                </select>
-                {%else%}
-                <input class="form-control" v-disable="!editable" v-model="record.{{field.name}}">
-                {%end%}
+        <form class="form-horizontal">
+            {% for field in fields %}
+            <div class="form-group">
+                <label class="col-sm-4 col-md-3 col-lg-2 control-label">{{field.description}}</label>
+                <div class="col-sm-8 col-md-9 col-lg-10">
+                    {% if field.get("options")%}
+                    <select class="form-control" v-disable="!editable" v-model="record.{{field.name}}">
+                        {% for option in field.options%}
+                        <option value="{{option.get('value')}}">{{option.get('text')}}</option>
+                        {% end %}
+                    </select>
+                    {%elif field.get("c_type") == "timestamp"%}
+                    <div class='input-group date' id='{{field.name}}'>
+                        <input type='text' class="form-control" v-disable="!editable" v-model="record.{{field.name}}"/>
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                    <script type="text/javascript">
+                    $(function () {
+                        $('#{{field.name}}').datetimepicker({
+                            locale: 'zh-cn'
+                        });
+                    });
+                    </script>
+
+                    {%else%}
+                    <input class="form-control" v-disable="!editable" v-model="record.{{field.name}}">
+                    {%end%}
+                </div>
             </div>
-        </div>
-        {% end %}
-        <div class="form-group">
-            <div class="col-sm-offset-4 col-md-offset-3 col-lg-offset-2 col-sm-8 col-md-9 col-lg-10">
-                <button type="button" class="btn btn-primary" v-on="click:save">保存</button>
-                <button type="button" class="btn btn-default pull-right" v-on="click:back">关闭</button>
+            {% end %}
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-md-offset-3 col-lg-offset-2 col-sm-8 col-md-9 col-lg-10">
+                    <button type="button" class="btn btn-primary" v-on="click:save">保存</button>
+                    <button type="button" class="btn btn-default pull-right" v-on="click:back">关闭</button>
+                </div>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
