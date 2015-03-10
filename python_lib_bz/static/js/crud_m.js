@@ -32,21 +32,21 @@
           var data, table_name;
           data = this.$data;
           data.loading = true;
+          log(data);
           table_name = this.getTableName();
           return $.post('/crud_api', JSON.stringify({
             table_name: table_name,
             record: data.record
           }), function(result, done) {
-            data.loading = false;
             if (result.error !== '0') {
               return window.bz.showError5(result.error);
             } else if (result.error === void 0) {
               return data.error_info = '未知错误';
             } else {
-              delay(2000, function() {
+              delay(1500, function() {
                 return v_crud.jump2List();
               });
-              return window.bz.showSuccess5('成功提交');
+              return window.bz.showSuccess5('提交成功...正在返回列表');
             }
           });
         }

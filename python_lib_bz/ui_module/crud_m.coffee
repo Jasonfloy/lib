@@ -22,20 +22,21 @@ $(->
             save:->
                 data = @$data
                 data.loading=true
+                log data
 
                 table_name = @getTableName()
 
                 $.post '/crud_api',
                   JSON.stringify {table_name:table_name, record:data.record}
                 ,(result, done)->
-                    data.loading=false
+                    #data.loading=false
                     if result.error!='0'
                         window.bz.showError5(result.error)
                     else if result.error == undefined
                         data.error_info = '未知错误'
                     else
-                        delay 2000, -> v_crud.jump2List()
-                        window.bz.showSuccess5('成功提交')
+                        delay 1500, -> v_crud.jump2List()
+                        window.bz.showSuccess5('提交成功...正在返回列表')
 
     table_name = v_crud.getTableName()
     parm = window.bz.getHashParms()
