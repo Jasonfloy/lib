@@ -1,5 +1,6 @@
 Vue.config.delimiters = ['(%', '%)']
 window.log = (parm)-> console.log parm
+window.delay = (ms, func) -> setTimeout func, ms
 
 # 字符串显示省略
 Vue.directive('ellipsis', (str)->

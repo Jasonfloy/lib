@@ -74,6 +74,9 @@ class crud_m(my_ui_module.MyUIModule):
         fields = crud_oper.getCrudConf(table_name)
         return self.render_string(self.html_name, fields=fields)
 
+    def css_files(self):
+        return ''
+
 
 class crud_list_m(my_ui_module.MyUIModule):
 
@@ -88,11 +91,16 @@ class crud_list_m(my_ui_module.MyUIModule):
         table_desc = db_bz.getTableDesc(self.pg, table_name)
         return self.render_string(self.html_name, fields=fields, table_desc=table_desc)
 
+    def css_files(self):
+        return ''
+
 
 class crud_list(BaseHandler):
+
     '''
     crud list 实现
     '''
+
     def get(self, table_name, id=None):
         if id is None:
             self.render(tornado_bz.getTName(self), table_name=table_name)
@@ -114,12 +122,15 @@ class crud_list_api(BaseHandler):
 
 
 class crud(BaseHandler):
+
     '''
     modify by bigzhu at 15/03/10 11:41:35 自行实现myRender,否则就会报错.
     crud 的实现方法
     '''
+
     def myRender(self, **kwargs):
         raise NotImplementedError()
+
     def get(self, table_name):
         # 新建
         self.myRender(table_name=table_name)
@@ -142,7 +153,7 @@ class crud(BaseHandler):
 
         table_desc = db_bz.getTableDesc(self.pg, table_name)
 
-        self.write(json.dumps({'error': '0', 'data': data, 'table_desc':table_desc}, cls=public_bz.ExtEncoder))
+        self.write(json.dumps({'error': '0', 'data': data, 'table_desc': table_desc}, cls=public_bz.ExtEncoder))
 
 
 class crud_api(BaseHandler):

@@ -5,6 +5,10 @@
     return console.log(parm);
   };
 
+  window.delay = function(ms, func) {
+    return setTimeout(func, ms);
+  };
+
   Vue.directive('ellipsis', function(str) {
     var el, len;
     if (str) {

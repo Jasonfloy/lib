@@ -23,6 +23,11 @@
           parm = window.bz.getUrlParm();
           return parm[2];
         },
+        jump2List: function() {
+          var path;
+          path = '/crud_list/' + this.getTableName();
+          return location.pathname = path;
+        },
         save: function() {
           var data, table_name;
           data = this.$data;
@@ -38,6 +43,9 @@
             } else if (result.error === void 0) {
               return data.error_info = '未知错误';
             } else {
+              delay(2000, function() {
+                return v_crud.jump2List();
+              });
               return window.bz.showSuccess5('成功提交');
             }
           });

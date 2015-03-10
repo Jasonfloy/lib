@@ -16,6 +16,9 @@ $(->
             getTableName:->
                 parm = window.bz.getUrlParm()
                 return parm[2]
+            jump2List:->
+                path = '/crud_list/' + @getTableName()
+                location.pathname = path
             save:->
                 data = @$data
                 data.loading=true
@@ -31,9 +34,8 @@ $(->
                     else if result.error == undefined
                         data.error_info = '未知错误'
                     else
+                        delay 2000, -> v_crud.jump2List()
                         window.bz.showSuccess5('成功提交')
-
-                    #  location.pathname = '/'
 
     table_name = v_crud.getTableName()
     parm = window.bz.getHashParms()

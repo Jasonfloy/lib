@@ -21,14 +21,6 @@
                         <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
                         </span>
                     </div>
-                    <script type="text/javascript">
-                    $(function () {
-                        $('#{{field.name}}').datetimepicker({
-                            locale: 'zh-cn'
-                        });
-                    });
-                    </script>
-
                     {%else%}
                     <input class="form-control" v-disable="!editable" v-model="record.{{field.name}}">
                     {%end%}
