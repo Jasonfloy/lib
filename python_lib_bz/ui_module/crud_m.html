@@ -1,12 +1,9 @@
 <div id="v_crud" class="box">
     <div class="box-header with-border">
-        <div class="box-title">crud 操作 {{table_name}}</div>
+        <div class="box-title">(%oper%) (%table_desc%)</div>
+        <button class="btn btn-default pull-right" v-on="click:toggleEdit">编辑</button>
     </div>
     <div  class="box-body">
-        <button class="btn btn-default pull-right" v-on="click:toggleEdit">编辑</button>
-        <br>
-        <br>
-
         <form class="form-horizontal">
             {% for field in fields %}
             <div class="form-group">

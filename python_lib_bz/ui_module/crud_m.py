@@ -10,6 +10,7 @@ import tornado_bz
 import json
 import public_bz
 from webpy_db import SQLLiteral
+import db_bz
 
 
 class CrudOper:
@@ -115,26 +116,34 @@ class crud_list_api(BaseHandler):
 
 class crud(BaseHandler):
     '''
+    modify by bigzhu at 15/03/10 11:41:35 自行实现myRender,否则就会报错.
     crud 的实现方法
     '''
-    def get(self, table_name, id=None):
+    def myRender(self, **kwargs):
+        raise NotImplementedError()
+    def get(self, table_name):
         # 新建
-        if id is None:
-            self.render(tornado_bz.getTName(self), table_name=table_name)
+        self.myRender(table_name=table_name)
 
     @tornado_bz.handleError
     def post(self):
+        '''
+        modify by bigzhu at 15/03/10 12:50:39 如果没有 id, 就只是查出 table_desc 返回去
+        '''
         self.set_header("Content-Type", "application/json")
         info = json.loads(self.request.body)
         table_name = info["table_name"]
-        id = info["id"]
+        id = info.get("id")
+        data = []
+        if id:
+            crud_oper = CrudOper(self.pg)
+            what = crud_oper.getWhat(table_name)
 
-        crud_oper = CrudOper(self.pg)
-        what = crud_oper.getWhat(table_name)
+            data = list(self.pg.db.select(table_name, what=what, where="id=%s" % id))
 
-        data = list(self.pg.db.select(table_name, what=what, where="id=%s" % id))
+        table_desc = db_bz.getTableDesc(self.pg, table_name)
 
-        self.write(json.dumps({'error': '0', 'data': data}, cls=public_bz.ExtEncoder))
+        self.write(json.dumps({'error': '0', 'data': data, 'table_desc':table_desc}, cls=public_bz.ExtEncoder))
 
 
 class crud_api(BaseHandler):

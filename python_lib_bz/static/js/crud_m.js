@@ -6,7 +6,9 @@
       data: {
         editable: true,
         record: {},
-        loading: false
+        loading: false,
+        oper: '',
+        table_desc: ''
       },
       methods: {
         toggleEdit: function() {
@@ -45,31 +47,35 @@
     table_name = v_crud.getTableName();
     parm = window.bz.getHashParms();
     id = parm[0].replace('#', '');
+    parm = {
+      table_name: table_name
+    };
     if (id !== '') {
-      id = parseInt(id);
-      return $.post('/crud', JSON.stringify({
-        table_name: table_name,
-        id: id
-      }), function(result, done) {
-        var field, record;
-        if (result.error !== '0') {
-          return window.bz.showError5(result.error);
-        } else {
-          if (result.data.length > 0) {
-            record = result.data[0];
-            for (field in record) {
-              if (record[field] !== null && typeof record[field] === "object") {
-                record[field] = JSON.stringify(record[field]);
-              }
-            }
-            v_crud.$data.record = result.data[0];
-            return v_crud.$data.record.id = id;
-          } else {
-            return window.bz.showError5('未找到这条数据!');
-          }
-        }
-      });
+      v_crud.$data.oper = '编辑';
+      parm.id = id;
+    } else {
+      v_crud.$data.oper = '新增';
     }
+    return $.post('/crud', JSON.stringify(parm), function(result, done) {
+      var field, record;
+      if (result.error !== '0') {
+        return window.bz.showError5(result.error);
+      } else {
+        v_crud.$data.table_desc = result.table_desc;
+        if (result.data.length > 0) {
+          record = result.data[0];
+          for (field in record) {
+            if (record[field] !== null && typeof record[field] === "object") {
+              record[field] = JSON.stringify(record[field]);
+            }
+          }
+          v_crud.$data.record = result.data[0];
+          return v_crud.$data.record.id = id;
+        } else if (id !== '') {
+          return window.bz.showError5('未找到这条数据!');
+        }
+      }
+    });
   });
 
 }).call(this);
