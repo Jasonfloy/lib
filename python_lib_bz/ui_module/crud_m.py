@@ -111,7 +111,7 @@ class crud_list_api(BaseHandler):
     @tornado_bz.handleError
     def get(self, table_name):
         self.set_header("Content-Type", "application/json")
-        cert_array = list(self.pg.db.select(table_name, where="is_delete='f'"))
+        cert_array = list(self.pg.db.select(table_name, where="is_delete='f'", order="stat_date desc"))
         self.write(json.dumps({'error': '0', "array": cert_array}, cls=public_bz.ExtEncoder))
 
     def delete(self, table_name):
@@ -157,6 +157,9 @@ class crud(BaseHandler):
 
 
 class crud_api(BaseHandler):
+    '''
+    modify by bigzhu at 15/03/10 15:56:15 update 时候也要更新 stat_date
+    '''
 
     @tornado_bz.handleError
     def post(self):
@@ -170,6 +173,7 @@ class crud_api(BaseHandler):
 
         id = record.get("id")
         if id:
+            record['stat_date'] = SQLLiteral('now()')
             self.pg.db.update(table_name, where="id=%s" % id, **record)
         else:
             self.pg.db.insert(table_name, **record)
