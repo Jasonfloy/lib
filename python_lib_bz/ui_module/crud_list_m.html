@@ -5,10 +5,10 @@
         <th>{{field.description}}</th>
         {% end %}
     </tr>
-    <tr v-on="click:detail($event, $index)" v-repeat="list | filterBy keyword">
+    <tr v-on="click:detail($event, r)" v-repeat="r : list | filterBy keyword">
         <td class="check-column"><input v-class="visibility-hidden:module=='normal'" type="checkbox" v-model="checked" /></td>
         {% for field in fields %}
-        <td>(% {{ field.name }} %)</td>
+        <td>(% r.{{ field.name }} %)</td>
         {% end %}
     </tr>
 </table>

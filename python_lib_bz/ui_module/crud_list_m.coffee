@@ -20,11 +20,11 @@ $(->
         created:->
             load()
         methods:
-            detail: (event, index)->
-                if index == "new"
+            detail: (event, record)->
+                console.log record
+                if record == "new"
                     window.location.href = "/crud/" + table_name
                     return
-                record = @list[index]
                 if @module == 'normal'
                     window.location.href = "/crud/" + table_name + "#" + record.id
                     return
