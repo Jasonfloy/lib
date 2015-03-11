@@ -149,7 +149,7 @@ class crud(ModuleHandler):
             data = list(self.pg.db.select(table_name, what=what, where="id=%s" % id))
 
         table_desc = db_bz.getTableDesc(self.pg, table_name)
-
+        print data
         self.write(json.dumps({'error': '0', 'data': data, 'table_desc': table_desc}, cls=public_bz.ExtEncoder))
 
 
