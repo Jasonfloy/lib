@@ -34,15 +34,12 @@ Vue.directive('datepicker',
       language: "zh-CN"
       autoclose: true
       forceParse: true
-    datepicker.on("changeDate", (e)->
+    .on("changeDate", (e)->
       field_name = _this.raw.replace("record.", "")
       _this.vm.$data.record[field_name] = e.date.valueOf()
-    )
-    datepicker.siblings(".input-group-addon")
+    ).siblings(".input-group-addon")
       .on("click", ->
-        console.log("click", datepicker)
-        datepicker.show(true)
-        console.log datepicker.show
+        datepicker.datepicker("show")
       )
   update: (value)->
     if value

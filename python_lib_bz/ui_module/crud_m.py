@@ -59,10 +59,11 @@ class CrudOper:
         fields = self.getCrudConf(table_name, isTime=True)
         if fields:
             for field in fields:
-                #判断是否传了空的过来
-                if record[field.name] is  None or record[field.name] == '':
+                # 判断是否传了空的过来
+                if record[field.name] is None or record[field.name] == '':
                     record[field.name] = SQLLiteral("null")
                 else:
+                    record[field.name] = float(record[field.name]) / 1000
                     record[field.name] = SQLLiteral("to_timestamp(%s)" % record[field.name])
         return record
 
@@ -169,7 +170,8 @@ class crud_api(BaseHandler):
         info = json.loads(self.request.body)
         table_name = info["table_name"]
         record = info["record"]
-        #对于配置表自身的配置要做特殊处理
+        print record
+        # 对于配置表自身的配置要做特殊处理
         if table_name.lower() == 'crud_conf':
             name = record['name']
             target_table_name = record['table_name']
@@ -177,16 +179,14 @@ class crud_api(BaseHandler):
             if table_colums:
                 pass
             else:
-                raise Exception('%s表中没有字段%s'%(target_table_name, name))
-
-
-
+                raise Exception('%s表中没有字段%s' % (target_table_name, name))
         crud_oper = CrudOper(self.pg)
         record = crud_oper.preparedTimeData(table_name, record)
 
         id = record.get("id")
         if id:
             record['stat_date'] = SQLLiteral('now()')
+            print record
             self.pg.db.update(table_name, where="id=%s" % id, **record)
         else:
             self.pg.db.insert(table_name, **record)

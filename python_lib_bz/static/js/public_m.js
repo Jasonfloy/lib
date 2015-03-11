@@ -39,22 +39,17 @@
       var _this, datepicker;
       _this = this;
       datepicker = $(this.el);
-      console.log(this.el, $(this.el));
-      datepicker.datepicker({
+      return datepicker.datepicker({
         format: "yyyy-mm-dd",
         language: "zh-CN",
         autoclose: true,
         forceParse: true
-      });
-      datepicker.on("changeDate", function(e) {
+      }).on("changeDate", function(e) {
         var field_name;
         field_name = _this.raw.replace("record.", "");
         return _this.vm.$data.record[field_name] = e.date.valueOf();
-      });
-      return datepicker.siblings(".input-group-addon").on("click", function() {
-        console.log("click", datepicker);
-        datepicker.show(true);
-        return console.log(datepicker.show);
+      }).siblings(".input-group-addon").on("click", function() {
+        return datepicker.datepicker("show");
       });
     },
     update: function(value) {
