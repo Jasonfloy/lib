@@ -6,6 +6,7 @@ create by bigzhu at 15/03/08 21:40:01 增删改查统一操作
 
 from ui_module import my_ui_module
 from tornado_bz import BaseHandler
+from tornado_bz import ModuleHandler
 import tornado_bz
 import json
 import public_bz
@@ -95,7 +96,7 @@ class crud_list_m(my_ui_module.MyUIModule):
         return ''
 
 
-class crud_list(BaseHandler):
+class crud_list(ModuleHandler):
 
     '''
     crud list 实现
@@ -103,7 +104,7 @@ class crud_list(BaseHandler):
 
     def get(self, table_name, id=None):
         if id is None:
-            self.render(tornado_bz.getTName(self), table_name=table_name)
+            self.myRender(table_name=table_name)
 
 
 class crud_list_api(BaseHandler):
@@ -121,16 +122,12 @@ class crud_list_api(BaseHandler):
         self.write(json.dumps({'error': '0'}))
 
 
-class crud(BaseHandler):
+class crud(ModuleHandler):
 
     '''
     modify by bigzhu at 15/03/10 11:41:35 自行实现myRender,否则就会报错.
     crud 的实现方法
     '''
-
-    def myRender(self, **kwargs):
-        raise NotImplementedError()
-
     def get(self, table_name):
         # 新建
         self.myRender(table_name=table_name)

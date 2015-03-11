@@ -166,6 +166,9 @@ class ModuleHandler(BaseHandler):
     def myRender(self, **kwargs):
         '''
         这个方法如果不重载,那么就会报错
+        像这样重载即可:
+        self.render(tornado_bz.getTName(self), **kwargs)
+        也可以指定自己的 template
         '''
         raise NotImplementedError()
 
