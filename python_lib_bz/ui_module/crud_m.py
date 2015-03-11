@@ -55,10 +55,14 @@ class CrudOper:
         取出字段类型是时间的,来加工处理要 insert 的数据
         '''
         # 取出字段是时间类型的
-        fields = self.getCrudConf(table_name, True)
+        fields = self.getCrudConf(table_name, isTime=True)
         if fields:
             for field in fields:
-                record[field.name] = SQLLiteral("to_timestamp(%s)" % record[field.name])
+                #判断是否传了空的过来
+                if record[field.name] is  None or record[field.name] == '':
+                    record[field.name] = SQLLiteral("null")
+                else:
+                    record[field.name] = SQLLiteral("to_timestamp(%s)" % record[field.name])
         return record
 
 
