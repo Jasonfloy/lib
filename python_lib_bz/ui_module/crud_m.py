@@ -38,6 +38,7 @@ class CrudOper:
         ''' % table_name
         if isTime:
             sql += " and c_type='timestamp' "
+        sql += " order by seq desc, create_date"
         return list(self.pg.db.query(sql))
 
     def getWhat(self, table_name):
