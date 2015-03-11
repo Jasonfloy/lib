@@ -38,6 +38,7 @@
             table_name: table_name,
             record: data.record
           }), function(result, done) {
+            data.loading = false;
             if (result.error !== '0') {
               window.bz.showError5(result.error);
               return log(result.error);

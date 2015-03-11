@@ -29,7 +29,7 @@ $(->
                 $.post '/crud_api',
                   JSON.stringify {table_name:table_name, record:data.record}
                 ,(result, done)->
-                    #data.loading=false
+                    data.loading=false
                     if result.error!='0'
                         window.bz.showError5(result.error)
                         log result.error
