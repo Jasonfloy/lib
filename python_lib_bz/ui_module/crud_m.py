@@ -155,7 +155,6 @@ class crud(ModuleHandler):
             data = list(self.pg.db.select(table_name, what=what, where="id=%s" % id))
 
         table_desc = db_bz.getTableDesc(self.pg, table_name)
-        print data
         self.write(json.dumps({'error': '0', 'data': data, 'table_desc': table_desc}, cls=public_bz.ExtEncoder))
 
 
@@ -170,7 +169,6 @@ class crud_api(BaseHandler):
         info = json.loads(self.request.body)
         table_name = info["table_name"]
         record = info["record"]
-        print record
         # 对于配置表自身的配置要做特殊处理
         if table_name.lower() == 'crud_conf':
             name = record['name']
@@ -186,7 +184,6 @@ class crud_api(BaseHandler):
         id = record.get("id")
         if id:
             record['stat_date'] = SQLLiteral('now()')
-            print record
             self.pg.db.update(table_name, where="id=%s" % id, **record)
         else:
             self.pg.db.insert(table_name, **record)
