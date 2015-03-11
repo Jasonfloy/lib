@@ -34,9 +34,13 @@ Vue.directive('datepicker',
       language: "zh-CN"
       autoclose: true
       forceParse: true
+      clearBtn: true
     .on("changeDate", (e)->
       field_name = _this.raw.replace("record.", "")
-      _this.vm.$data.record[field_name] = e.date.valueOf()
+      d_str = ""
+      if e.date
+        d_str = e.date.valueOf()
+      _this.vm.$data.record[field_name] = d_str
     ).siblings(".input-group-addon")
       .on("click", ->
         datepicker.datepicker("show")
@@ -44,8 +48,8 @@ Vue.directive('datepicker',
   update: (value)->
     if value
       $(@el).datepicker('update', new Date(value))
-    else
-      $(@el).datepicker('update', new Date())
+  unbind: ->
+    console.log "unbind"
 )
 #进程的图标
 Vue.directive "process-icon",

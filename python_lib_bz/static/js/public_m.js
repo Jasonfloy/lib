@@ -43,11 +43,16 @@
         format: "yyyy-mm-dd",
         language: "zh-CN",
         autoclose: true,
-        forceParse: true
+        forceParse: true,
+        clearBtn: true
       }).on("changeDate", function(e) {
-        var field_name;
+        var d_str, field_name;
         field_name = _this.raw.replace("record.", "");
-        return _this.vm.$data.record[field_name] = e.date.valueOf();
+        d_str = "";
+        if (e.date) {
+          d_str = e.date.valueOf();
+        }
+        return _this.vm.$data.record[field_name] = d_str;
       }).siblings(".input-group-addon").on("click", function() {
         return datepicker.datepicker("show");
       });
@@ -55,9 +60,10 @@
     update: function(value) {
       if (value) {
         return $(this.el).datepicker('update', new Date(value));
-      } else {
-        return $(this.el).datepicker('update', new Date());
       }
+    },
+    unbind: function() {
+      return console.log("unbind");
     }
   });
 
