@@ -36,7 +36,7 @@ $(->
                     else if result.error == undefined
                         data.error_info = '未知错误'
                     else
-                        delay 1500, -> v_crud.jump2List()
+                        #delay 1500, -> v_crud.jump2List()
                         window.bz.showSuccess5('提交成功...正在返回列表')
 
     table_name = v_crud.getTableName()

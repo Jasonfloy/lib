@@ -159,6 +159,16 @@ class BaseHandler(RequestHandler):
         return t.generate(**namespace)
 
 
+class ModuleHandler(BaseHandler):
+    '''
+    create by bigzhu at 15/03/11 10:17:40 给 UI Module 使用
+    '''
+    def myRender(self, **kwargs):
+        '''
+        这个方法如果不重载,那么就会报错
+        '''
+        raise NotImplementedError()
+
 class UserInfoHandler(BaseHandler):
 
     '''

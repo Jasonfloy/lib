@@ -44,9 +44,6 @@
             } else if (result.error === void 0) {
               return data.error_info = '未知错误';
             } else {
-              delay(1500, function() {
-                return v_crud.jump2List();
-              });
               return window.bz.showSuccess5('提交成功...正在返回列表');
             }
           });
