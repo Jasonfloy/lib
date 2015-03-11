@@ -1,4 +1,6 @@
-<div id="v_crud_list" class="box safe-datagrid">
+
+{% module loading_m() %}
+<div id="v_crud_list" v-loading="loading" class="box safe-datagrid">
     <div class="box-header with-border">
         <h3 class="box-title">{{ table_desc }}管理</h3>
         <div class="box-tools pull-left">

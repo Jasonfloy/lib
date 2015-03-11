@@ -1,24 +1,14 @@
 $(->
-    table_name = window.bz.getUrlParm()[2]
-    load = ->
-        $.get('/crud_list_api/' + table_name)
-            .done((d1)->
-                if d1.error != "0"
-                    window.bz.showError5(d1.error)
-                    return
-                d1.array.forEach((n)->
-                    n.checked = false
-                )
-                v_crud_list.$set("list", d1.array)
-            )
+
 
     v_crud_list = new Vue
         el: '#v_crud_list'
         data:
             list: []
             module: "normal"
-        created:->
-            load()
+            loading:true
+        #created:->
+        #    load()
         methods:
             detail: (event, record)->
                 console.log record
@@ -53,4 +43,17 @@ $(->
                         window.bz.showError5(data.error)
                 )
                 return
+
+    table_name = window.bz.getUrlParm()[2]
+    $.get('/crud_list_api/' + table_name)
+        .done((d1)->
+            v_crud_list.$data.loading=false
+            if d1.error != "0"
+                window.bz.showError5(d1.error)
+                return
+            d1.array.forEach((n)->
+                n.checked = false
+            )
+            v_crud_list.$set("list", d1.array)
+        )
 )

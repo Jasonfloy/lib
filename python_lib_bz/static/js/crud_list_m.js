@@ -1,27 +1,12 @@
 (function() {
   $(function() {
-    var load, table_name, v_crud_list;
-    table_name = window.bz.getUrlParm()[2];
-    load = function() {
-      return $.get('/crud_list_api/' + table_name).done(function(d1) {
-        if (d1.error !== "0") {
-          window.bz.showError5(d1.error);
-          return;
-        }
-        d1.array.forEach(function(n) {
-          return n.checked = false;
-        });
-        return v_crud_list.$set("list", d1.array);
-      });
-    };
-    return v_crud_list = new Vue({
+    var table_name, v_crud_list;
+    v_crud_list = new Vue({
       el: '#v_crud_list',
       data: {
         list: [],
-        module: "normal"
-      },
-      created: function() {
-        return load();
+        module: "normal",
+        loading: true
       },
       methods: {
         detail: function(event, record) {
@@ -66,6 +51,18 @@
           });
         }
       }
+    });
+    table_name = window.bz.getUrlParm()[2];
+    return $.get('/crud_list_api/' + table_name).done(function(d1) {
+      v_crud_list.$data.loading = false;
+      if (d1.error !== "0") {
+        window.bz.showError5(d1.error);
+        return;
+      }
+      d1.array.forEach(function(n) {
+        return n.checked = false;
+      });
+      return v_crud_list.$set("list", d1.array);
     });
   });
 
