@@ -1,3 +1,6 @@
+.pydevproject
+.settings/*
+.project
 *.svn
 *.log
 *.pyc
@@ -11,3 +14,8 @@ static/upload/*
 node_modules/
 .idea/
 .DS_Store
+static/*_bz
+*.orig
+static/png
+*.sublime-project
+*.sublime-workspace
