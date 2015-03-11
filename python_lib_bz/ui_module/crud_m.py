@@ -29,7 +29,7 @@ class CrudOper:
         ''' % table_name
         if isTime:
             sql += " and c_type='timestamp' "
-        sql += " order by seq, create_date"
+        sql += " order by seq desc, create_date"
         return list(self.pg.db.query(sql))
 
     def getCrudListConf(self, table_name, isTime=None):
