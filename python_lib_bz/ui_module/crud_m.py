@@ -164,6 +164,17 @@ class crud_api(BaseHandler):
         info = json.loads(self.request.body)
         table_name = info["table_name"]
         record = info["record"]
+        #对于配置表自身的配置要做特殊处理
+        if table_name.lower() == 'crud_conf':
+            name = record['name']
+            target_table_name = record['table_name']
+            table_colums = db_bz.getTableColum(self.pg, target_table_name, name)
+            if table_colums:
+                pass
+            else:
+                raise Exception('%s表中没有字段%s'%(target_table_name, name))
+
+
 
         crud_oper = CrudOper(self.pg)
         record = crud_oper.preparedTimeData(table_name, record)
