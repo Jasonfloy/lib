@@ -60,7 +60,7 @@ class CrudOper:
         if fields:
             for field in fields:
                 # 判断是否传了空的过来
-                if record[field.name] is None or record[field.name] == '':
+                if record.get(field.name) is None or record[field.name] == '':
                     record[field.name] = SQLLiteral("null")
                 else:
                     record[field.name] = float(record[field.name]) / 1000

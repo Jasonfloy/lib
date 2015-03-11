@@ -36,7 +36,7 @@
 
   Vue.directive('datepicker', {
     bind: function(value) {
-      var _this, datepicker;
+      var datepicker, _this;
       _this = this;
       datepicker = $(this.el);
       return datepicker.datepicker({
@@ -251,7 +251,7 @@
       return $("<div/>").text(value).html();
     },
     dateFormat: function(timestramp, mask) {
-      var _this, date, matched_array, o, regStr, res;
+      var date, matched_array, o, regStr, res, _this;
       date = new Date(timestramp);
       _this = this;
       o = {
