@@ -16,7 +16,7 @@ class UserOper:
     def login(self, user_name, password, email=None):
         '''
         modify by bigzhu at 15/02/25 13:57:19 加入唯一约束
-        modify by bigzhu at 15/03/08 14:24:57 加入 email; 根据 email 来判断是注册还是登陆
+        modify by bigzhu at 15/03/08 14:24:57 加入 email; 根据 email 来判断是注册还是登录
 
         登录模块,如果不存在这个用户名,则注册
         数据模型:

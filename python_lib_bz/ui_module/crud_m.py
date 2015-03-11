@@ -24,7 +24,7 @@ class CrudOper:
 
     def getCrudConf(self, table_name, isTime=None):
         sql = '''
-        select * from crud_conf where table_name='%s'
+        select * from crud_conf where table_name='%s' and is_delete != 't'
         ''' % table_name
         if isTime:
             sql += " and c_type='timestamp' "
@@ -32,7 +32,7 @@ class CrudOper:
 
     def getCrudListConf(self, table_name, isTime=None):
         sql = '''
-        select * from crud_conf where table_name='%s' and grid_show=1
+        select * from crud_conf where table_name='%s' and grid_show=1 and is_delete != 't'
         ''' % table_name
         if isTime:
             sql += " and c_type='timestamp' "
