@@ -1,6 +1,4 @@
 $(->
-
-
     v_crud_list = new Vue
         el: '#v_crud_list'
         data:
@@ -8,8 +6,6 @@ $(->
             module: "normal"
             loading:true
             loading_target:"#v_crud_list"
-        #created:->
-        #    load()
         methods:
             detail: (event, record)->
                 console.log record
