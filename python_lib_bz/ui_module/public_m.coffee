@@ -13,6 +13,7 @@ Vue.directive('ellipsis', (str)->
     else
       el.html(str)
 )
+
 #按钮上的 loading
 Vue.directive('btn-loading', (value)->
     el = $(@el)
@@ -22,6 +23,29 @@ Vue.directive('btn-loading', (value)->
     else
         el.children(".fa.fa-spin.fa-spinner").remove()
         el.children().show()
+)
+
+Vue.directive('datepicker',
+  bind: (value)->
+    _this = @
+    datepicker = $(@el)
+    datepicker.datepicker
+      format: "yyyy-mm-dd"
+      language: "zh-CN"
+      autoclose: true
+      forceParse: true
+    .on("changeDate", (e)->
+      field_name = _this.raw.replace("record.", "")
+      _this.vm.$data.record[field_name] = e.date.valueOf()
+    ).siblings(".input-group-addon")
+      .on("click", ->
+        datepicker.datepicker("show")
+      )
+  update: (value)->
+    if value
+      $(@el).datepicker('update', new Date(value))
+    else
+      $(@el).datepicker('update', new Date())
 )
 #进程的图标
 Vue.directive "process-icon",

@@ -34,6 +34,33 @@
     }
   });
 
+  Vue.directive('datepicker', {
+    bind: function(value) {
+      var _this, datepicker;
+      _this = this;
+      datepicker = $(this.el);
+      return datepicker.datepicker({
+        format: "yyyy-mm-dd",
+        language: "zh-CN",
+        autoclose: true,
+        forceParse: true
+      }).on("changeDate", function(e) {
+        var field_name;
+        field_name = _this.raw.replace("record.", "");
+        return _this.vm.$data.record[field_name] = e.date.valueOf();
+      }).siblings(".input-group-addon").on("click", function() {
+        return datepicker.datepicker("show");
+      });
+    },
+    update: function(value) {
+      if (value) {
+        return $(this.el).datepicker('update', new Date(value));
+      } else {
+        return $(this.el).datepicker('update', new Date());
+      }
+    }
+  });
+
   Vue.directive("process-icon", {
     update: function(value) {
       var img, path, src;
@@ -218,7 +245,7 @@
       return $("<div/>").text(value).html();
     },
     dateFormat: function(timestramp, mask) {
-      var date, matched_array, o, regStr, res, _this;
+      var _this, date, matched_array, o, regStr, res;
       date = new Date(timestramp);
       _this = this;
       o = {

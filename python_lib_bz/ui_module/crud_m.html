@@ -1,5 +1,6 @@
 
 {% module loading_m() %}
+<!-- required vue-component/datepicker.html -->
 <div id="v_crud" class="box">
     <div class="box-header with-border">
         <div class="box-title">(%oper%) (%table_desc%)</div>
@@ -19,9 +20,10 @@
                     </select>
                     {%elif field.get("c_type") == "timestamp"%}
                     <div class='input-group date' id='{{field.name}}'>
-                        <input type='text' class="form-control" v-disable="!editable" v-model="record.{{field.name}}"/>
-                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
                         </span>
+                        <input type='text' class="form-control" v-disable="!editable" v-datepicker="record.{{field.name}}"/>
                     </div>
                     {%else%}
                     <input class="form-control" v-disable="!editable" v-model="record.{{field.name}}">

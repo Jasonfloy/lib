@@ -7,6 +7,7 @@ $(->
             list: []
             module: "normal"
             loading:true
+            loading_target:"#v_crud_list"
         #created:->
         #    load()
         methods:

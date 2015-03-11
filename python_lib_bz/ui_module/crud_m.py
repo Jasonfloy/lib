@@ -29,6 +29,7 @@ class CrudOper:
         ''' % table_name
         if isTime:
             sql += " and c_type='timestamp' "
+        sql += " order by seq, create_date"
         return list(self.pg.db.query(sql))
 
     def getCrudListConf(self, table_name, isTime=None):
@@ -55,10 +56,15 @@ class CrudOper:
         取出字段类型是时间的,来加工处理要 insert 的数据
         '''
         # 取出字段是时间类型的
-        fields = self.getCrudConf(table_name, True)
+        fields = self.getCrudConf(table_name, isTime=True)
         if fields:
             for field in fields:
-                record[field.name] = SQLLiteral("to_timestamp(%s)" % record[field.name])
+                # 判断是否传了空的过来
+                if record[field.name] is None or record[field.name] == '':
+                    record[field.name] = SQLLiteral("null")
+                else:
+                    record[field.name] = float(record[field.name]) / 1000
+                    record[field.name] = SQLLiteral("to_timestamp(%s)" % record[field.name])
         return record
 
 
@@ -149,7 +155,6 @@ class crud(ModuleHandler):
             data = list(self.pg.db.select(table_name, what=what, where="id=%s" % id))
 
         table_desc = db_bz.getTableDesc(self.pg, table_name)
-
         self.write(json.dumps({'error': '0', 'data': data, 'table_desc': table_desc}, cls=public_bz.ExtEncoder))
 
 
@@ -164,7 +169,15 @@ class crud_api(BaseHandler):
         info = json.loads(self.request.body)
         table_name = info["table_name"]
         record = info["record"]
-
+        # 对于配置表自身的配置要做特殊处理
+        if table_name.lower() == 'crud_conf':
+            name = record['name']
+            target_table_name = record['table_name']
+            table_colums = db_bz.getTableColum(self.pg, target_table_name, name)
+            if table_colums:
+                pass
+            else:
+                raise Exception('%s表中没有字段%s' % (target_table_name, name))
         crud_oper = CrudOper(self.pg)
         record = crud_oper.preparedTimeData(table_name, record)
 
