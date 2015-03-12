@@ -25,6 +25,21 @@
                         </span>
                         <input type='text' class="form-control" v-disable="!editable" v-datepicker="record.{{field.name}}"/>
                     </div>
+                    {%elif field.get("c_type") == "fileupload"%}
+                    <div class="media">
+                        <div class="media-left">
+                            <a href="#">
+                                <img class="media-object" src="..." alt="...">
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">Media heading</h4>
+                        </div>
+                    </div>
+                    <input class="form-control" v-disable="!editable" v-file-upload="record.{{field.name}}">
+                    {%elif field.get("c_type") == "imgupload"%}
+                    <img src="#" class="img-thumbnail" />
+                    <input class="form-control" v-disable="!editable" v-img-upload="record.{{field.name}}">
                     {%else%}
                     <input class="form-control" v-disable="!editable" v-model="record.{{field.name}}">
                     {%end%}
