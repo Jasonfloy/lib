@@ -116,7 +116,7 @@ class CrudOper:
 
         #组合 join
         sql = '''
-            select a.*,b.* from
+            select a.*,b.*,a.id from
                 (%s) a
                     left join
                 (%s) b
@@ -126,13 +126,14 @@ class CrudOper:
 
     def getCrudListSql(self, table_name):
         '''
+        modify by bigzhu at 15/03/12 13:57:43 需要添加 id
         create by bigzhu at 15/03/12 12:56:43 根据给定的条件组合出查询 list 的 sql
         '''
         what = self.getWhat(table_name)
         where = "is_delete='f'"
         order = "stat_date desc"
         sql = '''
-            select %s from %s where %s order by %s
+            select %s,id from %s where %s order by %s
         ''' % (what, table_name, where, order)
         return sql
 
