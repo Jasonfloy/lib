@@ -1,27 +1,111 @@
-<section class="content-header">
-<div id="v_profile" class="col-xs-12">
-        <h3 class="box-title col-xs-12">个人资料</h3>
+<div class="container" id="v_profile">
+    <div class="h60px"></div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="profile-img">
+                <input id="img" type="file" v-on="change:previewImg" />
+                <div class="head-img">
+                    <img {% if user_info.picture %} src="{{user_info.picture}}" {% else %} src="/static/images/avatar-rect.jpg" {% end %} />
+                </div>
+                <div class="tips">点击更换头像</div>
+            </div>
+            <div class="profile-username">
+                {{user_info.user_name}}
+            </div>
+            <div class="profile-slogan">
+                {% if user_info.slogan %} {{ user_info.slogan }} {% end %}
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-6">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label for="username" class="col-sm-3 control-label">用户名：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="username" value="{{user_info.user_name}}" disabled value="" v-model="username" v-on="keypress:modify">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">电子邮件：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control editable" id="email" placeholder="这个人很懒，什么也没留下" disabled value="{% if user_info.email %}{{ user_info.email }}{% end %}" v-model="email" v-on="keypress:modify">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="blog" class="col-sm-3 control-label">个人博客：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control editable" id="blog" placeholder="这个人很懒，什么也没留下" disabled value="" v-model="blog" v-on="keypress:modify">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="company" class="col-sm-3 control-label">企业名称：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control editable" id="company" placeholder="这个人很懒，什么也没留下" disabled value="" v-model="company" v-on="keypress:modify">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="slogan" class="col-sm-3 control-label">个性签名：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control editable" id="slogan" placeholder="这个人很懒，什么也没留下" disabled value="{% if user_info.slogan %}{{ user_info.slogan }}{% end %}" v-model="slogan" v-on="keypress:modify">
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="form-group">
+                    <label for="dribbble" class="col-sm-3 control-label"><span class="round-icon bg-icon-red"><i class="fa fa-dribbble"></i></span> Dribbble</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control editable" id="dribbble" placeholder="这个人很懒，什么也没留下" disabled value="" v-model="dribbble" v-on="keypress:modify">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="instagram" class="col-sm-3 control-label"><span class="round-icon bg-icon-orange"><i class="fa fa-instagram"></i></span> Instagram</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control editable" id="instagram" placeholder="这个人很懒，什么也没留下" disabled value="" v-model="instagram" v-on="keypress:modify">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label"><span class="round-icon bg-icon-blue"><i class="fa fa-twitter"></i></span> Twitter</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control editable" id="twitter" placeholder="这个人很懒，什么也没留下" disabled value="" v-model="twitter" v-on="keypress:modify">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="github" class="col-sm-3 control-label"><span class="round-icon bg-icon-black"><i class="fa fa-github"></i></span> Github</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control editable" id="github" placeholder="这个人很懒，什么也没留下" disabled value="" v-model="github" v-on="keypress:modify">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="wechat" class="col-sm-3 control-label"><span class="round-icon bg-icon-green"><i class="fa fa-weixin"></i></span> Wechat</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control editable" id="wechat" placeholder="这个人很懒，什么也没留下" disabled value="" v-model="wechat" v-on="keypress:modify">
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="col-md-1">
+            <div class="hidden-sm hidden-xs" style="height:460px;"></div>
+
+            <div class="form-group">
+                <div class="submit-btn col-md-offset-2 col-md-10">
+                    <button id="btn-edit" v-visible="a" type="submit" class="btn btn-lg btn-primary btn-flat btn-border" v-on="click:edit">修改资料</button>
+                    <button id="btn-save" v-disable="btn_loading" v-btn-loading="btn_loading" type="submit" class="btn btn-lg btn-primary btn-flat btn-border" v-on="click:save">保存资料</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-xs-12 hide">
         <div class="col-sm-4 col-md-2 profile-img">
-            <input id="img" type="file" v-on="change:previewImg"/>
+            <input id="img" type="file" v-on="change:previewImg" />
             <div>
-                <img {% if user_info.picture %} src="{{user_info.picture}}" {% else %} src="/static/images/avatar.jpg" {% end %} class="img-thumbnail"/>
+                <img {% if user_info.picture %} src="{{user_info.picture}}" {% else %} src="/static/images/avatar.jpg" {% end %} class="img-thumbnail" />
             </div>
             <div class="tips">点击更换头像</div>
         </div>
-        <div class="col-sm-8 col-md-10">
-            <div class="prifile-username">{{user_info.user_name}}</div>
-            <form role="form">
-                <div class="form-group">
-                    <label for="slogan">签名</label>
-                    <input type="email" class="form-control" v-model="slogan" v-on="keypress:modify" id="slogan" value="{% if user_info.slogan %} {{ user_info.slogan }} {% end %}"  placeholder="随便说点什么吧...">
-                </div>
-                <div class="form-group">
-                    <label for="email">邮箱</label>
-                    <input type="email" class="form-control" v-model="email" v-on="keypress:modify" id="email" value="{% if user_info.email %} {{ user_info.email }} {% end %}" placeholder="请填写邮箱地址">
-                </div>
-                <button v-disable="btn_loading" v-btn-loading="btn_loading" type="button" class="btn btn-primary" v-on="click: save">保存</button>
-            </form>
-        </div>
     </div>
+    <div class="h60px"></div>
 </div>
-</section>
