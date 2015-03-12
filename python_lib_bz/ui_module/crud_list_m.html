@@ -32,7 +32,7 @@
         <tr v-on="click:detail($event, r)" v-repeat="r : list | filterBy keyword">
             <td class="check-column"><input v-class="visibility-hidden:module=='normal'" type="checkbox" v-model="checked" /></td>
             {% for field in fields %}
-            <td v-ellipsis="5:r.{{ field.name }}"></td>
+            <td v-ellipsis="8:r.{{ field.name }}"></td>
             {% end %}
         </tr>
     </table>
