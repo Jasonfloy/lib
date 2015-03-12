@@ -29,7 +29,7 @@ class CrudOper:
         parm = sql_parm.split(',')
         what = parm[0]
         table_name = parm[1]
-        if len(parm) = 3:
+        if len(parm) == 3:
             where = parm[2]
         else:
             where = None
