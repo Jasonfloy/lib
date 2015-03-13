@@ -202,7 +202,6 @@ class crud_list_api(BaseHandler):
         for field in fields:
             if field.sql_parm:
                 sql = crud_oper.joinCrudListSql(table_name, sql, colum_name=field.name, sql_parm=field.sql_parm)
-        print sql
 
         #cert_array = list(self.pg.db.select(table_name, where="is_delete='f'", order="stat_date desc"))
         cert_array = list(self.pg.db.query(sql))
