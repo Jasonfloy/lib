@@ -8,7 +8,10 @@
         record: {},
         loading: false,
         oper: '',
-        table_desc: ''
+        table_desc: '',
+        files: {
+          fd_array: []
+        }
       },
       methods: {
         toggleEdit: function() {

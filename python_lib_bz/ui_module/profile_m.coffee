@@ -40,7 +40,7 @@ $(->
                     if file
                         fd.append("img", $(".profile-img input[type='file']")[0].files[0])
                         $.ajax({
-                            url: "/profile",
+                            url: "/file_upload",
                             type:"POST",
                             data: fd,
                             processData: false,

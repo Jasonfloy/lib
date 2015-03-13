@@ -10,6 +10,9 @@ from ui_module import my_ui_module
 from public_bz import storage
 
 
+md5 = hashlib.md5()
+
+
 class file_upload_m(my_ui_module.MyUIModule):
 
     '''
@@ -32,21 +35,25 @@ class file_upload(UserInfoHandler):
         '''
         新增文件
         '''
+        global md5
         self.set_header("Content-Type", "application/json")
         if self.request.files:
-            for f in self.request.files:
+            for i in self.request.files:
+                f = self.request.files[i][0]
                 file_name = f.get("filename")
-                file_suffix = file_name[file_name.index("."):]
+                file_suffix = file_name[file_name.rfind("."):]
                 file_path = "static/uploaded_files/%s_%s_%s" % (self.current_user, int(time.time()), file_name)
                 file_body = f["body"]
                 # hash 用来
-                file_hash = hashlib.md5(file_body)
+                md5.update(file_body)
+                file_hash = md5.hexdigest()
+                print file_hash
                 img = open(file_path, 'w')
                 img.write(file_body)
                 img.close()
-                new_file = storage(file_path=file_path, file_hash=file_hash, file_type="file", suffix=file_suffix, seqname='base_id_seq')
+                new_file = storage(file_path=file_path, file_hash=file_hash, file_type="file", suffix=file_suffix, seqname='id_base_seq')
                 file_id = self.pg.db.insert("uploaded_files", **new_file)
-                self.write(json.dumps({'error': 0, 'file_id': file_id, 'file_name': file_name, 'file_path': file_path}))
+                self.write(json.dumps({'error': 0, 'file_id': file_id, 'file_name': file_name, 'file_path': file_path, 'suffix': file_suffix}))
 
 
 class file_ref(UserInfoHandler):

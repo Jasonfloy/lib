@@ -7,6 +7,8 @@ $(->
             loading:false
             oper:''
             table_desc:''
+            files:
+                fd_array: []
         methods:
             toggleEdit:->
                 if @$data.editable
