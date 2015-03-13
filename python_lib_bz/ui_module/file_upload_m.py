@@ -17,8 +17,8 @@ class file_upload_m(my_ui_module.MyUIModule):
     上传文件功能
     '''
 
-    def render(self, user_info):
-        return self.render_string(self.html_name, user_info=user_info)
+    def render(self):
+        return self.render_string(self.html_name)
 
 
 class file_upload(UserInfoHandler):

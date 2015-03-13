@@ -1,0 +1,62 @@
+<script type="text/x-template" id="file_upload_m">
+<div class="file_upload_m_control">
+    <div v-repeat="all_files">
+        <i v-file-icon="suffix"></i>
+        <a href="(% file_path %)" target="_blank" disabled="true">(% file_name %)</a>
+    </div>
+    <span class="file-input btn btn-sm btn-primary btn-file">
+        选择文件<input v-on="change: uploadFile($event)" type="file" multiple/>
+    </span>
+</div>
+</script>
+<script type="text/javascript">
+all_files = []
+Vue.directive("file-icon", function(value){
+    var file_icon = "fa fa-spin fa-spinner";
+    console.log(value, ["xls", "xlsx"].indexOf(value))
+    if(["xls", "xlsx"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-excel-o";
+    } else if(["doc", "docx"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-word-o"
+    } else if(["doc", "docx"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-word-o"
+    } else if(["ppt", "pptx"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-powerpoint-o"
+    } else if(["zip", "rar", "7z"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-archive-o"
+    } else if(["txt"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-text-o"
+    } else if(["pdf"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-pdf-o"
+    } else if(value) {
+        file_icon = "fa fa-file-o"
+    }
+    $(this.el).attr("class", file_icon)
+})
+Vue.component("file_upload_m", {
+    template: "#file_upload_m",
+    attached: function() {
+        _this = this
+        _this.$set("all_files", all_files)
+        _this.$set("append_files", [])
+    },
+    methods: {
+        uploadFile: function(e) {
+            files = e.target.files
+            for(var i in files) {
+                if(!isNaN(i)) {
+                    var f = files[i]
+                    new_file = {
+                        "file_path": "#",
+                        "file_type": "file",
+                        "file_name": f.name,
+                        "suffix": "xls"
+                    }
+                    _this.$data.append_files.push(new_file)
+                    _this.$data.all_files.push(new_file)
+                }
+            }
+        }
+    }
+})
+</script>
