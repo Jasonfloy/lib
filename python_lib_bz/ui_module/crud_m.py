@@ -186,6 +186,8 @@ class crud_list_m(my_ui_module.MyUIModule):
         crud_oper = CrudOper(self.pg)
         fields = crud_oper.getCrudListConf(table_name)
         table_desc = db_bz.getTableDesc(self.pg, table_name)
+        if table_desc is None:
+            raise Exception("需要设定修改维护的系统(biao)的说明")
         return self.render_string(self.html_name, fields=fields, table_desc=table_desc)
 
     def css_files(self):
@@ -263,6 +265,8 @@ class crud(ModuleHandler):
                     "files": files
                 })
         table_desc = db_bz.getTableDesc(self.pg, table_name)
+        if table_desc is None:
+            raise Exception("需要设定修改维护的系统(biao)的说明")
         self.write(json.dumps({'error': '0', 'data': data, 'table_desc': table_desc, 'all_files': all_files}, cls=public_bz.ExtEncoder))
 
 
