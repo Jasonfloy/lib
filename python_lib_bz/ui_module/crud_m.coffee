@@ -7,8 +7,7 @@ $(->
             loading:false
             oper:''
             table_desc:''
-            files:
-                fd_array: []
+            files:[]
         methods:
             toggleEdit:->
                 if @$data.editable
@@ -28,9 +27,9 @@ $(->
 
                 table_name = @getTableName()
 
-                $.post '/crud_api',
+                $.post('/crud_api',
                   JSON.stringify {table_name:table_name, record:data.record}
-                ,(result, done)->
+                ).done((result)->
                     data.loading=false
                     if result.error!='0'
                         window.bz.showError5(result.error)
@@ -38,8 +37,28 @@ $(->
                     else if result.error == undefined
                         data.error_info = '未知错误'
                     else
-                        #delay 1500, -> v_crud.jump2List()
-                        window.bz.showSuccess5('提交成功...正在返回列表')
+                        for file in data.files
+                            $.ajax
+                                url: "/file_upload",
+                                type:"POST",
+                                data: file.temp.fd,
+                                processData: false,
+                                contentType: false
+                            .done (d)->
+                                for file_id of d.results
+                                    $.post "/file_ref",
+                                        JSON.stringify 
+                                            "file_id":file_id,
+                                            "table_name":parm.table_name,
+                                            "column":file.column,
+                                            "record_id": id
+                                    .done (d)->
+                                        if d.error == 0
+                                            #delay 1500, -> v_crud.jump2List()
+                                            window.bz.showSuccess5('提交成功...正在返回列表')
+                                        else
+                                            window.bz.showError5(d)
+                )
 
     table_name = v_crud.getTableName()
     parm = window.bz.getHashParms()
@@ -51,9 +70,9 @@ $(->
     else
         v_crud.$data.oper='新增'
 
-    $.post '/crud',
+    $.post('/crud',
       JSON.stringify parm
-    ,(result, done)->
+    ).done((result)->
         if result.error!='0'
             window.bz.showError5(result.error)
         else
@@ -67,5 +86,10 @@ $(->
                 v_crud.$data.record.id = id
             else if id!=''
                 window.bz.showError5('未找到这条数据!')
-
+            # 生成数据交换属性, 并且打包到files中
+            if result.all_files.length > 0
+                for f in result.all_files
+                    v_crud.$set(f.column, {"fd": null, "all_files": f.files})
+                    v_crud.$data.files.push({"column": f.column, "temp": v_crud.$data[f.column]})
+    )
 )

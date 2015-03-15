@@ -1,5 +1,6 @@
 
 {% module loading_m() %}
+{% module file_upload_m() %}
 <!-- required vue-component/datepicker.html -->
 <div id="v_crud" class="box">
     <div class="box-header with-border">
@@ -25,10 +26,9 @@
                         </span>
                         <input type='text' class="form-control" v-disable="!editable" v-datepicker="record.{{field.name}}"/>
                     </div>
-                    {%elif field.get("c_type") == "fileupload"%}
+                    {%elif field.get("c_type") == "input-file"%}
+                    <div v-component="file_upload_m" v-with="field:{{field.name}}"></div>
                     {%elif field.get("c_type") == "imgupload"%}
-                    <img src="#" class="img-thumbnail" />
-                    <input class="form-control" v-disable="!editable" v-img-upload="record.{{field.name}}">
                     {%else%}
                     <input class="form-control" v-disable="!editable" v-model="record.{{field.name}}">
                     {%end%}

@@ -1,11 +1,11 @@
 <script type="text/x-template" id="file_upload_m">
 <div class="file_upload_m_control">
-    <div v-repeat="all_files">
+    <div v-repeat="field.all_files">
         <i v-file-icon="suffix"></i>
         <a v-href="file_path" target="_blank">(% file_name %)</a>
     </div>
     <span class="file-input btn btn-sm btn-primary btn-file">
-        选择文件<input v-on="change: uploadFile($event)" type="file" multiple/>
+        选择文件<input v-on="change: appendFile($event)" type="file" multiple/>
     </span>
 </div>
 </script>
@@ -14,14 +14,16 @@ all_files = []
 // 把disabled和href合并了
 Vue.directive("href", function(value){
     if(value) {
-        $(this.el).removeAttr("disabled").attr("href", value)
+        $(this.el).removeAttr("disabled").attr("href", "/" + value)
     } else {
         $(this.el).attr("disabled", true)
     }
 });
 Vue.directive("file-icon", function(value){
-    var file_icon = "fa fa-spin fa-spinner";
-    if(["xls", "xlsx"].indexOf(value) >= 0) {
+    var file_icon = "fa fa-upload";
+    if(value == "uploading") {
+        file_icon = "fa fa-spin fa-spinner";
+    } else if(["xls", "xlsx"].indexOf(value) >= 0) {
         file_icon = "fa fa-file-excel-o";
     } else if(["doc", "docx"].indexOf(value) >= 0) {
         file_icon = "fa fa-file-word-o"
@@ -35,7 +37,7 @@ Vue.directive("file-icon", function(value){
         file_icon = "fa fa-file-text-o"
     } else if(["pdf"].indexOf(value) >= 0) {
         file_icon = "fa fa-file-pdf-o"
-    } else if(["png", "jpeg", "jpg", "gif"].indexOf(value)) {
+    } else if(["png", "jpeg", "jpg", "gif"].indexOf(value) >= 0) {
         file_icon = "fa fa-file-image-o"
     } else if(value) {
         file_icon = "fa fa-file-o"
@@ -44,48 +46,24 @@ Vue.directive("file-icon", function(value){
 });
 Vue.component("file_upload_m", {
     template: "#file_upload_m",
-    attached: function() {
-        _this = this
-        _this.$set("all_files", all_files)
-        _this.$set("append_files", [])
-    },
     methods: {
-        uploadFile: function(e) {
+        appendFile: function(e) {
             _this = this
             files = e.target.files
-            for(var index in files) {
-                // 闭包方法，因为 files是一个对象，所以没法用 Array.forEach代替
-                (function(i) {
-                    if(!isNaN(i)) {
-                        var f = files[i]
-                        new_file = {
-                            "file_type": "file",
-                            "file_name": f.name,
-                            "file_path": null,
-                            "file_id": null,
-                            "suffix": null
-                        }
-                        _this.$data.append_files.push(new_file)
-                        _this.$data.all_files.push(new_file)
-                        fd = new FormData()
-                        if(f) {
-                            fd.append("file", f)
-                            $.ajax({
-                                url: "/file_upload",
-                                type:"POST",
-                                data: fd,
-                                processData: false,
-                                contentType: false
-                            }).done(function(d) {
-                                var uploaded_file = _this.$data.append_files[i]
-                                uploaded_file.file_path = d.file_path
-                                uploaded_file.file_id = d.file_id
-                                uploaded_file.suffix = d.suffix
-                            })
-                        }
+            fd = new FormData()
+            for(var i in files) {
+                if(!isNaN(i)) {
+                    var f = files[i]
+                    new_file = {
+                        "column": _this.$data.field.column,
+                        "file_type": "file",
+                        "file_name": f.name
                     }
-                }(index))
+                    _this.$data.field.all_files.push(new_file)
+                    fd.append("file_" + i, f)
+                }
             }
+            _this.$data.field.fd = fd
         }
     }
 });
