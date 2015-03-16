@@ -253,7 +253,7 @@ class crud(ModuleHandler):
             file_upload_columns = crud_oper.getFileUploadCoulumn(table_name)
             for column in file_upload_columns:
                 sql = '''
-                select f.file_name, f.file_path, f.file_type, f.suffix
+                select r.id, f.file_name, f.file_path, f.file_type, f.suffix, 'false' as remove
                 from uploaded_file_record_ref r left join uploaded_files f on r.uploaded_file_id = f.id
                 where r.ref_table = '%s' and r.ref_column = '%s' and r.ref_record_id = '%s' and r.is_delete = '0'
                 ''' % (table_name, column.name, id)
