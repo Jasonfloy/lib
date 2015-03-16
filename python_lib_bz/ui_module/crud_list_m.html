@@ -1,5 +1,6 @@
 
 {% module loading_m() %}
+{% module pagination_m() %}
 <div id="v_crud_list" v-loading="loading; this" class="box safe-datagrid">
     <div class="box-header with-border">
         <h3 class="box-title">{{ table_desc }}管理</h3>
@@ -36,5 +37,6 @@
             {% end %}
         </tr>
     </table>
+    <div v-component="vue_pagination"></div>
 </div>
 

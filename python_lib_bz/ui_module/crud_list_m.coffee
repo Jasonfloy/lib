@@ -5,7 +5,17 @@ $(->
             list: []
             module: "normal"
             loading:true
-            loading_target:"#v_crud_list"
+            loading_target:"#v_crud_list",
+            pagination:{
+                resultCount: 101,
+                showFL: true, 
+                showFN: true,
+                currPage: 1,
+                showPageNum: 7,
+                gotoPageFun: (currPage) ->
+                    console.log(currPage)
+                    
+            }
         methods:
             detail: (event, record)->
                 console.log record

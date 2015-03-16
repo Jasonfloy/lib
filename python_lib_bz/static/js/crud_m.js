@@ -39,7 +39,7 @@
             table_name: table_name,
             record: data.record
           })).done(function(result) {
-            var file, _i, _len, _ref, _results;
+            var file, i, len, ref, results;
             data.loading = false;
             if (result.error !== '0') {
               window.bz.showError5(result.error);
@@ -47,21 +47,21 @@
             } else if (result.error === void 0) {
               return data.error_info = '未知错误';
             } else {
-              _ref = data.files;
-              _results = [];
-              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                file = _ref[_i];
-                _results.push($.ajax({
+              ref = data.files;
+              results = [];
+              for (i = 0, len = ref.length; i < len; i++) {
+                file = ref[i];
+                results.push($.ajax({
                   url: "/file_upload",
                   type: "POST",
                   data: file.temp.fd,
                   processData: false,
                   contentType: false
                 }).done(function(d) {
-                  var file_id, _results1;
-                  _results1 = [];
+                  var file_id, results1;
+                  results1 = [];
                   for (file_id in d.results) {
-                    _results1.push($.post("/file_ref", JSON.stringify({
+                    results1.push($.post("/file_ref", JSON.stringify({
                       "file_id": file_id,
                       "table_name": parm.table_name,
                       "column": file.column,
@@ -74,10 +74,10 @@
                       }
                     }));
                   }
-                  return _results1;
+                  return results1;
                 }));
               }
-              return _results;
+              return results;
             }
           });
         }
@@ -96,7 +96,7 @@
       v_crud.$data.oper = '新增';
     }
     return $.post('/crud', JSON.stringify(parm)).done(function(result) {
-      var f, field, record, _i, _len, _ref, _results;
+      var f, field, i, len, record, ref, results;
       if (result.error !== '0') {
         return window.bz.showError5(result.error);
       } else {
@@ -114,20 +114,20 @@
           window.bz.showError5('未找到这条数据!');
         }
         if (result.all_files.length > 0) {
-          _ref = result.all_files;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            f = _ref[_i];
+          ref = result.all_files;
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            f = ref[i];
             v_crud.$set(f.column, {
               "fd": null,
               "all_files": f.files
             });
-            _results.push(v_crud.$data.files.push({
+            results.push(v_crud.$data.files.push({
               "column": f.column,
               "temp": v_crud.$data[f.column]
             }));
           }
-          return _results;
+          return results;
         }
       }
     });
