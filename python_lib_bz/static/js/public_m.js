@@ -9,6 +9,16 @@
     return setTimeout(func, ms);
   };
 
+  Vue.directive('dateformat', function(value) {
+    var date_str, el, mask;
+    if (value) {
+      el = $(this.el);
+      mask = this.arg;
+      date_str = window.bz.dateFormat(value, mask);
+      return el.html(date_str);
+    }
+  });
+
   Vue.directive('ellipsis', function(str) {
     var el, len;
     if (str) {

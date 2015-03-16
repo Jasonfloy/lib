@@ -3,6 +3,14 @@ window.log = (parm)-> console.log parm
 #用来做延迟运行,例子: delay 1500, -> v_crud.jump2List()
 window.delay = (ms, func) -> setTimeout func, ms
 
+Vue.directive('dateformat', (value)->
+  if value
+    el = $(@el)
+    mask = @arg
+    date_str = window.bz.dateFormat(value, mask)
+    el.html(date_str)
+)
+
 # 字符串显示省略
 Vue.directive('ellipsis', (str)->
   if str
