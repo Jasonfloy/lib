@@ -1,3 +1,4 @@
+    currPageObj = {}
     genPage = (cfg) ->
         pages = []
         if(cfg.showFL)
@@ -31,6 +32,8 @@
         if(showPageEnd > cfg.endPage)
             showPageBegin = cfg.endPage - cfg.showPageNum + 1
             showPageEnd = cfg.endPage
+        if(showPageBegin < 1)
+            showPageBegin = 1
         while showPageBegin <= showPageEnd
             obj = {}
             obj.name = showPageBegin
@@ -39,6 +42,7 @@
             if(cfg.currPage == showPageBegin)
                 obj.classStr = "active"
                 obj.canClick = false
+                currPageObj = obj
             pages.push(obj)
             showPageBegin++
         if(cfg.showFN)
@@ -77,8 +81,10 @@
                 currPage: 1 #当前第几页
                 showPageNum: 5 #显示几个页面按钮
                 showGotoPage: true #是否显示直接跳转
+                gotoPageFun: ->
             if(!@pagination || !@pagination.resultCount)
                 #错误,缺少必须参数
+                console.log '错误,缺少必须参数'
                 return
             if(typeof (@pagination.showFL) == "boolean")
                 cfg.showFL = @pagination.showFL
@@ -104,9 +110,16 @@
             
             @$set("pagination_cfg", cfg)
             @$set("pages", genPage(cfg))
+            @butClick(currPageObj, true)
         methods: 
-                butClick: (page) ->
-                    if(page.canClick)
+                butClick: (page, firstCall) ->
+                    if(page.canClick || firstCall)
                         @pagination_cfg.currPage = page.targetPage
-                        @$set("pages", genPage(@pagination_cfg))
-                        @pagination_cfg.gotoPageFun(@pagination_cfg.currPage)
+                        #计算起始行数(部分数据库从0开始,后端拿到这个值后需要减1)
+                        beginIndex = (@pagination_cfg.currPage - 1) * @pagination_cfg.pageCount + 1
+                        if(@pagination_cfg.currPage == 1)
+                            beginIndex = 1
+                        #计算结束行数(部分数据库通过起始行号及取多少条确定,不需要次参数)
+                        endIndex = beginIndex + @pagination_cfg.pageCount - 1
+                        @pagination_cfg.gotoPageFun(@pagination_cfg.currPage, beginIndex, endIndex, @pagination_cfg.pageCount)
+                        @$set("pages", genPage(@pagination_cfg)) #生成分页组件数据模型并刷新组件

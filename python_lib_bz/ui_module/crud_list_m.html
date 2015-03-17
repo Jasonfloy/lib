@@ -23,24 +23,26 @@
             </span>
         </div>
     </div>
-    <table class="table table-hover">
-        <tr>
-            <th></th>
-            {% for field in fields %}
-            <th>{{field.description}}</th>
-            {% end %}
-        </tr>
-        <tr v-on="click:detail($event, r)" v-repeat="r : list | filterBy keyword">
-            <td class="check-column"><input v-class="visibility-hidden:module=='normal'" type="checkbox" v-model="checked" /></td>
-            {% for field in fields %}
-                {% if field.c_type == 'timestamp' %}
-                    <td v-dateformat="'yyyy-MM-dd':r.{{ field.name }}"></td>
-                {% else %}
-                    <td v-ellipsis="8:r.{{ field.name }}"></td>
+    <div style="height: 410px;">
+        <table class="table table-hover">
+            <tr>
+                <th></th>
+                {% for field in fields %}
+                <th>{{field.description}}</th>
                 {% end %}
-            {% end %}
-        </tr>
-    </table>
-    <div v-component="vue_pagination"></div>
+            </tr>
+            <tr v-on="click:detail($event, r)" v-repeat="r : list | filterBy keyword">
+                <td class="check-column"><input v-class="visibility-hidden:module=='normal'" type="checkbox" v-model="checked" /></td>
+                {% for field in fields %}
+                    {% if field.c_type == 'timestamp' %}
+                        <td v-dateformat="'yyyy-MM-dd':r.{{ field.name }}"></td>
+                    {% else %}
+                        <td v-ellipsis="8:r.{{ field.name }}"></td>
+                    {% end %}
+                {% end %}
+            </tr>
+        </table>
+    </div>
+    <div class="box-body" v-component="vue_pagination"></div>
 </div>
 

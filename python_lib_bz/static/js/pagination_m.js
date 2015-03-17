@@ -1,5 +1,7 @@
 (function() {
-  var genPage;
+  var currPageObj, genPage;
+
+  currPageObj = {};
 
   genPage = function(cfg) {
     var center, obj, pages, showPageBegin, showPageEnd;
@@ -41,6 +43,9 @@
       showPageBegin = cfg.endPage - cfg.showPageNum + 1;
       showPageEnd = cfg.endPage;
     }
+    if (showPageBegin < 1) {
+      showPageBegin = 1;
+    }
     while (showPageBegin <= showPageEnd) {
       obj = {};
       obj.name = showPageBegin;
@@ -49,6 +54,7 @@
       if (cfg.currPage === showPageBegin) {
         obj.classStr = "active";
         obj.canClick = false;
+        currPageObj = obj;
       }
       pages.push(obj);
       showPageBegin++;
@@ -94,9 +100,11 @@
         resultCount: void 0,
         currPage: 1,
         showPageNum: 5,
-        showGotoPage: true
+        showGotoPage: true,
+        gotoPageFun: function() {}
       };
       if (!this.pagination || !this.pagination.resultCount) {
+        console.log('错误,缺少必须参数');
         return;
       }
       if (typeof this.pagination.showFL === "boolean") {
@@ -129,14 +137,21 @@
         cfg.endPage = cfg.endPage + 1;
       }
       this.$set("pagination_cfg", cfg);
-      return this.$set("pages", genPage(cfg));
+      this.$set("pages", genPage(cfg));
+      return this.butClick(currPageObj, true);
     },
     methods: {
-      butClick: function(page) {
-        if (page.canClick) {
+      butClick: function(page, firstCall) {
+        var beginIndex, endIndex;
+        if (page.canClick || firstCall) {
           this.pagination_cfg.currPage = page.targetPage;
-          this.$set("pages", genPage(this.pagination_cfg));
-          return this.pagination_cfg.gotoPageFun(this.pagination_cfg.currPage);
+          beginIndex = (this.pagination_cfg.currPage - 1) * this.pagination_cfg.pageCount + 1;
+          if (this.pagination_cfg.currPage === 1) {
+            beginIndex = 1;
+          }
+          endIndex = beginIndex + this.pagination_cfg.pageCount - 1;
+          this.pagination_cfg.gotoPageFun(this.pagination_cfg.currPage, beginIndex, endIndex, this.pagination_cfg.pageCount);
+          return this.$set("pages", genPage(this.pagination_cfg));
         }
       }
     }
