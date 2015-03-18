@@ -5,7 +5,6 @@ import tornado_template
 import pg
 import smtplib
 import time
-import public
 
 loader = tornado_template.Loader("email_template")
 
