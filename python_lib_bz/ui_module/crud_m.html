@@ -28,7 +28,7 @@
                     </div>
                     {%elif field.get("c_type") == "input-file"%}
                     <div v-component="file_upload_m" v-with="field:{{field.name}}"></div>
-                    {%elif field.get("c_type") == "imgupload"%}
+                    {%elif field.get("c_type") == "input-img"%}
                     {%else%}
                     <input class="form-control" v-disable="!editable" v-model="record.{{field.name}}">
                     {%end%}
