@@ -1,0 +1,76 @@
+<script type="text/x-template" id="file_upload_m">
+<div class="file_upload_m_control">
+    <div v-repeat="f : field.all_files">
+        <i v-file-icon="f.suffix"></i>
+        <a v-href="f.file_path" target="_blank" v-class="remove-mark: f.remove==true">(% f.file_name %)</a>
+        <i class="fa fa-times btn-remove-file" v-on="click: removeFile(f)"></i>
+    </div>
+    <span class="file-input btn btn-sm btn-primary btn-file">
+        选择文件<input v-on="change: appendFile($event)" type="file" multiple/>
+    </span>
+</div>
+</script>
+<script type="text/javascript">
+all_files = []
+// 把disabled和href合并了
+Vue.directive("href", function(value){
+    if(value) {
+        $(this.el).removeAttr("disabled").attr("href", "/" + value)
+    } else {
+        $(this.el).attr("disabled", true)
+    }
+});
+Vue.directive("file-icon", function(value){
+    var file_icon = "fa fa-upload";
+    if(value == "uploading") {
+        file_icon = "fa fa-spin fa-spinner";
+    } else if([".xls", ".xlsx"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-excel-o";
+    } else if([".doc", ".docx"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-word-o"
+    } else if([".doc", ".docx"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-word-o"
+    } else if([".ppt", ".pptx"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-powerpoint-o"
+    } else if([".zip", ".rar", ".7z"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-archive-o"
+    } else if([".txt"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-text-o"
+    } else if([".pdf"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-pdf-o"
+    } else if([".png", ".jpeg", ".jpg", ".gif"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-image-o"
+    } else if(value) {
+        file_icon = "fa fa-file-o"
+    }
+    $(this.el).attr("class", file_icon)
+});
+Vue.component("file_upload_m", {
+    template: "#file_upload_m",
+    methods: {
+        appendFile: function(e) {
+            _this = this
+            files = e.target.files
+            if(!_this.$data.field.fd) {
+                _this.$data.field.fd = new FormData()
+            }
+            for(var i in files) {
+                if(!isNaN(i)) {
+                    var f = files[i]
+                    new_file = {
+                        "column": _this.$data.field.column,
+                        "file_type": "file",
+                        "file_name": f.name
+                    }
+                    _this.$data.field.all_files.push(new_file)
+                    _this.$data.field.fd.append("file_" + i, f)
+                }
+            }
+        },
+        removeFile: function(f) {
+            f.remove = true
+            this.$data.field.remove_files.push(f.id)
+        }
+    }
+});
+</script>

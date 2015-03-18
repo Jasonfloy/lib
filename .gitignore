@@ -19,3 +19,4 @@ static/*_bz
 static/png
 *.sublime-project
 *.sublime-workspace
+static/uploaded_files/
