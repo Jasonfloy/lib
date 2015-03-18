@@ -36,6 +36,13 @@ $(->
           return
         @submit()
 
+      forget:->
+        data = @$data
+        if data.forget != data.repassword
+          data.error_info = '请输入邮箱'
+        return
+        @submit()
+
       cleanError:->
         @$data.error_info = false
 )
