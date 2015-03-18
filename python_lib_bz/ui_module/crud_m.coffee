@@ -32,13 +32,15 @@ $(->
                         log result.error
                     else if result.error == undefined
                         data.error_info = '未知错误'
-                    else
+                    else if data.files.length > 0
                         uploadFile(data.files)
-                    v_crud.$set("loading", false)
+                    else
+                        AllDone(result)
                 )
 
     AllDone = (d)->
-        if d.error == 0
+        v_crud.$set("loading", false)
+        if d.error == "0"
             #delay 1500, -> v_crud.jump2List()
             window.bz.showSuccess5('提交成功...正在返回列表')
         else
