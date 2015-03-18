@@ -1,6 +1,3 @@
-
-{% module loading_m() %}
-{% module check_ie_m() %}
 <div class="container">
     <div id='v_login' v-loading="loading">
         {% if oauth2 %}
@@ -10,59 +7,53 @@
                 <i class="fa fa-google-plus"></i>
                 <span class="visible-md-inline-block visible-lg-inline-block">Google</span>
             </a>
-            {% end %}
-            {% if oauth2.get('twitter') and oauth2.get('twitter').get('enabled') %}
+            {% end %} {% if oauth2.get('twitter') and oauth2.get('twitter').get('enabled') %}
             <a class="btn btn-default btn-oauth2-twitter" href="{{ oauth2.get('twitter').get('url') }}">
                 <i class="fa fa-twitter"></i>
                 <span class="visible-md-inline-block visible-lg-inline-block">Twitter</span>
             </a>
-            {% end %}
-            {% if oauth2.get('facebook') and oauth2.get('facebook').get('enabled') %}
+            {% end %} {% if oauth2.get('facebook') and oauth2.get('facebook').get('enabled') %}
             <a class="btn btn-default btn-oauth2-facebook" href="{{ oauth2.get('facebook').get('url') }}">
                 <i class="fa fa-facebook"></i>
                 <span class="visible-md-inline-block visible-lg-inline-block">Facebook</span>
             </a>
-            {% end %}
-            {% if oauth2.get('weibo') and oauth2.get('weibo').get('enabled') %}
+            {% end %} {% if oauth2.get('weibo') and oauth2.get('weibo').get('enabled') %}
             <a class="btn btn-default btn-oauth2-weibo" href="{{ oauth2.get('weibo').get('url') }}">
                 <i class="fa fa-weibo"></i>
                 <span class="visible-md-inline-block visible-lg-inline-block">Weibo</span>
             </a>
-            {% end %}
-            {% if oauth2.get('qq') and oauth2.get('qq').get('enabled') %}
+            {% end %} {% if oauth2.get('qq') and oauth2.get('qq').get('enabled') %}
             <a class="btn btn-default btn-oauth2-qq" href="{{ oauth2.get('qq').get('url') }}">
                 <i class="fa fa-qq"></i>
                 <span class="visible-md-inline-block visible-lg-inline-block">QQ</span>
             </a>
-            {% end %}
-            {% if oauth2.get('douban') and oauth2.get('douban').get('enabled') %}
+            {% end %} {% if oauth2.get('douban') and oauth2.get('douban').get('enabled') %}
             <a class="btn btn-default btn-oauth2-douban" href="{{ oauth2.get('douban').get('url') }}">
                 豆
                 <span class="visible-md-inline-block visible-lg-inline-block">瓣</span>
-            </a>
-            {% end %}
+            </a> {% end %}
         </div>
-        <br>
-        {% end %}
+        <br> {% end %}
         <div role="tabpanel">
             <!-- Nav tabs -->
-            <ul class="nav nav-tabs" role="tablist">
+            <!-- <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active"><a v-on="click:cleanError" href="#login" aria-controls="login" role="tab" data-toggle="tab">登录</a></li>
                 <li role="presentation"><a v-on="click:cleanError" href="#signup" aria-controls="signup" role="tab" data-toggle="tab">注册</a></li>
-            </ul>
-
+                <li role="presentation"><a v-on="click:cleanError" href="#forget" aria-controls="forget" role="tab" data-toggle="tab">忘记密码？</a></li>
+            </ul> -->
             <!-- Tab panes -->
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="login">
                     <div class="panel-body">
+                        <h2 class="text-center">用户登录</h2>
+                        <hr>
                         <form class="form">
                             <div class="form-group">
                                 <div class="input-group input-group-lg">
                                     <span class="input-group-addon">
                                         <i class="fa fa-user"></i>
                                     </span>
-                                    <input type="text" v-model="user_name" class="form-control" id="user" placeholder="请输入用户名"
-                                    v-on="focus:cleanError">
+                                    <input type="text" v-model="user_name" class="form-control" id="user" placeholder="请输入用户名" v-on="focus:cleanError">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -70,19 +61,23 @@
                                     <span class="input-group-addon">
                                         <i class="fa fa-lock"></i>
                                     </span>
-                                    <input type="password" v-model="password" class="form-control" id="password"
-                                    placeholder="请输入密码"
-                                    v-on="keyup: submit | key enter,focus:cleanError">
+                                    <input type="password" v-model="password" class="form-control" id="password" placeholder="请输入密码" v-on="keyup: submit | key enter,focus:cleanError">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <a v-on="click: submit" class="btn btn-primary btn-lg btn-block bz-login-btn">登录</a>
                             </div>
                         </form>
+                        <div>
+                            <a class="pull-right" v-on="click:cleanError" href="#forget" aria-controls="forget" role="tab" data-toggle="tab">忘记密码？</a>
+                            <a v-on="click:cleanError" v-on="click:cleanError" href="#signup" aria-controls="signup" role="tab" data-toggle="tab">新用户注册</a>
+                        </div>
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="signup">
                     <div class="panel-body">
+                        <h2 class="text-center">用户注册</h2>
+                        <hr>
                         <form class="form">
                             <div class="form-group">
                                 <div class="input-group input-group-lg">
@@ -97,7 +92,7 @@
                                     <span class="input-group-addon">
                                         <i class="fa fa-envelope"></i>
                                     </span>
-                                    <input type="text" v-model="email" class="form-control"  placeholder="请输入邮箱地址" v-on="focus:cleanError">
+                                    <input type="text" v-model="email" class="form-control" placeholder="请输入邮箱地址" v-on="focus:cleanError">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -120,10 +115,34 @@
                                 <a v-on="click: signup" class="btn btn-primary btn-lg btn-block bz-signup-btn">注册</a>
                             </div>
                         </form>
+                        <div>
+                            <a v-on="click:cleanError" v-on="click:cleanError" href="#login" aria-controls="login" role="tab" data-toggle="tab">返回登录</a>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="forget">
+                    <div class="panel-body">
+                        <h2 class="text-center">找回密码</h2>
+                        <hr>
+                        <form class="form">
+                            <div class="form-group">
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-envelope"></i>
+                                    </span>
+                                    <input type="text" v-model="email" class="form-control" placeholder="请输入您的邮箱" v-on="focus:cleanError">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <a v-on="click: forget" class="btn btn-primary btn-lg btn-block bz-login-btn">发送邮件</a>
+                            </div>
+                        </form>
+                        <div>
+                            <a class="pull-right" v-on="click:cleanError" v-on="click:cleanError" href="#login" aria-controls="login" role="tab" data-toggle="tab">返回登录</a>
+                        </div>
                     </div>
                 </div>
             </div>
-
         </div>
         <div v-show="error_info" class="alert alert-danger">(%error_info%)</div>
     </div>

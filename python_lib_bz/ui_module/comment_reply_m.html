@@ -11,12 +11,14 @@
                 <i class="fa fa-clock-o"></i>
                 {{time_bz.timeLen(comment.created_date)}}
             </span>
+            {% if user_info %}
             <div class="comment-action">
                 <a v-on="click:reply($event,{{comment.id}})" class="btn btn-default btn-xs">
                     <i class="fa fa-mail-reply text-muted"></i>
                     回复
                 </a>
             </div>
+            {% end %}
             <a href="#">{{comment.user_name}}</a>
             <!--
             <label class="label bg-dark m-l-xs">新手</label>

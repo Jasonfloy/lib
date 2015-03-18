@@ -215,8 +215,24 @@ class crud_list_api(BaseHandler):
         for field in fields:
             if field.sql_parm:
                 sql = crud_oper.joinCrudListSql(table_name, sql, colum_name=field.name, sql_parm=field.sql_parm)
-        cert_array = list(self.pg.db.query(sql))
-        self.write(json.dumps({'error': '0', "array": cert_array}, cls=public_bz.ExtEncoder))
+        isQueryCount = self.get_argument("queryCount", None)
+        if not isQueryCount:
+            limit = self.get_argument('limit', None)
+            offset = self.get_argument('offset', None)
+            if not limit:
+                limit = 10
+            if not offset:
+                offset = 0
+            else:
+                offset = str(int(offset) - 1)
+            sql = 'select * from (' + sql + ') tpage limit ' + limit + ' offset ' + offset
+            cert_array = list(self.pg.db.query(sql))
+            self.write(json.dumps({'error': '0', "array": cert_array}, cls=public_bz.ExtEncoder))
+        else:
+            count = self.pg.db.select(tables = table_name, what = 'count(id)',where = 'is_delete = false')
+            self.write(json.dumps(count[0], cls=public_bz.ExtEncoder))
+    
+    
 
     def delete(self, table_name):
         self.set_header("Content-Type", "application/json")
