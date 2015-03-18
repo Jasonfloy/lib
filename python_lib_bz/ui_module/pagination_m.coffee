@@ -77,22 +77,21 @@
                 showFL: true #是否显示第一页,最后一页
                 showFN: true #是否显示上一页,下一页
                 pageCount: 10 #每页几行
-                resultCount: undefined #总记录数,必须
+                resultCount: 1 #总记录数,必须
                 currPage: 1 #当前第几页
                 showPageNum: 5 #显示几个页面按钮
                 showGotoPage: true #是否显示直接跳转
                 gotoPageFun: ->
-            if(!@pagination || !@pagination.resultCount)
-                #错误,缺少必须参数
-                console.log '错误,缺少必须参数'
-                return
+            if(!@pagination)
+                @pagination = {}
             if(typeof (@pagination.showFL) == "boolean")
                 cfg.showFL = @pagination.showFL
             if(typeof (@pagination.showFN) == "boolean")
                 cfg.showFN = @pagination.showFN
             if(@pagination.pageCount)
                 cfg.pageCount = @pagination.pageCount
-            cfg.resultCount = @pagination.resultCount
+            if(@pagination.resultCount)
+                cfg.resultCount = @pagination.resultCount
             if(@pagination.currPage)
                 cfg.currPage = @pagination.currPage
                 if(cfg.currPage < 1)

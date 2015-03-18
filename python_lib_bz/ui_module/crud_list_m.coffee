@@ -28,11 +28,11 @@ $(->
         _resultCount = data.count
         _currPageNo = parseInt(window.location.hash.replace('#',''))
         
+        
         _endPage = parseInt(_resultCount/_pageCount)
         if(_resultCount%_pageCount > 0)
             _endPage = _endPage + 1
         if(_currPageNo > _endPage)
-            console.log 222
             window.location.hash = '1'
             _currPageNo = 1
         

@@ -39,7 +39,6 @@
         _endPage = _endPage + 1;
       }
       if (_currPageNo > _endPage) {
-        console.log(222);
         window.location.hash = '1';
         _currPageNo = 1;
       }

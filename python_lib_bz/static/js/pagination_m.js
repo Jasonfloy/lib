@@ -97,15 +97,14 @@
         showFL: true,
         showFN: true,
         pageCount: 10,
-        resultCount: void 0,
+        resultCount: 1,
         currPage: 1,
         showPageNum: 5,
         showGotoPage: true,
         gotoPageFun: function() {}
       };
-      if (!this.pagination || !this.pagination.resultCount) {
-        console.log('错误,缺少必须参数');
-        return;
+      if (!this.pagination) {
+        this.pagination = {};
       }
       if (typeof this.pagination.showFL === "boolean") {
         cfg.showFL = this.pagination.showFL;
@@ -116,7 +115,9 @@
       if (this.pagination.pageCount) {
         cfg.pageCount = this.pagination.pageCount;
       }
-      cfg.resultCount = this.pagination.resultCount;
+      if (this.pagination.resultCount) {
+        cfg.resultCount = this.pagination.resultCount;
+      }
       if (this.pagination.currPage) {
         cfg.currPage = this.pagination.currPage;
         if (cfg.currPage < 1) {
