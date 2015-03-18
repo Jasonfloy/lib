@@ -21,6 +21,7 @@ $(->
             user_name:data.user_name
             password:data.password
             email:data.email
+            type:'login'
         ,(result, done)->
             data.loading=false
             if result.error!='0'
@@ -38,10 +39,20 @@ $(->
 
       forget:->
         data = @$data
-        if data.forget != data.repassword
+        if data.email == '' or data.email == undefined
           data.error_info = '请输入邮箱'
+          return
+
+        data.loading=true
+        $.post '/login',
+          JSON.stringify
+            email:data.email
+            type:'forget'
+        ,(result, done)->
+            data.loading=false
+            console.log(result)
+
         return
-        @submit()
 
       cleanError:->
         @$data.error_info = false
