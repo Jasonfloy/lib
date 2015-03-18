@@ -107,7 +107,6 @@
             cfg.endPage = parseInt(cfg.resultCount/cfg.pageCount)
             if(cfg.resultCount%cfg.pageCount > 0)
                 cfg.endPage = cfg.endPage + 1
-            
             @$set("pagination_cfg", cfg)
             @$set("pages", genPage(cfg))
             @butClick(currPageObj, true)

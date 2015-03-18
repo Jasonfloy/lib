@@ -21,7 +21,7 @@ $(->
                 v_crud_list.$data.loading=false
             )
             
-    $.get('/crud_list_api/company?queryCount=true').done((data) ->
+    $.get('/crud_list_api/' + table_name + '?queryCount=true').done((data) ->
         if(window.location.hash == '' || isNaN(window.location.hash.replace('#','')))
             window.location.hash = '1'
         _pageCount = 10 #每页显示10条记录
