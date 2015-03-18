@@ -21,18 +21,18 @@ $(->
                 v_crud_list.$data.loading=false
             )
             
-    $.get('/crud_list_api/company?queryCount=true').done((data) ->
+    $.get('/crud_list_api/' + table_name + '?queryCount=true').done((data) ->
         if(window.location.hash == '' || isNaN(window.location.hash.replace('#','')))
             window.location.hash = '1'
         _pageCount = 10 #每页显示10条记录
         _resultCount = data.count
         _currPageNo = parseInt(window.location.hash.replace('#',''))
         
+        
         _endPage = parseInt(_resultCount/_pageCount)
         if(_resultCount%_pageCount > 0)
             _endPage = _endPage + 1
         if(_currPageNo > _endPage)
-            console.log 222
             window.location.hash = '1'
             _currPageNo = 1
         

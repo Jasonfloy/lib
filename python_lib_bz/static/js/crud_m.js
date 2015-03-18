@@ -113,7 +113,7 @@
       v_crud.$data.oper = '新增';
     }
     return $.post('/crud', JSON.stringify(parm)).done(function(result) {
-      var f, field, i, len, record, ref, results;
+      var f, field, record, _i, _len, _ref, _results;
       if (result.error !== '0') {
         return window.bz.showError5(result.error);
       } else {
@@ -131,21 +131,21 @@
           window.bz.showError5('未找到这条数据!');
         }
         if (result.all_files.length > 0) {
-          ref = result.all_files;
-          results = [];
-          for (i = 0, len = ref.length; i < len; i++) {
-            f = ref[i];
+          _ref = result.all_files;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            f = _ref[_i];
             v_crud.$set(f.column, {
               "fd": null,
               "all_files": f.files,
               "remove_files": []
             });
-            results.push(v_crud.$data.files.push({
+            _results.push(v_crud.$data.files.push({
               "column": f.column,
               "temp": v_crud.$data[f.column]
             }));
           }
-          return results;
+          return _results;
         }
       }
     });

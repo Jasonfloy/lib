@@ -26,7 +26,7 @@
         return v_crud_list.$data.loading = false;
       });
     };
-    return $.get('/crud_list_api/company?queryCount=true').done(function(data) {
+    return $.get('/crud_list_api/' + table_name + '?queryCount=true').done(function(data) {
       var _currPageNo, _endPage, _pageCount, _resultCount;
       if (window.location.hash === '' || isNaN(window.location.hash.replace('#', ''))) {
         window.location.hash = '1';
@@ -39,7 +39,6 @@
         _endPage = _endPage + 1;
       }
       if (_currPageNo > _endPage) {
-        console.log(222);
         window.location.hash = '1';
         _currPageNo = 1;
       }
