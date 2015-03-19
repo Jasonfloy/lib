@@ -55,6 +55,7 @@ class login(UserInfoHandler):
         oauth2.google = storage(enabled=False, url='/google')
         oauth2.twitter = storage(enabled=False, url='/twitter')
         oauth2.douban = storage(enabled=False, url='/douban')
+        oauth2.github = storage(enabled=False, url='/github')
         self.oauth2 = oauth2
 
         #用户操作相关的
@@ -159,6 +160,39 @@ class twitter(BaseHandler, tornado.auth.TwitterMixin):
             # Save the user using e.g. set_secure_cookie()
         else:
             yield self.authorize_redirect()
+
+
+class github(BaseHandler, tornado_auth_bz.GithubOAuth2Mixin):
+    def initialize(self):
+        BaseHandler.initialize(self)
+
+    @tornado.gen.coroutine
+    def get(self):
+        # if we have a code, we have been authorized so we can log in
+        if self.get_argument("code", False):
+            self.get_authenticated_user(
+                redirect_uri = self.settings['github_oauth']['redirect_uri'],
+                client_id = self.settings['github_oauth']['client_id'],
+                client_secret = self.settings['github_oauth']['client_secret'],
+                code = self.get_argument("code"),
+                callback = self.async_callback(self._on_login)
+            )
+            return
+ 
+        # otherwise we need to request an authorization code
+        self.authorize_redirect(
+                redirect_uri = self.settings['github_oauth']['redirect_uri'],
+                client_id = self.settings['github_oauth']['client_id'],
+                extra_params = {"scope": None, "foo":1})
+    
+    def _on_login(self, user):
+        """ This handles the user object from the login request """
+        if user:
+            logging.info('logged in user from github: ' + str(user))
+            #self.set_secure_cookie("user", tornado.escape.json_encode(user))
+        else:
+            self.clear_cookie("user")
+        self.redirect(self.get_argument("next","/"))
 
 
 class douban(BaseHandler, tornado_auth_bz.DoubanOAuth2Mixin):
