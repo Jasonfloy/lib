@@ -93,7 +93,7 @@ class login(UserInfoHandler):
             # if len(data_token[0].forget_token) > 1:
             #     forget_token = data_token[0].forget_token
 
-            sql_set_token = "update user_info set forget_token = '%s' where email = '%s' user_type = 'my'" % (forget_token, email)
+            sql_set_token = "update user_info set forget_token = '%s' where email = '%s' and user_type = 'my'" % (forget_token, email)
             self.pg.db.query(sql_set_token)
             url = self.request.host + self.request.uri +'#'+forget_token
             #content = MIMEText(loader.load("login_email_m.html").generate(user_name=email, url=url), 'html', 'utf-8')
@@ -108,12 +108,12 @@ class login(UserInfoHandler):
             password = login_info.get("password")
             hashed_password = hashlib.md5(password + salt).hexdigest()
             token = login_info.get("token")
-            sql_verify = "select forget_token from user_info where forget_token = '%s' user_type = 'my'" % token
+            sql_verify = "select forget_token from user_info where forget_token = '%s' and user_type = 'my'" % token
             data_verify = self.pg.db.query(sql_verify)
             if len(data_verify) < 1:
                 self.write(json.dumps({'error': len(data_verify)}, cls = public_bz.ExtEncoder))
                 return
-            sql_set_password = "update user_info set password = '%s' , forget_token = '' where forget_token = '%s' user_type = 'my'" % (hashed_password, token)
+            sql_set_password = "update user_info set password = '%s' , forget_token = '' where forget_token = '%s' and user_type = 'my'" % (hashed_password, token)
             self.pg.db.query(sql_set_password)
             self.write(json.dumps({'result': '成功'}, cls = public_bz.ExtEncoder))
 
