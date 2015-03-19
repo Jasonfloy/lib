@@ -101,7 +101,8 @@
         currPage: 1,
         showPageNum: 5,
         showGotoPage: true,
-        gotoPageFun: function() {}
+        gotoPageFun: function() {},
+        onInitedLoadCurrPageData: false
       };
       if (!this.pagination) {
         this.pagination = {};
@@ -133,13 +134,18 @@
       if (this.pagination.gotoPageFun) {
         cfg.gotoPageFun = this.pagination.gotoPageFun;
       }
+      if (this.pagination.onInitedLoadCurrPageData) {
+        cfg.onInitedLoadCurrPageData = this.pagination.onInitedLoadCurrPageData;
+      }
       cfg.endPage = parseInt(cfg.resultCount / cfg.pageCount);
       if (cfg.resultCount % cfg.pageCount > 0) {
         cfg.endPage = cfg.endPage + 1;
       }
       this.$set("pagination_cfg", cfg);
       this.$set("pages", genPage(cfg));
-      return this.butClick(currPageObj, true);
+      if (cfg.onInitedLoadCurrPageData) {
+        return this.butClick(currPageObj, true);
+      }
     },
     methods: {
       butClick: function(page, firstCall) {
