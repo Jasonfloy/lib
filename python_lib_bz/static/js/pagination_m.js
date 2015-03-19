@@ -97,15 +97,15 @@
         showFL: true,
         showFN: true,
         pageCount: 10,
-        resultCount: void 0,
+        resultCount: 1,
         currPage: 1,
         showPageNum: 5,
         showGotoPage: true,
-        gotoPageFun: function() {}
+        gotoPageFun: function() {},
+        onInitedLoadCurrPageData: false
       };
-      if (!this.pagination || !this.pagination.resultCount) {
-        console.log('错误,缺少必须参数');
-        return;
+      if (!this.pagination) {
+        this.pagination = {};
       }
       if (typeof this.pagination.showFL === "boolean") {
         cfg.showFL = this.pagination.showFL;
@@ -116,7 +116,9 @@
       if (this.pagination.pageCount) {
         cfg.pageCount = this.pagination.pageCount;
       }
-      cfg.resultCount = this.pagination.resultCount;
+      if (this.pagination.resultCount) {
+        cfg.resultCount = this.pagination.resultCount;
+      }
       if (this.pagination.currPage) {
         cfg.currPage = this.pagination.currPage;
         if (cfg.currPage < 1) {
@@ -132,13 +134,18 @@
       if (this.pagination.gotoPageFun) {
         cfg.gotoPageFun = this.pagination.gotoPageFun;
       }
+      if (this.pagination.onInitedLoadCurrPageData) {
+        cfg.onInitedLoadCurrPageData = this.pagination.onInitedLoadCurrPageData;
+      }
       cfg.endPage = parseInt(cfg.resultCount / cfg.pageCount);
       if (cfg.resultCount % cfg.pageCount > 0) {
         cfg.endPage = cfg.endPage + 1;
       }
       this.$set("pagination_cfg", cfg);
       this.$set("pages", genPage(cfg));
-      return this.butClick(currPageObj, true);
+      if (cfg.onInitedLoadCurrPageData) {
+        return this.butClick(currPageObj, true);
+      }
     },
     methods: {
       butClick: function(page, firstCall) {

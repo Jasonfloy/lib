@@ -77,22 +77,23 @@
                 showFL: true #是否显示第一页,最后一页
                 showFN: true #是否显示上一页,下一页
                 pageCount: 10 #每页几行
-                resultCount: undefined #总记录数,必须
+                resultCount: 1 #总记录数,必须
                 currPage: 1 #当前第几页
                 showPageNum: 5 #显示几个页面按钮
                 showGotoPage: true #是否显示直接跳转
-                gotoPageFun: ->
-            if(!@pagination || !@pagination.resultCount)
-                #错误,缺少必须参数
-                console.log '错误,缺少必须参数'
-                return
+                gotoPageFun: -> #点击页数按钮时的回掉方法,用以使用者加载数据.组件传递给该方法的参数:currPage(当前页), 
+                                #beginIndex(数据库查询开始条数,部分数据库从0开始的需要减一), endIndex(数据库查询结束条数), limit(每页几条数据)
+                onInitedLoadCurrPageData: false #组件初始化完成后自动调用gotoPageFun方法(用以加载当前页数据)的开关
+            if(!@pagination)
+                @pagination = {}
             if(typeof (@pagination.showFL) == "boolean")
                 cfg.showFL = @pagination.showFL
             if(typeof (@pagination.showFN) == "boolean")
                 cfg.showFN = @pagination.showFN
             if(@pagination.pageCount)
                 cfg.pageCount = @pagination.pageCount
-            cfg.resultCount = @pagination.resultCount
+            if(@pagination.resultCount)
+                cfg.resultCount = @pagination.resultCount
             if(@pagination.currPage)
                 cfg.currPage = @pagination.currPage
                 if(cfg.currPage < 1)
@@ -103,13 +104,16 @@
                 cfg.showGotoPage = @pagination.showGotoPage
             if(@pagination.gotoPageFun)
                 cfg.gotoPageFun = @pagination.gotoPageFun
+            if(@pagination.onInitedLoadCurrPageData)
+                cfg.onInitedLoadCurrPageData = @pagination.onInitedLoadCurrPageData
             
             cfg.endPage = parseInt(cfg.resultCount/cfg.pageCount)
             if(cfg.resultCount%cfg.pageCount > 0)
                 cfg.endPage = cfg.endPage + 1
             @$set("pagination_cfg", cfg)
             @$set("pages", genPage(cfg))
-            @butClick(currPageObj, true)
+            if(cfg.onInitedLoadCurrPageData)
+                @butClick(currPageObj, true)
         methods: 
                 butClick: (page, firstCall) ->
                     if(page.canClick || firstCall)
