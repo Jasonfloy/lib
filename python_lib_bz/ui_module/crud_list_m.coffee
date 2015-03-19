@@ -1,6 +1,11 @@
 $(->
     table_name = window.bz.getUrlParm()[2]
     v_crud_list = {}
+    
+    window.test123 = ->
+        v_crud_list.$data.pagination.showFL = false
+        #v_crud_list.$data.pagination.$set("showFL",false)
+                    
     load = (currPage, beginIndex, endIndex, limit) ->
         window.location.hash = currPage
         if v_crud_list.$data
@@ -36,6 +41,7 @@ $(->
             window.location.hash = '1'
             _currPageNo = 1
         
+                    
         
         v_crud_list = new Vue
             el: '#v_crud_list'
@@ -44,7 +50,7 @@ $(->
                 module: "normal"
                 loading:true
                 loading_target:"#v_crud_list"
-                pagination:
+                pagination: 
                     resultCount: _resultCount
                     showFL: true
                     showFN: true
