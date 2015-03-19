@@ -1,5 +1,6 @@
 
 {% module loading_m() %}
+{% module pagination_m() %}
 <div id="v_crud_list" v-loading="loading; this" class="box safe-datagrid">
     <div class="box-header with-border">
         <h3 class="box-title">{{ table_desc }}管理</h3>
@@ -14,27 +15,37 @@
             </div>
         </div>
     </div>
-    <div class="box-body">
-        <div class="input-group search">
-            <input type="text" class="form-control" v-model="keyword" placeholder="搜索"/>
-            <span class="input-group-btn">
-                <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
-            </span>
-        </div>
+    <div style="min-height: 410px;">
+        <table class="table table-hover">
+             <table class="table table-hover">
+              <tr><th></th>
+                {% for field in fields %}
+                <th><form id="search">
+                    <input type="text"  name="{{field.name}}"
+                       onkeyup="window.loadData(this.value)" class="form-search" placeholder="{{field.description}}" />   
+                   </form>                  
+                </th>
+                {% end %}
+            </tr>
+        
+            <tr>
+                <th></th>
+                {% for field in fields %}
+                <th>{{field.description}}</th>
+                {% end %}
+            </tr>
+            <tr v-on="click:detail($event, r)" v-repeat="r : list">
+                <td class="check-column"><input v-class="visibility-hidden:module=='normal'" type="checkbox" v-model="checked" /></td>
+                {% for field in fields %}
+                    {% if field.c_type == 'timestamp' %}
+                        <td v-dateformat="'yyyy-MM-dd':r.{{ field.name }}"></td>
+                    {% else %}
+                        <td v-ellipsis="8:r.{{ field.name }}"></td>
+                    {% end %}
+                {% end %}
+            </tr>
+        </table>
     </div>
-    <table class="table table-hover">
-        <tr>
-            <th></th>
-            {% for field in fields %}
-            <th>{{field.description}}</th>
-            {% end %}
-        </tr>
-        <tr v-on="click:detail($event, r)" v-repeat="r : list | filterBy keyword">
-            <td class="check-column"><input v-class="visibility-hidden:module=='normal'" type="checkbox" v-model="checked" /></td>
-            {% for field in fields %}
-            <td v-ellipsis="8:r.{{ field.name }}"></td>
-            {% end %}
-        </tr>
-    </table>
+    <div class="box-body" v-component="vue_pagination"></div>
 </div>
 

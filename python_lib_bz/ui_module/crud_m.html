@@ -13,7 +13,7 @@
             <div class="form-group">
                 <label class="col-sm-4 col-md-3 col-lg-2 control-label">{{field.description}}</label>
                 <div class="col-sm-8 col-md-9 col-lg-10">
-                    {% if field.get("options")%}
+                    {% if field.get("c_type") == "select" and field.get("options")%}
                     <select class="form-control" v-disable="!editable" v-model="record.{{field.name}}">
                         {% for option in field.options%}
                         <option value="{{option.get('value')}}">{{option.get('text')}}</option>
@@ -29,6 +29,18 @@
                     {%elif field.get("c_type") == "input-file"%}
                     <div v-component="file_upload_m" v-with="field:{{field.name}}"></div>
                     {%elif field.get("c_type") == "imgupload"%}
+                    {%elif field.get("c_type") == "radio" and field.get("options")%}
+                        {% for option in field.options%}
+                        <label class="radio-inline">
+                            <input type="radio" v-disable="!editable" value="{{option.get('value')}}" v-model="record.{{field.name}}" />{{option.get('text')}}
+                        </label>
+                        {% end %}
+                    {%elif field.get("c_type") == "checkbox" and field.get("options")%}
+                        {% for option in field.options%}
+                        <label class="checkbox-inline">
+                            <input type="checkbox" v-disable="!editable" value="{{option.get('value')}}" v-model="record.{{field.name}}" />{{option.get('text')}}
+                        </label>
+                        {% end %}
                     {%else%}
                     <input class="form-control" v-disable="!editable" v-model="record.{{field.name}}">
                     {%end%}

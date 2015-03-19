@@ -9,6 +9,16 @@
     return setTimeout(func, ms);
   };
 
+  Vue.directive('dateformat', function(value) {
+    var date_str, el, mask;
+    if (value) {
+      el = $(this.el);
+      mask = this.arg;
+      date_str = window.bz.dateFormat(value, mask);
+      return el.html(date_str);
+    }
+  });
+
   Vue.directive('ellipsis', function(str) {
     var el, len;
     if (str) {
@@ -36,7 +46,7 @@
 
   Vue.directive('datepicker', {
     bind: function(value) {
-      var datepicker, _this;
+      var _this, datepicker;
       _this = this;
       datepicker = $(this.el);
       return datepicker.datepicker({
@@ -251,7 +261,7 @@
       return $("<div/>").text(value).html();
     },
     dateFormat: function(timestramp, mask) {
-      var date, matched_array, o, regStr, res, _this;
+      var _this, date, matched_array, o, regStr, res;
       date = new Date(timestramp);
       _this = this;
       o = {

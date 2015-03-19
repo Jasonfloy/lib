@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-from ui_module import my_ui_module
 import tornado.web
 import tornado_bz
 import json
@@ -10,9 +8,13 @@ import hashlib
 import user_bz
 import public_bz
 import tornado_auth_bz
+
+from email.MIMEText import MIMEText
+from sendmail_bz import *
 from tornado_bz import UserInfoHandler
 from tornado_bz import BaseHandler
 from public_bz import storage
+from ui_module import my_ui_module
 
 salt = "hold is watching you"
 
@@ -55,6 +57,7 @@ class login(UserInfoHandler):
         oauth2.google = storage(enabled=False, url='/google')
         oauth2.twitter = storage(enabled=False, url='/twitter')
         oauth2.douban = storage(enabled=False, url='/douban')
+        oauth2.github = storage(enabled=False, url='/github')
         self.oauth2 = oauth2
 
         #用户操作相关的
@@ -67,14 +70,28 @@ class login(UserInfoHandler):
     def post(self):
         self.set_header("Content-Type", "application/json")
         login_info = json.loads(self.request.body)
-        user_name = login_info.get("user_name")
-        password = login_info.get("password")
-        email = login_info.get("email")
-        # 密码加密
-        hashed_password = hashlib.md5(password + salt).hexdigest()
-        user_info = self.user_oper.login(user_name, hashed_password, email)
-        self.set_secure_cookie("user_id", str(user_info.id))
-        self.write(json.dumps({'error': '0'}, cls=public_bz.ExtEncoder))
+        form_type = login_info.get("type")
+        if form_type == 'login':
+            user_name = login_info.get("user_name")
+            password = login_info.get("password")
+            email = login_info.get("email")
+            # 密码加密
+            hashed_password = hashlib.md5(password + salt).hexdigest()
+            user_info = self.user_oper.login(user_name, hashed_password, email)
+            self.set_secure_cookie("user_id", str(user_info.id))
+            self.write(json.dumps({'error': '0'}, cls=public_bz.ExtEncoder))
+        elif form_type == 'forget':
+            self.set_header("Content-Type", "application/json")
+            login_info = json.loads(self.request.body)
+            email = login_info.get("email")
+
+            content = MIMEText("测试一下", 'html', 'utf-8')
+            content['From'] = 'hold@highwe.com'
+            content['To'] = email
+            content['Subject'] = 'HOLD用户找回密码'
+            sendMail(content['To'], content)
+
+            self.write(json.dumps({'result': '1','email': email}, cls=public_bz.ExtEncoder))
 
     @tornado_bz.handleError
     def put(self):
@@ -88,7 +105,6 @@ class login(UserInfoHandler):
         hashed_new_pwd = hashlib.md5(new_password + salt).hexdigest()
         error_msg = self.user_oper.resetPassword(user_id, hashed_old_pwd, hashed_new_pwd)
         self.write(json.dumps({'error': error_msg}, cls=public_bz.ExtEncoder))
-
 
 class logout(BaseHandler):
 
@@ -159,6 +175,39 @@ class twitter(BaseHandler, tornado.auth.TwitterMixin):
             # Save the user using e.g. set_secure_cookie()
         else:
             yield self.authorize_redirect()
+
+
+class github(BaseHandler, tornado_auth_bz.GithubOAuth2Mixin):
+    def initialize(self):
+        BaseHandler.initialize(self)
+
+    @tornado.gen.coroutine
+    def get(self):
+        # if we have a code, we have been authorized so we can log in
+        if self.get_argument("code", False):
+            user = yield self.get_authenticated_user(
+                redirect_uri = self.settings['github_oauth']['redirect_uri'],
+                client_id = self.settings['github_oauth']['client_id'],
+                client_secret = self.settings['github_oauth']['client_secret'],
+                code = self.get_argument("code"),
+                extra_fields = "user:email"
+            )
+            
+            self.user_oper = user_bz.UserOper(self.pg)
+            user_info = self.user_oper.githubLogin(user)
+            print user_info.id
+            self.set_secure_cookie('user_id', str(user_info.id))
+            self.redirect('/')
+
+        else:
+            yield self.authorize_redirect(
+                redirect_uri = self.settings['github_oauth']['redirect_uri'],
+                client_id = self.settings['github_oauth']['client_id'],
+                extra_params={
+                    "scope": "user:email",
+                }
+            )
+
 
 
 class douban(BaseHandler, tornado_auth_bz.DoubanOAuth2Mixin):

@@ -1,8 +1,9 @@
 <script type="text/x-template" id="file_upload_m">
 <div class="file_upload_m_control">
-    <div v-repeat="field.all_files">
-        <i v-file-icon="suffix"></i>
-        <a v-href="file_path" target="_blank">(% file_name %)</a>
+    <div v-repeat="f : field.all_files">
+        <i v-file-icon="f.suffix"></i>
+        <a v-href="f.file_path" target="_blank" v-class="remove-mark: f.remove==true">(% f.file_name %)</a>
+        <i class="fa fa-times btn-remove-file" v-on="click: removeFile(f)"></i>
     </div>
     <span class="file-input btn btn-sm btn-primary btn-file">
         选择文件<input v-on="change: appendFile($event)" type="file" multiple/>
@@ -23,21 +24,21 @@ Vue.directive("file-icon", function(value){
     var file_icon = "fa fa-upload";
     if(value == "uploading") {
         file_icon = "fa fa-spin fa-spinner";
-    } else if(["xls", "xlsx"].indexOf(value) >= 0) {
+    } else if([".xls", ".xlsx"].indexOf(value) >= 0) {
         file_icon = "fa fa-file-excel-o";
-    } else if(["doc", "docx"].indexOf(value) >= 0) {
+    } else if([".doc", ".docx"].indexOf(value) >= 0) {
         file_icon = "fa fa-file-word-o"
-    } else if(["doc", "docx"].indexOf(value) >= 0) {
+    } else if([".doc", ".docx"].indexOf(value) >= 0) {
         file_icon = "fa fa-file-word-o"
-    } else if(["ppt", "pptx"].indexOf(value) >= 0) {
+    } else if([".ppt", ".pptx"].indexOf(value) >= 0) {
         file_icon = "fa fa-file-powerpoint-o"
-    } else if(["zip", "rar", "7z"].indexOf(value) >= 0) {
+    } else if([".zip", ".rar", ".7z"].indexOf(value) >= 0) {
         file_icon = "fa fa-file-archive-o"
-    } else if(["txt"].indexOf(value) >= 0) {
+    } else if([".txt"].indexOf(value) >= 0) {
         file_icon = "fa fa-file-text-o"
-    } else if(["pdf"].indexOf(value) >= 0) {
+    } else if([".pdf"].indexOf(value) >= 0) {
         file_icon = "fa fa-file-pdf-o"
-    } else if(["png", "jpeg", "jpg", "gif"].indexOf(value) >= 0) {
+    } else if([".png", ".jpeg", ".jpg", ".gif"].indexOf(value) >= 0) {
         file_icon = "fa fa-file-image-o"
     } else if(value) {
         file_icon = "fa fa-file-o"
@@ -50,7 +51,9 @@ Vue.component("file_upload_m", {
         appendFile: function(e) {
             _this = this
             files = e.target.files
-            fd = new FormData()
+            if(!_this.$data.field.fd) {
+                _this.$data.field.fd = new FormData()
+            }
             for(var i in files) {
                 if(!isNaN(i)) {
                     var f = files[i]
@@ -60,10 +63,13 @@ Vue.component("file_upload_m", {
                         "file_name": f.name
                     }
                     _this.$data.field.all_files.push(new_file)
-                    fd.append("file_" + i, f)
+                    _this.$data.field.fd.append("file_" + i, f)
                 }
             }
-            _this.$data.field.fd = fd
+        },
+        removeFile: function(f) {
+            f.remove = true
+            this.$data.field.remove_files.push(f.id)
         }
     }
 });

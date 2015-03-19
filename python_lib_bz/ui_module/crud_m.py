@@ -186,6 +186,8 @@ class crud_list_m(my_ui_module.MyUIModule):
         crud_oper = CrudOper(self.pg)
         fields = crud_oper.getCrudListConf(table_name)
         table_desc = db_bz.getTableDesc(self.pg, table_name)
+        if table_desc is None:
+            raise Exception("需要设定修改维护的系统(biao)的说明")
         return self.render_string(self.html_name, fields=fields, table_desc=table_desc)
 
     def css_files(self):
@@ -205,16 +207,37 @@ class crud_list(ModuleHandler):
 class crud_list_api(BaseHandler):
 
     @tornado_bz.handleError
-    def get(self, table_name):
+    def post(self, table_name):
         self.set_header("Content-Type", "application/json")
         crud_oper = CrudOper(self.pg)
         sql = crud_oper.getCrudListSql(table_name)
         fields = crud_oper.getCrudConf(table_name)
+        find_sql=self.request.body
+        sql=sql.replace("order", find_sql+" order ")           
         for field in fields:
             if field.sql_parm:
-                sql = crud_oper.joinCrudListSql(table_name, sql, colum_name=field.name, sql_parm=field.sql_parm)
-        cert_array = list(self.pg.db.query(sql))
-        self.write(json.dumps({'error': '0', "array": cert_array}, cls=public_bz.ExtEncoder))
+                sql = crud_oper.joinCrudListSql(table_name, sql, colum_name=field.name,sql_parm=field.sql_parm)
+        isQueryCount = self.get_argument("queryCount", None)
+        if not isQueryCount:
+            limit = self.get_argument('limit', None)
+            offset = self.get_argument('offset', None)            
+            if not limit:
+                limit = 10
+            if not offset:
+                offset = 0
+            else:
+                offset = str(int(offset) - 1)         
+            sql = 'select * from (' + sql + ') tpage limit ' + limit + ' offset ' + offset
+            cert_array = list(self.pg.db.query(sql))
+            self.write(json.dumps({'error': '0', "array": cert_array}, cls=public_bz.ExtEncoder))
+        else:
+            sql_where_parms='is_delete = false'            
+            if find_sql:
+                sql_where_parms+=find_sql          
+            count = self.pg.db.select(tables = table_name, what = 'count(id)',where = sql_where_parms)
+            self.write(json.dumps(count[0], cls=public_bz.ExtEncoder))
+    
+    
 
     def delete(self, table_name):
         self.set_header("Content-Type", "application/json")
@@ -253,7 +276,7 @@ class crud(ModuleHandler):
             file_upload_columns = crud_oper.getFileUploadCoulumn(table_name)
             for column in file_upload_columns:
                 sql = '''
-                select f.file_name, f.file_path, f.file_type, f.suffix
+                select r.id, f.file_name, f.file_path, f.file_type, f.suffix, 'false' as remove
                 from uploaded_file_record_ref r left join uploaded_files f on r.uploaded_file_id = f.id
                 where r.ref_table = '%s' and r.ref_column = '%s' and r.ref_record_id = '%s' and r.is_delete = '0'
                 ''' % (table_name, column.name, id)
@@ -263,6 +286,8 @@ class crud(ModuleHandler):
                     "files": files
                 })
         table_desc = db_bz.getTableDesc(self.pg, table_name)
+        if table_desc is None:
+            raise Exception("需要设定修改维护的系统(biao)的说明")
         self.write(json.dumps({'error': '0', 'data': data, 'table_desc': table_desc, 'all_files': all_files}, cls=public_bz.ExtEncoder))
 
 

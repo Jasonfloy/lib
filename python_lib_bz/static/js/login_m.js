@@ -24,7 +24,8 @@
           return $.post('/login', JSON.stringify({
             user_name: data.user_name,
             password: data.password,
-            email: data.email
+            email: data.email,
+            type: 'login'
           }), function(result, done) {
             data.loading = false;
             if (result.error !== '0') {
@@ -44,6 +45,22 @@
             return;
           }
           return this.submit();
+        },
+        forget: function() {
+          var data;
+          data = this.$data;
+          if (data.email === '' || data.email === void 0) {
+            data.error_info = '请输入邮箱';
+            return;
+          }
+          data.loading = true;
+          $.post('/login', JSON.stringify({
+            email: data.email,
+            type: 'forget'
+          }), function(result, done) {
+            data.loading = false;
+            return console.log(result);
+          });
         },
         cleanError: function() {
           return this.$data.error_info = false;

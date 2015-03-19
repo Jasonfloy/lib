@@ -1,0 +1,37 @@
+
+<p class="logo404" id="tip"></p>
+
+<ul class="wrapper">
+    <div class="sun">
+        <div class="star"></div>
+    </div>
+    <div class="mercury">
+        <div class="planet">
+            <div class="shadow"></div>
+        </div>
+    </div>
+    <div class="venus">
+        <div class="planet">
+            <div class="shadow"></div>
+        </div>
+    </div>
+    <div class="earth">
+        <div class="planet"><div class="shadow"></div></div>
+    </div>
+    <div class="mars">
+        <div class="planet"><div class="shadow"></div></div>
+    </div>
+    <div class="jupiter">
+        <div class="planet"><div class="shadow"></div></div>
+    </div>
+</ul>
+<script>
+var str = "404 ERROR";
+var tip = document.getElementById("tip");
+str_queue = str.split("");
+for(var i = 0; i < str_queue.length; i++) {
+    setTimeout(function() {
+            tip.innerHTML += str_queue.shift()
+            }, i*200)
+}
+</script>
