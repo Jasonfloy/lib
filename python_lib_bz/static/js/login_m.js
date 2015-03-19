@@ -58,7 +58,6 @@
             email: data.email,
             type: 'forget'
           }), function(result, done) {
-            log(result);
             data.loading = false;
             if (result.error !== '' && result.error !== void 0) {
               if (result.error === 0) {

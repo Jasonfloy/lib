@@ -49,7 +49,6 @@ $(->
             email:data.email
             type:'forget'
         ,(result, done)->
-            log result
             data.loading=false
             if result.error != '' && result.error != undefined
               if result.error == 0

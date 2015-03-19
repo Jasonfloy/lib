@@ -97,7 +97,7 @@ class login(UserInfoHandler):
             self.pg.db.query(sql_set_token)
             url = self.request.host + self.request.uri +'#'+forget_token
             #content = MIMEText(loader.load("login_email_m.html").generate(user_name=email, url=url), 'html', 'utf-8')
-            content = MIMEText('<a href="'+self.request.host + self.request.uri +'#'+forget_token+'">'+ self.request.host + self.request.uri +'设置新密码</a>', 'html', 'utf-8')
+            content = MIMEText('<a href="'+self.request.host + self.request.uri +'#'+forget_token+'">'+ self.request.host + self.request.uri + '#token/' + forget_token + '设置新密码</a>', 'html', 'utf-8')
             content['From'] = 'hold@highwe.com'
             content['To'] = email
             content['Subject'] = 'HOLD用户找回密码'
