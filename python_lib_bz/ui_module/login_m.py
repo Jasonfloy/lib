@@ -95,12 +95,12 @@ class login(UserInfoHandler):
 
             sql_set_token = "update user_info set forget_token = '%s' where email = '%s' and user_type = 'my'" % (forget_token, email)
             self.pg.db.query(sql_set_token)
-            url = self.request.host + self.request.uri +'#'+forget_token
+            url = 'http://'+self.request.host + self.request.uri + '#token/' + forget_token
             #content = MIMEText(loader.load("login_email_m.html").generate(user_name=email, url=url), 'html', 'utf-8')
-            content = MIMEText('<a href="'+self.request.host + self.request.uri +'#'+forget_token+'">'+ self.request.host + self.request.uri + '#token/' + forget_token + '设置新密码</a>', 'html', 'utf-8')
+            content = MIMEText('<a href="'+url+'">点此设置新密码</a><br><br>如果以上按钮点击无效，请将链接复制到浏览器地址栏中打开：<br>'+ url, 'html', 'utf-8')
             content['From'] = 'hold@highwe.com'
             content['To'] = email
-            content['Subject'] = 'HOLD用户找回密码'
+            content['Subject'] = '找回密码'
             sendMail(content['To'], content)
 
             self.write(json.dumps({'result': '成功'}, cls = public_bz.ExtEncoder))
