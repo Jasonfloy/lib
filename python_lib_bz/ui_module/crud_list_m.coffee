@@ -52,6 +52,7 @@ $(->
                     currPage: _currPageNo
                     showPageNum: 7
                     gotoPageFun: load
+                    onInitedLoadCurrPageData: true
             methods:
                 detail: (event, record)->
                     console.log record

@@ -56,7 +56,8 @@
             pageCount: _pageCount,
             currPage: _currPageNo,
             showPageNum: 7,
-            gotoPageFun: load
+            gotoPageFun: load,
+            onInitedLoadCurrPageData: true
           }
         },
         methods: {
