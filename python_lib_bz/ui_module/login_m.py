@@ -10,6 +10,7 @@ import hashlib
 import user_bz
 import public_bz
 import tornado_auth_bz
+import uuid
 from sendmail_bz import *
 from tornado_bz import UserInfoHandler
 from tornado_bz import BaseHandler
@@ -70,7 +71,7 @@ class login(UserInfoHandler):
         self.set_header("Content-Type", "application/json")
         login_info = json.loads(self.request.body)
         form_type = login_info.get("type")
-        if form_type == 'login':
+        if form_type == 'login': #如果是登录
             user_name = login_info.get("user_name")
             password = login_info.get("password")
             email = login_info.get("email")
@@ -79,18 +80,39 @@ class login(UserInfoHandler):
             user_info = self.user_oper.login(user_name, hashed_password, email)
             self.set_secure_cookie("user_id", str(user_info.id))
             self.write(json.dumps({'error': '0'}, cls=public_bz.ExtEncoder))
-        elif form_type == 'forget':
-            self.set_header("Content-Type", "application/json")
-            login_info = json.loads(self.request.body)
+        elif form_type == 'forget': #如果是找回密码
             email = login_info.get("email")
+            sql_token = "select forget_token from user_info where email = '%s'" % email
+            data_token = self.pg.db.query(sql_token)
+            if len(data_token) < 1:
+                self.write(json.dumps({'error': len(data_token)}, cls = public_bz.ExtEncoder))
+                return
+            forget_token = str(uuid.uuid4())
+            # if len(data_token[0].forget_token) > 1:
+            #     forget_token = data_token[0].forget_token
 
-            content = MIMEText("测试一下", 'html', 'utf-8')
+            sql_set_token = "update user_info set forget_token = '%s' where email = '%s'" % (forget_token, email)
+            self.pg.db.query(sql_set_token)
+            url = self.request.host + self.request.uri +'#'+forget_token
+            #content = MIMEText(loader.load("login_email_m.html").generate(user_name=email, url=url), 'html', 'utf-8')
+            content = MIMEText('<a href="'+self.request.host + self.request.uri +'#'+forget_token+'">'+ self.request.host + self.request.uri +'设置新密码</a>', 'html', 'utf-8')
             content['From'] = 'hold@highwe.com'
             content['To'] = email
             content['Subject'] = 'HOLD用户找回密码'
             sendMail(content['To'], content)
 
-            self.write(json.dumps({'result': '1','email': email}, cls=public_bz.ExtEncoder))
+            self.write(json.dumps({'result': '成功'}, cls = public_bz.ExtEncoder))
+        elif form_type == 'setPassword': #设置新密码
+            password = login_info.get("password")
+            token = login_info.get("token")
+            sql_verify = "select forget_token from user_info where forget_token = '%s'" % token
+            data_verify = self.pg.db.query(sql_verify)
+            if len(data_verify) < 1:
+                self.write(json.dumps({'error': len(data_verify)}, cls = public_bz.ExtEncoder))
+                return
+            sql_set_password = "update user_info set password = '%s' , forget_token = '' where forget_token = '%s'" % (password, token)
+            self.pg.db.query(sql_set_password)
+            self.write(json.dumps({'result': '成功'}, cls = public_bz.ExtEncoder))
 
     @tornado_bz.handleError
     def put(self):
@@ -204,6 +226,12 @@ class douban(BaseHandler, tornado_auth_bz.DoubanOAuth2Mixin):
                 response_type='code'
             )
 
+
+class forget(my_ui_module.MyUIModule):
+
+    '''找回密码验证'''
+    def get(self):
+        return self.render(tornado_bz.getTName(request, 'sites'))
 
 if __name__ == '__main__':
     pass
