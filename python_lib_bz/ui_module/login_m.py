@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-from ui_module import my_ui_module
 import tornado.web
 import tornado_bz
 import json
@@ -10,11 +8,13 @@ import hashlib
 import user_bz
 import public_bz
 import tornado_auth_bz
+
+from email.MIMEText import MIMEText
 from sendmail_bz import *
 from tornado_bz import UserInfoHandler
 from tornado_bz import BaseHandler
 from public_bz import storage
-from email.MIMEText import MIMEText
+from ui_module import my_ui_module
 
 salt = "hold is watching you"
 
@@ -185,29 +185,29 @@ class github(BaseHandler, tornado_auth_bz.GithubOAuth2Mixin):
     def get(self):
         # if we have a code, we have been authorized so we can log in
         if self.get_argument("code", False):
-            self.get_authenticated_user(
+            user = yield self.get_authenticated_user(
                 redirect_uri = self.settings['github_oauth']['redirect_uri'],
                 client_id = self.settings['github_oauth']['client_id'],
                 client_secret = self.settings['github_oauth']['client_secret'],
                 code = self.get_argument("code"),
-                callback = self.async_callback(self._on_login)
+                extra_fields = "user:email"
             )
-            return
- 
-        # otherwise we need to request an authorization code
-        self.authorize_redirect(
+            
+            self.user_oper = user_bz.UserOper(self.pg)
+            user_info = self.user_oper.githubLogin(user)
+            print user_info.id
+            self.set_secure_cookie('user_id', str(user_info.id))
+            self.redirect('/')
+
+        else:
+            yield self.authorize_redirect(
                 redirect_uri = self.settings['github_oauth']['redirect_uri'],
                 client_id = self.settings['github_oauth']['client_id'],
-                extra_params = {"scope": None, "foo":1})
-    
-    def _on_login(self, user):
-        """ This handles the user object from the login request """
-        if user:
-            logging.info('logged in user from github: ' + str(user))
-            #self.set_secure_cookie("user", tornado.escape.json_encode(user))
-        else:
-            self.clear_cookie("user")
-        self.redirect(self.get_argument("next","/"))
+                extra_params={
+                    "scope": "user:email",
+                }
+            )
+
 
 
 class douban(BaseHandler, tornado_auth_bz.DoubanOAuth2Mixin):
