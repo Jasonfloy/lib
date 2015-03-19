@@ -3,6 +3,9 @@
     var load, table_name, v_crud_list;
     table_name = window.bz.getUrlParm()[2];
     v_crud_list = {};
+    window.test123 = function() {
+      return v_crud_list.$data.pagination.showFL = false;
+    };
     load = function(currPage, beginIndex, endIndex, limit) {
       window.location.hash = currPage;
       if (v_crud_list.$data) {
