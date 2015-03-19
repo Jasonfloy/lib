@@ -29,11 +29,16 @@
                     {%elif field.get("c_type") == "input-file"%}
                     <div v-component="file_upload_m" v-with="field:{{field.name}}"></div>
                     {%elif field.get("c_type") == "imgupload"%}
-                    
                     {%elif field.get("c_type") == "radio" and field.get("options")%}
                         {% for option in field.options%}
                         <label class="radio-inline">
                             <input type="radio" v-disable="!editable" value="{{option.get('value')}}" v-model="record.{{field.name}}" />{{option.get('text')}}
+                        </label>
+                        {% end %}
+                    {%elif field.get("c_type") == "checkbox" and field.get("options")%}
+                        {% for option in field.options%}
+                        <label class="checkbox-inline">
+                            <input type="checkbox" v-disable="!editable" value="{{option.get('value')}}" v-model="record.{{field.name}}" />{{option.get('text')}}
                         </label>
                         {% end %}
                     {%else%}

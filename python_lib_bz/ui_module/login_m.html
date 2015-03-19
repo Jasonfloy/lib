@@ -17,6 +17,11 @@
                 <i class="fa fa-facebook"></i>
                 <span class="visible-md-inline-block visible-lg-inline-block">Facebook</span>
             </a>
+            {% end %}{% if oauth2.get('github') and oauth2.get('github').get('enabled') %}
+            <a class="btn btn-default btn-oauth2-github" href="{{ oauth2.get('github').get('url') }}">
+                <i class="fa fa-github"></i>
+                <span class="visible-md-inline-block visible-lg-inline-block">Github</span>
+            </a>
             {% end %} {% if oauth2.get('weibo') and oauth2.get('weibo').get('enabled') %}
             <a class="btn btn-default btn-oauth2-weibo" href="{{ oauth2.get('weibo').get('url') }}">
                 <i class="fa fa-weibo"></i>

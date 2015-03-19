@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from ui_module import my_ui_module
+
 import tornado.web
 import tornado_bz
 import json
@@ -11,11 +11,12 @@ import user_bz
 import public_bz
 import tornado_auth_bz
 import uuid
-from sendmail_bz import *
+from email.MIMEText import MIMEText
+from sendmail_bz import sendMail
 from tornado_bz import UserInfoHandler
 from tornado_bz import BaseHandler
 from public_bz import storage
-from email.MIMEText import MIMEText
+from ui_module import my_ui_module
 
 salt = "hold is watching you"
 
@@ -58,6 +59,7 @@ class login(UserInfoHandler):
         oauth2.google = storage(enabled=False, url='/google')
         oauth2.twitter = storage(enabled=False, url='/twitter')
         oauth2.douban = storage(enabled=False, url='/douban')
+        oauth2.github = storage(enabled=False, url='/github')
         self.oauth2 = oauth2
 
         #用户操作相关的
@@ -198,6 +200,39 @@ class twitter(BaseHandler, tornado.auth.TwitterMixin):
             yield self.authorize_redirect()
 
 
+class github(BaseHandler, tornado_auth_bz.GithubOAuth2Mixin):
+    def initialize(self):
+        BaseHandler.initialize(self)
+
+    @tornado.gen.coroutine
+    def get(self):
+        # if we have a code, we have been authorized so we can log in
+        if self.get_argument("code", False):
+            user = yield self.get_authenticated_user(
+                redirect_uri = self.settings['github_oauth']['redirect_uri'],
+                client_id = self.settings['github_oauth']['client_id'],
+                client_secret = self.settings['github_oauth']['client_secret'],
+                code = self.get_argument("code"),
+                extra_fields = "user:email"
+            )
+            
+            self.user_oper = user_bz.UserOper(self.pg)
+            user_info = self.user_oper.githubLogin(user)
+            print user_info.id
+            self.set_secure_cookie('user_id', str(user_info.id))
+            self.redirect('/')
+
+        else:
+            yield self.authorize_redirect(
+                redirect_uri = self.settings['github_oauth']['redirect_uri'],
+                client_id = self.settings['github_oauth']['client_id'],
+                extra_params={
+                    "scope": "user:email",
+                }
+            )
+
+
+
 class douban(BaseHandler, tornado_auth_bz.DoubanOAuth2Mixin):
     def initialize(self):
         BaseHandler.initialize(self)
@@ -226,12 +261,6 @@ class douban(BaseHandler, tornado_auth_bz.DoubanOAuth2Mixin):
                 response_type='code'
             )
 
-
-class forget(my_ui_module.MyUIModule):
-
-    '''找回密码验证'''
-    def get(self):
-        return self.render(tornado_bz.getTName(request, 'sites'))
 
 if __name__ == '__main__':
     pass

@@ -186,6 +186,7 @@ class UserInfoHandler(BaseHandler):
             else:
                 self.redirect("/logout")
 
+
     def get_template_namespace(self):
         ns = super(UserInfoHandler, self).get_template_namespace()
         ns.update({
