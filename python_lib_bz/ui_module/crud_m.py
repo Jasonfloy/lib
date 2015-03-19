@@ -207,29 +207,34 @@ class crud_list(ModuleHandler):
 class crud_list_api(BaseHandler):
 
     @tornado_bz.handleError
-    def get(self, table_name):
+    def post(self, table_name):
         self.set_header("Content-Type", "application/json")
         crud_oper = CrudOper(self.pg)
         sql = crud_oper.getCrudListSql(table_name)
         fields = crud_oper.getCrudConf(table_name)
+        find_sql=self.request.body
+        sql=sql.replace("order", find_sql+" order ")           
         for field in fields:
             if field.sql_parm:
-                sql = crud_oper.joinCrudListSql(table_name, sql, colum_name=field.name, sql_parm=field.sql_parm)
+                sql = crud_oper.joinCrudListSql(table_name, sql, colum_name=field.name,sql_parm=field.sql_parm)
         isQueryCount = self.get_argument("queryCount", None)
         if not isQueryCount:
             limit = self.get_argument('limit', None)
-            offset = self.get_argument('offset', None)
+            offset = self.get_argument('offset', None)            
             if not limit:
                 limit = 10
             if not offset:
                 offset = 0
             else:
-                offset = str(int(offset) - 1)
+                offset = str(int(offset) - 1)         
             sql = 'select * from (' + sql + ') tpage limit ' + limit + ' offset ' + offset
             cert_array = list(self.pg.db.query(sql))
             self.write(json.dumps({'error': '0', "array": cert_array}, cls=public_bz.ExtEncoder))
         else:
-            count = self.pg.db.select(tables = table_name, what = 'count(id)',where = 'is_delete = false')
+            sql_where_parms='is_delete = false'            
+            if find_sql:
+                sql_where_parms+=find_sql          
+            count = self.pg.db.select(tables = table_name, what = 'count(id)',where = sql_where_parms)
             self.write(json.dumps(count[0], cls=public_bz.ExtEncoder))
     
     
