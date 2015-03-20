@@ -10,7 +10,8 @@ import urllib2
 import utils
 
 import os
-
+import string
+import random
 
 class ExtEncoder(json.JSONEncoder):
 

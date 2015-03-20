@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from db_bz import daemonDB
-
+import re
 
 class UserOper:
 
@@ -60,8 +60,13 @@ class UserOper:
                 else:
                     raise Exception('用户已经存在!')
         else:
+            if email is None:
+                if len(user_name) > 7:
+                    if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", user_name) != None:
+                        email = user_name
             self.pg.db.insert('user_info', user_type='my', user_name=user_name, password=password, email=email)
             return self.login(user_name, password)
+
 
     @daemonDB
     def getUserInfo(self, user_type='my', user_name=None, out_id=None):
@@ -98,7 +103,7 @@ class UserOper:
                               out_id=user_info['id'],
                               email=user_info['email'],
                               user_name=user_info['name'],
-                              link=user_info['link'],
+                              link=user_info.get('link'),
                               picture=user_info['picture'],
                               gender=user_info['gender'],
                               locale=user_info['locale']
