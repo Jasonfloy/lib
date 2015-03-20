@@ -8,9 +8,9 @@ import hashlib
 import user_bz
 import public_bz
 import tornado_auth_bz
+import sendmail_bz
 
 from email.MIMEText import MIMEText
-from sendmail_bz import *
 from tornado_bz import UserInfoHandler
 from tornado_bz import BaseHandler
 from public_bz import storage
@@ -22,6 +22,7 @@ salt = "hold is watching you"
 class login_m(my_ui_module.MyUIModule):
 
     '''登录的页面'''
+
     def render(self, oauth2):
         return self.render_string(self.html_name, oauth2=oauth2)
 
@@ -60,7 +61,7 @@ class login(UserInfoHandler):
         oauth2.github = storage(enabled=False, url='/github')
         self.oauth2 = oauth2
 
-        #用户操作相关的
+        # 用户操作相关的
         self.user_oper = user_bz.UserOper(self.pg)
 
     def get(self):
@@ -89,9 +90,9 @@ class login(UserInfoHandler):
             content['From'] = 'hold@highwe.com'
             content['To'] = email
             content['Subject'] = 'HOLD用户找回密码'
-            sendMail(content['To'], content)
+            sendmail_bz.sendMail(content['To'], content)
 
-            self.write(json.dumps({'result': '1','email': email}, cls=public_bz.ExtEncoder))
+            self.write(json.dumps({'result': '1', 'email': email}, cls=public_bz.ExtEncoder))
 
     @tornado_bz.handleError
     def put(self):
@@ -105,6 +106,7 @@ class login(UserInfoHandler):
         hashed_new_pwd = hashlib.md5(new_password + salt).hexdigest()
         error_msg = self.user_oper.resetPassword(user_id, hashed_old_pwd, hashed_new_pwd)
         self.write(json.dumps({'error': error_msg}, cls=public_bz.ExtEncoder))
+
 
 class logout(BaseHandler):
 
@@ -122,6 +124,7 @@ class google(BaseHandler, tornado.auth.GoogleOAuth2Mixin):
 
     def initialize(self):
         BaseHandler.initialize(self)
+
     @tornado.gen.coroutine
     def get(self):
         redirect_uri = self.settings['google_oauth']['redirect_uri']
@@ -160,8 +163,10 @@ class twitter(BaseHandler, tornado.auth.TwitterMixin):
     _OAUTH_AUTHENTICATE_URL = "https://api.twitter.com/oauth/authenticate"
     _OAUTH_NO_CALLBACKS = False
     _TWITTER_BASE_URL = "https://api.twitter.com/1.1"
+
     def initialize(self):
         BaseHandler.initialize(self)
+
     @tornado.gen.coroutine
     def get(self):
         if self.get_argument("oauth_token", None):
@@ -178,6 +183,7 @@ class twitter(BaseHandler, tornado.auth.TwitterMixin):
 
 
 class github(BaseHandler, tornado_auth_bz.GithubOAuth2Mixin):
+
     def initialize(self):
         BaseHandler.initialize(self)
 
@@ -186,13 +192,13 @@ class github(BaseHandler, tornado_auth_bz.GithubOAuth2Mixin):
         # if we have a code, we have been authorized so we can log in
         if self.get_argument("code", False):
             user = yield self.get_authenticated_user(
-                redirect_uri = self.settings['github_oauth']['redirect_uri'],
-                client_id = self.settings['github_oauth']['client_id'],
-                client_secret = self.settings['github_oauth']['client_secret'],
-                code = self.get_argument("code"),
-                extra_fields = "user:email"
+                redirect_uri=self.settings['github_oauth']['redirect_uri'],
+                client_id=self.settings['github_oauth']['client_id'],
+                client_secret=self.settings['github_oauth']['client_secret'],
+                code=self.get_argument("code"),
+                extra_fields="user:email"
             )
-            
+
             self.user_oper = user_bz.UserOper(self.pg)
             user_info = self.user_oper.githubLogin(user)
             print user_info.id
@@ -201,18 +207,19 @@ class github(BaseHandler, tornado_auth_bz.GithubOAuth2Mixin):
 
         else:
             yield self.authorize_redirect(
-                redirect_uri = self.settings['github_oauth']['redirect_uri'],
-                client_id = self.settings['github_oauth']['client_id'],
+                redirect_uri=self.settings['github_oauth']['redirect_uri'],
+                client_id=self.settings['github_oauth']['client_id'],
                 extra_params={
                     "scope": "user:email",
                 }
             )
 
 
-
 class douban(BaseHandler, tornado_auth_bz.DoubanOAuth2Mixin):
+
     def initialize(self):
         BaseHandler.initialize(self)
+
     @tornado.gen.coroutine
     def get(self):
         if self.get_argument('code', False):
