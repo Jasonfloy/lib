@@ -238,7 +238,6 @@ class github(BaseHandler, tornado_auth_bz.GithubOAuth2Mixin):
 
             self.user_oper = user_bz.UserOper(self.pg)
             user_info = self.user_oper.githubLogin(user)
-            print user_info.id
             self.set_secure_cookie('user_id', str(user_info.id))
             self.redirect('/')
 
