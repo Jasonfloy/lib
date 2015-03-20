@@ -103,7 +103,7 @@ class UserOper:
                               out_id=user_info['id'],
                               email=user_info['email'],
                               user_name=user_info['name'],
-                              link=user_info['link'],
+                              link=user_info.get('link'),
                               picture=user_info['picture'],
                               gender=user_info['gender'],
                               locale=user_info['locale']
