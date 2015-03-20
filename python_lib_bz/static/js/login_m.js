@@ -83,6 +83,7 @@
             password: data.password_set,
             type: 'setPassword'
           }), function(result, done) {
+            data.loading = false;
             if (result.error !== '' && result.error !== void 0) {
               return data.error_info = '您的链接已失效，请重新获取邮件';
             } else {
