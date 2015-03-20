@@ -3,6 +3,43 @@ window.log = (parm)-> console.log parm
 #用来做延迟运行,例子: delay 1500, -> v_crud.jump2List()
 window.delay = (ms, func) -> setTimeout func, ms
 
+setWatch = (vm, arg, table_name, column_name, el)->
+    vm.$watch(arg, (new_value)->
+        # ajax
+        getOptions(table_name, column_name, new_value, (options)->
+            if(options)
+                $(el).removeClass("hide")
+                str = "<option value='' disabled='true' selected>--请选择--</option>";
+                for(var i = 0;i < options.length; i++)
+                    str += "<option value='" + options[i].value + "'>" + options[i].text + "</option>";
+                $(el).html(str);
+            else
+                $(el).addClass("hide")
+        )
+    , false, true)
+        
+getOptions = (table_name, column_name, , callback)->
+    str = [table_name, column_name, key].join("/")
+    $.get("/cascade/" + str, , (data)->
+        if not data.error == "0"
+            window.bz.showError5("获取数据失败，请刷新重试。")
+        else
+            callback(data.options)
+    )
+
+# 使用方法
+# <select class="hide" v-cascade="watch_parm : table_name.column_name">
+# </select>
+
+Vue.directive("cascade",->
+    # 拆解参数
+    parms = this.expression.split(".");
+    table_name = parms[0];
+    column_name = parms[1];
+    setWatch(this.vm, this.arg, table_name, column_name, this.el)
+);
+
+# 日期格式化
 Vue.directive('dateformat', (value)->
   if value
     el = $(@el)
@@ -22,7 +59,7 @@ Vue.directive('ellipsis', (str)->
       el.html(str)
 )
 
-#按钮上的 loading
+# 按钮上的 loading
 Vue.directive('btn-loading', (value)->
     el = $(@el)
     if !!value

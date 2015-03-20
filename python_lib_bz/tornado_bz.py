@@ -201,6 +201,7 @@ def getURLMap(the_globals):
         modify by bigzhu at 15/03/06 15:53:59 在这里需要设置 lib 的 static, 用于访问 lib 的 static 文件
     '''
     url_map = []
+    print the_globals
     for i in the_globals:
         try:
             if issubclass(the_globals[i], tornado.web.RequestHandler):
