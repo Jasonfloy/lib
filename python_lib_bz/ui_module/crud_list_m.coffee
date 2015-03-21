@@ -3,20 +3,24 @@ $(->
     table_name = window.bz.getUrlParm()[2]
     v_crud_list = {}
     count=0
-    window.loadData =(value) ->
-        find_parms=""
-        if(value)
-	        searchs=$(".form-search")	        
-	        for s in searchs 
-	        	if s.value
-	        	    find_parms+=" and ("+s.name+")::text like '"+ s.value+"%' ";
-	        	    
-        $.post('/crud_list_api/' + table_name + '?queryCount=true',find_parms).done((data) ->
-	        v_crud_list.$data.pagination.resultCount = data.count
-        )
-	    
+    search_parms=[]
         
-
+    window.loaddingData=(value)->
+        search_parms=[]        
+        i=0
+        searchs=$(".form-search")	        
+        for s in searchs
+            if s.value
+                a={"name":s.name,"value": s.value}
+                search_parms[i]=a
+                i=i+1
+		
+        $.post('/crud_list_api/'+table_name+ '?queryCount=true&find=true',
+        		JSON.stringify {table_name:table_name, search_parms:search_parms}
+        		).done((data)->
+            v_crud_list.$data.pagination.resultCount = data.count
+        )
+   
                     
     load = (currPage, beginIndex, endIndex, limit) ->
         window.location.hash = currPage
@@ -26,8 +30,8 @@ $(->
             limit = 10
         if(!beginIndex)
             beginIndex = 1
-        $.post('/crud_list_api/' + table_name + '?limit=' + limit + '&offset=' + beginIndex,
-        		find_parms
+        $.post('/crud_list_api/' + table_name + '?limit=' + limit + '&offset=' + beginIndex+'&find=true',
+        		JSON.stringify {table_name:table_name, search_parms:search_parms}
         		).done((d1)->
                 if d1.error != "0"
                     window.bz.showError5(d1.error)
@@ -46,14 +50,12 @@ $(->
         _resultCount = data.count
         _currPageNo = parseInt(window.location.hash.replace('#',''))
         
-        
         _endPage = parseInt(_resultCount/_pageCount)
         if(_resultCount%_pageCount > 0)
             _endPage = _endPage + 1
         if(_currPageNo > _endPage)
             window.location.hash = '1'
             _currPageNo = 1
-        
                     
         
         v_crud_list = new Vue
@@ -107,7 +109,6 @@ $(->
                     )
                     return
     )
-    
 
 )    
 

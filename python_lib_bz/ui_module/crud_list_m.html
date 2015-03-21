@@ -22,7 +22,7 @@
                 {% for field in fields %}
                 <th><form id="search">
                     <input type="text"  name="{{field.name}}"
-                       onkeyup="window.loadData(this.value)" class="form-search" placeholder="{{field.description}}" />   
+                       onblur="window.loaddingData(this.value)" class="form-search" placeholder="{{field.description}}" />   
                    </form>                  
                 </th>
                 {% end %}
