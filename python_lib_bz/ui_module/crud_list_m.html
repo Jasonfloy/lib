@@ -23,18 +23,18 @@
                     {% if field.c_type == 'timestamp' %}
                     <th>
                     <div class='input-group date' id='{{field.name}}'>
-                        <input type='text' class="form-search" name="{{field.name}}" 
+                        <input type="text" class="form-search" name="{{field.name}}" 
                             v-disable="editable" v-datepicker="record.{{field.name}}"
 	                        onchange="window.loaddingData()" placeholder="{{field.description}}"/>
                     </div>
                     </th>
                     {% else %}
-	                <th>
-	                    <form id="search">
-		                    <input type="text"  name="{{field.name}}" style="max-width:150px;"
-		                       onkeyup="window.loaddingData()" class="form-search" placeholder="{{field.description}}" />   
-	                   </form>                  
-	                </th>
+                <th>
+                    <form id="search">
+	                    <input type="text"  name="{{field.name}}" style="max-width:150px;"
+	                       onkeyup="window.loaddingData()" class="form-search" placeholder="{{field.description}}" />   
+                   </form>                  
+                </th>
                     {% end %}
                 {% end %}
             </tr>

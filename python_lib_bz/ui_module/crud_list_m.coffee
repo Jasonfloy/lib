@@ -61,6 +61,7 @@ $(->
             el: '#v_crud_list'
             data:
                 list: []
+                record:{}
                 module: "normal"
                 loading:true
                 loading_target:"#v_crud_list"
