@@ -1,3 +1,5 @@
+{% module loading_m() %}
+{% module check_ie_m() %}
 <div class="container">
     <div id='v_login' v-loading="loading">
         {% if oauth2 %}
@@ -56,9 +58,9 @@
                             <div class="form-group">
                                 <div class="input-group input-group-lg">
                                     <span class="input-group-addon">
-                                        <i class="fa fa-user"></i>
+                                        <i class="fa fa-envelope"></i>
                                     </span>
-                                    <input type="text" v-model="user_name" class="form-control" id="user" placeholder="请输入用户名" v-on="focus:cleanError">
+                                    <input type="text" v-model="user_name" class="form-control" id="user" placeholder="请输入邮箱/用户名" v-on="focus:cleanError">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -117,7 +119,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <a v-on="click: signup" class="btn btn-primary btn-lg btn-block bz-signup-btn">注册</a>
+                                <input v-on="click: signup" class="btn btn-primary btn-lg btn-block bz-signup-btn" value="注册" v-disable="loading">
                             </div>
                         </form>
                         <div>
@@ -139,7 +141,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <a v-on="click: forget" class="btn btn-primary btn-lg btn-block bz-login-btn">发送邮件</a>
+                                <input v-on="click: forget" class="btn btn-primary btn-lg btn-block bz-login-btn" type="button" value="发送邮件" v-disable="loading">
                             </div>
                         </form>
                         <div>
@@ -147,6 +149,35 @@
                         </div>
                     </div>
                 </div>
+                <div role="tabpanel" class="tab-pane" id="setPassword">
+                    <div class="panel-body">
+                        <h2 class="text-center">设置新密码</h2>
+                        <hr>
+                        <form class="form">
+                            <div class="form-group">
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-lock"></i>
+                                    </span>
+                                    <input type="password" v-model="password_set" class="form-control" id="password" placeholder="请输入新密码" v-on="keyup: setPassword | key enter,focus:cleanError">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-lock"></i>
+                                    </span>
+                                    <input type="password" v-model="repassword_set" class="form-control" id="password" placeholder="请再次输入新密码" v-on="keyup: setPassword | key enter,focus:cleanError">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input v-on="click: setPassword" class="btn btn-primary btn-lg btn-block bz-login-btn" value="提交" v-disable="loading">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <ul class="hide" role="tablist" id="tab"><a href="#setPassword" aria-controls="setPassword" role="tab" data-toggle="tab"></a></ul>
+
             </div>
         </div>
         <div v-show="error_info" class="alert alert-danger">(%error_info%)</div>
