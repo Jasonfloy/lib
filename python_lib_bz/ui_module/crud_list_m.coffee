@@ -1,11 +1,10 @@
 $(->
-    find_parms=""
     table_name = window.bz.getUrlParm()[2]
     v_crud_list = {}
     count=0
     search_parms=[]
         
-    window.loaddingData=(value)->
+    window.loaddingData=()->
         search_parms=[]        
         i=0
         searchs=$(".form-search")	        
@@ -43,7 +42,7 @@ $(->
                 v_crud_list.$data.loading=false
             )
             
-    $.post('/crud_list_api/' + table_name + '?queryCount=true',find_parms).done((data) ->
+    $.post('/crud_list_api/' + table_name + '?queryCount=true').done((data) ->
         if(window.location.hash == '' || isNaN(window.location.hash.replace('#','')))
             window.location.hash = '1'
         _pageCount = 10 #每页显示10条记录
@@ -108,6 +107,7 @@ $(->
                             window.bz.showError5(data.error)
                     )
                     return
+
     )
 
 )    

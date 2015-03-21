@@ -251,7 +251,7 @@ class crud_list_api(BaseHandler):
             if find_sql:
                 sql_where_parms+=find_sql 
             if flag:
-                sql+=find_sql   #
+                sql+=find_sql   
                 sql="select count(*) from ("+sql+") d"   
                 count=self.pg.db.query(sql)                  
             else:
