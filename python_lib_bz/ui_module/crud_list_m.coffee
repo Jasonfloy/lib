@@ -94,6 +94,21 @@ $(->
                         @$set('module', 'normal')
                     else if @module == 'normal'
                         @$set('module', 'edit')
+                find:->
+                    search_parms=[]        
+                    i=0
+                    searchs=$(".form-search")	        
+                    for s in searchs
+	                    if s.value
+                            a={"name":s.name,"value": s.value}
+                            search_parms[i]=a
+                            i=i+1
+                    $.post('/crud_list_api/'+table_name+ '?queryCount=true&find=true',
+                           JSON.stringify {table_name:table_name, search_parms:search_parms}
+	                		).done((data)->
+	                    v_crud_list.$data.pagination.resultCount = data.count
+	                )
+                       
                 del: ->
                     del_array = _.pluck(_.where(@list, {"checked": true}), "id")
                     $.ajax

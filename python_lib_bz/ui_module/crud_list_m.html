@@ -25,14 +25,15 @@
                     <div class='input-group date' id='{{field.name}}'>
                         <input type="text" class="form-search" name="{{field.name}}" 
                             v-disable="editable" v-datepicker="record.{{field.name}}"
-	                        onchange="window.loaddingData()" placeholder="{{field.description}}"/>
+	                        onchange="window.loaddingData()" placeholder="{{field.description}}"/>	
+	                        <!-- 此处用合适的v-on 响应，调用vue对象中的find()方法 -->                        
                     </div>
                     </th>
                     {% else %}
                 <th>
                     <form id="search">
 	                    <input type="text"  name="{{field.name}}" style="max-width:150px;"
-	                       onkeyup="window.loaddingData()" class="form-search" placeholder="{{field.description}}" />   
+	                       v-on="keyup:find" class="form-search" placeholder="{{field.description}}" />   
                    </form>                  
                 </th>
                     {% end %}
