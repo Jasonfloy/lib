@@ -5,26 +5,66 @@
       twoWay: true,
       bind: function(value) {
         this.checkboxChange = (function() {
-          var jsSrc, jsSrc2;
+          var _newValuesStr, _value, _values, _valuesStr, dataContainer, dataKey, dataKeys, i, j, k, l, len, len1, len2;
           if (this.el.checked) {
-            jsSrc = "this.vm.$data." + this.raw.split(".")[0];
-            console.log(jsSrc);
-            if (!eval(jsSrc)) {
-              eval(jsSrc + "={}");
+            dataKeys = this.raw.split(".");
+            dataContainer = this.vm.$data;
+            i = 0;
+            for (j = 0, len = dataKeys.length; j < len; j++) {
+              dataKey = dataKeys[j];
+              if (!dataContainer[dataKey] && (i + 1) !== dataKeys.length) {
+                dataContainer[dataKey] = {};
+              }
+              if ((i + 1) !== dataKeys.length) {
+                dataContainer = dataContainer[dataKey];
+              }
+              i++;
             }
-            if (eval("this.vm.$data." + this.raw)) {
-              jsSrc2 = "this.vm.$data." + this.raw + " = this.vm.$data." + this.raw + " + '" + this.el.value + "'";
+            if (dataContainer[dataKeys[dataKeys.length - 1]]) {
+              return dataContainer[dataKeys[dataKeys.length - 1]] = dataContainer[dataKeys[dataKeys.length - 1]] + "," + this.el.value;
             } else {
-              jsSrc2 = "this.vm.$data." + this.raw + " = '" + this.el.value + "'";
+              return dataContainer[dataKeys[dataKeys.length - 1]] = this.el.value;
             }
-            console.log(jsSrc2);
-            eval(jsSrc2);
-            console.log(this.vm.$data.record.sex);
+          } else {
+            dataKeys = this.raw.split(".");
+            dataContainer = this.vm.$data;
+            i = 0;
+            for (k = 0, len1 = dataKeys.length; k < len1; k++) {
+              dataKey = dataKeys[k];
+              if ((i + 1) !== dataKeys.length) {
+                dataContainer = dataContainer[dataKey];
+              }
+              i++;
+            }
+            _valuesStr = dataContainer[dataKeys[dataKeys.length - 1]];
+            if (!_valuesStr) {
+              return;
+            }
+            _values = _valuesStr.split(",");
+            _newValuesStr = "";
+            for (l = 0, len2 = _values.length; l < len2; l++) {
+              _value = _values[l];
+              if (_value !== this.el.value) {
+                if (_newValuesStr === "") {
+                  _newValuesStr = _value;
+                } else {
+                  _newValuesStr = _newValuesStr + "," + _value;
+                }
+              }
+            }
+            return dataContainer[dataKeys[dataKeys.length - 1]] = _newValuesStr;
           }
         }).bind(this);
-        return this.el.addEventListener('change', this.checkboxChange);
+        this.el.addEventListener('change', this.checkboxChange);
+        return this.checkboxChange();
       },
-      update: function(value) {},
+      update: function(value) {
+        var _checkedValues;
+        _checkedValues = this.vm.$data.record.sex;
+        if (_checkedValues && _checkedValues.indexOf(this.el.value) !== -1) {
+          return this.el.checked = true;
+        }
+      },
       unbind: function() {
         return this.el.removeEventListener('change', this.checkboxChange);
       }
@@ -143,7 +183,7 @@
       v_crud.$data.oper = '新增';
     }
     return $.post('/crud', JSON.stringify(parm)).done(function(result) {
-      var f, field, record, _i, _len, _ref, _results;
+      var f, field, j, len, record, ref, results;
       if (result.error !== '0') {
         return window.bz.showError5(result.error);
       } else {
@@ -161,21 +201,21 @@
           window.bz.showError5('未找到这条数据!');
         }
         if (result.all_files.length > 0) {
-          _ref = result.all_files;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            f = _ref[_i];
+          ref = result.all_files;
+          results = [];
+          for (j = 0, len = ref.length; j < len; j++) {
+            f = ref[j];
             v_crud.$set(f.column, {
               "fd": null,
               "all_files": f.files,
               "remove_files": []
             });
-            _results.push(v_crud.$data.files.push({
+            results.push(v_crud.$data.files.push({
               "column": f.column,
               "temp": v_crud.$data[f.column]
             }));
           }
-          return _results;
+          return results;
         }
       }
     });

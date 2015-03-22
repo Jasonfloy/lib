@@ -1,12 +1,11 @@
 (function() {
   $(function() {
-    var count, find_parms, load, search_parms, table_name, v_crud_list;
-    find_parms = "";
+    var count, load, search_parms, table_name, v_crud_list;
     table_name = window.bz.getUrlParm()[2];
     v_crud_list = {};
     count = 0;
     search_parms = [];
-    window.loaddingData = function(value) {
+    window.loaddingData = function() {
       var a, i, j, len, s, searchs;
       search_parms = [];
       i = 0;
@@ -55,7 +54,7 @@
         return v_crud_list.$data.loading = false;
       });
     };
-    return $.post('/crud_list_api/' + table_name + '?queryCount=true', find_parms).done(function(data) {
+    return $.post('/crud_list_api/' + table_name + '?queryCount=true').done(function(data) {
       var _currPageNo, _endPage, _pageCount, _resultCount;
       if (window.location.hash === '' || isNaN(window.location.hash.replace('#', ''))) {
         window.location.hash = '1';
@@ -75,6 +74,7 @@
         el: '#v_crud_list',
         data: {
           list: [],
+          record: {},
           module: "normal",
           loading: true,
           loading_target: "#v_crud_list",
@@ -112,6 +112,29 @@
             } else if (this.module === 'normal') {
               return this.$set('module', 'edit');
             }
+          },
+          find: function() {
+            var a, i, j, len, s, searchs;
+            search_parms = [];
+            i = 0;
+            searchs = $(".form-search");
+            for (j = 0, len = searchs.length; j < len; j++) {
+              s = searchs[j];
+              if (s.value) {
+                a = {
+                  "name": s.name,
+                  "value": s.value
+                };
+                search_parms[i] = a;
+                i = i + 1;
+              }
+            }
+            return $.post('/crud_list_api/' + table_name + '?queryCount=true&find=true', JSON.stringify({
+              table_name: table_name,
+              search_parms: search_parms
+            })).done(function(data) {
+              return v_crud_list.$data.pagination.resultCount = data.count;
+            });
           },
           del: function() {
             var del_array;
