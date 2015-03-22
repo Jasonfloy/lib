@@ -225,7 +225,7 @@ class crud_list_api(BaseHandler):
             find_data = json.loads(self.request.body)
             search_parms = find_data["search_parms"]
             for sp in search_parms:
-                find_sql += " and (%s)::text like '%%%s%%'" % (sp["name"])  # 先测试，不对用子查询
+                find_sql += " and (%s)::text like '%%%s%%'" % (sp["name"], sp["value"])  # 先测试，不对用子查询
         isQueryCount = self.get_argument("queryCount", None)
         if not isQueryCount:
             if flag:
