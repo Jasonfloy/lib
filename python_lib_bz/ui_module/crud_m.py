@@ -95,7 +95,7 @@ class CrudOper:
         field_list = []
         for field in fields:
             if prefix:
-                field_list.append(prefix+field.name)
+                field_list.append(prefix + field.name)
             else:
                 field_list.append(field.name)
         return ','.join(field_list)
@@ -134,7 +134,7 @@ class CrudOper:
         # 组合 join
         what = self.getWhat(table_name, 'a.')
         # 剔除 a 表中和colum_name一样的字段查询...避免嵌套 sql 查询时候报不确定查哪个字段的错误
-        what = what.replace(',a.'+colum_name, '')
+        what = what.replace(',a.' + colum_name, '')
         sql = '''
             select %s, b.%s, a.id from
                 (%s) a
@@ -207,11 +207,13 @@ class crud_list(ModuleHandler):
 class crud_list_api(BaseHandler):
 
     @tornado_bz.handleError
-    def get(self, table_name):
+    def post(self, table_name):
         self.set_header("Content-Type", "application/json")
         crud_oper = CrudOper(self.pg)
         sql = crud_oper.getCrudListSql(table_name)
         fields = crud_oper.getCrudConf(table_name)
+        find_sql = self.request.body
+        sql = sql.replace("order", find_sql + " order ")
         for field in fields:
             if field.sql_parm:
                 sql = crud_oper.joinCrudListSql(table_name, sql, colum_name=field.name, sql_parm=field.sql_parm)
@@ -230,7 +232,10 @@ class crud_list_api(BaseHandler):
             cert_array = list(self.pg.db.query(sql))
             self.write(json.dumps({'error': '0', "array": cert_array}, cls=public_bz.ExtEncoder))
         else:
-            count = self.pg.db.select(tables=table_name, what='count(id)', where='is_delete = false')
+            sql_where_parms = 'is_delete = false'
+            if find_sql:
+                sql_where_parms += find_sql
+            count = self.pg.db.select(tables=table_name, what='count(id)', where=sql_where_parms)
             self.write(json.dumps(count[0], cls=public_bz.ExtEncoder))
 
     def delete(self, table_name):

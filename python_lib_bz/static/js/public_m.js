@@ -1,4 +1,6 @@
 (function() {
+  var getOptions, getValue, setWatch;
+
   Vue.config.delimiters = ['(%', '%)'];
 
   window.log = function(parm) {
@@ -8,6 +10,72 @@
   window.delay = function(ms, func) {
     return setTimeout(func, ms);
   };
+
+  setWatch = function(vm, arg, table_name, column_name, el) {
+    return vm.$watch(arg, function(new_value) {
+      console.log($(el).is("select"));
+      if ($(el).is("select")) {
+        return getOptions(table_name, column_name, new_value, function(options) {
+          var hide, i, str;
+          hide = $(el).hasClass("hide");
+          if (options) {
+            $(el).removeClass("hide");
+            str = "<option value='' disabled='true' selected>--请选择--</option>";
+            i = 0;
+            while (i < options.length) {
+              str += "<option value='" + options[i].value + "'>" + options[i].text + "</option>";
+              i++;
+            }
+            return $(el).html(str);
+          } else if (hide) {
+            return $(el).addClass("hide");
+          }
+        });
+      } else {
+        return getValue(table_name, column_name, new_value, function(data) {
+          return $(el).val(data[0].value);
+        });
+      }
+    }, false, false);
+  };
+
+  getOptions = function(table_name, column_name, key, callback) {
+    var str;
+    if (!key) {
+      return;
+    }
+    str = [table_name, column_name, key].join("/");
+    return $.get("/cascade/options/" + str, function(data) {
+      if (!data.error === "0") {
+        return window.bz.showError5("获取数据失败，请刷新重试。");
+      } else {
+        return callback(data.options);
+      }
+    });
+  };
+
+  getValue = function(table_name, column_name, key, callback) {
+    var str;
+    if (!key) {
+      return;
+    }
+    str = [table_name, column_name, key].join("/");
+    return $.get("/cascade/value/" + str, function(data) {
+      if (!data.error === "0") {
+        return window.bz.showError5("获取数据失败，请刷新重试。");
+      } else {
+        return callback(data.options);
+      }
+    });
+  };
+
+  Vue.directive("cascade", function() {
+    var column_name, parms, table_name;
+    parms = this.expression.split(".");
+    table_name = parms[0];
+    column_name = parms[1];
+    return setWatch(this.vm, this.arg, table_name, column_name, this.el);
+  });
 
   Vue.directive('dateformat', function(value) {
     var date_str, el, mask;

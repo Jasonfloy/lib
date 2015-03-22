@@ -3,41 +3,66 @@ window.log = (parm)-> console.log parm
 #用来做延迟运行,例子: delay 1500, -> v_crud.jump2List()
 window.delay = (ms, func) -> setTimeout func, ms
 
+# 闭包方法添加 watch
 setWatch = (vm, arg, table_name, column_name, el)->
-    vm.$watch(arg, (new_value)->
-        # ajax
-        getOptions(table_name, column_name, new_value, (options)->
-            if(options)
-                $(el).removeClass("hide")
-                str = "<option value='' disabled='true' selected>--请选择--</option>";
-                for(var i = 0;i < options.length; i++)
-                    str += "<option value='" + options[i].value + "'>" + options[i].text + "</option>";
-                $(el).html(str);
-            else
-                $(el).addClass("hide")
-        )
-    , false, true)
-        
-getOptions = (table_name, column_name, , callback)->
-    str = [table_name, column_name, key].join("/")
-    $.get("/cascade/" + str, , (data)->
-        if not data.error == "0"
-            window.bz.showError5("获取数据失败，请刷新重试。")
-        else
-            callback(data.options)
-    )
+  vm.$watch(arg, (new_value)->
+    console.log $(el).is("select")
+    if $(el).is("select")
+      getOptions(table_name, column_name, new_value, (options)->
+        hide = $(el).hasClass("hide")
+        if options
+          $(el).removeClass("hide")
+          str = "<option value='' disabled='true' selected>--请选择--</option>"
+          i = 0
+          while i < options.length
+            str += "<option value='" + options[i].value + "'>" + options[i].text + "</option>"
+            i++
+          $(el).html(str)
+        else if hide
+          $(el).addClass("hide")
+      )
+    else
+      getValue(table_name, column_name, new_value, (data)->
+        $(el).val(data[0].value)
+      )
+  , false, false)
 
+# ajax获取options
+getOptions = (table_name, column_name, key, callback)->
+  if not key
+    return
+  str = [table_name, column_name, key].join("/")
+  $.get("/cascade/options/" + str, (data)->
+    if not data.error == "0"
+      window.bz.showError5("获取数据失败，请刷新重试。")
+    else
+      callback(data.options)
+  )
+
+# ajax获取关联的value
+getValue = (table_name, column_name, key, callback)->
+  if not key
+    return
+  str = [table_name, column_name, key].join("/")
+  $.get("/cascade/value/" + str, (data)->
+    if not data.error == "0"
+      window.bz.showError5("获取数据失败，请刷新重试。")
+    else
+      callback(data.options)
+  )
+
+# 创建级联关系
 # 使用方法
 # <select class="hide" v-cascade="watch_parm : table_name.column_name">
 # </select>
 
 Vue.directive("cascade",->
-    # 拆解参数
-    parms = this.expression.split(".");
-    table_name = parms[0];
-    column_name = parms[1];
-    setWatch(this.vm, this.arg, table_name, column_name, this.el)
-);
+  # 拆解参数
+  parms = this.expression.split(".");
+  table_name = parms[0];
+  column_name = parms[1];
+  setWatch(this.vm, this.arg, table_name, column_name, this.el)
+)
 
 # 日期格式化
 Vue.directive('dateformat', (value)->
@@ -61,13 +86,13 @@ Vue.directive('ellipsis', (str)->
 
 # 按钮上的 loading
 Vue.directive('btn-loading', (value)->
-    el = $(@el)
-    if !!value
-        el.children().hide()
-        el.prepend("<i class='fa fa-spin fa-spinner'></i>")
-    else
-        el.children(".fa.fa-spin.fa-spinner").remove()
-        el.children().show()
+  el = $(@el)
+  if !!value
+    el.children().hide()
+    el.prepend("<i class='fa fa-spin fa-spinner'></i>")
+  else
+    el.children(".fa.fa-spin.fa-spinner").remove()
+    el.children().show()
 )
 
 Vue.directive('datepicker',

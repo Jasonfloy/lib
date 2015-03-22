@@ -49,11 +49,42 @@ $(->
             email:data.email
             type:'forget'
         ,(result, done)->
-            data.loading=false
-            console.log(result)
+            data.loading = false
+            if result.error != '' && result.error != undefined
+              if result.error == 0
+                data.error_info = '您输入的邮箱不存在，请重试'
+              else
+                data.error_info = '系统错误，请联系管理员'
+            else
+              data.error_info = '确认邮件已发送到您的邮箱中，请查收并设置新密码'
 
         return
 
+      setPassword:->
+        data = @$data
+        if data.password_set != data.repassword_set
+          data.error_info = '两次输入的密码不一致'
+          return
+        data.loading = true
+        $.post '/login',
+          JSON.stringify
+            token:hash[1]
+            password:data.password_set
+            type:'setPassword'
+        ,(result, done)->
+          data.loading = false
+          if result.error != '' && result.error != undefined
+            data.error_info = '您的链接已失效，请重新获取邮件'
+          else
+            data.error_info = '设置成功，请重新登录'
+
+
       cleanError:->
         @$data.error_info = false
+
+
+  hash = window.bz.getHashParms()
+  if hash[0] == "#token"
+    $ '#tab a'
+      .tab('show')
 )

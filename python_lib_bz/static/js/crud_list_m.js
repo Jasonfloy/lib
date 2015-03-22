@@ -1,8 +1,26 @@
 (function() {
   $(function() {
-    var load, table_name, v_crud_list;
+    var count, find_parms, load, table_name, v_crud_list;
+    find_parms = "";
     table_name = window.bz.getUrlParm()[2];
     v_crud_list = {};
+    count = 0;
+    window.loadData = function(value) {
+      var i, len, s, searchs;
+      find_parms = "";
+      if (value) {
+        searchs = $(".form-search");
+        for (i = 0, len = searchs.length; i < len; i++) {
+          s = searchs[i];
+          if (s.value) {
+            find_parms += " and (" + s.name + ")::text like '" + s.value + "%' ";
+          }
+        }
+      }
+      return $.post('/crud_list_api/' + table_name + '?queryCount=true', find_parms).done(function(data) {
+        return v_crud_list.$data.pagination.resultCount = data.count;
+      });
+    };
     load = function(currPage, beginIndex, endIndex, limit) {
       window.location.hash = currPage;
       if (v_crud_list.$data) {
@@ -14,7 +32,7 @@
       if (!beginIndex) {
         beginIndex = 1;
       }
-      return $.get('/crud_list_api/' + table_name + '?limit=' + limit + '&offset=' + beginIndex).done(function(d1) {
+      return $.post('/crud_list_api/' + table_name + '?limit=' + limit + '&offset=' + beginIndex, find_parms).done(function(d1) {
         if (d1.error !== "0") {
           window.bz.showError5(d1.error);
           return;
@@ -26,7 +44,7 @@
         return v_crud_list.$data.loading = false;
       });
     };
-    return $.get('/crud_list_api/' + table_name + '?queryCount=true').done(function(data) {
+    return $.post('/crud_list_api/' + table_name + '?queryCount=true', find_parms).done(function(data) {
       var _currPageNo, _endPage, _pageCount, _resultCount;
       if (window.location.hash === '' || isNaN(window.location.hash.replace('#', ''))) {
         window.location.hash = '1';
@@ -56,7 +74,8 @@
             pageCount: _pageCount,
             currPage: _currPageNo,
             showPageNum: 7,
-            gotoPageFun: load
+            gotoPageFun: load,
+            onInitedLoadCurrPageData: true
           }
         },
         methods: {

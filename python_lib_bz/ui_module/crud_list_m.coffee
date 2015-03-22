@@ -1,6 +1,23 @@
 $(->
+    find_parms=""
     table_name = window.bz.getUrlParm()[2]
     v_crud_list = {}
+    count=0
+    window.loadData =(value) ->
+        find_parms=""
+        if(value)
+	        searchs=$(".form-search")	        
+	        for s in searchs 
+	        	if s.value
+	        	    find_parms+=" and ("+s.name+")::text like '"+ s.value+"%' ";
+	        	    
+        $.post('/crud_list_api/' + table_name + '?queryCount=true',find_parms).done((data) ->
+	        v_crud_list.$data.pagination.resultCount = data.count
+        )
+	    
+        
+
+                    
     load = (currPage, beginIndex, endIndex, limit) ->
         window.location.hash = currPage
         if v_crud_list.$data
@@ -9,8 +26,9 @@ $(->
             limit = 10
         if(!beginIndex)
             beginIndex = 1
-        $.get('/crud_list_api/' + table_name + '?limit=' + limit + '&offset=' + beginIndex)
-            .done((d1)->
+        $.post('/crud_list_api/' + table_name + '?limit=' + limit + '&offset=' + beginIndex,
+        		find_parms
+        		).done((d1)->
                 if d1.error != "0"
                     window.bz.showError5(d1.error)
                     return
@@ -21,7 +39,7 @@ $(->
                 v_crud_list.$data.loading=false
             )
             
-    $.get('/crud_list_api/' + table_name + '?queryCount=true').done((data) ->
+    $.post('/crud_list_api/' + table_name + '?queryCount=true',find_parms).done((data) ->
         if(window.location.hash == '' || isNaN(window.location.hash.replace('#','')))
             window.location.hash = '1'
         _pageCount = 10 #每页显示10条记录
@@ -36,6 +54,7 @@ $(->
             window.location.hash = '1'
             _currPageNo = 1
         
+                    
         
         v_crud_list = new Vue
             el: '#v_crud_list'
@@ -44,7 +63,7 @@ $(->
                 module: "normal"
                 loading:true
                 loading_target:"#v_crud_list"
-                pagination:
+                pagination: 
                     resultCount: _resultCount
                     showFL: true
                     showFN: true
@@ -52,6 +71,7 @@ $(->
                     currPage: _currPageNo
                     showPageNum: 7
                     gotoPageFun: load
+                    onInitedLoadCurrPageData: true
             methods:
                 detail: (event, record)->
                     console.log record
@@ -89,5 +109,5 @@ $(->
     )
     
 
-    
-)
+)    
+

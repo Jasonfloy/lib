@@ -91,7 +91,7 @@
   Vue.component('vue_pagination', {
     inherit: true,
     template: '<nav><ul class="pagination"><li class="(% p.classStr %)" v-repeat="p : pages"><a href="javascript:void(0);" v-on="click: butClick(p)">(%p.name%)</a></li></ul></nav>',
-    created: function() {
+    attached: function() {
       var cfg;
       cfg = {
         showFL: true,
@@ -101,45 +101,54 @@
         currPage: 1,
         showPageNum: 5,
         showGotoPage: true,
-        gotoPageFun: function() {}
+        gotoPageFun: function() {},
+        onInitedLoadCurrPageData: false
       };
-      if (!this.pagination) {
-        this.pagination = {};
-      }
-      if (typeof this.pagination.showFL === "boolean") {
-        cfg.showFL = this.pagination.showFL;
-      }
-      if (typeof this.pagination.showFN === "boolean") {
-        cfg.showFN = this.pagination.showFN;
-      }
-      if (this.pagination.pageCount) {
-        cfg.pageCount = this.pagination.pageCount;
-      }
-      if (this.pagination.resultCount) {
-        cfg.resultCount = this.pagination.resultCount;
-      }
-      if (this.pagination.currPage) {
-        cfg.currPage = this.pagination.currPage;
-        if (cfg.currPage < 1) {
-          cfg.currPage = 1;
+      return this.$watch("pagination", function(newVal, oldVal) {
+        console.log(this.pagination);
+        if (!this.pagination) {
+          this.pagination = {};
         }
-      }
-      if (this.pagination.showPageNum) {
-        cfg.showPageNum = this.pagination.showPageNum;
-      }
-      if (this.pagination.showGotoPage) {
-        cfg.showGotoPage = this.pagination.showGotoPage;
-      }
-      if (this.pagination.gotoPageFun) {
-        cfg.gotoPageFun = this.pagination.gotoPageFun;
-      }
-      cfg.endPage = parseInt(cfg.resultCount / cfg.pageCount);
-      if (cfg.resultCount % cfg.pageCount > 0) {
-        cfg.endPage = cfg.endPage + 1;
-      }
-      this.$set("pagination_cfg", cfg);
-      this.$set("pages", genPage(cfg));
-      return this.butClick(currPageObj, true);
+        if (typeof this.pagination.showFL === "boolean") {
+          cfg.showFL = this.pagination.showFL;
+        }
+        if (typeof this.pagination.showFN === "boolean") {
+          cfg.showFN = this.pagination.showFN;
+        }
+        if (this.pagination.pageCount) {
+          cfg.pageCount = this.pagination.pageCount;
+        }
+        if (this.pagination.resultCount) {
+          cfg.resultCount = this.pagination.resultCount;
+        }
+        if (this.pagination.currPage) {
+          cfg.currPage = this.pagination.currPage;
+          if (cfg.currPage < 1) {
+            cfg.currPage = 1;
+          }
+        }
+        if (this.pagination.showPageNum) {
+          cfg.showPageNum = this.pagination.showPageNum;
+        }
+        if (this.pagination.showGotoPage) {
+          cfg.showGotoPage = this.pagination.showGotoPage;
+        }
+        if (this.pagination.gotoPageFun) {
+          cfg.gotoPageFun = this.pagination.gotoPageFun;
+        }
+        if (this.pagination.onInitedLoadCurrPageData) {
+          cfg.onInitedLoadCurrPageData = this.pagination.onInitedLoadCurrPageData;
+        }
+        cfg.endPage = parseInt(cfg.resultCount / cfg.pageCount);
+        if (cfg.resultCount % cfg.pageCount > 0) {
+          cfg.endPage = cfg.endPage + 1;
+        }
+        this.$set("pagination_cfg", cfg);
+        this.$set("pages", genPage(cfg));
+        if (cfg.onInitedLoadCurrPageData) {
+          return this.butClick(currPageObj, true);
+        }
+      }, true, true);
     },
     methods: {
       butClick: function(page, firstCall) {

@@ -1,7 +1,7 @@
 (function() {
   $(function() {
-    var v_login;
-    return v_login = new Vue({
+    var hash, v_login;
+    v_login = new Vue({
       el: '#v_login',
       data: {
         error_info: false,
@@ -59,7 +59,36 @@
             type: 'forget'
           }), function(result, done) {
             data.loading = false;
-            return console.log(result);
+            if (result.error !== '' && result.error !== void 0) {
+              if (result.error === 0) {
+                return data.error_info = '您输入的邮箱不存在，请重试';
+              } else {
+                return data.error_info = '系统错误，请联系管理员';
+              }
+            } else {
+              return data.error_info = '确认邮件已发送到您的邮箱中，请查收并设置新密码';
+            }
+          });
+        },
+        setPassword: function() {
+          var data;
+          data = this.$data;
+          if (data.password_set !== data.repassword_set) {
+            data.error_info = '两次输入的密码不一致';
+            return;
+          }
+          data.loading = true;
+          return $.post('/login', JSON.stringify({
+            token: hash[1],
+            password: data.password_set,
+            type: 'setPassword'
+          }), function(result, done) {
+            data.loading = false;
+            if (result.error !== '' && result.error !== void 0) {
+              return data.error_info = '您的链接已失效，请重新获取邮件';
+            } else {
+              return data.error_info = '设置成功，请重新登录';
+            }
           });
         },
         cleanError: function() {
@@ -67,6 +96,10 @@
         }
       }
     });
+    hash = window.bz.getHashParms();
+    if (hash[0] === "#token") {
+      return $('#tab a').tab('show');
+    }
   });
 
 }).call(this);
