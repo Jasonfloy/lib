@@ -1,6 +1,34 @@
 (function() {
   $(function() {
     var AllDone, createFileRef, id, parm, table_name, uploadFile, v_crud;
+    Vue.directive('model-checkbox', {
+      twoWay: true,
+      bind: function(value) {
+        this.checkboxChange = (function() {
+          var jsSrc, jsSrc2;
+          if (this.el.checked) {
+            jsSrc = "this.vm.$data." + this.raw.split(".")[0];
+            console.log(jsSrc);
+            if (!eval(jsSrc)) {
+              eval(jsSrc + "={}");
+            }
+            if (eval("this.vm.$data." + this.raw)) {
+              jsSrc2 = "this.vm.$data." + this.raw + " = this.vm.$data." + this.raw + " + '" + this.el.value + "'";
+            } else {
+              jsSrc2 = "this.vm.$data." + this.raw + " = '" + this.el.value + "'";
+            }
+            console.log(jsSrc2);
+            eval(jsSrc2);
+            console.log(this.vm.$data.record.sex);
+          }
+        }).bind(this);
+        return this.el.addEventListener('change', this.checkboxChange);
+      },
+      update: function(value) {},
+      unbind: function() {
+        return this.el.removeEventListener('change', this.checkboxChange);
+      }
+    });
     v_crud = new Vue({
       el: '#v_crud',
       data: {

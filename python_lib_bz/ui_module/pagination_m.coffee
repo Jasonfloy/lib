@@ -87,7 +87,6 @@
                 
             @$watch("pagination", (newVal, oldVal)->
                 console.log @pagination
-                    
                 if(!@pagination)
                     @pagination = {}
                 if(typeof (@pagination.showFL) == "boolean")

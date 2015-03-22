@@ -1,4 +1,32 @@
 $(->
+
+    Vue.directive('model-checkbox', 
+        twoWay: true
+        bind:(value) -> 
+            @checkboxChange = (->
+                #@set(@el.value)
+                if @el.checked
+                    jsSrc = "this.vm.$data." + @raw.split(".")[0]
+                    console.log jsSrc
+                    if !eval(jsSrc)
+                        eval(jsSrc + "={}")
+                    if eval("this.vm.$data." + @raw)
+                        jsSrc2 = "this.vm.$data." + @raw + " = this.vm.$data." + @raw + " + '" + @el.value + "'"
+                    else
+                        jsSrc2 = "this.vm.$data." + @raw + " = '" + @el.value + "'"
+                    console.log jsSrc2
+                    eval(jsSrc2)
+                    console.log @vm.$data.record.sex
+                return
+            ).bind(@)
+            @el.addEventListener('change', @checkboxChange)
+        update:(value) -> 
+            #console.log value
+            #console.log @raw
+        unbind:() -> 
+            @el.removeEventListener('change', @checkboxChange)
+    )
+    
     v_crud = new Vue
         el: '#v_crud'
         data:

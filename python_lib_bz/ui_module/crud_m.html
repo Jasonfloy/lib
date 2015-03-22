@@ -36,10 +36,12 @@
                         </label>
                         {% end %}
                     {%elif field.get("c_type") == "checkbox" and field.get("options")%}
+                        {% set index=1 %}
                         {% for option in field.options%}
                         <label class="checkbox-inline">
-                            <input type="checkbox" v-disable="!editable" value="{{option.get('value')}}" v-model="record.{{field.name}}" />{{option.get('text')}}
+                            <input type="checkbox" v-disable="!editable" value="{{option.get('value')}}" v-model-checkbox="record.{{field.name}}" />{{option.get('text')}}
                         </label>
+                        {% set index=index+1 %}
                         {% end %}
                     {%else%}
                     <input class="form-control" v-disable="!editable" v-model="record.{{field.name}}">
