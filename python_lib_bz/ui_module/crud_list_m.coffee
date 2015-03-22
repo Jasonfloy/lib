@@ -1,22 +1,25 @@
 $(->
-    find_parms=""
     table_name = window.bz.getUrlParm()[2]
     v_crud_list = {}
     count=0
-    window.loadData =(value) ->
-        find_parms=""
-        if(value)
-	        searchs=$(".form-search")	        
-	        for s in searchs 
-	        	if s.value
-	        	    find_parms+=" and ("+s.name+")::text like '"+ s.value+"%' ";
-	        	    
-        $.post('/crud_list_api/' + table_name + '?queryCount=true',find_parms).done((data) ->
-	        v_crud_list.$data.pagination.resultCount = data.count
-        )
-	    
+    search_parms=[]
         
-
+    window.loaddingData=()->
+        search_parms=[]        
+        i=0
+        searchs=$(".form-search")	        
+        for s in searchs
+            if s.value
+                a={"name":s.name,"value": s.value}
+                search_parms[i]=a
+                i=i+1
+		
+        $.post('/crud_list_api/'+table_name+ '?queryCount=true&find=true',
+        		JSON.stringify {table_name:table_name, search_parms:search_parms}
+        		).done((data)->
+            v_crud_list.$data.pagination.resultCount = data.count
+        )
+   
                     
     load = (currPage, beginIndex, endIndex, limit) ->
         window.location.hash = currPage
@@ -26,8 +29,8 @@ $(->
             limit = 10
         if(!beginIndex)
             beginIndex = 1
-        $.post('/crud_list_api/' + table_name + '?limit=' + limit + '&offset=' + beginIndex,
-        		find_parms
+        $.post('/crud_list_api/' + table_name + '?limit=' + limit + '&offset=' + beginIndex+'&find=true',
+        		JSON.stringify {table_name:table_name, search_parms:search_parms}
         		).done((d1)->
                 if d1.error != "0"
                     window.bz.showError5(d1.error)
@@ -39,13 +42,12 @@ $(->
                 v_crud_list.$data.loading=false
             )
             
-    $.post('/crud_list_api/' + table_name + '?queryCount=true',find_parms).done((data) ->
+    $.post('/crud_list_api/' + table_name + '?queryCount=true').done((data) ->
         if(window.location.hash == '' || isNaN(window.location.hash.replace('#','')))
             window.location.hash = '1'
         _pageCount = 10 #每页显示10条记录
         _resultCount = data.count
         _currPageNo = parseInt(window.location.hash.replace('#',''))
-        
         
         _endPage = parseInt(_resultCount/_pageCount)
         if(_resultCount%_pageCount > 0)
@@ -53,13 +55,13 @@ $(->
         if(_currPageNo > _endPage)
             window.location.hash = '1'
             _currPageNo = 1
-        
                     
         
         v_crud_list = new Vue
             el: '#v_crud_list'
             data:
                 list: []
+                record:{}
                 module: "normal"
                 loading:true
                 loading_target:"#v_crud_list"
@@ -92,6 +94,21 @@ $(->
                         @$set('module', 'normal')
                     else if @module == 'normal'
                         @$set('module', 'edit')
+                find:->
+                    search_parms=[]        
+                    i=0
+                    searchs=$(".form-search")	        
+                    for s in searchs
+	                    if s.value
+                            a={"name":s.name,"value": s.value}
+                            search_parms[i]=a
+                            i=i+1
+                    $.post('/crud_list_api/'+table_name+ '?queryCount=true&find=true',
+                           JSON.stringify {table_name:table_name, search_parms:search_parms}
+	                		).done((data)->
+	                    v_crud_list.$data.pagination.resultCount = data.count
+	                )
+                       
                 del: ->
                     del_array = _.pluck(_.where(@list, {"checked": true}), "id")
                     $.ajax
@@ -106,8 +123,8 @@ $(->
                             window.bz.showError5(data.error)
                     )
                     return
+
     )
-    
 
 )    
 

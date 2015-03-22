@@ -1,3 +1,5 @@
+{% module loading_m() %}
+{% module check_ie_m() %}
 <div class="container">
     <div id='v_login' v-loading="loading">
         {% if oauth2 %}
@@ -117,7 +119,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <a v-on="click: signup" class="btn btn-primary btn-lg btn-block bz-signup-btn">注册</a>
+                                <input v-on="click: signup" class="btn btn-primary btn-lg btn-block bz-signup-btn" value="注册" v-disable="loading">
                             </div>
                         </form>
                         <div>
@@ -139,7 +141,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <a v-on="click: forget" class="btn btn-primary btn-lg btn-block bz-login-btn">发送邮件</a>
+                                <input v-on="click: forget" class="btn btn-primary btn-lg btn-block bz-login-btn" type="button" value="发送邮件" v-disable="loading">
                             </div>
                         </form>
                         <div>
@@ -169,12 +171,12 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <a v-on="click: setPassword" class="btn btn-primary btn-lg btn-block bz-login-btn">提交</a>
+                                <input v-on="click: setPassword" class="btn btn-primary btn-lg btn-block bz-login-btn" value="提交" v-disable="loading">
                             </div>
                         </form>
                     </div>
                 </div>
-                <ul class="hide" role="tablist" id="tab"><a href="#setPassword" aria-controls="setPassword" role="tab" data-toggle="tab">Settings</a></ul>
+                <ul class="hide" role="tablist" id="tab"><a href="#setPassword" aria-controls="setPassword" role="tab" data-toggle="tab"></a></ul>
 
             </div>
         </div>

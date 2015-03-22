@@ -49,7 +49,7 @@ $(->
             email:data.email
             type:'forget'
         ,(result, done)->
-            data.loading=false
+            data.loading = false
             if result.error != '' && result.error != undefined
               if result.error == 0
                 data.error_info = '您输入的邮箱不存在，请重试'
@@ -65,14 +65,14 @@ $(->
         if data.password_set != data.repassword_set
           data.error_info = '两次输入的密码不一致'
           return
-        data.loading=true
+        data.loading = true
         $.post '/login',
           JSON.stringify
             token:hash[1]
             password:data.password_set
             type:'setPassword'
         ,(result, done)->
-
+          data.loading = false
           if result.error != '' && result.error != undefined
             data.error_info = '您的链接已失效，请重新获取邮件'
           else
