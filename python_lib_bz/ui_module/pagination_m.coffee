@@ -86,7 +86,6 @@
                 onInitedLoadCurrPageData: false #组件初始化完成后自动调用gotoPageFun方法(用以加载当前页数据)的开关
                 
             @$watch("pagination", (newVal, oldVal)->
-                console.log @pagination
                 if(!@pagination)
                     @pagination = {}
                 if(typeof (@pagination.showFL) == "boolean")
