@@ -105,7 +105,6 @@
         onInitedLoadCurrPageData: false
       };
       return this.$watch("pagination", function(newVal, oldVal) {
-        console.log(this.pagination);
         if (!this.pagination) {
           this.pagination = {};
         }
