@@ -108,7 +108,6 @@ $(->
                 .done (d)->
                     createFileRef(file, d)
             else
-                console.log file.temp.remove_files
                 $.post "/file_ref",
                     JSON.stringify 
                         "remove_files": file.temp.remove_files

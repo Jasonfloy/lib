@@ -141,7 +141,6 @@
             return createFileRef(file, d);
           });
         } else {
-          console.log(file.temp.remove_files);
           return $.post("/file_ref", JSON.stringify({
             "remove_files": file.temp.remove_files
           })).done(function(d) {

@@ -68,8 +68,7 @@ class CrudOper:
         sql = '''
         select name
         from crud_conf
-        where table_name='three_post_cert'
-            and is_delete != 't'
+        where is_delete != 't'
             and c_type='input-file'
             and table_name='%s'
         order by seq desc, create_date
@@ -296,7 +295,7 @@ class crud(ModuleHandler):
                 from uploaded_file_record_ref r left join uploaded_files f on r.uploaded_file_id = f.id
                 where r.ref_table = '%s' and r.ref_column = '%s' and r.ref_record_id = '%s' and r.is_delete = '0'
                 ''' % (table_name, column.name, id)
-                files = self.pg.db.query(sql)
+                files = list(self.pg.db.query(sql))
                 all_files.append({
                     "column": column.name,
                     "files": files
