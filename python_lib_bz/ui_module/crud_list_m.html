@@ -17,20 +17,20 @@
     </div>
     <div style="min-height: 410px;">
         <table class="table table-hover">
-             <table class="table table-hover">
-              <tr><th></th>
+            <tr>
+                <th></th>
                 {% for field in fields %}
-                    {% if field.c_type == 'timestamp' %}
-                    <th>
+                {% if field.c_type == 'timestamp' %}
+                <th>
                     <div class='input-group date' id='{{field.name}}'>
                         <input type="text" class="form-search" name="{{field.name}}" 
                             v-disable="editable" v-datepicker="record.{{field.name}}" v-on-search="change:find" placeholder="{{field.description}}"/>	
 	                        <!-- 此处用合适的v-on 响应，调用vue对象中的find()方法 -->                        
                     </div>
-                    </th>
-                    {% else %}
+                </th>
+                {% else %}
                 <th>
-                    <input type="text"  name="{{field.name}}" style="max-width:150px;"
+                    <input type="text" name="{{field.name}}" style="width:100%;"
                        v-on-search="blur:find" class="form-search" placeholder="{{field.description}}" />   
                 </th>
                     {% end %}
