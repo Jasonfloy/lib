@@ -77,6 +77,7 @@ class CrudOper:
         return list(self.pg.db.query(sql))
 
     def getCrudListConf(self, table_name, isTime=None):
+        # select * from crud_conf where table_name='%s' and grid_show=1 and is_delete != 't'
         sql = '''
         select * from crud_conf where table_name='%s' and grid_show=1 and is_delete != 't'
         ''' % table_name
@@ -182,13 +183,21 @@ class crud_list_m(my_ui_module.MyUIModule):
     '''
 
     def render(self, table_name):
-
         crud_oper = CrudOper(self.pg)
-        fields = crud_oper.getCrudListConf(table_name)
+        #fields = crud_oper.getCrudListConf(table_name)
+        fields = crud_oper.getCrudConf(table_name)
+        show_fields = []
+        more_fields = []
+        for field in fields:
+            if field.grid_show == 1:
+                show_fields.append(field)
+            elif field.is_search == 1:
+                more_fields.append(field)
+
         table_desc = db_bz.getTableDesc(self.pg, table_name)
         if table_desc is None:
             raise Exception("需要设定修改维护的系统(biao)的说明")
-        return self.render_string(self.html_name, fields=fields, table_desc=table_desc)
+        return self.render_string(self.html_name, fields=show_fields, more_search=more_fields, table_desc=table_desc)
 
     def css_files(self):
         return ''
