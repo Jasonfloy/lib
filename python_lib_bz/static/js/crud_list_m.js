@@ -6,12 +6,12 @@
     v_crud_list = {};
     count = 0;
     window.loadData = function(value) {
-      var i, len, s, searchs;
+      var s, searchs, _i, _len;
       find_parms = "";
       if (value) {
         searchs = $(".form-search");
-        for (i = 0, len = searchs.length; i < len; i++) {
-          s = searchs[i];
+        for (_i = 0, _len = searchs.length; _i < _len; _i++) {
+          s = searchs[_i];
           if (s.value) {
             find_parms += " and (" + s.name + ")::text like '" + s.value + "%' ";
           }
