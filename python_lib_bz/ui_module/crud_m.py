@@ -68,8 +68,7 @@ class CrudOper:
         sql = '''
         select name
         from crud_conf
-        where table_name='three_post_cert'
-            and is_delete != 't'
+        where is_delete != 't'
             and c_type='input-file'
             and table_name='%s'
         order by seq desc, create_date
@@ -77,6 +76,7 @@ class CrudOper:
         return list(self.pg.db.query(sql))
 
     def getCrudListConf(self, table_name, isTime=None):
+        # select * from crud_conf where table_name='%s' and grid_show=1 and is_delete != 't'
         sql = '''
         select * from crud_conf where table_name='%s' and grid_show=1 and is_delete != 't'
         ''' % table_name
@@ -95,7 +95,7 @@ class CrudOper:
         field_list = []
         for field in fields:
             if prefix:
-                field_list.append(prefix+field.name)
+                field_list.append(prefix + field.name)
             else:
                 field_list.append(field.name)
         return ','.join(field_list)
@@ -134,7 +134,7 @@ class CrudOper:
         # 组合 join
         what = self.getWhat(table_name, 'a.')
         # 剔除 a 表中和colum_name一样的字段查询...避免嵌套 sql 查询时候报不确定查哪个字段的错误
-        what = what.replace(',a.'+colum_name, '')
+        what = what.replace(',a.' + colum_name, '')
         sql = '''
             select %s, b.%s, a.id from
                 (%s) a
@@ -182,13 +182,21 @@ class crud_list_m(my_ui_module.MyUIModule):
     '''
 
     def render(self, table_name):
-
         crud_oper = CrudOper(self.pg)
-        fields = crud_oper.getCrudListConf(table_name)
+        #fields = crud_oper.getCrudListConf(table_name)
+        fields = crud_oper.getCrudConf(table_name)
+        show_fields = []
+        more_fields = []
+        for field in fields:
+            if field.grid_show == 1:
+                show_fields.append(field)
+            elif field.is_search == 1:
+                more_fields.append(field)
+
         table_desc = db_bz.getTableDesc(self.pg, table_name)
         if table_desc is None:
             raise Exception("需要设定修改维护的系统(biao)的说明")
-        return self.render_string(self.html_name, fields=fields, table_desc=table_desc)
+        return self.render_string(self.html_name, fields=show_fields, more_search=more_fields, table_desc=table_desc)
 
     def css_files(self):
         return ''
@@ -213,13 +221,26 @@ class crud_list_api(BaseHandler):
         crud_oper = CrudOper(self.pg)
         sql = crud_oper.getCrudListSql(table_name)
         fields = crud_oper.getCrudConf(table_name)
-        find_sql=self.request.body
-        sql=sql.replace("order", find_sql+" order ")
+        find_sql = ""
+        isFind = self.get_argument("find", None)
+        flag = False  # 开关，判断是否有关联查询
         for field in fields:
             if field.sql_parm:
-                sql = crud_oper.joinCrudListSql(table_name, sql, colum_name=field.name,sql_parm=field.sql_parm)
+                sql = crud_oper.joinCrudListSql(table_name, sql, colum_name=field.name, sql_parm=field.sql_parm)
+                if isFind:
+                    sql = "select * from (" + sql + ")c where 1=1 "  # 如果是查找，并且有关联时，
+                    flag = True
+        if isFind:
+            find_data = json.loads(self.request.body)
+            search_parms = find_data["search_parms"]
+            for sp in search_parms:
+                find_sql += " and (%s)::text like '%%%s%%'" % (sp["name"], sp["value"])  # 先测试，不对用子查询
         isQueryCount = self.get_argument("queryCount", None)
         if not isQueryCount:
+            if flag:
+                sql += find_sql
+            else:
+                sql = sql.replace("order", find_sql+" order ")  # load时拼条件
             limit = self.get_argument('limit', None)
             offset = self.get_argument('offset', None)
             if not limit:
@@ -228,17 +249,20 @@ class crud_list_api(BaseHandler):
                 offset = 0
             else:
                 offset = str(int(offset) - 1)
-            sql = 'select * from (' + sql + ') tpage limit ' + limit + ' offset ' + offset
+            sql = 'select * from (' + sql + ') tpage limit ' + str(int(limit)) + ' offset ' + str(int(offset))
             cert_array = list(self.pg.db.query(sql))
             self.write(json.dumps({'error': '0', "array": cert_array}, cls=public_bz.ExtEncoder))
         else:
-            sql_where_parms='is_delete = false'
+            sql_where_parms = ' is_delete = false'
             if find_sql:
-                sql_where_parms+=find_sql
-            count = self.pg.db.select(tables = table_name, what = 'count(id)',where = sql_where_parms)
+                sql_where_parms += find_sql
+            if flag:
+                sql += find_sql
+                sql = "select count(*) from ("+sql+") d"
+                count = self.pg.db.query(sql)
+            else:
+                count = self.pg.db.select(tables=table_name, what='count(id)', where=sql_where_parms)
             self.write(json.dumps(count[0], cls=public_bz.ExtEncoder))
-
-
 
     def delete(self, table_name):
         self.set_header("Content-Type", "application/json")
@@ -281,7 +305,7 @@ class crud(ModuleHandler):
                 from uploaded_file_record_ref r left join uploaded_files f on r.uploaded_file_id = f.id
                 where r.ref_table = '%s' and r.ref_column = '%s' and r.ref_record_id = '%s' and r.is_delete = '0'
                 ''' % (table_name, column.name, id)
-                files = self.pg.db.query(sql)
+                files = list(self.pg.db.query(sql))
                 all_files.append({
                     "column": column.name,
                     "files": files

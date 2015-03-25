@@ -1,4 +1,54 @@
 $(->
+
+    Vue.directive('model-checkbox', 
+        twoWay: true
+        bind:(value) -> 
+            @checkboxChange = (->
+                if @el.checked
+                    dataKeys = @raw.split(".")
+                    dataContainer = @vm.$data
+                    i = 0
+                    for dataKey in dataKeys
+                        if !dataContainer[dataKey] && (i + 1) != dataKeys.length
+                            dataContainer[dataKey] = {}
+                        if (i + 1) != dataKeys.length
+                            dataContainer = dataContainer[dataKey]
+                        i++
+                    if dataContainer[dataKeys[dataKeys.length - 1]]
+                        dataContainer[dataKeys[dataKeys.length - 1]] = dataContainer[dataKeys[dataKeys.length - 1]] + "," + @el.value
+                    else
+                        dataContainer[dataKeys[dataKeys.length - 1]] = @el.value
+                else
+                    dataKeys = @raw.split(".")
+                    dataContainer = @vm.$data
+                    i = 0
+                    for dataKey in dataKeys
+                        if (i + 1) != dataKeys.length
+                            dataContainer = dataContainer[dataKey]
+                        i++
+                    _valuesStr = dataContainer[dataKeys[dataKeys.length - 1]]
+                    if !_valuesStr
+                        return
+                    _values = _valuesStr.split(",")
+                    _newValuesStr = ""
+                    for _value in _values
+                        if _value != @el.value
+                            if _newValuesStr == ""
+                                _newValuesStr = _value
+                            else
+                                _newValuesStr = _newValuesStr + "," + _value
+                    dataContainer[dataKeys[dataKeys.length - 1]] = _newValuesStr
+            ).bind(@)
+            @el.addEventListener('change', @checkboxChange)
+            @checkboxChange()
+        update:(value) -> 
+            _checkedValues = @vm.$data.record.sex
+            if _checkedValues && _checkedValues.indexOf(@el.value) != -1
+                @el.checked = true
+        unbind:() -> 
+            @el.removeEventListener('change', @checkboxChange)
+    )
+    
     v_crud = new Vue
         el: '#v_crud'
         data:
@@ -40,7 +90,7 @@ $(->
 
     AllDone = (d)->
         v_crud.$set("loading", false)
-        if d.error == "0"
+        if d.error == 0
             #delay 1500, -> v_crud.jump2List()
             window.bz.showSuccess5('提交成功...正在返回列表')
         else
@@ -58,7 +108,6 @@ $(->
                 .done (d)->
                     createFileRef(file, d)
             else
-                console.log file.temp.remove_files
                 $.post "/file_ref",
                     JSON.stringify 
                         "remove_files": file.temp.remove_files

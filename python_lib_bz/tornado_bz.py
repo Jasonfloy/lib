@@ -186,7 +186,6 @@ class UserInfoHandler(BaseHandler):
             else:
                 self.redirect("/logout")
 
-
     def get_template_namespace(self):
         ns = super(UserInfoHandler, self).get_template_namespace()
         ns.update({
@@ -209,7 +208,7 @@ def getURLMap(the_globals):
                 url_map.append(
                     (r'/lib_static/(.*)', tornado.web.StaticFileHandler, {'path': public_bz.getLibPath()+"/static"})
                 )
-                #url_map.append((r"/%s/([0-9]+)" % i, the_globals[i]))
+                # url_map.append((r"/%s/([0-9]+)" % i, the_globals[i]))
                 url_map.append((r"/%s/(.*)" % i, the_globals[i]))
         except TypeError:
             continue

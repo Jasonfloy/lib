@@ -1,6 +1,74 @@
 (function() {
   $(function() {
     var AllDone, createFileRef, id, parm, table_name, uploadFile, v_crud;
+    Vue.directive('model-checkbox', {
+      twoWay: true,
+      bind: function(value) {
+        this.checkboxChange = (function() {
+          var dataContainer, dataKey, dataKeys, i, _i, _j, _k, _len, _len1, _len2, _newValuesStr, _value, _values, _valuesStr;
+          if (this.el.checked) {
+            dataKeys = this.raw.split(".");
+            dataContainer = this.vm.$data;
+            i = 0;
+            for (_i = 0, _len = dataKeys.length; _i < _len; _i++) {
+              dataKey = dataKeys[_i];
+              if (!dataContainer[dataKey] && (i + 1) !== dataKeys.length) {
+                dataContainer[dataKey] = {};
+              }
+              if ((i + 1) !== dataKeys.length) {
+                dataContainer = dataContainer[dataKey];
+              }
+              i++;
+            }
+            if (dataContainer[dataKeys[dataKeys.length - 1]]) {
+              return dataContainer[dataKeys[dataKeys.length - 1]] = dataContainer[dataKeys[dataKeys.length - 1]] + "," + this.el.value;
+            } else {
+              return dataContainer[dataKeys[dataKeys.length - 1]] = this.el.value;
+            }
+          } else {
+            dataKeys = this.raw.split(".");
+            dataContainer = this.vm.$data;
+            i = 0;
+            for (_j = 0, _len1 = dataKeys.length; _j < _len1; _j++) {
+              dataKey = dataKeys[_j];
+              if ((i + 1) !== dataKeys.length) {
+                dataContainer = dataContainer[dataKey];
+              }
+              i++;
+            }
+            _valuesStr = dataContainer[dataKeys[dataKeys.length - 1]];
+            if (!_valuesStr) {
+              return;
+            }
+            _values = _valuesStr.split(",");
+            _newValuesStr = "";
+            for (_k = 0, _len2 = _values.length; _k < _len2; _k++) {
+              _value = _values[_k];
+              if (_value !== this.el.value) {
+                if (_newValuesStr === "") {
+                  _newValuesStr = _value;
+                } else {
+                  _newValuesStr = _newValuesStr + "," + _value;
+                }
+              }
+            }
+            return dataContainer[dataKeys[dataKeys.length - 1]] = _newValuesStr;
+          }
+        }).bind(this);
+        this.el.addEventListener('change', this.checkboxChange);
+        return this.checkboxChange();
+      },
+      update: function(value) {
+        var _checkedValues;
+        _checkedValues = this.vm.$data.record.sex;
+        if (_checkedValues && _checkedValues.indexOf(this.el.value) !== -1) {
+          return this.el.checked = true;
+        }
+      },
+      unbind: function() {
+        return this.el.removeEventListener('change', this.checkboxChange);
+      }
+    });
     v_crud = new Vue({
       el: '#v_crud',
       data: {
@@ -54,7 +122,7 @@
     });
     AllDone = function(d) {
       v_crud.$set("loading", false);
-      if (d.error === "0") {
+      if (d.error === 0) {
         return window.bz.showSuccess5('提交成功...正在返回列表');
       } else {
         return window.bz.showError5(d);
@@ -73,7 +141,6 @@
             return createFileRef(file, d);
           });
         } else {
-          console.log(file.temp.remove_files);
           return $.post("/file_ref", JSON.stringify({
             "remove_files": file.temp.remove_files
           })).done(function(d) {
