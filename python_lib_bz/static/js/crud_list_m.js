@@ -1,6 +1,6 @@
 (function() {
   $(function() {
-    var _pageCount, count, load, search_parms, table_name, v_crud_list;
+    var count, load, search_parms, table_name, v_crud_list, _pageCount;
     table_name = window.bz.getUrlParm()[2];
     v_crud_list = {};
     count = 0;
@@ -108,12 +108,12 @@
           return $('.moreSearch').toggle();
         },
         find: function() {
-          var a, i, j, len, s, searchs;
+          var a, i, s, searchs, _i, _len;
           search_parms = [];
           i = 0;
           searchs = $(".form-search");
-          for (j = 0, len = searchs.length; j < len; j++) {
-            s = searchs[j];
+          for (_i = 0, _len = searchs.length; _i < _len; _i++) {
+            s = searchs[_i];
             if (s.value) {
               a = {
                 "name": s.name,
