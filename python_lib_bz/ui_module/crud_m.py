@@ -209,7 +209,6 @@ class crud_list(ModuleHandler):
     '''
 
     def get(self, table_name):
-        print '很复杂的处理操作',table_name
         self.myRender(table_name=table_name)
 
 
