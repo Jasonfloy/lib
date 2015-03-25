@@ -51,6 +51,7 @@ Vue.component("file_upload_m", {
         appendFile: function(e) {
             _this = this
             files = e.target.files
+            console.log(_this.$data.field.fd)
             if(!_this.$data.field.fd) {
                 _this.$data.field.fd = new FormData()
             }

@@ -122,7 +122,7 @@
     });
     AllDone = function(d) {
       v_crud.$set("loading", false);
-      if (d.error === "0") {
+      if (d.error === 0) {
         return window.bz.showSuccess5('提交成功...正在返回列表');
       } else {
         return window.bz.showError5(d);
@@ -141,7 +141,6 @@
             return createFileRef(file, d);
           });
         } else {
-          console.log(file.temp.remove_files);
           return $.post("/file_ref", JSON.stringify({
             "remove_files": file.temp.remove_files
           })).done(function(d) {
