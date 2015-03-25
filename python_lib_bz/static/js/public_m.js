@@ -13,7 +13,6 @@
 
   setWatch = function(vm, arg, table_name, column_name, el) {
     return vm.$watch(arg, function(new_value) {
-      console.log($(el).is("select"));
       if ($(el).is("select")) {
         return getOptions(table_name, column_name, new_value, function(options) {
           var hide, i, str;

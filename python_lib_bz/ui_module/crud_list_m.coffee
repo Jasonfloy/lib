@@ -81,6 +81,8 @@ $(->
                         @$set('module', 'normal')
                     else if @module == 'normal'
                         @$set('module', 'edit')
+                searchToggle: ->
+                    $('.moreSearch').toggle()
                 find:->
                     search_parms=[]        
                     i=0

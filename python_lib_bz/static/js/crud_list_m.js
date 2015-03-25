@@ -94,6 +94,9 @@
             return this.$set('module', 'edit');
           }
         },
+        searchToggle: function() {
+          return $('.moreSearch').toggle();
+        },
         find: function() {
           var a, i, j, len, s, searchs;
           search_parms = [];

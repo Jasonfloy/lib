@@ -6,7 +6,6 @@ window.delay = (ms, func) -> setTimeout func, ms
 # 闭包方法添加 watch
 setWatch = (vm, arg, table_name, column_name, el)->
   vm.$watch(arg, (new_value)->
-    console.log $(el).is("select")
     if $(el).is("select")
       getOptions(table_name, column_name, new_value, (options)->
         hide = $(el).hasClass("hide")

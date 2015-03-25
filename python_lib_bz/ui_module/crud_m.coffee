@@ -90,7 +90,7 @@ $(->
 
     AllDone = (d)->
         v_crud.$set("loading", false)
-        if d.error == "0"
+        if d.error == 0
             #delay 1500, -> v_crud.jump2List()
             window.bz.showSuccess5('提交成功...正在返回列表')
         else
@@ -108,7 +108,6 @@ $(->
                 .done (d)->
                     createFileRef(file, d)
             else
-                console.log file.temp.remove_files
                 $.post "/file_ref",
                     JSON.stringify 
                         "remove_files": file.temp.remove_files

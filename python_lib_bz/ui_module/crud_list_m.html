@@ -8,6 +8,9 @@
             <div class="btn-group" role="group" v-show="module=='normal'">
                 <button type="button" class="btn btn-sm btn-primary" v-on="click:detail($event, 'new')">新增</button>
                 <button type="button" class="btn btn-sm btn-default" v-on="click:moduleToggle">编辑</button>
+                {% if more_search %}
+                  <button type="button" class="btn btn-sm btn-default" v-on="click:searchToggle">高级搜索</button>
+                {% end %}
             </div>
             <div class="btn-group" role="group" v-show="module=='edit'">
                 <button type="button" class="btn btn-sm btn-danger" v-on="click:del">删除</button>
@@ -15,6 +18,24 @@
             </div>
         </div>
     </div>
+    <form class="moreSearch form-horizontal" style="margin-top:20px;display:none;">
+        {% for index, field in enumerate(more_search) %}  
+            {% if index % 2 == 1 %}
+            <div class="form-group">
+            {% end %}
+                <label class="col-sm-2 control-label" for="{{ field.name }}">{{ field.description }}</label>
+                <div class="col-sm-3">
+                {% if field.c_type == 'timestamp' %}
+                  <input type="text" class="form-search form-control" name="{{field.name}}" v-disable="editable" v-datepicker="record.{{field.name}}" v-on-search="change:find" placeholder="{{field.description}}"/>	
+                {% else %}
+                  <input type="text"  name="{{field.name}}" v-on-search="blur:find" class="form-search form-control" placeholder="{{field.description}}" />
+                {% end %}
+                </div> 
+            {% if index % 2 == 1 %}
+            </div>  
+            {% end %}
+        {% end %}
+    </form>
     <div style="min-height: 410px;">
         <table class="table table-hover">
             <tr>
