@@ -35,13 +35,23 @@
     Vue.directive('on-search', {
       twoWay: true,
       bind: function(value) {
-        var eventAndFun, eventName;
+        var _vue_this, eventAndFun, eventName;
         eventAndFun = this.raw.split(":");
         this["search_fn_" + eventAndFun[0] + eventAndFun[1]] = (function() {
           return this.vm[eventAndFun[1]]();
         }).bind(this);
-        eventName = "on" + eventAndFun[0];
-        return this.el[eventName] = this["search_fn_" + eventAndFun[0] + eventAndFun[1]];
+        if (eventAndFun[0] === "enter") {
+          eventName = "onkeypress";
+          _vue_this = this;
+          return this.el[eventName] = function(event) {
+            if (event && event.keyCode === 13) {
+              return _vue_this["search_fn_" + eventAndFun[0] + eventAndFun[1]]();
+            }
+          };
+        } else {
+          eventName = "on" + eventAndFun[0];
+          return this.el[eventName] = this["search_fn_" + eventAndFun[0] + eventAndFun[1]];
+        }
       },
       update: function(value) {},
       unbind: function() {

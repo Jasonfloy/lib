@@ -34,8 +34,15 @@ $(->
             @["search_fn_" + eventAndFun[0] + eventAndFun[1]] = (->
                 @vm[eventAndFun[1]]()
             ).bind(@)
-            eventName = "on" + eventAndFun[0]
-            @el[eventName] = @["search_fn_" + eventAndFun[0] + eventAndFun[1]]
+            if eventAndFun[0] == "enter"
+                eventName = "onkeypress"
+                _vue_this = @
+                @el[eventName] = (event)->
+                    if event && event.keyCode == 13
+                        _vue_this["search_fn_" + eventAndFun[0] + eventAndFun[1]]()
+            else
+                eventName = "on" + eventAndFun[0]
+                @el[eventName] = @["search_fn_" + eventAndFun[0] + eventAndFun[1]]
         update:(value) -> 
         unbind:() -> 
             eventNameKey = @raw.split(":")[0]
