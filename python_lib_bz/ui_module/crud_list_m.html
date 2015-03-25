@@ -44,14 +44,14 @@
                 {% if field.c_type == 'timestamp' %}
                 <th>
                     <div class='input-group date' id='{{field.name}}'>
-                        <input type="text" class="form-search" name="{{field.name}}" 
+                        <input type="text" id="search_{{field.name}}" class="form-search" name="{{field.name}}" 
                             v-disable="editable" v-datepicker="record.{{field.name}}" v-on-search="change:find,enter:find" placeholder="{{field.description}}"/>	
 	                        <!-- 此处用合适的v-on 响应，调用vue对象中的find()方法 -->                        
                     </div>
                 </th>
                 {% else %}
                 <th>
-                    <input type="text" name="{{field.name}}" style="width:100%;"
+                    <input type="text" id="search_{{field.name}}" name="{{field.name}}" style="width:100%;"
                        v-on-search="enter:find" class="form-search" placeholder="{{field.description}}" />   
                 </th>
                     {% end %}

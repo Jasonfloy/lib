@@ -1,13 +1,107 @@
 (function() {
   $(function() {
-    var count, load, search_parms, table_name, v_crud_list, _pageCount;
+    var _currPageNo, _hashItemTemp, _hashStrTemp, _hashTemp, _hashsTemp, _pageCount, count, getHashPram, j, k, len, len1, load, objTemp, searchKeyValue, searchPam, searchPams, search_parms, setHashPram, storageData, table_name, v_crud_list;
     table_name = window.bz.getUrlParm()[2];
     v_crud_list = {};
     count = 0;
     search_parms = [];
     _pageCount = 10;
+    _currPageNo = 1;
+    getHashPram = function(key) {
+      var _hash, _hashItem, _hashStr, _hashs, j, len;
+      _hashStr = window.location.hash.replace('#', '');
+      if (!_hashStr || _hashStr === "") {
+        return void 0;
+      }
+      _hashs = _hashStr.split(";");
+      for (j = 0, len = _hashs.length; j < len; j++) {
+        _hashItem = _hashs[j];
+        _hash = _hashItem.split("=");
+        if (key === _hash[0]) {
+          return _hash[1];
+        }
+      }
+      return void 0;
+    };
+    setHashPram = function(key, value) {
+      var _hash, _hashItem, _hashStr, _hashs, _newHashStr, j, len;
+      _hashStr = window.location.hash.replace('#', '');
+      if (!getHashPram(key) && value) {
+        return window.location.hash = _hashStr + key + "=" + value + ";";
+      } else {
+        _hashs = _hashStr.split(";");
+        _newHashStr = "";
+        for (j = 0, len = _hashs.length; j < len; j++) {
+          _hashItem = _hashs[j];
+          if (!_hashItem || _hashItem === "") {
+            continue;
+          }
+          _hash = _hashItem.split("=");
+          if (key === _hash[0]) {
+            if (value !== "") {
+              _newHashStr = _newHashStr + key + "=" + value + ";";
+            }
+          } else {
+            _newHashStr = _newHashStr + _hash[0] + "=" + _hash[1] + ";";
+          }
+        }
+        return window.location.hash = _newHashStr;
+      }
+    };
+    if (window.sessionStorage) {
+      storageData = window.sessionStorage.getItem("search_curd_list_" + table_name);
+      if (storageData) {
+        window.location.hash = "";
+        searchPams = storageData.split(";");
+        if (searchPams[0] !== "") {
+          for (j = 0, len = searchPams.length; j < len; j++) {
+            searchPam = searchPams[j];
+            if (searchPam === "") {
+              continue;
+            }
+            searchKeyValue = searchPam.split("=");
+            if (searchKeyValue[0] === "" || searchKeyValue[1] === "") {
+              continue;
+            }
+            setHashPram(searchKeyValue[0], searchKeyValue[1]);
+          }
+        }
+      } else {
+        window.sessionStorage.clear();
+      }
+    }
+    _hashStrTemp = window.location.hash.replace('#', '');
+    if (_hashStrTemp) {
+      search_parms = [];
+      _hashsTemp = _hashStrTemp.split(";");
+      for (k = 0, len1 = _hashsTemp.length; k < len1; k++) {
+        _hashItemTemp = _hashsTemp[k];
+        if (_hashItemTemp === "") {
+          continue;
+        }
+        _hashTemp = _hashItemTemp.split("=");
+        if (_hashTemp[0] === "" || _hashTemp[1] === "" || _hashTemp[0].indexOf("search_") === -1) {
+          continue;
+        }
+        if ($("#" + _hashTemp[0])) {
+          $("#" + _hashTemp[0]).val(_hashTemp[1]);
+          objTemp = {
+            "name": _hashTemp[0].replace("search_", ""),
+            "value": _hashTemp[1]
+          };
+          search_parms.push(objTemp);
+        }
+      }
+    }
+    if (!getHashPram("p") || isNaN(getHashPram("p"))) {
+      setHashPram("p", "1");
+    }
+    _currPageNo = parseInt(getHashPram("p"));
     load = function(currPage, beginIndex, endIndex, limit) {
-      window.location.hash = currPage;
+      setHashPram("p", currPage);
+      if (window.sessionStorage) {
+        window.sessionStorage.setItem("search_curd_list_" + table_name, window.location.hash.replace("#", ""));
+      }
       if (v_crud_list.$data) {
         v_crud_list.$data.loading = true;
       }
@@ -74,10 +168,10 @@
           showFL: true,
           showFN: true,
           pageCount: _pageCount,
-          currPage: 1,
+          currPage: _currPageNo,
           showPageNum: 7,
           gotoPageFun: load,
-          onInitedLoadCurrPageData: true
+          onInitedLoadCurrPageData: false
         }
       },
       methods: {
@@ -108,19 +202,22 @@
           return $('.moreSearch').toggle();
         },
         find: function() {
-          var a, i, s, searchs, _i, _len;
+          var a, i, l, len2, s, searchs;
           search_parms = [];
           i = 0;
           searchs = $(".form-search");
-          for (_i = 0, _len = searchs.length; _i < _len; _i++) {
-            s = searchs[_i];
+          for (l = 0, len2 = searchs.length; l < len2; l++) {
+            s = searchs[l];
             if (s.value) {
               a = {
                 "name": s.name,
                 "value": s.value
               };
+              setHashPram("search_" + s.name, s.value);
               search_parms[i] = a;
               i = i + 1;
+            } else {
+              setHashPram("search_" + s.name, "");
             }
           }
           return $.post('/crud_list_api/' + table_name + '?queryCount=true&find=true', JSON.stringify({
@@ -150,23 +247,22 @@
         }
       }
     });
-    return $.post('/crud_list_api/' + table_name + '?queryCount=true').done(function(data) {
-      var _currPageNo, _endPage, _resultCount;
-      if (window.location.hash === '' || isNaN(window.location.hash.replace('#', ''))) {
-        window.location.hash = '1';
-      }
+    return $.post('/crud_list_api/' + table_name + '?queryCount=true&find=true', JSON.stringify({
+      table_name: table_name,
+      search_parms: search_parms
+    })).done(function(data) {
+      var _endPage, _resultCount;
       _resultCount = data.count;
-      _currPageNo = parseInt(window.location.hash.replace('#', ''));
       _endPage = parseInt(_resultCount / _pageCount);
       if (_resultCount % _pageCount > 0) {
         _endPage = _endPage + 1;
       }
       if (_currPageNo > _endPage) {
-        window.location.hash = '1';
+        setHashPram("p", "1");
         _currPageNo = 1;
+        v_crud_list.$data.pagination.currPage = _currPageNo;
       }
-      v_crud_list.$data.pagination.resultCount = _resultCount;
-      return v_crud_list.$data.pagination.currPage = _currPageNo;
+      return v_crud_list.$data.pagination.resultCount = _resultCount;
     });
   });
 
