@@ -91,7 +91,7 @@
   Vue.component('vue_pagination', {
     inherit: true,
     template: '<nav><ul class="pagination"><li class="(% p.classStr %)" v-repeat="p : pages"><a href="javascript:void(0);" v-on="click: butClick(p)">(%p.name%)</a></li></ul></nav>',
-    attached: function() {
+    created: function() {
       var cfg;
       cfg = {
         showFL: true,
@@ -144,15 +144,18 @@
         }
         this.$set("pagination_cfg", cfg);
         this.$set("pages", genPage(cfg));
-        if (cfg.onInitedLoadCurrPageData) {
-          return this.butClick(currPageObj, true);
-        }
+        return this.butClick(currPageObj, true);
       }, true, true);
+    },
+    ready: function() {
+      if (this.pagination_cfg.onInitedLoadCurrPageData) {
+        return this.butClick(currPageObj, true);
+      }
     },
     methods: {
       butClick: function(page, firstCall) {
         var beginIndex, endIndex;
-        if (page.canClick || firstCall) {
+        if (page.targetPage && (page.canClick || firstCall)) {
           this.pagination_cfg.currPage = page.targetPage;
           beginIndex = (this.pagination_cfg.currPage - 1) * this.pagination_cfg.pageCount + 1;
           if (this.pagination_cfg.currPage === 1) {

@@ -72,7 +72,8 @@
     Vue.component 'vue_pagination', 
         inherit: true
         template: '<nav><ul class="pagination"><li class="(% p.classStr %)" v-repeat="p : pages"><a href="javascript:void(0);" v-on="click: butClick(p)">(%p.name%)</a></li></ul></nav>'
-        attached: ->
+        
+        created: ->
             cfg =
                 showFL: true #是否显示第一页,最后一页
                 showFN: true #是否显示上一页,下一页
@@ -114,13 +115,14 @@
                     cfg.endPage = cfg.endPage + 1
                 @$set("pagination_cfg", cfg)
                 @$set("pages", genPage(cfg))
-                if(cfg.onInitedLoadCurrPageData)
-                    @butClick(currPageObj, true)
+                @butClick(currPageObj, true)
             ,true,true)
-                
+        ready: ->
+            if(@pagination_cfg.onInitedLoadCurrPageData)
+                @butClick(currPageObj, true)
         methods: 
                 butClick: (page, firstCall) ->
-                    if(page.canClick || firstCall)
+                    if(page.targetPage && (page.canClick || firstCall))
                         @pagination_cfg.currPage = page.targetPage
                         #计算起始行数(部分数据库从0开始,后端拿到这个值后需要减1)
                         beginIndex = (@pagination_cfg.currPage - 1) * @pagination_cfg.pageCount + 1

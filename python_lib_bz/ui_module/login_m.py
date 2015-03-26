@@ -14,6 +14,7 @@ import uuid
 from email.MIMEText import MIMEText
 from sendmail_bz import sendMail
 from tornado_bz import UserInfoHandler
+from tornado_bz import ModuleHandler
 from tornado_bz import BaseHandler
 from public_bz import storage
 from ui_module import my_ui_module
@@ -29,7 +30,7 @@ class login_m(my_ui_module.MyUIModule):
         return self.render_string(self.html_name, oauth2=oauth2)
 
 
-class login(UserInfoHandler):
+class login(ModuleHandler, UserInfoHandler):
 
     '''
     登录后台的方法
@@ -67,7 +68,7 @@ class login(UserInfoHandler):
         self.user_oper = user_bz.UserOper(self.pg)
 
     def get(self):
-        self.render(tornado_bz.getTName(self), oauth2=self.oauth2)
+        self.myRender(oauth2=self.oauth2)
 
     @tornado_bz.handleError
     def post(self):
