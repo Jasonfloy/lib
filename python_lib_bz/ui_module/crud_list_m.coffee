@@ -5,7 +5,12 @@ $(->
     search_parms=[]
     _pageCount = 10 #每页显示10条记录
     _currPageNo = 1
+    _onbeforeunloadCleanStorage = true
     
+    window.onbeforeunload = (event) ->
+        if _onbeforeunloadCleanStorage
+            window.sessionStorage.clear()
+            
     
     # 获取hash参数的值
     getHashPram = (key) ->
@@ -150,9 +155,11 @@ $(->
                     console.log record
                     if record == "new"
                         window.location.href = "/crud/" + table_name
+                        _onbeforeunloadCleanStorage = false
                         return
                     if @module == 'normal'
                         window.location.href = "/crud/" + table_name + "#" + record.id
+                        _onbeforeunloadCleanStorage = false
                         return
                     else if record.checked
                         record.checked = false

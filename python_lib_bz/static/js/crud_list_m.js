@@ -1,12 +1,18 @@
 (function() {
   $(function() {
-    var _currPageNo, _hashItemTemp, _hashStrTemp, _hashTemp, _hashsTemp, _pageCount, count, getHashPram, j, k, len, len1, load, objTemp, searchKeyValue, searchPam, searchPams, search_parms, setHashPram, storageData, table_name, v_crud_list;
+    var _currPageNo, _hashItemTemp, _hashStrTemp, _hashTemp, _hashsTemp, _onbeforeunloadCleanStorage, _pageCount, count, getHashPram, j, k, len, len1, load, objTemp, searchKeyValue, searchPam, searchPams, search_parms, setHashPram, storageData, table_name, v_crud_list;
     table_name = window.bz.getUrlParm()[2];
     v_crud_list = {};
     count = 0;
     search_parms = [];
     _pageCount = 10;
     _currPageNo = 1;
+    _onbeforeunloadCleanStorage = true;
+    window.onbeforeunload = function(event) {
+      if (_onbeforeunloadCleanStorage) {
+        return window.sessionStorage.clear();
+      }
+    };
     getHashPram = function(key) {
       var _hash, _hashItem, _hashStr, _hashs, j, len;
       _hashStr = window.location.hash.replace('#', '');
@@ -179,10 +185,12 @@
           console.log(record);
           if (record === "new") {
             window.location.href = "/crud/" + table_name;
+            _onbeforeunloadCleanStorage = false;
             return;
           }
           if (this.module === 'normal') {
             window.location.href = "/crud/" + table_name + "#" + record.id;
+            _onbeforeunloadCleanStorage = false;
           } else if (record.checked) {
             record.checked = false;
             return $(event.target).siblings(".check-column").find("input[type=checkbox]").prop('checked', false);
