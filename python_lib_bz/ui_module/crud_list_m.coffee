@@ -58,8 +58,6 @@ $(->
                     if(searchKeyValue[0] == "" || searchKeyValue[1] == "")
                         continue
                     setHashPram(searchKeyValue[0], searchKeyValue[1])
-        else
-            window.sessionStorage.clear()
         
     # 从hash中获取搜索参数并写入到搜索框,并构建search_parms    
     _hashStrTemp = window.location.hash.replace('#','')

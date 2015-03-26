@@ -72,8 +72,6 @@
             setHashPram(searchKeyValue[0], searchKeyValue[1]);
           }
         }
-      } else {
-        window.sessionStorage.clear();
       }
     }
     _hashStrTemp = window.location.hash.replace('#', '');
