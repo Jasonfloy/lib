@@ -4,9 +4,89 @@ $(->
     count=0
     search_parms=[]
     _pageCount = 10 #每页显示10条记录
+    _currPageNo = 1
+    _onbeforeunloadCleanStorage = true
+    
+    window.onbeforeunload = (event) ->
+        if _onbeforeunloadCleanStorage
+            window.sessionStorage.clear()
+            
+    
+    # 获取hash参数的值
+    getHashPram = (key) ->
+        _hashStr = window.location.hash.replace('#','')
+        if(!_hashStr || _hashStr == "")
+            return undefined
+        _hashs = _hashStr.split(";")
+        for _hashItem in _hashs
+            _hash = _hashItem.split("=")
+            if(key == _hash[0])
+                return _hash[1]
+        return undefined
+        
+    # 设置hash参数,格式如: aa=bb;cc=dd;  
+    setHashPram = (key,value) ->
+        _hashStr = window.location.hash.replace('#','')
+        if(!getHashPram(key) && value)
+            window.location.hash = _hashStr + key + "=" + value + ";"
+        else
+            _hashs = _hashStr.split(";")
+            _newHashStr = ""
+            for _hashItem in _hashs
+                if (!_hashItem || _hashItem == "")
+                    continue
+                _hash = _hashItem.split("=")
+                if(key == _hash[0])
+                    if(value != "")
+                        _newHashStr = _newHashStr + key + "=" + value + ";"
+                else
+                    _newHashStr = _newHashStr + _hash[0] + "=" + _hash[1] + ";"
+            window.location.hash = _newHashStr
+            
+    
+    # 从sessionStorage中获取搜索条件并写入hash
+    if window.sessionStorage
+        storageData = window.sessionStorage.getItem("search_curd_list_" + table_name)
+        if(storageData)
+            window.location.hash = ""
+            searchPams = storageData.split(";")
+            if(searchPams[0] != "")
+                for searchPam in searchPams
+                    if(searchPam == "")
+                        continue
+                    searchKeyValue = searchPam.split("=")
+                    if(searchKeyValue[0] == "" || searchKeyValue[1] == "")
+                        continue
+                    setHashPram(searchKeyValue[0], searchKeyValue[1])
+        
+    # 从hash中获取搜索参数并写入到搜索框,并构建search_parms    
+    _hashStrTemp = window.location.hash.replace('#','')
+    if(_hashStrTemp)
+        search_parms=[]
+        _hashsTemp = _hashStrTemp.split(";")
+        for _hashItemTemp in _hashsTemp
+            if(_hashItemTemp == "")
+                continue
+            _hashTemp = _hashItemTemp.split("=")
+            if(_hashTemp[0] == "" || _hashTemp[1] == "" || _hashTemp[0].indexOf("search_") == -1)
+                continue
+            if($("#" + _hashTemp[0]))
+                $("#" + _hashTemp[0]).val(_hashTemp[1])
+                objTemp = {"name": _hashTemp[0].replace("search_", ""), "value": _hashTemp[1]}
+                search_parms.push(objTemp)
+
+    # 判断hash中是否有当前页参数,如果没有则设为1
+    if(!getHashPram("p") || isNaN(getHashPram("p")))
+        setHashPram("p","1")
+    # 从hash中获取当前页
+    _currPageNo = parseInt(getHashPram("p"))
+                     
     
     load = (currPage, beginIndex, endIndex, limit) ->
-        window.location.hash = currPage
+        #window.location.hash = currPage
+        setHashPram("p",currPage)
+        if window.sessionStorage
+            window.sessionStorage.setItem("search_curd_list_" + table_name, window.location.hash.replace("#","")) # window.location.hash.replace(/#p=\d*;/g,"")
         if v_crud_list.$data
             v_crud_list.$data.loading=true
         if(!limit)
@@ -34,8 +114,15 @@ $(->
             @["search_fn_" + eventAndFun[0] + eventAndFun[1]] = (->
                 @vm[eventAndFun[1]]()
             ).bind(@)
-            eventName = "on" + eventAndFun[0]
-            @el[eventName] = @["search_fn_" + eventAndFun[0] + eventAndFun[1]]
+            if eventAndFun[0] == "enter"
+                eventName = "onkeypress"
+                _vue_this = @
+                @el[eventName] = (event)->
+                    if event && event.keyCode == 13
+                        _vue_this["search_fn_" + eventAndFun[0] + eventAndFun[1]]()
+            else
+                eventName = "on" + eventAndFun[0]
+                @el[eventName] = @["search_fn_" + eventAndFun[0] + eventAndFun[1]]
         update:(value) -> 
         unbind:() -> 
             eventNameKey = @raw.split(":")[0]
@@ -57,18 +144,20 @@ $(->
                     showFL: true
                     showFN: true
                     pageCount: _pageCount
-                    currPage: 1
+                    currPage: _currPageNo
                     showPageNum: 7
                     gotoPageFun: load
-                    onInitedLoadCurrPageData: true
+                    onInitedLoadCurrPageData: false
             methods:
                 detail: (event, record)->
                     console.log record
                     if record == "new"
                         window.location.href = "/crud/" + table_name
+                        _onbeforeunloadCleanStorage = false
                         return
                     if @module == 'normal'
                         window.location.href = "/crud/" + table_name + "#" + record.id
+                        _onbeforeunloadCleanStorage = false
                         return
                     else if record.checked
                         record.checked = false
@@ -90,8 +179,11 @@ $(->
                     for s in searchs
                         if s.value
                             a={"name":s.name,"value": s.value}
+                            setHashPram("search_" + s.name, s.value)
                             search_parms[i]=a
                             i=i+1
+                        else
+                            setHashPram("search_" + s.name, "")
                     $.post('/crud_list_api/'+table_name+ '?queryCount=true&find=true',
                            JSON.stringify {table_name:table_name, search_parms:search_parms}
                     ).done((data)->
@@ -112,24 +204,25 @@ $(->
                             window.bz.showError5(data.error)
                     )
                     return
-    
-    
-    $.post('/crud_list_api/' + table_name + '?queryCount=true').done((data) ->
-        if(window.location.hash == '' || isNaN(window.location.hash.replace('#','')))
-            window.location.hash = '1'
+                    
+    $.post('/crud_list_api/' + table_name + '?queryCount=true&find=true',
+        JSON.stringify {table_name:table_name, search_parms:search_parms}
+    ).done((data) ->
+        #if(window.location.hash == '' || isNaN(window.location.hash.replace('#','')))
+        #    window.location.hash = '1'
         _resultCount = data.count
-        _currPageNo = parseInt(window.location.hash.replace('#',''))
-        
         _endPage = parseInt(_resultCount/_pageCount)
         if(_resultCount%_pageCount > 0)
             _endPage = _endPage + 1
         if(_currPageNo > _endPage)
-            window.location.hash = '1'
+            #window.location.hash = '1'
+            setHashPram("p","1")
             _currPageNo = 1
+            v_crud_list.$data.pagination.currPage = _currPageNo
+            
         v_crud_list.$data.pagination.resultCount = _resultCount
-        v_crud_list.$data.pagination.currPage = _currPageNo
+        
 
     )
 
 )    
-

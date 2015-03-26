@@ -192,7 +192,6 @@ class crud_list_m(my_ui_module.MyUIModule):
                 show_fields.append(field)
             elif field.is_search == 1:
                 more_fields.append(field)
-
         table_desc = db_bz.getTableDesc(self.pg, table_name)
         if table_desc is None:
             raise Exception("需要设定修改维护的系统(biao)的说明")
@@ -223,12 +222,18 @@ class crud_list_api(BaseHandler):
         find_sql = ""
         isFind = self.get_argument("find", None)
         flag = False  # 开关，判断是否有关联查询
+        option_fields = []
+        option_dict = {}
         for field in fields:
             if field.sql_parm:
                 sql = crud_oper.joinCrudListSql(table_name, sql, colum_name=field.name, sql_parm=field.sql_parm)
                 if isFind:
                     sql = "select * from (" + sql + ")c where 1=1 "  # 如果是查找，并且有关联时，
                     flag = True
+            if field.options:
+                option_fields.append(field.name)
+                option_dict[field.name] = field.options
+
         if isFind:
             find_data = json.loads(self.request.body)
             search_parms = find_data["search_parms"]
@@ -239,7 +244,7 @@ class crud_list_api(BaseHandler):
             if flag:
                 sql += find_sql
             else:
-                sql = sql.replace("order", find_sql+" order ")  # load时拼条件
+                sql = sql.replace("order", find_sql + " order ")  # load时拼条件
             limit = self.get_argument('limit', None)
             offset = self.get_argument('offset', None)
             if not limit:
@@ -250,14 +255,25 @@ class crud_list_api(BaseHandler):
                 offset = str(int(offset) - 1)
             sql = 'select * from (' + sql + ') tpage limit ' + str(int(limit)) + ' offset ' + str(int(offset))
             cert_array = list(self.pg.db.query(sql))
-            self.write(json.dumps({'error': '0', "array": cert_array}, cls=public_bz.ExtEncoder))
+
+            # 解决crud_list页面select显示为value的问题
+            result_array = []
+            for row in cert_array:
+                for key in row:
+                    if key in option_fields:
+                        for select in option_dict[key]:
+                            if row[key] == select['value']:
+                                row[key] = select['text']
+                result_array.append(row)
+
+            self.write(json.dumps({'error': '0', "array": result_array}, cls=public_bz.ExtEncoder))
         else:
             sql_where_parms = ' is_delete = false'
             if find_sql:
                 sql_where_parms += find_sql
             if flag:
                 sql += find_sql
-                sql = "select count(*) from ("+sql+") d"
+                sql = "select count(*) from (" + sql + ") d"
                 count = self.pg.db.query(sql)
             else:
                 count = self.pg.db.select(tables=table_name, what='count(id)', where=sql_where_parms)
