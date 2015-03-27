@@ -205,7 +205,8 @@
           }
         },
         searchToggle: function() {
-          return $('.moreSearch').toggle();
+          $('.moreSearch').toggle();
+          return $('#gridSearch').toggle();
         },
         find: function() {
           var a, i, l, len2, s, searchs;

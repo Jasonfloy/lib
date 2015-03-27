@@ -19,7 +19,7 @@
         </div>
     </div>
     <form class="moreSearch form-horizontal" style="margin-top:20px;display:none;">
-        {% for index, field in enumerate(more_search) %}  
+        {% for index, field in enumerate(fields + more_search) %}  
             {% if index % 2 == 1 %}
             <div class="form-group">
             {% end %}
@@ -35,10 +35,14 @@
             </div>  
             {% end %}
         {% end %}
+        <div class="col-sm-6" style="margin-bottom:15px;">
+            <button type="button" class="btn btn-primary pull-right" v-on-search="click:find">查询</button>
+        </div>
+
     </form>
     <div style="min-height: 410px;">
         <table class="table table-hover">
-            <tr>
+            <tr id="gridSearch">
                 <th></th>
                 {% for field in fields %}
                 {% if field.c_type == 'timestamp' %}
