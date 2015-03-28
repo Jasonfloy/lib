@@ -172,6 +172,7 @@ $(->
                         @$set('module', 'edit')
                 searchToggle: ->
                     $('.moreSearch').toggle()
+                    $('#gridSearch').toggle()
                 find:->
                     search_parms=[]        
                     i=0
