@@ -10,10 +10,10 @@ def makeTree(nodes):
     '''
     node.id = 0
     node.parent_id = 0
-    node.chilren = []
+    node.children = []
 
     根据 node.id 和 node.parent_id 将铺平的数据组织成树状
-    放到 chilren 节点
+    放到 children 节点
     '''
     tree = []
     for node in nodes:
@@ -34,10 +34,10 @@ def addChilren(parent_node, child_node):
     '''
     加入子节点
     '''
-    if parent_node.get('chilren'):
-        parent_node.chilren.append(child_node)
+    if parent_node.get('children'):
+        parent_node.children.append(child_node)
     else:
-        parent_node.chilren = [child_node]
+        parent_node.children = [child_node]
 
 
 def findNode(nodes, id):
@@ -48,8 +48,8 @@ def findNode(nodes, id):
         if node.id == id:
             return node
         # 递归查找其子节点
-        if node.get('chilren'):
-            target_node = findNode(node.chilren, id)
+        if node.get('children'):
+            target_node = findNode(node.children, id)
             if target_node:
                 return target_node
 

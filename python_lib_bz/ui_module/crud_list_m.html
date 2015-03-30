@@ -8,6 +8,9 @@
             <div class="btn-group" role="group" v-show="module=='normal'">
                 <button type="button" class="btn btn-sm btn-primary" v-on="click:detail($event, 'new')">新增</button>
                 <button type="button" class="btn btn-sm btn-default" v-on="click:moduleToggle">编辑</button>
+                {% if more_search %}
+                  <button type="button" class="btn btn-sm btn-default" v-on="click:searchToggle">高级搜索</button>
+                {% end %}
             </div>
             <div class="btn-group" role="group" v-show="module=='edit'">
                 <button type="button" class="btn btn-sm btn-danger" v-on="click:del">删除</button>
@@ -15,26 +18,49 @@
             </div>
         </div>
     </div>
+    <form class="moreSearch form-horizontal" style="margin-top:20px;display:none;">
+        {% for index, field in enumerate(fields + more_search) %}  
+            {% if index % 2 == 1 %}
+            <div class="form-group">
+            {% end %}
+                <label class="col-sm-2 control-label" for="{{ field.name }}">{{ field.description }}</label>
+                <div class="col-sm-3">
+                {% if field.c_type == 'timestamp' %}
+                  <input type="text" class="form-search form-control" name="{{field.name}}" v-disable="editable" v-datepicker="record.{{field.name}}" v-on-search="change:find" placeholder="{{field.description}}"/>	
+                {% else %}
+                  <input type="text"  name="{{field.name}}" v-on-search="blur:find" class="form-search form-control" placeholder="{{field.description}}" />
+                {% end %}
+                </div> 
+            {% if index % 2 == 1 %}
+            </div>  
+            {% end %}
+        {% end %}
+        <div class="col-sm-6" style="margin-bottom:15px;">
+            <button type="button" class="btn btn-primary pull-right" v-on-search="click:find">查询</button>
+        </div>
+
+    </form>
     <div style="min-height: 410px;">
         <table class="table table-hover">
-             <table class="table table-hover">
-              <tr><th></th>
+            <tr id="gridSearch">
+                <th></th>
                 {% for field in fields %}
-                    {% if field.c_type == 'timestamp' %}
-                    <th>
+                {% if field.c_type == 'timestamp' %}
+                <th>
                     <div class='input-group date' id='{{field.name}}'>
-                        <input type="text" class="form-search" name="{{field.name}}" 
-                            v-disable="editable" v-datepicker="record.{{field.name}}" v-on-search="change:find" placeholder="{{field.description}}"/>	
+                        <input type="text" id="search_{{field.name}}" class="form-search form-control" name="{{field.name}}" 
+                            v-disable="editable" v-datepicker="record.{{field.name}}" v-on-search="change:find,enter:find" placeholder="{{field.description}}"/>	
 	                        <!-- 此处用合适的v-on 响应，调用vue对象中的find()方法 -->                        
                     </div>
-                    </th>
-                    {% else %}
+                </th>
+                {% else %}
                 <th>
-                    <input type="text"  name="{{field.name}}" style="max-width:150px;"
-                       v-on-search="blur:find" class="form-search" placeholder="{{field.description}}" />   
+                    <input type="text" id="search_{{field.name}}" name="{{field.name}}" style="width:100%;"
+                       v-on-search="enter:find" class="form-search form-control" placeholder="{{field.description}}" />   
                 </th>
                     {% end %}
                 {% end %}
+                <th><button type="button" class="btn btn-primary" v-on-search="click:find">查询</button></th>
             </tr>
         
             <tr>
@@ -42,16 +68,18 @@
                 {% for field in fields %}
                 <th>{{field.description}}</th>
                 {% end %}
+                <th></th>
             </tr>
             <tr v-on="click:detail($event, r)" v-repeat="r : list">
                 <td class="check-column"><input v-class="visibility-hidden:module=='normal'" type="checkbox" v-model="checked" /></td>
                 {% for field in fields %}
                     {% if field.c_type == 'timestamp' %}
-                        <td v-dateformat="'yyyy-MM-dd':r.{{ field.name }}"></td>
+                      <td v-dateformat="'yyyy-MM-dd':r.{{ field.name }}"></td>
                     {% else %}
-                        <td v-ellipsis="8:r.{{ field.name }}"></td>
+                      <td v-ellipsis="8:r.{{ field.name }}"></td>
                     {% end %}
                 {% end %}
+                <td></td>
             </tr>
         </table>
     </div>
