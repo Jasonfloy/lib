@@ -27,8 +27,6 @@
             data.error_info = '好歹说点什么吧!';
             return;
           }
-          comment = comment.replace("\n", "").replace("<div>", "").replace("</div>", "\n");
-          comment = comment.substr(0, comment.length - 1);
           this.$data.btn_loading = true;
           return $.post('/comment', JSON.stringify({
             key_type: key_type,

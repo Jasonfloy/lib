@@ -19,9 +19,6 @@ $(->
         if comment == undefined or comment.trim() == ''
           data.error_info = '好歹说点什么吧!'
           return
-        # 处理字符串, 为了在 new 页面中显示
-        comment = comment.replace("\n", "").replace("<div>", "").replace("</div>", "\n")
-        comment = comment.substr(0, comment.length - 1)
         @$data.btn_loading = true
         $.post '/comment',
           JSON.stringify
@@ -30,7 +27,6 @@ $(->
             comment:comment
             parent_id:@$data.parent_id
         , (result) ->
-
           if result.error != '0'
             console.log result.error
             data.btn_loading = false
