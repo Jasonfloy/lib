@@ -90,7 +90,7 @@ $(->
 
     AllDone = (d)->
         v_crud.$set("loading", false)
-        if d.error == 0
+        if d.error == "0"
             #delay 1500, -> v_crud.jump2List()
             window.bz.showSuccess5('提交成功...正在返回列表')
         else
