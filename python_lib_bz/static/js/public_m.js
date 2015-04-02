@@ -116,23 +116,34 @@
       var _this, datepicker;
       _this = this;
       datepicker = $(this.el);
-      return datepicker.datepicker({
+      datepicker.datepicker({
         format: "yyyy-mm-dd",
         language: "zh-CN",
         autoclose: true,
         forceParse: true,
         clearBtn: true
       }).on("changeDate", function(e) {
-        var d_str, field_name;
-        field_name = _this.raw.replace("record.", "");
+        var d_handle, d_str, j, l, len1, levels;
+        levels = _this.raw.split(".");
         d_str = "";
         if (e.date) {
           d_str = e.date.valueOf();
         }
-        return _this.vm.$data.record[field_name] = d_str;
+        console.log(_this.vm.$data);
+        for (j = 0, len1 = levels.length; j < len1; j++) {
+          l = levels[j];
+          console.log(l, _this.vm.$data[l]);
+          d_handle = _this.vm.$data[l];
+        }
+        return d_handle = d_str;
       }).siblings(".input-group-addon").on("click", function() {
         return datepicker.datepicker("show");
       });
+      if (isNaN(value)) {
+        return datepicker.datepicker('update', value);
+      } else if (value) {
+        return datepicker.datepicker('update', new Date(value));
+      }
     },
     update: function(value) {
       if (value) {

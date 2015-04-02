@@ -105,15 +105,23 @@ Vue.directive('datepicker',
       forceParse: true
       clearBtn: true
     .on("changeDate", (e)->
-      field_name = _this.raw.replace("record.", "")
+      levels = _this.raw.split(".")
       d_str = ""
       if e.date
         d_str = e.date.valueOf()
-      _this.vm.$data.record[field_name] = d_str
+      console.log _this.vm.$data
+      for l in levels
+        console.log l, _this.vm.$data[l]
+        d_handle = _this.vm.$data[l]
+      d_handle = d_str
     ).siblings(".input-group-addon")
       .on("click", ->
         datepicker.datepicker("show")
       )
+    if isNaN(value)
+      datepicker.datepicker('update', value)
+    else if value
+      datepicker.datepicker('update', new Date(value))
   update: (value)->
     if value
       $(@el).datepicker('update', new Date(value))
