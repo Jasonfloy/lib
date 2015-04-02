@@ -113,32 +113,55 @@
 
   Vue.directive('datepicker', {
     bind: function(value) {
-      var _this, datepicker;
+      var _this, d_handle, d_str, datepicker, i, j, l, len1, levels;
       _this = this;
       datepicker = $(this.el);
-      return datepicker.datepicker({
+      datepicker.datepicker({
         format: "yyyy-mm-dd",
         language: "zh-CN",
         autoclose: true,
         forceParse: true,
         clearBtn: true
       }).on("changeDate", function(e) {
-        var d_str, field_name;
-        field_name = _this.raw.replace("record.", "");
+        var d_str, levels;
+        levels = _this.raw.split(".");
         d_str = "";
         if (e.date) {
           d_str = e.date.valueOf();
         }
-        return _this.vm.$data.record[field_name] = d_str;
+        return d_handle[levels[levels.length - 1]] = d_str;
       }).siblings(".input-group-addon").on("click", function() {
         return datepicker.datepicker("show");
       });
-    },
-    update: function(value) {
-      if (value) {
-        return $(this.el).datepicker('update', new Date(value));
+      if (isNaN(this.el.value)) {
+        datepicker.datepicker('update', this.el.value);
+      } else if (this.el.value) {
+        datepicker.datepicker('update', new Date(this.el.value));
+      }
+      levels = _this.raw.split(".");
+      d_handle = _this.vm.$data;
+      i = 0;
+      for (j = 0, len1 = levels.length; j < len1; j++) {
+        l = levels[j];
+        if (!d_handle[l] && (i + 1) !== levels.length) {
+          d_handle[l] = {};
+        }
+        if ((i + 1) !== levels.length) {
+          d_handle = d_handle[l];
+        }
+        i++;
+      }
+      d_str = "";
+      if (this.el.value) {
+        if (isNaN(this.el.value)) {
+          d_str = Date.parse(this.el.value);
+        } else {
+          d_str = this.el.value;
+        }
+        return d_handle[levels[levels.length - 1]] = d_str;
       }
     },
+    update: function(value) {},
     unbind: function() {
       return console.log("unbind");
     }
