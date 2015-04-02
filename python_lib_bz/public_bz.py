@@ -10,8 +10,23 @@ import urllib2
 import utils
 
 import os
-import string
-import random
+
+
+def downloadImageFile(img_url, path_file_name=None):
+    '''
+    create by bigzhu at 15/04/02 17:24:09 下载图片到指定路径
+    '''
+    import requests
+    if path_file_name is None:
+        path_file_name = img_url.split('/')[-1]
+    r = requests.get(img_url, stream=True)  # here we need to set stream = True parameter
+    with open(path_file_name, 'wb') as f:
+        for chunk in r.iter_content(chunk_size=1024):
+            if chunk:  # filter out keep-alive new chunks
+                f.write(chunk)
+                f.flush()
+        f.close()
+    return path_file_name
 
 
 class ExtEncoder(json.JSONEncoder):

@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 '''
 create by bigzhu at 15/04/01 13:30:11  微信相关的操作和接口
+modify by bigzhu at 15/04/01 16:18:35  修改为依赖 pip install wechat-sdk 的版本,简化代码
 '''
 
 import requests
+from wechat_sdk import WechatBasic
 
 
 class WeChat():
@@ -12,8 +14,7 @@ class WeChat():
     '''
     '''
 
-    def __init__(self, pg, app_id, app_secret, token):
-        self.pg = pg
+    def __init__(self, app_id, app_secret, token):
         self.app_id = app_id
         self.app_secret = app_secret
 
@@ -48,7 +49,9 @@ class WeChat():
         return requests.post("https://api.weixin.qq.com/customservice/kfaccount/add", params=self.getAccessToken(), data=kf).json()
 
 if __name__ == '__main__':
-    we_chat = WeChat(pg=123, app_id='wxb853fa08cbc04938', app_secret='01a74260fd9db2460a5ef3052a8aa830', token='JbBqbzuji22PF2db1K381Z2JdcdbUIBF')
+    wechat = WechatBasic(token='JbBqbzuji22PF2db1K381Z2JdcdbUIBF', appid='wxb853fa08cbc04938', appsecret='01a74260fd9db2460a5ef3052a8aa830')
+    #print wechat.get_access_token()
+    print wechat.get_menu()
     # print we_chat.getAccessToken()
     # print we_chat.getWeChatIP()
-    print we_chat.addKF('bigzhu','大猪', '123')
+    #print we_chat.addKF('bigzhu','大猪', '123')
