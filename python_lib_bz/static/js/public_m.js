@@ -113,7 +113,7 @@
 
   Vue.directive('datepicker', {
     bind: function(value) {
-      var _this, datepicker;
+      var _this, d_handle, d_str, datepicker, i, j, l, len1, levels;
       _this = this;
       datepicker = $(this.el);
       datepicker.datepicker({
@@ -123,33 +123,45 @@
         forceParse: true,
         clearBtn: true
       }).on("changeDate", function(e) {
-        var d_handle, d_str, j, l, len1, levels;
+        var d_str, levels;
         levels = _this.raw.split(".");
         d_str = "";
         if (e.date) {
           d_str = e.date.valueOf();
         }
-        console.log(_this.vm.$data);
-        for (j = 0, len1 = levels.length; j < len1; j++) {
-          l = levels[j];
-          console.log(l, _this.vm.$data[l]);
-          d_handle = _this.vm.$data[l];
-        }
-        return d_handle = d_str;
+        return d_handle[levels[levels.length - 1]] = d_str;
       }).siblings(".input-group-addon").on("click", function() {
         return datepicker.datepicker("show");
       });
-      if (isNaN(value)) {
-        return datepicker.datepicker('update', value);
-      } else if (value) {
-        return datepicker.datepicker('update', new Date(value));
+      if (isNaN(this.el.value)) {
+        datepicker.datepicker('update', this.el.value);
+      } else if (this.el.value) {
+        datepicker.datepicker('update', new Date(this.el.value));
+      }
+      levels = _this.raw.split(".");
+      d_handle = _this.vm.$data;
+      i = 0;
+      for (j = 0, len1 = levels.length; j < len1; j++) {
+        l = levels[j];
+        if (!d_handle[l] && (i + 1) !== levels.length) {
+          d_handle[l] = {};
+        }
+        if ((i + 1) !== levels.length) {
+          d_handle = d_handle[l];
+        }
+        i++;
+      }
+      d_str = "";
+      if (this.el.value) {
+        if (isNaN(this.el.value)) {
+          d_str = Date.parse(this.el.value);
+        } else {
+          d_str = this.el.value;
+        }
+        return d_handle[levels[levels.length - 1]] = d_str;
       }
     },
-    update: function(value) {
-      if (value) {
-        return $(this.el).datepicker('update', new Date(value));
-      }
-    },
+    update: function(value) {},
     unbind: function() {
       return console.log("unbind");
     }

@@ -109,22 +109,33 @@ Vue.directive('datepicker',
       d_str = ""
       if e.date
         d_str = e.date.valueOf()
-      console.log _this.vm.$data
-      for l in levels
-        console.log l, _this.vm.$data[l]
-        d_handle = _this.vm.$data[l]
-      d_handle = d_str
+      d_handle[levels[levels.length - 1]] = d_str
     ).siblings(".input-group-addon")
       .on("click", ->
         datepicker.datepicker("show")
       )
-    if isNaN(value)
-      datepicker.datepicker('update', value)
-    else if value
-      datepicker.datepicker('update', new Date(value))
+    if isNaN(@el.value)
+      datepicker.datepicker('update', @el.value)
+    else if @el.value
+      datepicker.datepicker('update', new Date(@el.value))
+      
+    levels = _this.raw.split(".")
+    d_handle = _this.vm.$data
+    i = 0
+    for l in levels
+      if !d_handle[l] && (i + 1) != levels.length
+          d_handle[l] = {}
+      if (i + 1) != levels.length
+          d_handle = d_handle[l]
+      i++
+    d_str = ""
+    if @el.value
+      if isNaN(@el.value)
+        d_str = Date.parse(@el.value)
+      else
+        d_str = @el.value
+      d_handle[levels[levels.length - 1]] = d_str
   update: (value)->
-    if value
-      $(@el).datepicker('update', new Date(value))
   unbind: ->
     console.log "unbind"
 )
