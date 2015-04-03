@@ -6,7 +6,7 @@ import re
 
 def createTable(db_name):
     import db_init_bz
-    from peewee import *
+    from peewee import TextField
 
     class user_info(db_init_bz.base):
 
@@ -25,7 +25,7 @@ def createTable(db_name):
         original_json = TextField(null=True)  # ?
         slogan = TextField(null=True)  # 自定义头像
 
-    init_db.createTable(user_info, db_name)
+    db_init_bz.createTable(user_info, db_name)
 
 
 class UserOper:

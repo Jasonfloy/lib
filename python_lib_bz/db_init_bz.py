@@ -26,7 +26,7 @@ def createTable(Model, db_name, user=None, password=None):
     Model._meta.database = db
     try:
         if Model.table_exists():
-            print 'table %s already exists' % Model.__db_name__
+            print 'table %s already exists' % Model.__name__
             return
         createBaseTable(db)
         Model.create_table()
@@ -34,11 +34,11 @@ def createTable(Model, db_name, user=None, password=None):
         print public_bz.getExpInfo()
         showDBCreate(db_name)
         return
-    table_db_name = Model.__db_name__
-    if table_db_name != 'base':
+    table_name = Model.__name__
+    if table_name != 'base':
         sql = '''
             alter table %s inherit base;
-            ''' % table_db_name
+            ''' % table_name
         db.execute_sql(sql)
         resetBaseDefault(db)
 
@@ -78,7 +78,6 @@ def createBaseTable(db):
 class base(Model):
     created_date = DateTimeField(null=True)
     stat_date = DateTimeField(null=True)
-
 
 if __name__ == '__main__':
     createAllTable(pg_db)
