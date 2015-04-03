@@ -3,6 +3,31 @@
 from db_bz import daemonDB
 import re
 
+
+def createTable(db_name):
+    import db_init_bz
+    from peewee import TextField
+
+    class user_info(db_init_bz.base):
+
+        '''
+        create by bigzhu at 15/04/04 00:47:38 用户表
+        '''
+        user_type = TextField()  # 用户类型 google my twitter
+        out_id = TextField(null=True)  # oauth2 的外部 id
+        email = TextField(null=True)  # email 地址
+        user_name = TextField()  # 用户名
+        link = TextField(null=True)  # 链接
+        picture = TextField(null=True)  # 头像地址
+        gender = TextField(null=True)  # ?
+        locale = TextField(null=True)  # 所在区域
+        password = TextField(null=True)  # 密码
+        original_json = TextField(null=True)  # ?
+        slogan = TextField(null=True)  # 自定义头像
+
+    db_init_bz.createTable(user_info, db_name)
+
+
 class UserOper:
 
     '''
@@ -62,11 +87,10 @@ class UserOper:
         else:
             if email is None:
                 if len(user_name) > 7:
-                    if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", user_name) != None:
+                    if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", user_name) is not None:
                         email = user_name
             self.pg.db.insert('user_info', user_type='my', user_name=user_name, password=password, email=email)
             return self.login(user_name, password)
-
 
     @daemonDB
     def getUserInfo(self, user_type='my', user_name=None, out_id=None):
@@ -170,13 +194,13 @@ class UserOper:
             return user_infos[0]
         else:
             self.pg.db.insert('user_info',
-                              user_type = 'github',
-                              out_id = user_info['id'],
-                              email = user_info['email'],
-                              user_name = user_info['name'],
+                              user_type='github',
+                              out_id=user_info['id'],
+                              email=user_info['email'],
+                              user_name=user_info['name'],
                               #link = user_info['html_url'],
-                              picture = user_info['avatar_url'],
-                              locale = user_info['location']
+                              picture=user_info['avatar_url'],
+                              locale=user_info['location']
                               )
             return self.githubLogin(user_info)
 
