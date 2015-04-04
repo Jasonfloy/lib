@@ -22,7 +22,7 @@ def createTable(Model, db_name, user=None, password=None):
         user = db_name
     if password is None:
         password = db_name
-    db = PostgresqlDatabase(db_name, user=user, password=password)
+    db = PostgresqlDatabase(db_name, user=user, password=password, host='127.0.0.1')
     Model._meta.database = db
     try:
         if Model.table_exists():
