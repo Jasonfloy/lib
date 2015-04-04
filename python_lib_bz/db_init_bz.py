@@ -12,6 +12,20 @@ import public_bz
 from peewee import *
 import peewee
 
+
+def dropTable(Model, db_name, user=None, password=None):
+    '''
+    create by bigzhu at 15/04/04 13:12:02 还是需要一个删除表的功能
+    '''
+    if user is None:
+        user = db_name
+    if password is None:
+        password = db_name
+    db = PostgresqlDatabase(db_name, user=user, password=password, host='127.0.0.1')
+    Model._meta.database = db
+    Model.drop_table()
+
+
 def createTable(Model, db_name, user=None, password=None):
     '''
     create by bigzhu at 15/04/04 01:08:30 建立数据库表; peewee 要在定义时候指定 db 相当不人性化,修正
@@ -86,6 +100,7 @@ def createAllTable(all_class, db_name):
                 createTable(all_class[model], db_name)
         except Exception:
             continue
+
 
 class base(Model):
     created_date = DateTimeField(null=True)
