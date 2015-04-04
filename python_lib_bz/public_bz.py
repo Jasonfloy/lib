@@ -156,6 +156,16 @@ def getLibPath():
     return dirname
 
 
+def getProjectName():
+    '''
+    create by bigzhu at 15/04/04 12:39:07 获取代码所在文件夹
+    '''
+
+    path = getExecutingPath()
+    project_name = path.split('/')
+    return project_name[-1]
+
+
 def runCommand(command):
     '''
     运行命令
@@ -185,4 +195,5 @@ def getCountryCodeByIP(ip):
     return country_code
 
 if __name__ == '__main__':
-    getCountryCodeByIP('www.douban.com')
+    print getExecutingPathFile()
+    # getCountryCodeByIP('www.douban.com')

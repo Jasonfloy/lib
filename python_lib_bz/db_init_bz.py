@@ -30,6 +30,7 @@ def createTable(Model, db_name, user=None, password=None):
             return
         createBaseTable(db)
         Model.create_table()
+        print 'create table ' + Model.__name__
     except peewee.OperationalError:
         print public_bz.getExpInfo()
         showDBCreate(db_name)
