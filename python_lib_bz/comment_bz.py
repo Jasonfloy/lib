@@ -5,40 +5,15 @@ create by bigzhu at 15/02/22 14:36:50 评论相关的一些操作
 '''
 
 import tree_bz
-sql = '''
-    -- Table: comment
 
-    -- DROP TABLE comment;
 
-    CREATE TABLE comment
-    (
-    -- 继承 from table base:  id integer NOT NULL DEFAULT nextval('base_id_seq'::regclass),
-    -- 继承 from table base:  created_date timestamp without time zone DEFAULT now(),
-    -- 继承 from table base:  stat_date timestamp without time zone DEFAULT now(),
-      user_id integer, -- 填写的用户 id
-      key_type text, -- 用于那个类型....
-      key text, -- 比如填入 site_id,...
-      comment text, -- 评论
-      parent_id integer -- 可空,父节点 id
-    )
-    INHERITS (base)
-    WITH (
-      OIDS=FALSE
-    );
-    ALTER TABLE comment
-      OWNER TO yemai;
-    COMMENT ON COLUMN comment.user_id IS '填写的用户 id';
-    COMMENT ON COLUMN comment.key_type IS '用于那个类型.
-
-    比如一个系统有多个地方都要有评论,则用这个来区别
-
-    为了站点可以填为 site';
-    COMMENT ON COLUMN comment.key IS '比如填入 site_id,
-    使用这个评论的元素';
-    COMMENT ON COLUMN comment.comment IS '评论';
-    COMMENT ON COLUMN comment.parent_id IS '可空,父节点 id';
-
-'''
+def createTable(db_name):
+    '''
+    create by bigzhu at 15/04/06 20:36:55 依赖的数据模型
+    '''
+    import model_bz
+    import model_oper_bz
+    model_oper_bz.createTable(model_bz.comment, db_name)
 
 
 class Comment():

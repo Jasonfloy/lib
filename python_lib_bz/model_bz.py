@@ -22,5 +22,16 @@ class user_info(db_init_bz.base):
     password = TextField(null=True)  # 密码
     original_json = TextField(null=True)  # ?
     slogan = TextField(null=True)  # 自定义头像
+
+class comment(db_init_bz.base):
+    '''
+    create by bigzhu at 15/04/06 20:34:12 通用的评论表模型
+    '''
+    key_type  = TextField()  # 用于那个类型 比如一个系统有多个地方都要有评论,则用这个来区别, 站点可以填为 site'
+    key   = TextField()  # 比如填入 site_id, 使用这个评论的元素
+    comment   = TextField()  # 评论
+    parent_id  = IntegerField() # 可空,父节点 id
+    user_id = IntegerField()
+
 if __name__ == '__main__':
     pass
