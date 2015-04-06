@@ -3,13 +3,17 @@
 '''
 create by bigzhu at 15/04/03 17:23:47 初始化数据库
 create by bigzhu at 15/04/03 17:23:35 字段映射参见 http://peewee.readthedocs.org/en/latest/peewee/models.html
+modify by bigzhu at 15/04/06 20:09:43 修改文件名称为 model_oper_bz.py
 '''
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
-import datetime
 import public_bz
-from peewee import *
+#from peewee import *
+from peewee import PostgresqlDatabase
+from peewee import Model
+from peewee import DateTimeField
+
 import peewee
 
 
@@ -92,8 +96,6 @@ def createBaseTable(db):
 
 def createAllTable(all_class, db_name):
     #all_class = globals().copy()
-    table_list = []
-    table_name_list = []
     for model in all_class:
         try:
             if issubclass(all_class[model], Model):
@@ -107,4 +109,5 @@ class base(Model):
     stat_date = DateTimeField(null=True)
 
 if __name__ == '__main__':
-    createAllTable(pg_db)
+    pass
+    #createAllTable(pg_db)
