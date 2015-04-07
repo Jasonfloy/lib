@@ -3,11 +3,11 @@
 '''
 create by bigzhu at 15/04/06 20:13:37 存放公用的数据模型
 '''
-import db_init_bz
+import model_oper_bz
 from peewee import TextField
 from peewee import IntegerField
 
-class user_info(db_init_bz.base):
+class user_info(model_oper_bz.base):
 
     '''
     create by bigzhu at 15/04/04 00:47:38 用户表
@@ -24,7 +24,7 @@ class user_info(db_init_bz.base):
     original_json = TextField(null=True)  # ?
     slogan = TextField(null=True)  # 自定义头像
 
-class comment(db_init_bz.base):
+class comment(model_oper_bz.base):
     '''
     create by bigzhu at 15/04/06 20:34:12 通用的评论表模型
     '''
