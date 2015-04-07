@@ -5,6 +5,7 @@ create by bigzhu at 15/04/06 20:13:37 存放公用的数据模型
 '''
 import db_init_bz
 from peewee import TextField
+from peewee import IntegerField
 
 class user_info(db_init_bz.base):
 
