@@ -28,6 +28,7 @@ def dropTable(Model, db_name, user=None, password=None):
     db = PostgresqlDatabase(db_name, user=user, password=password, host='127.0.0.1')
     Model._meta.database = db
     Model.drop_table()
+    print 'drop table ' + Model.__name__
 
 
 def createTable(Model, db_name, user=None, password=None):
