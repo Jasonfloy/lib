@@ -53,7 +53,9 @@ def createTable(Model, db_name, user=None, password=None):
     except peewee.OperationalError:
         print public_bz.getExpInfo()
         showDBCreate(db_name)
-        return
+        exit(1)
+
+
     table_name = Model.__name__
     if table_name != 'base':
         sql = '''
