@@ -5,8 +5,32 @@ create by bigzhu at 15/04/01 13:30:11  微信相关的操作和接口
 modify by bigzhu at 15/04/01 16:18:35  修改为依赖 pip install wechat-sdk 的版本,简化代码
 '''
 
-import requests
-from wechat_sdk import WechatBasic
+try:
+    import requests
+except ImportError:
+    print 'you need run:'
+    print 'sudo pip install requests'
+    raise
+
+try:
+    from wechat_sdk import WechatBasic
+except ImportError:
+    print 'you need run:'
+    print 'sudo pip install wechat_sdk'
+    raise
+
+def callPlatform(self, url):
+    '''
+    create by bigzhu at 15/04/07 15:08:27 把对平台的访问,转发到平台上
+    '''
+    print self.request.body
+    signature = self.get_argument('signature')
+    timestamp = self.get_argument('timestamp')
+    nonce = self.get_argument('nonce')
+    #url = 'http://admin.hoywe.com/api.php?hash=WD13B&signature=%s&timestamp=%s&nonce=%s' %(signature, timestamp, nonce)
+    url = '%s&signature=%s&timestamp=%s&nonce=%s' %(url, signature, timestamp, nonce)
+    r = requests.post(url, data=self.request.body)
+    return r.text
 
 
 class WeChat():
@@ -55,3 +79,4 @@ if __name__ == '__main__':
     # print we_chat.getAccessToken()
     # print we_chat.getWeChatIP()
     #print we_chat.addKF('bigzhu','大猪', '123')
+
