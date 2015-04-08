@@ -297,6 +297,7 @@ def mustSubscribe(method):
     '''
     create by bigzhu at 15/04/08 10:25:59 wechat 使用,必须要关注
     '''
+    from wechat_sdk import WechatBasic
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         open_id = self.get_secure_cookie("open_id")
@@ -314,7 +315,8 @@ def mustSubscribe(method):
             self.redirect(auth_url)
             return
         else:
-            wechat_user_info = self.settings["wechat"].get_user_info(open_id)
+            wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
+            wechat_user_info = wechat.get_user_info(open_id)
             # 没有关注的,跳转到配置的关注页面
             if wechat_user_info['subscribe'] == 0:
                 self.redirect(self.settings["subscribe"])

@@ -4,6 +4,7 @@
 create by bigzhu at 15/04/03 17:23:47 初始化数据库
 create by bigzhu at 15/04/03 17:23:35 字段映射参见 http://peewee.readthedocs.org/en/latest/peewee/models.html
 modify by bigzhu at 15/04/06 20:09:43 修改文件名称为 model_oper_bz.py
+modify by bigzhu at 15/04/08 15:05:36 改用 PostgresqlExtDatabase 为了支持 json
 '''
 import sys
 reload(sys)
@@ -13,6 +14,7 @@ import public_bz
 from peewee import PostgresqlDatabase
 from peewee import Model
 from peewee import DateTimeField
+from playhouse.postgres_ext import PostgresqlExtDatabase
 
 import peewee
 
@@ -25,7 +27,8 @@ def dropTable(Model, db_name, user=None, password=None):
         user = db_name
     if password is None:
         password = db_name
-    db = PostgresqlDatabase(db_name, user=user, password=password, host='127.0.0.1')
+    #db = PostgresqlDatabase(db_name, user=user, password=password, host='127.0.0.1')
+    db = PostgresqlExtDatabase(db_name, user=user, password=password, host='127.0.0.1', register_hstore=False)
     Model._meta.database = db
     Model.drop_table()
     print 'drop table ' + Model.__name__
@@ -41,7 +44,7 @@ def createTable(Model, db_name, user=None, password=None):
         user = db_name
     if password is None:
         password = db_name
-    db = PostgresqlDatabase(db_name, user=user, password=password, host='127.0.0.1')
+    db = PostgresqlExtDatabase(db_name, user=user, password=password, host='127.0.0.1', register_hstore=False)
     Model._meta.database = db
     try:
         if Model.table_exists():
