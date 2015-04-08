@@ -10,6 +10,7 @@ import sys
 import public_bz
 import functools
 import json
+import urllib
 import user_bz
 from tornado.escape import utf8
 from tornado.web import RequestHandler
@@ -60,7 +61,7 @@ class BaseHandler(RequestHandler):
             file_part = module.javascript_files()
             if file_part:
                 if isinstance(file_part, (unicode_type, bytes_type)):
-                    #js_files.append(file_part)
+                    # js_files.append(file_part)
                     js_files.insert(0, file_part)
                 else:
                     js_files.extend(file_part)
@@ -160,9 +161,11 @@ class BaseHandler(RequestHandler):
 
 
 class ModuleHandler(BaseHandler):
+
     '''
     create by bigzhu at 15/03/11 10:17:40 给 UI Module 使用
     '''
+
     def myRender(self, **kwargs):
         '''
         这个方法如果不重载,那么就会报错
@@ -171,6 +174,7 @@ class ModuleHandler(BaseHandler):
         也可以指定自己的 template
         '''
         raise NotImplementedError()
+
 
 class UserInfoHandler(BaseHandler):
 
@@ -206,7 +210,7 @@ def getURLMap(the_globals):
             if issubclass(the_globals[i], tornado.web.RequestHandler):
                 url_map.append((r'/' + i, the_globals[i]))
                 url_map.append(
-                    (r'/lib_static/(.*)', tornado.web.StaticFileHandler, {'path': public_bz.getLibPath()+"/static"})
+                    (r'/lib_static/(.*)', tornado.web.StaticFileHandler, {'path': public_bz.getLibPath() + "/static"})
                 )
                 # url_map.append((r"/%s/([0-9]+)" % i, the_globals[i]))
                 url_map.append((r"/%s/(.*)" % i, the_globals[i]))
@@ -285,6 +289,36 @@ def mustLogin(method):
         else:
             self.redirect("/login")
             return
+        return method(self, *args, **kwargs)
+    return wrapper
+
+
+def mustSubscribe(method):
+    '''
+    create by bigzhu at 15/04/08 10:25:59 wechat 使用,必须要关注
+    '''
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        open_id = self.get_secure_cookie("open_id")
+        if open_id is None:
+            # 连open_id 都没有,首先要获取 open_id
+            params = {
+                "appid": self.settings['appid'],
+                "redirect_uri": "http://" + self.settings['domain'] + "/setOpenid?url=/" + self.__class__.__name__,
+                "response_type": "code",
+                "scope": "snsapi_base",
+            }
+            auth_url = "https://open.weixin.qq.com/connect/oauth2/authorize?%s#wechat_redirect"
+            auth_url = auth_url % urllib.urlencode(params)
+            print auth_url
+            self.redirect(auth_url)
+            return
+        else:
+            wechat_user_info = self.settings["wechat"].get_user_info(open_id)
+            # 没有关注的,跳转到配置的关注页面
+            if wechat_user_info['subscribe'] == 0:
+                self.redirect(self.settings["subscribe"])
+                return
         return method(self, *args, **kwargs)
     return wrapper
 
