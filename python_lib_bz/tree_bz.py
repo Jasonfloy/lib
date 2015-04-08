@@ -25,6 +25,7 @@ def makeTree(nodes):
                 addChilren(parent_node, node)
             # 父节点还没加入到 tree 中
             else:
+                print parent_node
                 parent_node = findNode(nodes, node.parent_id)
                 addChilren(parent_node, node)
     return tree
@@ -76,5 +77,12 @@ if __name__ == '__main__':
     node.id = 5
     node.parent_id = 1
     nodes.append(node)
+
+    node = storage()
+    node.id = 7
+    node.parent_id = 6
+    nodes.append(node)
+
+
 
     print makeTree(nodes)
