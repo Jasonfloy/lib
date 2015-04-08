@@ -113,7 +113,7 @@
 
   Vue.directive('datepicker', {
     bind: function(value) {
-      var _this, d_handle, d_str, datepicker, i, j, l, len1, levels;
+      var d_handle, d_str, datepicker, i, l, levels, _i, _len, _this;
       _this = this;
       datepicker = $(this.el);
       datepicker.datepicker({
@@ -141,8 +141,8 @@
       levels = _this.raw.split(".");
       d_handle = _this.vm.$data;
       i = 0;
-      for (j = 0, len1 = levels.length; j < len1; j++) {
-        l = levels[j];
+      for (_i = 0, _len = levels.length; _i < _len; _i++) {
+        l = levels[_i];
         if (!d_handle[l] && (i + 1) !== levels.length) {
           d_handle[l] = {};
         }
@@ -351,7 +351,7 @@
       return $("<div/>").text(value).html();
     },
     dateFormat: function(timestramp, mask) {
-      var _this, date, matched_array, o, regStr, res;
+      var date, matched_array, o, regStr, res, _this;
       date = new Date(timestramp);
       _this = this;
       o = {
