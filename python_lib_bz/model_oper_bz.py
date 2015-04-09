@@ -10,13 +10,16 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 import public_bz
-#from peewee import *
-from peewee import PostgresqlDatabase
-from peewee import Model
-from peewee import DateTimeField
-from playhouse.postgres_ext import PostgresqlExtDatabase
-
-import peewee
+try:
+    from peewee import PostgresqlDatabase
+    from peewee import Model
+    from peewee import DateTimeField
+    from playhouse.postgres_ext import PostgresqlExtDatabase
+    import peewee
+except ImportError:
+    print 'you need install peewee, please run:'
+    print 'sudo pip install peewee'
+    exit(1)
 
 
 def dropTable(Model, db_name, user=None, password=None):

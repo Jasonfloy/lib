@@ -300,9 +300,9 @@ def mustSubscribe(method):
     from wechat_sdk import WechatBasic
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
-        open_id = self.get_secure_cookie("open_id")
-        if open_id is None:
-            # 连open_id 都没有,首先要获取 open_id
+        openid = self.get_secure_cookie("openid")
+        if openid is None:
+            # 连openid 都没有,首先要获取 openid
             params = {
                 "appid": self.settings['appid'],
                 "redirect_uri": "http://" + self.settings['domain'] + "/setOpenid?url=/" + self.__class__.__name__,
@@ -316,7 +316,7 @@ def mustSubscribe(method):
             return
         else:
             wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
-            wechat_user_info = wechat.get_user_info(open_id)
+            wechat_user_info = wechat.get_user_info(openid)
             # 没有关注的,跳转到配置的关注页面
             if wechat_user_info['subscribe'] == 0:
                 self.redirect(self.settings["subscribe"])
