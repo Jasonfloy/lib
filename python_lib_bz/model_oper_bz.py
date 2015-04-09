@@ -11,7 +11,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 import public_bz
 try:
-    from peewee import PostgresqlDatabase
+    #from peewee import PostgresqlDatabase
     from peewee import Model
     from peewee import DateTimeField
     from playhouse.postgres_ext import PostgresqlExtDatabase
