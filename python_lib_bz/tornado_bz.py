@@ -320,7 +320,7 @@ def mustSubscribe(method):
             wechat_user_info = wechat.get_user_info(openid)
             # 没有关注的,跳转到配置的关注页面
             if wechat_user_info['subscribe'] == 0:
-                self.redirect(self.settings["subscribe"])
+                self.redirect('http://'+self.settings["domain"]+self.settings["subscribe"])
                 return
         return method(self, *args, **kwargs)
     return wrapper
