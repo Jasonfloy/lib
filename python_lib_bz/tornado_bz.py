@@ -305,7 +305,8 @@ def mustSubscribe(method):
             # 连openid 都没有,首先要获取 openid
             params = {
                 "appid": self.settings['appid'],
-                "redirect_uri": "http://" + self.settings['domain'] + "/setOpenid?url=/" + self.__class__.__name__,
+                #"redirect_uri": "http://" + self.settings['domain'] + "/setOpenid?url=/" + self.__class__.__name__,
+                "redirect_uri": "http://" + self.settings['domain'] + "/setOpenid?url=" + self.request.uri,
                 "response_type": "code",
                 "scope": "snsapi_base",
             }
