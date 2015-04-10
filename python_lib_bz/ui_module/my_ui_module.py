@@ -26,7 +26,7 @@ class MyUIModule(UIModule):
         self.css_file = CSS_PATH + self.css_name
 
     def javascript_files(self):
-        return self.js_file+'?v=1'
+        return self.js_file
 
     def css_files(self):
         return self.css_file
