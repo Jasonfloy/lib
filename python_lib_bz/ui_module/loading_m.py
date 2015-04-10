@@ -12,7 +12,7 @@ class loading_m(my_ui_module.MyUIModule):
     def render(self):
         return ''
     def javascript_files(self):
-        return self.js_file+'?v=2'
+        return self.js_file+'?v=3'
 
 if __name__ == '__main__':
     pass
