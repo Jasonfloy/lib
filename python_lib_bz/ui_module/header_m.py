@@ -6,6 +6,7 @@ from ui_module import my_ui_module
 class header_m(my_ui_module.MyUIModule):
     '''
     create by bigzhu at 15/04/12 14:32:51 通用的 header
+        body  要加入 layout-top-nav 的 class 才能使用
     '''
     def css_files(self):
         return ''
