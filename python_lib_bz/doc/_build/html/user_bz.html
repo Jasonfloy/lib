@@ -67,6 +67,25 @@
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="user_bz.UserOper.githubLogin">
+<tt class="descname">githubLogin</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#UserOper.githubLogin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.UserOper.githubLogin" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>github 登录信息存到 db 中</dt>
+<dd><dl class="first docutils">
+<dt>{</dt>
+<dd>&#8220;id&#8221;: &#8220;112340346785758313259&#8221;,
+&#8220;email&#8221;: &#8220;<a class="reference external" href="mailto:vermiliondun&#37;&#52;&#48;gmail&#46;com">vermiliondun<span>&#64;</span>gmail<span>&#46;</span>com</a>&#8221;,
+&#8220;name&#8221;: &#8220;朱一凡&#8221;,
+&#8220;link&#8221;: &#8220;<a class="reference external" href="https://plus.google.com/112340346785758313259">https://plus.google.com/112340346785758313259</a>&#8221;,
+&#8220;picture&#8221;: &#8220;<a class="reference external" href="https://lh5.googleusercontent.com/-E4rb72RaQHE/AAAAAAAAAAI/AAAAAAAAJzQ/p-tx9D78Mik/photo.jpg">https://lh5.googleusercontent.com/-E4rb72RaQHE/AAAAAAAAAAI/AAAAAAAAJzQ/p-tx9D78Mik/photo.jpg</a>&#8221;,
+&#8220;locale&#8221;: &#8220;zh-CN&#8221;</dd>
+</dl>
+<p class="last">}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="user_bz.UserOper.googleLogin">
 <tt class="descname">googleLogin</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#UserOper.googleLogin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.UserOper.googleLogin" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
@@ -92,24 +111,35 @@
 <dl class="method">
 <dt id="user_bz.UserOper.login">
 <tt class="descname">login</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#UserOper.login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.UserOper.login" title="Permalink to this definition">¶</a></dt>
-<dd><p>登录模块,如果不存在这个用户名,则注册
+<dd><p>modify by bigzhu at 15/02/25 13:57:19 加入唯一约束
+modify by bigzhu at 15/03/08 14:24:57 加入 email; 根据 email 来判断是注册还是登录</p>
+<p>登录模块,如果不存在这个用户名,则注册
 数据模型:</p>
+<p>&#8211; Table: user_info</p>
+<p>&#8211; DROP TABLE user_info;</p>
 <p>CREATE TABLE user_info
-(</p>
+(
+&#8211; 继承 from table base:  id integer NOT NULL DEFAULT nextval(&#8216;base_id_seq&#8217;::regclass),
+&#8211; 继承 from table base:  created_date timestamp without time zone DEFAULT now(),
+&#8211; 继承 from table base:  stat_date timestamp without time zone DEFAULT now(),</p>
 <blockquote>
-<div>user_type text, &#8211; google or other
-out_id text, &#8211; google id or other
+<div>user_type text,
+out_id text,
 email text,
 user_name text,
 link text,
 picture text,
-gender text, &#8211; mail?
-locale text, &#8211;zh-CN
+gender text,
+locale text,
 password text,
-original_json text &#8211;用来存放原始返回的 json 字段,避免有内容没存到</div></blockquote>
-<p>&#8211; 继承 from table base:  user_id integer
-)
-INHERITS (base)</p>
+original_json text,
+CONSTRAINT user_info_out_id_key UNIQUE (out_id)</div></blockquote>
+<p>)
+INHERITS (base)
+WITH (</p>
+<blockquote>
+<div>OIDS=FALSE</div></blockquote>
+<p>);</p>
 </dd></dl>
 
 <dl class="method">
@@ -123,6 +153,12 @@ INHERITS (base)</p>
 <dd><p>twitter 登录信息存到 db 中</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="user_bz.createTable">
+<tt class="descclassname">user_bz.</tt><tt class="descname">createTable</tt><big>(</big><em>db_name</em><big>)</big><a class="reference internal" href="_modules/user_bz.html#createTable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user_bz.createTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>create by bigzhu at 15/04/06 20:15:55 建立 user_info 数据模型库(依赖)</p>
 </dd></dl>
 
 </div>

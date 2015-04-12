@@ -69,7 +69,33 @@
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">print</span> <span class="s">&#39;重新连接数据库&#39;</span>
-    <span class="k">return</span> <span class="n">wrapper</span></div>
+    <span class="k">return</span> <span class="n">wrapper</span>
+</div>
+<div class="viewcode-block" id="getTableDesc"><a class="viewcode-back" href="../db_bz.html#db_bz.getTableDesc">[docs]</a><span class="k">def</span> <span class="nf">getTableDesc</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">table_name</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    create by bigzhu at 15/03/10 10:05:45 查询表的描述</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        select obj_description(&#39;public.</span><span class="si">%s</span><span class="s">&#39;::regclass)</span>
+<span class="s">    &#39;&#39;&#39;</span><span class="o">%</span><span class="n">table_name</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">obj_description</span>
+</div>
+<div class="viewcode-block" id="getTableColum"><a class="viewcode-back" href="../db_bz.html#db_bz.getTableColum">[docs]</a><span class="k">def</span> <span class="nf">getTableColum</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    获取表的字段名称</span>
+<span class="sd">    modify by bigzhu at 15/03/11 11:31:48 如果传了 name, 就只取这个 colum, 可以用来检查是否存在</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        select format_type(a.atttypid,a.atttypmod) as type,a.attname as name</span>
+<span class="s">        from pg_class as c,pg_attribute as a</span>
+<span class="s">        where c.relname = &#39;</span><span class="si">%s</span><span class="s">&#39; and a.attrelid = c.oid and a.attnum&gt;0 and a.atttypid&lt;&gt;0</span>
+<span class="s">    &#39;&#39;&#39;</span> <span class="o">%</span> <span class="n">table_name</span>
+    <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">sql</span> <span class="o">+=</span> <span class="s">&quot; and a.attname=&#39;</span><span class="si">%s</span><span class="s">&#39;&quot;</span> <span class="o">%</span> <span class="n">name</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
+</div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="k">pass</span>
 </pre></div>
