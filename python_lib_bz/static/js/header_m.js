@@ -8,7 +8,14 @@
       },
       methods: {
         clickLink: function() {
-          return this.$data.loading = true;
+          return this.loading = true;
+        },
+        submit: function(e) {
+          var host, url;
+          e.preventDefault();
+          host = window.location.hostname;
+          url = "https://www.google.com/search?q=site:" + host + " " + this.search + "&gws_rd=ssl";
+          return window.open(url);
         }
       }
     });

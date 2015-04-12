@@ -5,5 +5,10 @@ $(->
             loading:false
         methods:
             clickLink:->
-                @$data.loading = true
+                @loading = true
+            submit:(e)->
+                e.preventDefault()
+                host = window.location.hostname
+                url = "https://www.google.com/search?q=site:"+host+" "+@search+"&gws_rd=ssl"
+                window.open(url)
 )
