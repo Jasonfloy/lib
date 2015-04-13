@@ -226,11 +226,12 @@ Vue.directive('active', (value)->
     $(this.el).removeClass("active")
 )
 
-$().toastmessage(
-  sticky: false
-  position: 'top-right'
-  stayTime: 5000
-)
+if $().toastmessage
+  $().toastmessage(
+    sticky: false
+    position: 'top-right'
+    stayTime: 5000
+  )
 
 window.bz =
   #计算距今的时间间隔
@@ -274,15 +275,23 @@ window.bz =
   showSuccess5:(message)->
     if $().toastmessage
       successToast = $().toastmessage('showSuccessToast', message)
+    else
+      console.log "require jquery-toastmessage-plugin"
   showNotice5:(message)->
     if $().toastmessage
       myToast =  $().toastmessage('showNoticeToast', message)
+    else
+      console.log "require jquery-toastmessage-plugin"
   showWarning5:(message)->
     if $().toastmessage
       warningToast = $().toastmessage('showNoticeToast', message)
+    else
+      console.log "require jquery-toastmessage-plugin"
   showError5:(message)->
     if $().toastmessage
       errorToast = $().toastmessage('showErrorToast', message)
+    else
+      console.log "require jquery-toastmessage-plugin"
   preZero:(num, len)->
     numStr = num.toString()
     if len < numStr.length

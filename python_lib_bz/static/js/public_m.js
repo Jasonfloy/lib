@@ -271,11 +271,13 @@
     }
   });
 
-  $().toastmessage({
-    sticky: false,
-    position: 'top-right',
-    stayTime: 5000
-  });
+  if ($().toastmessage) {
+    $().toastmessage({
+      sticky: false,
+      position: 'top-right',
+      stayTime: 5000
+    });
+  }
 
   window.bz = {
     timeLen: function(that_time) {
@@ -322,24 +324,32 @@
       var successToast;
       if ($().toastmessage) {
         return successToast = $().toastmessage('showSuccessToast', message);
+      } else {
+        return console.log("require jquery-toastmessage-plugin");
       }
     },
     showNotice5: function(message) {
       var myToast;
       if ($().toastmessage) {
         return myToast = $().toastmessage('showNoticeToast', message);
+      } else {
+        return console.log("require jquery-toastmessage-plugin");
       }
     },
     showWarning5: function(message) {
       var warningToast;
       if ($().toastmessage) {
         return warningToast = $().toastmessage('showNoticeToast', message);
+      } else {
+        return console.log("require jquery-toastmessage-plugin");
       }
     },
     showError5: function(message) {
       var errorToast;
       if ($().toastmessage) {
         return errorToast = $().toastmessage('showErrorToast', message);
+      } else {
+        return console.log("require jquery-toastmessage-plugin");
       }
     },
     preZero: function(num, len) {
