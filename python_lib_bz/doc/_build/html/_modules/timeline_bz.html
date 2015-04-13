@@ -108,15 +108,27 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupByCreatedDateDay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
 </div>
 <div class="viewcode-block" id="TimeLine.getTimeLineByToday"><a class="viewcode-back" href="../timeline_bz.html#timeline_bz.TimeLine.getTimeLineByToday">[docs]</a>    <span class="k">def</span> <span class="nf">getTimeLineByToday</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_type</span><span class="p">):</span>
+        <span class="c"># and date_trunc(&#39;day&#39;, t.created_date) = date_trunc(&#39;day&#39;, now())</span>
         <span class="n">sql</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
 <span class="s">        select t.*, u.user_name, u.picture from timeline t, user_info u</span>
 <span class="s">            where t.user_id = u.id</span>
 <span class="s">            and t.target_type = &#39;</span><span class="si">%s</span><span class="s">&#39;</span>
-<span class="s">            and date_trunc(&#39;day&#39;, t.created_date) = date_trunc(&#39;day&#39;, now())</span>
 <span class="s">            order by t.created_date desc</span>
+<span class="s">            limit 40</span>
 <span class="s">        &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">target_type</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupByCreatedDateDay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
-</div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupByCreatedDateDay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span></div>
+<div class="viewcode-block" id="TimeLine.getTimeLineByUserLast40"><a class="viewcode-back" href="../timeline_bz.html#timeline_bz.TimeLine.getTimeLineByUserLast40">[docs]</a>    <span class="k">def</span> <span class="nf">getTimeLineByUserLast40</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_type</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;modify by bigzhu at 15/02/25 14:28:14 查询我的时间线,最近40条</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        select t.*, u.user_name, u.picture from timeline t, user_info u</span>
+<span class="s">            where t.user_id = u.id</span>
+<span class="s">            and t.user_id=</span><span class="si">%s</span><span class="s"></span>
+<span class="s">            and t.target_type = &#39;</span><span class="si">%s</span><span class="s">&#39;</span>
+<span class="s">            order by t.created_date desc</span>
+<span class="s">            limit 40</span>
+<span class="s">        &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">target_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupByCreatedDateDay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span></div>
 <div class="viewcode-block" id="TimeLine.groupByCreatedDateDay"><a class="viewcode-back" href="../timeline_bz.html#timeline_bz.TimeLine.groupByCreatedDateDay">[docs]</a>    <span class="k">def</span> <span class="nf">groupByCreatedDateDay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timelines</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        create by bigzhu at 15/02/03 13:44:24 按照天的精度,归并timeline</span>

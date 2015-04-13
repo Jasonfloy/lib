@@ -61,7 +61,25 @@
 <span class="kn">import</span> <span class="nn">os</span>
 
 
+<div class="viewcode-block" id="downloadImageFile"><a class="viewcode-back" href="../public_bz.html#public_bz.downloadImageFile">[docs]</a><span class="k">def</span> <span class="nf">downloadImageFile</span><span class="p">(</span><span class="n">img_url</span><span class="p">,</span> <span class="n">path_file_name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    create by bigzhu at 15/04/02 17:24:09 下载图片到指定路径</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="kn">import</span> <span class="nn">requests</span>
+    <span class="k">if</span> <span class="n">path_file_name</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">path_file_name</span> <span class="o">=</span> <span class="n">img_url</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">img_url</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>  <span class="c"># here we need to set stream = True parameter</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_file_name</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>  <span class="c"># filter out keep-alive new chunks</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">path_file_name</span>
+
+</div>
 <div class="viewcode-block" id="ExtEncoder"><a class="viewcode-back" href="../public_bz.html#public_bz.ExtEncoder">[docs]</a><span class="k">class</span> <span class="nc">ExtEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
+
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    modify by bigzhu at 15/01/30 11:25:22 增加对 utils.IterBetter 的支持</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -179,6 +197,24 @@
     <span class="k">return</span> <span class="n">dirname</span>
 
 </div>
+<div class="viewcode-block" id="getLibPath"><a class="viewcode-back" href="../public_bz.html#public_bz.getLibPath">[docs]</a><span class="k">def</span> <span class="nf">getLibPath</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    create by bigzhu at 15/03/06 15:56:48 返回 Lib,也就是现在这段代码所在的路径</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">dirname</span>
+
+</div>
+<div class="viewcode-block" id="getProjectName"><a class="viewcode-back" href="../public_bz.html#public_bz.getProjectName">[docs]</a><span class="k">def</span> <span class="nf">getProjectName</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    create by bigzhu at 15/04/04 12:39:07 获取代码所在文件夹</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">getExecutingPath</span><span class="p">()</span>
+    <span class="n">project_name</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">project_name</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+</div>
 <div class="viewcode-block" id="runCommand"><a class="viewcode-back" href="../public_bz.html#public_bz.runCommand">[docs]</a><span class="k">def</span> <span class="nf">runCommand</span><span class="p">(</span><span class="n">command</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    运行命令</span>
@@ -208,7 +244,8 @@
     <span class="k">return</span> <span class="n">country_code</span>
 </div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">getCountryCodeByIP</span><span class="p">(</span><span class="s">&#39;www.douban.com&#39;</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">getExecutingPathFile</span><span class="p">()</span>
+    <span class="c"># getCountryCodeByIP(&#39;www.douban.com&#39;)</span>
 </pre></div>
 
           </div>

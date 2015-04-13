@@ -26,8 +26,8 @@
             <div class="description_bz">{{comment.comment}}</div>
         </div>
     </section>
-    {%if comment.get('chilren')%}
-    {% module comment_reply_m(comment.chilren) %}
+    {%if comment.get('children')%}
+    {% module comment_reply_m(comment.children) %}
     {% end %}
 </article>
 
