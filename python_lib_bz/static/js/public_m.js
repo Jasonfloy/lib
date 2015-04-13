@@ -113,7 +113,7 @@
 
   Vue.directive('datepicker', {
     bind: function(value) {
-      var d_handle, d_str, datepicker, i, l, levels, _i, _len, _this;
+      var _this, d_handle, d_str, datepicker, i, j, l, len1, levels;
       _this = this;
       datepicker = $(this.el);
       datepicker.datepicker({
@@ -141,8 +141,8 @@
       levels = _this.raw.split(".");
       d_handle = _this.vm.$data;
       i = 0;
-      for (_i = 0, _len = levels.length; _i < _len; _i++) {
-        l = levels[_i];
+      for (j = 0, len1 = levels.length; j < len1; j++) {
+        l = levels[j];
         if (!d_handle[l] && (i + 1) !== levels.length) {
           d_handle[l] = {};
         }
@@ -271,11 +271,13 @@
     }
   });
 
-  $().toastmessage({
-    sticky: false,
-    position: 'top-right',
-    stayTime: 5000
-  });
+  if ($().toastmessage) {
+    $().toastmessage({
+      sticky: false,
+      position: 'top-right',
+      stayTime: 5000
+    });
+  }
 
   window.bz = {
     timeLen: function(that_time) {
@@ -320,19 +322,35 @@
     },
     showSuccess5: function(message) {
       var successToast;
-      return successToast = $().toastmessage('showSuccessToast', message);
+      if ($().toastmessage) {
+        return successToast = $().toastmessage('showSuccessToast', message);
+      } else {
+        return console.log("require jquery-toastmessage-plugin");
+      }
     },
     showNotice5: function(message) {
       var myToast;
-      return myToast = $().toastmessage('showNoticeToast', message);
+      if ($().toastmessage) {
+        return myToast = $().toastmessage('showNoticeToast', message);
+      } else {
+        return console.log("require jquery-toastmessage-plugin");
+      }
     },
     showWarning5: function(message) {
       var warningToast;
-      return warningToast = $().toastmessage('showNoticeToast', message);
+      if ($().toastmessage) {
+        return warningToast = $().toastmessage('showNoticeToast', message);
+      } else {
+        return console.log("require jquery-toastmessage-plugin");
+      }
     },
     showError5: function(message) {
       var errorToast;
-      return errorToast = $().toastmessage('showErrorToast', message);
+      if ($().toastmessage) {
+        return errorToast = $().toastmessage('showErrorToast', message);
+      } else {
+        return console.log("require jquery-toastmessage-plugin");
+      }
     },
     preZero: function(num, len) {
       var a, numStr;
@@ -351,7 +369,7 @@
       return $("<div/>").text(value).html();
     },
     dateFormat: function(timestramp, mask) {
-      var date, matched_array, o, regStr, res, _this;
+      var _this, date, matched_array, o, regStr, res;
       date = new Date(timestramp);
       _this = this;
       o = {

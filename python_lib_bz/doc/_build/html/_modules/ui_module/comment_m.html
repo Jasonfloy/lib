@@ -51,12 +51,24 @@
 <span class="c"># -*- coding: utf-8 -*-</span>
 
 <span class="kn">from</span> <span class="nn">ui_module</span> <span class="kn">import</span> <span class="n">my_ui_module</span>
-<span class="kn">import</span> <span class="nn">time_bz</span>
+<span class="kn">import</span> <span class="nn">comment_bz</span>
 <span class="kn">import</span> <span class="nn">tornado_bz</span>
 <span class="kn">from</span> <span class="nn">public_bz</span> <span class="kn">import</span> <span class="n">storage</span>
-<span class="kn">from</span> <span class="nn">tornado_bz</span> <span class="kn">import</span> <span class="n">BaseHandler</span>
+<span class="kn">from</span> <span class="nn">tornado_bz</span> <span class="kn">import</span> <span class="n">UserInfoHandler</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">tornado</span>
+<span class="n">OK</span> <span class="o">=</span> <span class="s">&#39;0&#39;</span>
 
 
+<div class="viewcode-block" id="comment_reply_m"><a class="viewcode-back" href="../../ui_module.html#ui_module.comment_m.comment_reply_m">[docs]</a><span class="k">class</span> <span class="nc">comment_reply_m</span><span class="p">(</span><span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">UIModule</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;modify by bigzhu at 15/02/22 14:22:10 因为要递归,所以得单独独立出来</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="comment_reply_m.render"><a class="viewcode-back" href="../../ui_module.html#ui_module.comment_m.comment_reply_m.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comments</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_string</span><span class="p">(</span><span class="s">&quot;comment_reply_m.html&quot;</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="n">comments</span><span class="p">)</span>
+
+</div></div>
 <div class="viewcode-block" id="comment_m"><a class="viewcode-back" href="../../ui_module.html#ui_module.comment_m.comment_m">[docs]</a><span class="k">class</span> <span class="nc">comment_m</span><span class="p">(</span><span class="n">my_ui_module</span><span class="o">.</span><span class="n">MyUIModule</span><span class="p">):</span>
 
     <span class="sd">&#39;&#39;&#39;</span>
@@ -65,96 +77,47 @@
 <span class="sd">    key_type: 一个网站有多个地方有评论时候,用于区分哪个模块,可空</span>
 <span class="sd">    key: 关键字,一般就是 id, 比如 site_id,定位是哪个东西的评论</span>
 <span class="sd">    user_info:用户信息,发评论的人的信息</span>
-
-
-
-<span class="sd">    -- Table: comment</span>
-
-<span class="sd">    -- DROP TABLE comment;</span>
-
-<span class="sd">    CREATE TABLE comment</span>
-<span class="sd">    (</span>
-<span class="sd">    -- 继承 from table base:  id integer NOT NULL DEFAULT nextval(&#39;base_id_seq&#39;::regclass),</span>
-<span class="sd">    -- 继承 from table base:  created_date timestamp without time zone DEFAULT now(),</span>
-<span class="sd">    -- 继承 from table base:  stat_date timestamp without time zone DEFAULT now(),</span>
-<span class="sd">      key_type text, -- 用于那个类型....</span>
-<span class="sd">      key text, -- 比如填入 site_id,...</span>
-<span class="sd">      user_name text, -- 用户名...</span>
-<span class="sd">      picture text, -- 用户头像...</span>
-<span class="sd">      comment text, -- 评论</span>
-<span class="sd">      parent_id integer -- 可空,父节点 id</span>
-<span class="sd">    )</span>
-<span class="sd">    INHERITS (base)</span>
-<span class="sd">    WITH (</span>
-<span class="sd">      OIDS=FALSE</span>
-<span class="sd">    );</span>
-<span class="sd">    COMMENT ON COLUMN comment.user_id IS &#39;填写的用户 id&#39;;</span>
-<span class="sd">    COMMENT ON COLUMN comment.key_type IS &#39;用于那个类型.</span>
-
-<span class="sd">    比如一个系统有多个地方都要有评论,则用这个来区别</span>
-
-<span class="sd">    为了站点可以填为 site&#39;;</span>
-<span class="sd">    COMMENT ON COLUMN comment.key IS &#39;比如填入 site_id,</span>
-<span class="sd">    使用这个评论的元素&#39;;</span>
-<span class="sd">    COMMENT ON COLUMN comment.user_name IS &#39;用户名</span>
-<span class="sd">    可以为空,如果你用 user_id 去关联其他表的话&#39;;</span>
-<span class="sd">    COMMENT ON COLUMN comment.picture IS &#39;用户头像</span>
-
-<span class="sd">    可空&#39;;</span>
-<span class="sd">    COMMENT ON COLUMN comment.comment IS &#39;评论&#39;;</span>
-<span class="sd">    COMMENT ON COLUMN comment.parent_id IS &#39;可空,父节点 id&#39;;</span>
-
-
+<span class="sd">    modify by bigzhu at 15/02/22 21:16:39 去掉发评论的人的信息,应该是默认带在 template 里面了</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-<div class="viewcode-block" id="comment_m.render"><a class="viewcode-back" href="../../ui_module.html#ui_module.comment_m.comment_m.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comments</span><span class="p">,</span> <span class="n">key_type</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">user_info</span><span class="p">):</span>
+<div class="viewcode-block" id="comment_m.render"><a class="viewcode-back" href="../../ui_module.html#ui_module.comment_m.comment_m.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comments</span><span class="p">,</span> <span class="n">key_type</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="n">parm</span> <span class="o">=</span> <span class="n">storage</span><span class="p">()</span>
         <span class="n">parm</span><span class="o">.</span><span class="n">comments</span> <span class="o">=</span> <span class="n">comments</span>
         <span class="n">parm</span><span class="o">.</span><span class="n">key_type</span> <span class="o">=</span> <span class="n">key_type</span>
         <span class="n">parm</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
-        <span class="n">parm</span><span class="o">.</span><span class="n">user_info</span> <span class="o">=</span> <span class="n">user_info</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">html_name</span><span class="p">,</span> <span class="n">parm</span><span class="o">=</span><span class="n">parm</span><span class="p">,</span> <span class="n">timeLen</span><span class="o">=</span><span class="n">time_bz</span><span class="o">.</span><span class="n">timeLen</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">html_name</span><span class="p">,</span> <span class="n">parm</span><span class="o">=</span><span class="n">parm</span><span class="p">)</span>
 
 </div></div>
-<div class="viewcode-block" id="comment"><a class="viewcode-back" href="../../ui_module.html#ui_module.comment_m.comment">[docs]</a><span class="k">class</span> <span class="nc">comment</span><span class="p">(</span><span class="n">BaseHandler</span><span class="p">):</span>
+<div class="viewcode-block" id="comment"><a class="viewcode-back" href="../../ui_module.html#ui_module.comment_m.comment">[docs]</a><span class="k">class</span> <span class="nc">comment</span><span class="p">(</span><span class="n">UserInfoHandler</span><span class="p">):</span>
 
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    公用的评论系统</span>
 <span class="sd">    key_type 评论的挂载类型</span>
 <span class="sd">    key 评论的挂载 id</span>
+<span class="sd">    modify by bigzhu at 15/02/22 12:22:45 放入公用库中</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-<div class="viewcode-block" id="comment.initialize"><a class="viewcode-back" href="../../ui_module.html#ui_module.comment_m.comment.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">BaseHandler</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">key_type</span> <span class="o">=</span> <span class="s">&#39;site&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="mi">1</span>
-</div>
-<div class="viewcode-block" id="comment.get"><a class="viewcode-back" href="../../ui_module.html#ui_module.comment_m.comment.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">parm</span> <span class="o">=</span> <span class="n">InitParm</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">getParm</span><span class="p">()</span>
-        <span class="n">sql</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
-<span class="s">        select c.*,u.user_name</span>
-<span class="s">        from comment c, user_info u</span>
-<span class="s">                where c.user_id=u.id order by created_date</span>
-<span class="s">                &#39;&#39;&#39;</span>
-        <span class="n">comments</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
 
-        <span class="n">comments</span> <span class="o">=</span> <span class="n">tree_bz</span><span class="o">.</span><span class="n">makeTree</span><span class="p">(</span><span class="n">comments</span><span class="p">)</span>
-        <span class="n">key_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_type</span>
-        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">tornado_bz</span><span class="o">.</span><span class="n">getTName</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
+<div class="viewcode-block" id="comment.initialize"><a class="viewcode-back" href="../../ui_module.html#ui_module.comment_m.comment.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">UserInfoHandler</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </div>
     <span class="nd">@tornado_bz.handleError</span>
+    <span class="nd">@tornado_bz.mustLogin</span>
 <div class="viewcode-block" id="comment.post"><a class="viewcode-back" href="../../ui_module.html#ui_module.comment_m.comment.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">parm</span> <span class="o">=</span> <span class="n">InitParm</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">getParm</span><span class="p">()</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s">&quot;application/json&quot;</span><span class="p">)</span>
-        <span class="n">comment</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
+        <span class="n">comment_content</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;comment&#39;</span><span class="p">)</span>
+        <span class="n">parent_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;parent_id&#39;</span><span class="p">)</span>
+        <span class="n">key_type</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;key_type&#39;</span><span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;key&#39;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">parm</span><span class="o">.</span><span class="n">user_info</span><span class="p">:</span>
-            <span class="n">comment</span><span class="p">[</span><span class="s">&#39;user_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parm</span><span class="o">.</span><span class="n">user_info</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">comment</span> <span class="o">=</span> <span class="n">comment_bz</span><span class="o">.</span><span class="n">Comment</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="p">)</span>
 
-        <span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;comment&#39;</span><span class="p">,</span> <span class="n">seqname</span><span class="o">=</span><span class="s">&#39;base_id_seq&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">comment</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">&#39;error&#39;</span><span class="p">:</span> <span class="n">OK</span><span class="p">},</span> <span class="n">cls</span><span class="o">=</span><span class="n">public_bz</span><span class="o">.</span><span class="n">ExtEncoder</span><span class="p">))</span></div></div>
+        <span class="n">comment</span><span class="o">.</span><span class="n">addComment</span><span class="p">(</span><span class="n">comment_content</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_user</span><span class="p">,</span> <span class="n">key_type</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">&#39;error&#39;</span><span class="p">:</span> <span class="n">OK</span><span class="p">}))</span></div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">pass</span>
 </pre></div>
 
           </div>
