@@ -77,6 +77,8 @@ class comment(UserInfoHandler):
         self.set_header("Content-Type", "application/json")
         data = json.loads(self.request.body)
         comment_content = data.get('comment')
+
+        comment_content = tornado.escape.xhtml_escape(comment_content)
         parent_id = data.get('parent_id')
         key_type = data.get('key_type')
         key = data.get('key')
