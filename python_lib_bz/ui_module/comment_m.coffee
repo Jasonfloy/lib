@@ -37,8 +37,8 @@ $(->
             console.log result.error
             data.btn_loading = false
             alert result.error
-          #else
-          #  location.reload()
+          else
+            location.reload()
       #要回复哪条评论
       reply:(event, parent_id)->
         comment_reply = $(event.target).closest('.comment-reply')
