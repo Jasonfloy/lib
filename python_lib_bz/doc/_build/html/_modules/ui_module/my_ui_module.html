@@ -51,44 +51,105 @@
 <span class="c"># -*- coding: utf-8 -*-</span>
 <span class="kn">from</span> <span class="nn">tornado.web</span> <span class="kn">import</span> <span class="n">UIModule</span>
 <span class="n">action</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+<span class="n">JS_PATH</span> <span class="o">=</span> <span class="s">&quot;/lib_static/js/&quot;</span>
+<span class="n">CSS_PATH</span> <span class="o">=</span> <span class="s">&quot;/lib_static/css/&quot;</span>
 
 
 <div class="viewcode-block" id="MyUIModule"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.MyUIModule">[docs]</a><span class="k">class</span> <span class="nc">MyUIModule</span><span class="p">(</span><span class="n">UIModule</span><span class="p">):</span>
-    <span class="n">action_url</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
-        <span class="n">UIModule</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">css_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span> <span class="o">+</span> <span class="s">&#39;.min.css&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">js_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span> <span class="o">+</span> <span class="s">&#39;.min.js&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">html_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span> <span class="o">+</span> <span class="s">&#39;.html&#39;</span>
-
-<div class="viewcode-block" id="MyUIModule.embedded_css"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.MyUIModule.embedded_css">[docs]</a>    <span class="k">def</span> <span class="nf">embedded_css</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">css_name</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="MyUIModule.embedded_javascript"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.MyUIModule.embedded_javascript">[docs]</a>    <span class="k">def</span> <span class="nf">embedded_javascript</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">js_name</span><span class="p">,</span> <span class="n">action_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">action_url</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="MyUIModule.render"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.MyUIModule.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">html_name</span><span class="p">)</span>
-</div></div>
-<div class="viewcode-block" id="JsUIModule"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.JsUIModule">[docs]</a><span class="k">class</span> <span class="nc">JsUIModule</span><span class="p">(</span><span class="n">UIModule</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    create by bigzhu at 15/02/22 03:40:44 用于只有 js 的 ui module</span>
+<span class="sd">    modify by bigzhu at 15/03/06 17:04:03 加入file</span>
+<span class="sd">    create by bigzhu at 15/03/07 21:12:30 改成 file 了,没法用模板了</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
         <span class="n">UIModule</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;pg&#39;</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">js_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span> <span class="o">+</span> <span class="s">&#39;.min.js&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">css_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span> <span class="o">+</span> <span class="s">&#39;.css&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">js_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span> <span class="o">+</span> <span class="s">&#39;.js&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">html_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span> <span class="o">+</span> <span class="s">&#39;.html&#39;</span>
 
-<div class="viewcode-block" id="JsUIModule.embedded_javascript"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.JsUIModule.embedded_javascript">[docs]</a>    <span class="k">def</span> <span class="nf">embedded_javascript</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">js_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">js_file</span> <span class="o">=</span> <span class="n">JS_PATH</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">js_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">css_file</span> <span class="o">=</span> <span class="n">CSS_PATH</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">css_name</span>
+
+<div class="viewcode-block" id="MyUIModule.javascript_files"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.MyUIModule.javascript_files">[docs]</a>    <span class="k">def</span> <span class="nf">javascript_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">js_file</span>
 </div>
-<div class="viewcode-block" id="JsUIModule.render"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.JsUIModule.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&#39;&#39;</span></div></div>
+<div class="viewcode-block" id="MyUIModule.css_files"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.MyUIModule.css_files">[docs]</a>    <span class="k">def</span> <span class="nf">css_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">css_file</span>
+</div>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    def embedded_css(self):</span>
+<span class="sd">        return self.render_string(self.css_name)</span>
+
+<span class="sd">    def embedded_javascript(self):</span>
+<span class="sd">        return self.render_string(self.js_name, action_url=self.action_url)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="MyUIModule.render"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.MyUIModule.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">html_name</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="JsCssUIModule"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.JsCssUIModule">[docs]</a><span class="k">class</span> <span class="nc">JsCssUIModule</span><span class="p">(</span><span class="n">UIModule</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    create by bigzhu at 15/02/22 03:40:44 用于只有 js 的 ui module</span>
+<span class="sd">    modify by bigzhu at 15/02/22 21:30:12 public 还有 css 也得弄过去</span>
+<span class="sd">    modify by bigzhu at 15/03/06 17:05:47 改为用 file</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+        <span class="n">UIModule</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;pg&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">js_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span> <span class="o">+</span> <span class="s">&#39;.js&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">css_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span> <span class="o">+</span> <span class="s">&#39;.css&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">js_file</span> <span class="o">=</span> <span class="n">JS_PATH</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">js_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">css_file</span> <span class="o">=</span> <span class="n">CSS_PATH</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">css_name</span>
+
+<div class="viewcode-block" id="JsCssUIModule.javascript_files"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.JsCssUIModule.javascript_files">[docs]</a>    <span class="k">def</span> <span class="nf">javascript_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">js_file</span>
+</div>
+<div class="viewcode-block" id="JsCssUIModule.css_files"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.JsCssUIModule.css_files">[docs]</a>    <span class="k">def</span> <span class="nf">css_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">css_file</span>
+</div>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    def embedded_javascript(self):</span>
+<span class="sd">        return self.render_string(self.js_name)</span>
+
+<span class="sd">    def embedded_css(self):</span>
+<span class="sd">        return self.render_string(self.css_name)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="JsCssUIModule.render"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.JsCssUIModule.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;&#39;</span>
+
+</div></div>
+<div class="viewcode-block" id="HtmlUIModule"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.HtmlUIModule">[docs]</a><span class="k">class</span> <span class="nc">HtmlUIModule</span><span class="p">(</span><span class="n">UIModule</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    create by bigzhu at 15/03/05 10:22:54 只要返回 html 就可以了</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+        <span class="n">UIModule</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;pg&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">html_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span> <span class="o">+</span> <span class="s">&#39;.html&#39;</span>
+
+<div class="viewcode-block" id="HtmlUIModule.embedded_javascript"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.HtmlUIModule.embedded_javascript">[docs]</a>    <span class="k">def</span> <span class="nf">embedded_javascript</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;&#39;</span>
+</div>
+<div class="viewcode-block" id="HtmlUIModule.embedded_css"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.HtmlUIModule.embedded_css">[docs]</a>    <span class="k">def</span> <span class="nf">embedded_css</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;&#39;</span>
+</div>
+<div class="viewcode-block" id="HtmlUIModule.render"><a class="viewcode-back" href="../../ui_module.html#ui_module.my_ui_module.HtmlUIModule.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">html_name</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>

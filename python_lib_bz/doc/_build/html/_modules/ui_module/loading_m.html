@@ -56,10 +56,17 @@
 <div class="viewcode-block" id="loading_m"><a class="viewcode-back" href="../../ui_module.html#ui_module.loading_m.loading_m">[docs]</a><span class="k">class</span> <span class="nc">loading_m</span><span class="p">(</span><span class="n">my_ui_module</span><span class="o">.</span><span class="n">MyUIModule</span><span class="p">):</span>
 
     <span class="sd">&#39;&#39;&#39;create by bigzhu at 15/02/20 23:20:30 loading 的 module</span>
+<span class="sd">    create by bigzhu at 15/04/10 21:55:37 改回继承MyUIModule,加入版本号</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
 <div class="viewcode-block" id="loading_m.render"><a class="viewcode-back" href="../../ui_module.html#ui_module.loading_m.loading_m.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">html_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s">&#39;&#39;</span>
+</div>
+<div class="viewcode-block" id="loading_m.javascript_files"><a class="viewcode-back" href="../../ui_module.html#ui_module.loading_m.loading_m.javascript_files">[docs]</a>    <span class="k">def</span> <span class="nf">javascript_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">js_file</span> <span class="o">+</span> <span class="s">&#39;?v=5&#39;</span>
+</div>
+<div class="viewcode-block" id="loading_m.css_files"><a class="viewcode-back" href="../../ui_module.html#ui_module.loading_m.loading_m.css_files">[docs]</a>    <span class="k">def</span> <span class="nf">css_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">css_file</span> <span class="o">+</span> <span class="s">&#39;?v=1&#39;</span>
 </div></div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="k">pass</span>

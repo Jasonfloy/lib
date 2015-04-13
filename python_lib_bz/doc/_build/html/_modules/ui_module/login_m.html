@@ -51,7 +51,6 @@
 <span class="c"># -*- coding: utf-8 -*-</span>
 
 
-<span class="kn">from</span> <span class="nn">ui_module</span> <span class="kn">import</span> <span class="n">my_ui_module</span>
 <span class="kn">import</span> <span class="nn">tornado.web</span>
 <span class="kn">import</span> <span class="nn">tornado_bz</span>
 <span class="kn">import</span> <span class="nn">json</span>
@@ -59,8 +58,15 @@
 <span class="kn">import</span> <span class="nn">user_bz</span>
 <span class="kn">import</span> <span class="nn">public_bz</span>
 <span class="kn">import</span> <span class="nn">tornado_auth_bz</span>
+
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">email.MIMEText</span> <span class="kn">import</span> <span class="n">MIMEText</span>
+<span class="kn">from</span> <span class="nn">sendmail_bz</span> <span class="kn">import</span> <span class="n">sendMail</span>
+<span class="kn">from</span> <span class="nn">tornado_bz</span> <span class="kn">import</span> <span class="n">UserInfoHandler</span>
+<span class="kn">from</span> <span class="nn">tornado_bz</span> <span class="kn">import</span> <span class="n">ModuleHandler</span>
 <span class="kn">from</span> <span class="nn">tornado_bz</span> <span class="kn">import</span> <span class="n">BaseHandler</span>
 <span class="kn">from</span> <span class="nn">public_bz</span> <span class="kn">import</span> <span class="n">storage</span>
+<span class="kn">from</span> <span class="nn">ui_module</span> <span class="kn">import</span> <span class="n">my_ui_module</span>
 
 <span class="n">salt</span> <span class="o">=</span> <span class="s">&quot;hold is watching you&quot;</span>
 
@@ -68,13 +74,12 @@
 <div class="viewcode-block" id="login_m"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.login_m">[docs]</a><span class="k">class</span> <span class="nc">login_m</span><span class="p">(</span><span class="n">my_ui_module</span><span class="o">.</span><span class="n">MyUIModule</span><span class="p">):</span>
 
     <span class="sd">&#39;&#39;&#39;登录的页面&#39;&#39;&#39;</span>
-    <span class="n">action_url</span> <span class="o">=</span> <span class="s">&#39;/login&#39;</span>
 
 <div class="viewcode-block" id="login_m.render"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.login_m.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">oauth2</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">html_name</span><span class="p">,</span> <span class="n">oauth2</span><span class="o">=</span><span class="n">oauth2</span><span class="p">)</span>
 
 </div></div>
-<div class="viewcode-block" id="login"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.login">[docs]</a><span class="k">class</span> <span class="nc">login</span><span class="p">(</span><span class="n">BaseHandler</span><span class="p">):</span>
+<div class="viewcode-block" id="login"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.login">[docs]</a><span class="k">class</span> <span class="nc">login</span><span class="p">(</span><span class="n">ModuleHandler</span><span class="p">,</span> <span class="n">UserInfoHandler</span><span class="p">):</span>
 
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    登录后台的方法</span>
@@ -100,30 +105,69 @@
 <span class="sd">        self.settings[&quot;douban_api_secret&quot;] = &#39;a957e7c9cc366f86&#39;</span>
 <span class="sd">        self.settings[&quot;redirect_uri&quot;] = &#39;http://highwe.net/douban&#39;</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">BaseHandler</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">UserInfoHandler</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">oauth2</span> <span class="o">=</span> <span class="n">storage</span><span class="p">()</span>
         <span class="n">oauth2</span><span class="o">.</span><span class="n">google</span> <span class="o">=</span> <span class="n">storage</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s">&#39;/google&#39;</span><span class="p">)</span>
         <span class="n">oauth2</span><span class="o">.</span><span class="n">twitter</span> <span class="o">=</span> <span class="n">storage</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s">&#39;/twitter&#39;</span><span class="p">)</span>
         <span class="n">oauth2</span><span class="o">.</span><span class="n">douban</span> <span class="o">=</span> <span class="n">storage</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s">&#39;/douban&#39;</span><span class="p">)</span>
+        <span class="n">oauth2</span><span class="o">.</span><span class="n">github</span> <span class="o">=</span> <span class="n">storage</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s">&#39;/github&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">oauth2</span> <span class="o">=</span> <span class="n">oauth2</span>
 
-        <span class="c">#用户操作相关的</span>
+        <span class="c"># 用户操作相关的</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">user_oper</span> <span class="o">=</span> <span class="n">user_bz</span><span class="o">.</span><span class="n">UserOper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="login.get"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.login.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">tornado_bz</span><span class="o">.</span><span class="n">getTName</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">oauth2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">oauth2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">myRender</span><span class="p">(</span><span class="n">oauth2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">oauth2</span><span class="p">)</span>
 </div>
     <span class="nd">@tornado_bz.handleError</span>
 <div class="viewcode-block" id="login.post"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.login.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s">&quot;application/json&quot;</span><span class="p">)</span>
         <span class="n">login_info</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
-        <span class="n">user_name</span> <span class="o">=</span> <span class="n">login_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;user_name&quot;</span><span class="p">)</span>
-        <span class="n">password</span> <span class="o">=</span> <span class="n">login_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;password&quot;</span><span class="p">)</span>
-        <span class="c"># 密码加密</span>
-        <span class="n">hashed_password</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">password</span> <span class="o">+</span> <span class="n">salt</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
-        <span class="n">user_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_oper</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">user_name</span><span class="p">,</span> <span class="n">hashed_password</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_secure_cookie</span><span class="p">(</span><span class="s">&quot;user_id&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">user_info</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">&#39;error&#39;</span><span class="p">:</span> <span class="s">&#39;0&#39;</span><span class="p">},</span> <span class="n">cls</span><span class="o">=</span><span class="n">public_bz</span><span class="o">.</span><span class="n">ExtEncoder</span><span class="p">))</span>
+        <span class="n">form_type</span> <span class="o">=</span> <span class="n">login_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;type&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">form_type</span> <span class="o">==</span> <span class="s">&#39;login&#39;</span><span class="p">:</span>  <span class="c"># 如果是登录</span>
+            <span class="n">user_name</span> <span class="o">=</span> <span class="n">login_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;user_name&quot;</span><span class="p">)</span>
+            <span class="n">password</span> <span class="o">=</span> <span class="n">login_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;password&quot;</span><span class="p">)</span>
+            <span class="n">email</span> <span class="o">=</span> <span class="n">login_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;email&quot;</span><span class="p">)</span>
+            <span class="c"># 密码加密</span>
+            <span class="n">hashed_password</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">password</span> <span class="o">+</span> <span class="n">salt</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+            <span class="n">user_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_oper</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">user_name</span><span class="p">,</span> <span class="n">hashed_password</span><span class="p">,</span> <span class="n">email</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_secure_cookie</span><span class="p">(</span><span class="s">&quot;user_id&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">user_info</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">&#39;error&#39;</span><span class="p">:</span> <span class="s">&#39;0&#39;</span><span class="p">},</span> <span class="n">cls</span><span class="o">=</span><span class="n">public_bz</span><span class="o">.</span><span class="n">ExtEncoder</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">form_type</span> <span class="o">==</span> <span class="s">&#39;forget&#39;</span><span class="p">:</span>  <span class="c"># 如果是找回密码</span>
+            <span class="n">email</span> <span class="o">=</span> <span class="n">login_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;email&quot;</span><span class="p">)</span>
+            <span class="n">sql_token</span> <span class="o">=</span> <span class="s">&quot;select forget_token from user_info where email = &#39;</span><span class="si">%s</span><span class="s">&#39; and user_type = &#39;my&#39;&quot;</span> <span class="o">%</span> <span class="n">email</span>
+            <span class="n">data_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql_token</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_token</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">&#39;error&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_token</span><span class="p">)},</span> <span class="n">cls</span><span class="o">=</span><span class="n">public_bz</span><span class="o">.</span><span class="n">ExtEncoder</span><span class="p">))</span>
+                <span class="k">return</span>
+            <span class="n">forget_token</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+            <span class="c"># if len(data_token[0].forget_token) &gt; 1:</span>
+            <span class="c">#     forget_token = data_token[0].forget_token</span>
+
+            <span class="n">sql_set_token</span> <span class="o">=</span> <span class="s">&quot;update user_info set forget_token = &#39;</span><span class="si">%s</span><span class="s">&#39; where email = &#39;</span><span class="si">%s</span><span class="s">&#39; and user_type = &#39;my&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">forget_token</span><span class="p">,</span> <span class="n">email</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql_set_token</span><span class="p">)</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;http://&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">host</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">uri</span> <span class="o">+</span> <span class="s">&#39;#token/&#39;</span> <span class="o">+</span> <span class="n">forget_token</span>
+            <span class="c">#content = MIMEText(loader.load(&quot;login_email_m.html&quot;).generate(user_name=email, url=url), &#39;html&#39;, &#39;utf-8&#39;)</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">MIMEText</span><span class="p">(</span><span class="s">&#39;&lt;a href=&quot;&#39;</span> <span class="o">+</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&#39;&quot;&gt;点此设置新密码&lt;/a&gt;&lt;br&gt;&lt;br&gt;如果以上按钮点击无效，请将链接复制到浏览器地址栏中打开：&lt;br&gt;&#39;</span> <span class="o">+</span> <span class="n">url</span><span class="p">,</span> <span class="s">&#39;html&#39;</span><span class="p">,</span> <span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="n">content</span><span class="p">[</span><span class="s">&#39;From&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;hold@highwe.com&#39;</span>
+            <span class="n">content</span><span class="p">[</span><span class="s">&#39;To&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">email</span>
+
+            <span class="n">content</span><span class="p">[</span><span class="s">&#39;Subject&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;找回密码&#39;</span>
+            <span class="n">sendMail</span><span class="p">(</span><span class="n">content</span><span class="p">[</span><span class="s">&#39;To&#39;</span><span class="p">],</span> <span class="n">content</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">&#39;result&#39;</span><span class="p">:</span> <span class="s">&#39;成功&#39;</span><span class="p">},</span> <span class="n">cls</span><span class="o">=</span><span class="n">public_bz</span><span class="o">.</span><span class="n">ExtEncoder</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">form_type</span> <span class="o">==</span> <span class="s">&#39;setPassword&#39;</span><span class="p">:</span>  <span class="c"># 设置新密码</span>
+            <span class="n">password</span> <span class="o">=</span> <span class="n">login_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;password&quot;</span><span class="p">)</span>
+            <span class="n">hashed_password</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">password</span> <span class="o">+</span> <span class="n">salt</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="n">login_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;token&quot;</span><span class="p">)</span>
+            <span class="n">sql_verify</span> <span class="o">=</span> <span class="s">&quot;select forget_token from user_info where forget_token = &#39;</span><span class="si">%s</span><span class="s">&#39; and user_type = &#39;my&#39;&quot;</span> <span class="o">%</span> <span class="n">token</span>
+            <span class="n">data_verify</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql_verify</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_verify</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">&#39;error&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_verify</span><span class="p">)},</span> <span class="n">cls</span><span class="o">=</span><span class="n">public_bz</span><span class="o">.</span><span class="n">ExtEncoder</span><span class="p">))</span>
+                <span class="k">return</span>
+            <span class="n">sql_set_password</span> <span class="o">=</span> <span class="s">&quot;update user_info set password = &#39;</span><span class="si">%s</span><span class="s">&#39; , forget_token = &#39;&#39; where forget_token = &#39;</span><span class="si">%s</span><span class="s">&#39; and user_type = &#39;my&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">hashed_password</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql_set_password</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">&#39;result&#39;</span><span class="p">:</span> <span class="s">&#39;成功&#39;</span><span class="p">},</span> <span class="n">cls</span><span class="o">=</span><span class="n">public_bz</span><span class="o">.</span><span class="n">ExtEncoder</span><span class="p">))</span>
 </div>
     <span class="nd">@tornado_bz.handleError</span>
 <div class="viewcode-block" id="login.put"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.login.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -154,7 +198,8 @@
 <span class="sd">    &#39;&#39;&#39;</span>
 
 <div class="viewcode-block" id="google.initialize"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.google.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">BaseHandler</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+        <span class="n">BaseHandler</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</div>
     <span class="nd">@tornado.gen.coroutine</span>
 <div class="viewcode-block" id="google.get"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.google.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">redirect_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;google_oauth&#39;</span><span class="p">][</span><span class="s">&#39;redirect_uri&#39;</span><span class="p">]</span>
@@ -193,8 +238,10 @@
     <span class="n">_OAUTH_AUTHENTICATE_URL</span> <span class="o">=</span> <span class="s">&quot;https://api.twitter.com/oauth/authenticate&quot;</span>
     <span class="n">_OAUTH_NO_CALLBACKS</span> <span class="o">=</span> <span class="bp">False</span>
     <span class="n">_TWITTER_BASE_URL</span> <span class="o">=</span> <span class="s">&quot;https://api.twitter.com/1.1&quot;</span>
+
 <div class="viewcode-block" id="twitter.initialize"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.twitter.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">BaseHandler</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+        <span class="n">BaseHandler</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</div>
     <span class="nd">@tornado.gen.coroutine</span>
 <div class="viewcode-block" id="twitter.get"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.twitter.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s">&quot;oauth_token&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">):</span>
@@ -210,9 +257,43 @@
             <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorize_redirect</span><span class="p">()</span>
 
 </div></div>
+<div class="viewcode-block" id="github"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.github">[docs]</a><span class="k">class</span> <span class="nc">github</span><span class="p">(</span><span class="n">BaseHandler</span><span class="p">,</span> <span class="n">tornado_auth_bz</span><span class="o">.</span><span class="n">GithubOAuth2Mixin</span><span class="p">):</span>
+
+<div class="viewcode-block" id="github.initialize"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.github.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">BaseHandler</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</div>
+    <span class="nd">@tornado.gen.coroutine</span>
+<div class="viewcode-block" id="github.get"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.github.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># if we have a code, we have been authorized so we can log in</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s">&quot;code&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">):</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_authenticated_user</span><span class="p">(</span>
+                <span class="n">redirect_uri</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;github_oauth&#39;</span><span class="p">][</span><span class="s">&#39;redirect_uri&#39;</span><span class="p">],</span>
+                <span class="n">client_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;github_oauth&#39;</span><span class="p">][</span><span class="s">&#39;client_id&#39;</span><span class="p">],</span>
+                <span class="n">client_secret</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;github_oauth&#39;</span><span class="p">][</span><span class="s">&#39;client_secret&#39;</span><span class="p">],</span>
+                <span class="n">code</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s">&quot;code&quot;</span><span class="p">),</span>
+                <span class="n">extra_fields</span><span class="o">=</span><span class="s">&quot;user:email&quot;</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">user_oper</span> <span class="o">=</span> <span class="n">user_bz</span><span class="o">.</span><span class="n">UserOper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pg</span><span class="p">)</span>
+            <span class="n">user_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_oper</span><span class="o">.</span><span class="n">githubLogin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_secure_cookie</span><span class="p">(</span><span class="s">&#39;user_id&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">user_info</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">redirect</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorize_redirect</span><span class="p">(</span>
+                <span class="n">redirect_uri</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;github_oauth&#39;</span><span class="p">][</span><span class="s">&#39;redirect_uri&#39;</span><span class="p">],</span>
+                <span class="n">client_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;github_oauth&#39;</span><span class="p">][</span><span class="s">&#39;client_id&#39;</span><span class="p">],</span>
+                <span class="n">extra_params</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s">&quot;scope&quot;</span><span class="p">:</span> <span class="s">&quot;user:email&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+
+</div></div>
 <div class="viewcode-block" id="douban"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.douban">[docs]</a><span class="k">class</span> <span class="nc">douban</span><span class="p">(</span><span class="n">BaseHandler</span><span class="p">,</span> <span class="n">tornado_auth_bz</span><span class="o">.</span><span class="n">DoubanOAuth2Mixin</span><span class="p">):</span>
+
 <div class="viewcode-block" id="douban.initialize"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.douban.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">BaseHandler</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+        <span class="n">BaseHandler</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</div>
     <span class="nd">@tornado.gen.coroutine</span>
 <div class="viewcode-block" id="douban.get"><a class="viewcode-back" href="../../ui_module.html#ui_module.login_m.douban.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s">&#39;code&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">):</span>
