@@ -272,13 +272,17 @@ window.bz =
   #显示一个消息提示5s
   #依赖 https://github.com/akquinet/jquery-toastmessage-plugin
   showSuccess5:(message)->
-    successToast = $().toastmessage('showSuccessToast', message)
+    if $().toastmessage
+      successToast = $().toastmessage('showSuccessToast', message)
   showNotice5:(message)->
-    myToast =  $().toastmessage('showNoticeToast', message)
+    if $().toastmessage
+      myToast =  $().toastmessage('showNoticeToast', message)
   showWarning5:(message)->
-    warningToast = $().toastmessage('showNoticeToast', message)
+    if $().toastmessage
+      warningToast = $().toastmessage('showNoticeToast', message)
   showError5:(message)->
-    errorToast = $().toastmessage('showErrorToast', message)
+    if $().toastmessage
+      errorToast = $().toastmessage('showErrorToast', message)
   preZero:(num, len)->
     numStr = num.toString()
     if len < numStr.length
