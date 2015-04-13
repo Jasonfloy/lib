@@ -5,9 +5,14 @@
         <a class="pull-left thumb-sm avatar">
         <img {% if user_info.picture %} src="{{user_info.picture}}" {% else %} src="/static/images/avatar.jpg" {% end %} title="{{user_info.user_name}}"/>
         </a>
+
+        <textarea class="comment-textarea comment-editable text-sm" v-model='comment' placeholder="回复"></textarea>
+
+        <!--
         <section class="comment-editable text-sm" v-on="focus:commentEdit" contenteditable="true">
             <div class="placeholder-text">回复</div>
         </section>
+        -->
         <div class="comment-bar">
             <button v-disable="btn_loading" v-btn-loading="btn_loading" v-on="click:clickLink('{{parm.key_type}}','{{parm.key}}', 'reply')" type="button" class="btn btn-default comment-submit">回复
             </button>
@@ -23,9 +28,12 @@
         <a class="pull-left thumb-sm avatar">
         <img {% if user_info.picture %} src="{{user_info.picture}}" {% else %} src="/static/images/avatar.jpg" {% end %} title="{{user_info.user_name}}"/>
         </a>
+        <textarea class="comment-textarea comment-editable text-sm" v-model='comment' placeholder="请评论"></textarea>
+        <!--
         <section class="comment-editable text-sm" v-on="focus:commentEdit" contenteditable="true">
             <div class="placeholder-text">求评论</div>
         </section>
+        -->
         <div class="comment-bar">
             <button v-disable="btn_loading" v-btn-loading="btn_loading" v-on="click:clickLink('{{parm.key_type}}','{{parm.key}}', 'comment')" type="button" class="btn btn-default comment-submit">发表评论
             </button>
