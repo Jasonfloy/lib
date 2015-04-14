@@ -14,10 +14,10 @@ class loading_m(my_ui_module.MyUIModule):
         return ''
 
     def javascript_files(self):
-        return self.js_file + '?v=6.2'
+        return self.js_file + '?v=6.3'
 
     def css_files(self):
-        return self.css_file + '?v=1'
+        return self.css_file + '?v=1.1'
 
 if __name__ == '__main__':
     pass
