@@ -301,7 +301,6 @@ def addHits(method):
     def wrapper(self, *args, **kwargs):
         openid = self.get_secure_cookie('openid')
         path = self.request.path
-        print path
         if not openid:
             pass
         else:
