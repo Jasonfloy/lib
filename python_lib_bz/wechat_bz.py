@@ -20,17 +20,15 @@ except ImportError:
     raise
 
 
-def getUserAccessToken(code):
+def getUserAccessToken(code, appid, secret):
     """
-    create by bigzhu at 15/04/07 16:52:40 从以前的 weixin 项目搬过来的..用于网页获取用户 open_id
-    根据 code 返回用户 oauth2 access token
+    create by bigzhu at 15/04/07 16:52:40 从以前的 weixin 项目搬过来的..用于网页获取用户 openid
+        根据 code 返回用户 oauth2 access token
 
-    Arguments:
-    - `code`: oauth2 authorization code
     """
     params = {
-        "appid": APPID,
-        "secret": APPSECRET,
+        "appid": appid,
+        "secret": secret,
         "code": code,
         "grant_type": "authorization_code"
     }

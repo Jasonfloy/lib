@@ -9,6 +9,9 @@
         loading: false,
         parent_id: 0
       },
+      created: function() {
+        return $('.comment-textarea').flexText();
+      },
       methods: {
         commentEdit: function() {
           return $(".placeholder-text").html(" ").removeAttr("class");
@@ -18,16 +21,15 @@
         },
         clickLink: function(key_type, key, type) {
           var comment;
-          if (type === "comment") {
-            comment = $("#comment_text_area .comment-editable").html();
-          } else if (type === "reply") {
-            comment = $("#reply_text_area .comment-editable").html();
-          }
+          comment = this.comment;
           if (comment === void 0 || comment.trim() === '') {
             data.error_info = '好歹说点什么吧!';
             return;
           }
           this.$data.btn_loading = true;
+          log(comment);
+          log(type);
+          log(this.parent_id);
           return $.post('/comment', JSON.stringify({
             key_type: key_type,
             key: key,
