@@ -293,12 +293,30 @@ def mustLogin(method):
     return wrapper
 
 
+def addHits(method):
+    '''
+    记录某个微信用户点击的页面
+    '''
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        openid = self.get_secure_cookie('openid')
+        path = self.request.path
+        print path
+        if not openid:
+            pass
+        else:
+            self.pg.db.insert('hits', openid=openid, path=path)
+        return method(self, *args, **kwargs)
+    return wrapper
+
+
 def mustSubscribe(method):
     '''
     create by bigzhu at 15/04/08 10:25:59 wechat 使用,必须要关注
     '''
     from wechat_sdk import WechatBasic
     from wechat_sdk.basic import OfficialAPIError
+
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         openid = self.get_secure_cookie("openid")
