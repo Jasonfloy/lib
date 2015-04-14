@@ -40,6 +40,8 @@
               console.log(result.error);
               data.btn_loading = false;
               return alert(result.error);
+            } else {
+              return location.reload();
             }
           });
         },
