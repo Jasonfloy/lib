@@ -298,6 +298,7 @@ def mustSubscribe(method):
     create by bigzhu at 15/04/08 10:25:59 wechat 使用,必须要关注
     '''
     from wechat_sdk import WechatBasic
+    from wechat_sdk.basic import OfficialAPIError
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         openid = self.get_secure_cookie("openid")
@@ -313,12 +314,18 @@ def mustSubscribe(method):
             }
             auth_url = "https://open.weixin.qq.com/connect/oauth2/authorize?%s#wechat_redirect"
             auth_url = auth_url % urllib.urlencode(params)
-            print auth_url
             self.redirect(auth_url)
             return
         else:
             wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
-            wechat_user_info = wechat.get_user_info(openid)
+            try:
+                wechat_user_info = wechat.get_user_info(openid)
+            except OfficialAPIError:
+                #open_id not right
+                self.clear_cookie(name='openid')
+                self.redirect(self.request.uri)
+                return
+
             # 没有关注的,跳转到配置的关注页面
             if wechat_user_info['subscribe'] == 0:
                 self.redirect('http://'+self.settings["domain"]+self.settings["subscribe"])
