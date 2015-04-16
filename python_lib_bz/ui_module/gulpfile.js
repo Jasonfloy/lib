@@ -1,9 +1,10 @@
-var gulp = require('gulp'),
-    less = require('gulp-less'),
-    coffee = require('gulp-coffee'),
-    cssmin = require('gulp-cssmin'),
-    jsmin = require('gulp-jsmin');
-    //rename = require('gulp-rename');
+var gulp = require('gulp');
+var less = require('gulp-less');
+var coffee = require('gulp-coffee');
+var jsmin = require('gulp-jsmin');
+var plumber = require('gulp-plumber');
+var notify = require("gulp-notify");
+//var cssmin = require('gulp-cssmin');
 
 gulp.task('watch', function () {
   gulp.watch('./*.less', ['less']);
@@ -11,27 +12,18 @@ gulp.task('watch', function () {
 });
 
 gulp.task('less', function () {
-  return gulp.src('./*.less')
-  .pipe(less().on('error', function (err) {
-    console.log(err);
-  }))
-  .pipe(cssmin().on('error', function(err) {
-    console.log(err);
-  }))
-  //.pipe(rename({suffix: '.min'}))
-  .pipe(gulp.dest('../static/css/'));
-
+    return gulp.src('./*.less')
+    .pipe(plumber({errorHandler: notify.onError("Error: <%= error %>")}))
+    .pipe(less())
+    //.pipe(gulp.dest('./'));
+    .pipe(gulp.dest('../static/css/'));
 });
 
 gulp.task('coffee', function () {
-  return gulp.src('./*.coffee')
-  .pipe(coffee().on('error', function (err) {
-    console.log(err);
-  }))
-  //.pipe(jsmin().on('error', function(err) {
-  //  console.log(err);
-  //}))
-  //.pipe(rename({suffix: '.min'}))
-  .pipe(gulp.dest('../static/js'));
+    gulp.src('./*.coffee')
+    .pipe(plumber({errorHandler: notify.onError("Error: <%= error %>")}))
+    .pipe(coffee())
+    //.pipe(gulp.dest('./'));
+    .pipe(gulp.dest('../static/js'));
 });
 gulp.task('default', ['less','coffee', 'watch']);
