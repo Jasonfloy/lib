@@ -336,3 +336,34 @@ window.bz =
     else
       desc = value + 'KB'
     return desc
+    
+  # 获取hash参数的值
+  getHashPram: (key) ->
+    _hashStr = window.location.hash.replace('#','')
+    if(!_hashStr || _hashStr == "")
+      return undefined
+    _hashs = _hashStr.split(";")
+    for _hashItem in _hashs
+      _hash = _hashItem.split("=")
+      if(key == _hash[0])
+        return _hash[1]
+    return undefined
+        
+  # 设置hash参数,格式如: aa=bb;cc=dd;  
+  setHashPram: (key,value) ->
+    _hashStr = window.location.hash.replace('#','')
+    if(!window.bz.getHashPram(key) && value)
+      window.location.hash = _hashStr + key + "=" + value + ";"
+    else
+      _hashs = _hashStr.split(";")
+      _newHashStr = ""
+      for _hashItem in _hashs
+        if (!_hashItem || _hashItem == "")
+             continue
+          _hash = _hashItem.split("=")
+          if(key == _hash[0])
+            if(value != "")
+              _newHashStr = _newHashStr + key + "=" + value + ";"
+          else
+            _newHashStr = _newHashStr + _hash[0] + "=" + _hash[1] + ";"
+      window.location.hash = _newHashStr

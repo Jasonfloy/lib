@@ -399,6 +399,47 @@
         desc = value + 'KB';
       }
       return desc;
+    },
+    getHashPram: function(key) {
+      var _hash, _hashItem, _hashStr, _hashs, j, len1;
+      _hashStr = window.location.hash.replace('#', '');
+      if (!_hashStr || _hashStr === "") {
+        return void 0;
+      }
+      _hashs = _hashStr.split(";");
+      for (j = 0, len1 = _hashs.length; j < len1; j++) {
+        _hashItem = _hashs[j];
+        _hash = _hashItem.split("=");
+        if (key === _hash[0]) {
+          return _hash[1];
+        }
+      }
+      return void 0;
+    },
+    setHashPram: function(key, value) {
+      var _hash, _hashItem, _hashStr, _hashs, _newHashStr, j, len1;
+      _hashStr = window.location.hash.replace('#', '');
+      if (!window.bz.getHashPram(key) && value) {
+        return window.location.hash = _hashStr + key + "=" + value + ";";
+      } else {
+        _hashs = _hashStr.split(";");
+        _newHashStr = "";
+        for (j = 0, len1 = _hashs.length; j < len1; j++) {
+          _hashItem = _hashs[j];
+          if (!_hashItem || _hashItem === "") {
+            continue;
+          }
+          _hash = _hashItem.split("=");
+          if (key === _hash[0]) {
+            if (value !== "") {
+              _newHashStr = _newHashStr + key + "=" + value + ";";
+            }
+          } else {
+            _newHashStr = _newHashStr + _hash[0] + "=" + _hash[1] + ";";
+          }
+        }
+        return window.location.hash = _newHashStr;
+      }
     }
   };
 
