@@ -334,7 +334,7 @@ def mustSubscribe(method):
             self.redirect(auth_url)
             return
         else:
-            wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
+            wechat = WechatBasic(token=self.settings["token"], access_token=self.settings['access_token'], access_token_expires_at=self.settings['access_token_expires_at'], appid=self.settings["appid"], appsecret=self.settings["appsecret"])
             try:
                 wechat_user_info = wechat.get_user_info(openid)
             except OfficialAPIError:
