@@ -318,6 +318,7 @@ def mustSubscribe(method):
 
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
+        print '----------begin mustSubscribe--------------'
         openid = self.get_secure_cookie("openid")
         if openid is None:
             # 连openid 都没有,首先要获取 openid
