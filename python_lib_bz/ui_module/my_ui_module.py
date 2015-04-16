@@ -25,6 +25,8 @@ class MyUIModule(UIModule):
         self.js_file = JS_PATH + self.js_name
         self.css_file = CSS_PATH + self.css_name
 
+        self.LIB_PATH = "/lib_static/lib/"
+
     def javascript_files(self):
         return self.js_file
 

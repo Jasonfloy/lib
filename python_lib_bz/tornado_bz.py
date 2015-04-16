@@ -10,6 +10,7 @@ import sys
 import public_bz
 import functools
 import json
+import urllib
 import user_bz
 from tornado.escape import utf8
 from tornado.web import RequestHandler
@@ -60,7 +61,7 @@ class BaseHandler(RequestHandler):
             file_part = module.javascript_files()
             if file_part:
                 if isinstance(file_part, (unicode_type, bytes_type)):
-                    #js_files.append(file_part)
+                    # js_files.append(file_part)
                     js_files.insert(0, file_part)
                 else:
                     js_files.extend(file_part)
@@ -160,9 +161,11 @@ class BaseHandler(RequestHandler):
 
 
 class ModuleHandler(BaseHandler):
+
     '''
     create by bigzhu at 15/03/11 10:17:40 给 UI Module 使用
     '''
+
     def myRender(self, **kwargs):
         '''
         这个方法如果不重载,那么就会报错
@@ -171,6 +174,7 @@ class ModuleHandler(BaseHandler):
         也可以指定自己的 template
         '''
         raise NotImplementedError()
+
 
 class UserInfoHandler(BaseHandler):
 
@@ -206,7 +210,7 @@ def getURLMap(the_globals):
             if issubclass(the_globals[i], tornado.web.RequestHandler):
                 url_map.append((r'/' + i, the_globals[i]))
                 url_map.append(
-                    (r'/lib_static/(.*)', tornado.web.StaticFileHandler, {'path': public_bz.getLibPath()+"/static"})
+                    (r'/lib_static/(.*)', tornado.web.StaticFileHandler, {'path': public_bz.getLibPath() + "/static"})
                 )
                 # url_map.append((r"/%s/([0-9]+)" % i, the_globals[i]))
                 url_map.append((r"/%s/(.*)" % i, the_globals[i]))
@@ -285,6 +289,64 @@ def mustLogin(method):
         else:
             self.redirect("/login")
             return
+        return method(self, *args, **kwargs)
+    return wrapper
+
+
+def addHits(method):
+    '''
+    记录某个微信用户点击的页面
+    '''
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        openid = self.get_secure_cookie('openid')
+        path = self.request.path
+        if not openid:
+            pass
+        else:
+            self.pg.db.insert('hits', openid=openid, path=path)
+        return method(self, *args, **kwargs)
+    return wrapper
+
+
+def mustSubscribe(method):
+    '''
+    create by bigzhu at 15/04/08 10:25:59 wechat 使用,必须要关注
+    '''
+    from wechat_sdk import WechatBasic
+    from wechat_sdk.basic import OfficialAPIError
+
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        openid = self.get_secure_cookie("openid")
+        if openid is None:
+            # 连openid 都没有,首先要获取 openid
+            params = {
+                "appid": self.settings['appid'],
+                #"redirect_uri": "http://" + self.settings['domain'] + "/setOpenid?url=/" + self.__class__.__name__,
+                #"redirect_uri": "http://" + self.settings['domain'] + "/setOpenid?url=" + self.request.uri,
+                "redirect_uri": "http://" + "admin.hoywe.com/" + self.settings['suburl'] + "/?url=" + self.request.uri,
+                "response_type": "code",
+                "scope": "snsapi_base",
+            }
+            auth_url = "https://open.weixin.qq.com/connect/oauth2/authorize?%s#wechat_redirect"
+            auth_url = auth_url % urllib.urlencode(params)
+            self.redirect(auth_url)
+            return
+        else:
+            wechat = WechatBasic(token=self.settings["token"], access_token=self.settings['access_token'], access_token_expires_at=self.settings['access_token_expires_at'], appid=self.settings["appid"], appsecret=self.settings["appsecret"])
+            try:
+                wechat_user_info = wechat.get_user_info(openid)
+            except OfficialAPIError:
+                #open_id not right
+                self.clear_cookie(name='openid')
+                self.redirect(self.request.uri)
+                return
+
+            # 没有关注的,跳转到配置的关注页面
+            if wechat_user_info['subscribe'] == 0:
+                self.redirect('http://'+self.settings["domain"]+self.settings["subscribe"])
+                return
         return method(self, *args, **kwargs)
     return wrapper
 

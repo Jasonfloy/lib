@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import tornado_template
-import pg
 import smtplib
-import time
 
 loader = tornado_template.Loader("email_template")
 
@@ -12,6 +10,7 @@ mail_server = 'smtp.exmail.qq.com'
 mail_port = 25
 mail_user = "hold@highwe.com"
 mail_pwd = "*highwe123"
+
 
 def sendMail(mail_to, content):
     try:

@@ -226,11 +226,12 @@ Vue.directive('active', (value)->
     $(this.el).removeClass("active")
 )
 
-$().toastmessage(
-  sticky: false
-  position: 'top-right'
-  stayTime: 5000
-)
+if $().toastmessage
+  $().toastmessage(
+    sticky: false
+    position: 'top-right'
+    stayTime: 5000
+  )
 
 window.bz =
   #计算距今的时间间隔
@@ -272,13 +273,25 @@ window.bz =
   #显示一个消息提示5s
   #依赖 https://github.com/akquinet/jquery-toastmessage-plugin
   showSuccess5:(message)->
-    successToast = $().toastmessage('showSuccessToast', message)
+    if $().toastmessage
+      successToast = $().toastmessage('showSuccessToast', message)
+    else
+      console.log "require jquery-toastmessage-plugin"
   showNotice5:(message)->
-    myToast =  $().toastmessage('showNoticeToast', message)
+    if $().toastmessage
+      myToast =  $().toastmessage('showNoticeToast', message)
+    else
+      console.log "require jquery-toastmessage-plugin"
   showWarning5:(message)->
-    warningToast = $().toastmessage('showNoticeToast', message)
+    if $().toastmessage
+      warningToast = $().toastmessage('showNoticeToast', message)
+    else
+      console.log "require jquery-toastmessage-plugin"
   showError5:(message)->
-    errorToast = $().toastmessage('showErrorToast', message)
+    if $().toastmessage
+      errorToast = $().toastmessage('showErrorToast', message)
+    else
+      console.log "require jquery-toastmessage-plugin"
   preZero:(num, len)->
     numStr = num.toString()
     if len < numStr.length

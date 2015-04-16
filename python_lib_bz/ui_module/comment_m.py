@@ -11,6 +11,15 @@ import tornado
 OK = '0'
 
 
+def createTable(db_name):
+    '''
+    create by bigzhu at 15/04/13 13:13:48 建立 comment 数据模型库(依赖)
+    '''
+    import model_oper_bz
+    import model_bz
+    model_oper_bz.createTable(model_bz.comment, db_name)
+
+
 class comment_reply_m(tornado.web.UIModule):
 
     '''modify by bigzhu at 15/02/22 14:22:10 因为要递归,所以得单独独立出来
@@ -39,6 +48,16 @@ class comment_m(my_ui_module.MyUIModule):
 
         return self.render_string(self.html_name, parm=parm)
 
+    def javascript_files(self):
+        return [self.js_file,
+                self.LIB_PATH + '/flexText/jquery.flexText.min.js',
+                ]
+
+    def css_files(self):
+        return [self.LIB_PATH + '/flexText/style.css',
+                self.css_file,
+                ]
+
 
 class comment(UserInfoHandler):
 
@@ -58,6 +77,8 @@ class comment(UserInfoHandler):
         self.set_header("Content-Type", "application/json")
         data = json.loads(self.request.body)
         comment_content = data.get('comment')
+
+        comment_content = tornado.escape.xhtml_escape(comment_content)
         parent_id = data.get('parent_id')
         key_type = data.get('key_type')
         key = data.get('key')
