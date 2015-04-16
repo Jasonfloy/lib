@@ -458,6 +458,13 @@
         }
         return window.location.hash = _newHashStr;
       }
+    },
+    isInclude: function(key, words) {
+      if (words.toLocaleLowerCase().indexOf(key.toLocaleLowerCase()) > -1) {
+        return true;
+      } else {
+        return false;
+      }
     }
   };
 

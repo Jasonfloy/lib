@@ -380,3 +380,8 @@ window.bz =
           else
             _newHashStr = _newHashStr + _hash[0] + "=" + _hash[1] + ";"
       window.location.hash = _newHashStr
+  isInclude : (key,words)->
+    if words.toLocaleLowerCase().indexOf(key.toLocaleLowerCase()) > -1
+        return true
+    else
+        return false
