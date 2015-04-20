@@ -340,6 +340,9 @@ def mustSubscribe(method):
             except OfficialAPIError:
                 # open_id not right
                 self.wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
+                access_token_info = self.wechat.get_access_token()
+                self.settings['access_token'] = access_token_info['access_token']
+                self.settings['access_token_expires_at'] = access_token_info['access_token_expires_at']
                 self.clear_cookie(name='openid')
                 self.redirect(self.request.uri)
                 print "get new access token in mustSubscribe"
