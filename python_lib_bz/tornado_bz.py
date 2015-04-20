@@ -324,8 +324,8 @@ def mustSubscribe(method):
             # 连openid 都没有,首先要获取 openid
             params = {
                 "appid": self.settings['appid'],
-                #"redirect_uri": "http://" + self.settings['domain'] + "/setOpenid?url=/" + self.__class__.__name__,
-                #"redirect_uri": "http://" + self.settings['domain'] + "/setOpenid?url=" + self.request.uri,
+                # "redirect_uri": "http://" + self.settings['domain'] + "/setOpenid?url=/" + self.__class__.__name__,
+                # "redirect_uri": "http://" + self.settings['domain'] + "/setOpenid?url=" + self.request.uri,
                 "redirect_uri": "http://" + "admin.hoywe.com/" + self.settings['suburl'] + "/?url=" + self.request.uri,
                 "response_type": "code",
                 "scope": "snsapi_base",
@@ -335,13 +335,14 @@ def mustSubscribe(method):
             self.redirect(auth_url)
             return
         else:
-            wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
+            # wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
             try:
-                wechat_user_info = wechat.get_user_info(openid)
-            except OfficialAPIError:
-                #open_id not right
+                wechat_user_info = self.wechat.get_user_info(openid)
+            except OfficialAPIError as e:
+                # open_id not right
                 self.clear_cookie(name='openid')
                 self.redirect(self.request.uri)
+                raise e
                 return
 
             # 没有关注的,跳转到配置的关注页面
