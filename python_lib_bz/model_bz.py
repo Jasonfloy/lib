@@ -6,6 +6,8 @@ create by bigzhu at 15/04/06 20:13:37 存放公用的数据模型
 import model_oper_bz
 from peewee import TextField
 from peewee import IntegerField
+from playhouse.postgres_ext import JSONField
+
 
 class user_info(model_oper_bz.base):
 
@@ -24,15 +26,34 @@ class user_info(model_oper_bz.base):
     original_json = TextField(null=True)  # ?
     slogan = TextField(null=True)  # 自定义头像
 
+
 class comment(model_oper_bz.base):
+
     '''
     create by bigzhu at 15/04/06 20:34:12 通用的评论表模型
     '''
-    key_type  = TextField()  # 用于那个类型 比如一个系统有多个地方都要有评论,则用这个来区别, 站点可以填为 site'
-    key   = TextField()  # 比如填入 site_id, 使用这个评论的元素
-    comment   = TextField()  # 评论
-    parent_id  = IntegerField() # 可空,父节点 id
+    key_type = TextField()  # 用于那个类型 比如一个系统有多个地方都要有评论,则用这个来区别, 站点可以填为 site'
+    key = TextField()  # 比如填入 site_id, 使用这个评论的元素
+    comment = TextField()  # 评论
+    parent_id = IntegerField()  # 可空,父节点 id
     user_id = IntegerField()
+
+
+class crud_conf(model_oper_bz.base):
+
+    '''
+    create by bigzhu at 15/04/17 13:22:53 curd模块用到的
+    '''
+    name = TextField()  # 字段的名字
+    description = TextField()  # 字段的描述 用于显示在 form 的前面
+    options = JSONField(null=True)  # select 类型的字段的 value 和 desc json 格式存储
+    table_name = TextField()  # 表名 冗余,但是我不想用 id 了
+    grid_show = IntegerField(null=True)  # 是否在 grid 显示
+    c_type = TextField(null=True)  #
+    seq = IntegerField(null=True)  # DEFAULT 0, -- 排列顺序
+    sql_parm = TextField(null=True)  #
+    is_search = IntegerField(null=True)
+
 
 if __name__ == '__main__':
     pass

@@ -12,38 +12,6 @@ $(->
             window.sessionStorage.clear()
             
     
-    # 获取hash参数的值
-    getHashPram = (key) ->
-        _hashStr = window.location.hash.replace('#','')
-        if(!_hashStr || _hashStr == "")
-            return undefined
-        _hashs = _hashStr.split(";")
-        for _hashItem in _hashs
-            _hash = _hashItem.split("=")
-            if(key == _hash[0])
-                return _hash[1]
-        return undefined
-        
-    # 设置hash参数,格式如: aa=bb;cc=dd;  
-    setHashPram = (key,value) ->
-        _hashStr = window.location.hash.replace('#','')
-        if(!getHashPram(key) && value)
-            window.location.hash = _hashStr + key + "=" + value + ";"
-        else
-            _hashs = _hashStr.split(";")
-            _newHashStr = ""
-            for _hashItem in _hashs
-                if (!_hashItem || _hashItem == "")
-                    continue
-                _hash = _hashItem.split("=")
-                if(key == _hash[0])
-                    if(value != "")
-                        _newHashStr = _newHashStr + key + "=" + value + ";"
-                else
-                    _newHashStr = _newHashStr + _hash[0] + "=" + _hash[1] + ";"
-            window.location.hash = _newHashStr
-            
-    
     # 从sessionStorage中获取搜索条件并写入hash
     if window.sessionStorage
         storageData = window.sessionStorage.getItem("search_curd_list_" + table_name)
@@ -57,7 +25,7 @@ $(->
                     searchKeyValue = searchPam.split("=")
                     if(searchKeyValue[0] == "" || searchKeyValue[1] == "")
                         continue
-                    setHashPram(searchKeyValue[0], searchKeyValue[1])
+                    window.bz.setHashPram(searchKeyValue[0], searchKeyValue[1])
         
     # 从hash中获取搜索参数并写入到搜索框,并构建search_parms    
     _hashStrTemp = window.location.hash.replace('#','')
@@ -76,15 +44,15 @@ $(->
                 search_parms.push(objTemp)
 
     # 判断hash中是否有当前页参数,如果没有则设为1
-    if(!getHashPram("p") || isNaN(getHashPram("p")))
-        setHashPram("p","1")
+    if(!window.bz.getHashPram("p") || isNaN(window.bz.getHashPram("p")))
+        window.bz.setHashPram("p","1")
     # 从hash中获取当前页
-    _currPageNo = parseInt(getHashPram("p"))
+    _currPageNo = parseInt(window.bz.getHashPram("p"))
                      
     
     load = (currPage, beginIndex, endIndex, limit) ->
         #window.location.hash = currPage
-        setHashPram("p",currPage)
+        window.bz.setHashPram("p",currPage)
         if window.sessionStorage
             window.sessionStorage.setItem("search_curd_list_" + table_name, window.location.hash.replace("#","")) # window.location.hash.replace(/#p=\d*;/g,"")
         if v_crud_list.$data
@@ -180,11 +148,11 @@ $(->
                     for s in searchs
                         if s.value
                             a={"name":s.name,"value": s.value}
-                            setHashPram("search_" + s.name, s.value)
+                            window.bz.setHashPram("search_" + s.name, s.value)
                             search_parms[i]=a
                             i=i+1
                         else
-                            setHashPram("search_" + s.name, "")
+                            window.bz.setHashPram("search_" + s.name, "")
                     $.post('/crud_list_api/'+table_name+ '?queryCount=true&find=true',
                            JSON.stringify {table_name:table_name, search_parms:search_parms}
                     ).done((data)->
@@ -217,7 +185,7 @@ $(->
             _endPage = _endPage + 1
         if(_currPageNo > _endPage)
             #window.location.hash = '1'
-            setHashPram("p","1")
+            window.bz.setHashPram("p","1")
             _currPageNo = 1
             v_crud_list.$data.pagination.currPage = _currPageNo
             

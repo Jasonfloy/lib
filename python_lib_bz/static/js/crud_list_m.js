@@ -1,6 +1,6 @@
 (function() {
   $(function() {
-    var _currPageNo, _hashItemTemp, _hashStrTemp, _hashTemp, _hashsTemp, _onbeforeunloadCleanStorage, _pageCount, count, getHashPram, j, k, len, len1, load, objTemp, searchKeyValue, searchPam, searchPams, search_parms, setHashPram, storageData, table_name, v_crud_list;
+    var _currPageNo, _hashItemTemp, _hashStrTemp, _hashTemp, _hashsTemp, _onbeforeunloadCleanStorage, _pageCount, count, j, k, len, len1, load, objTemp, searchKeyValue, searchPam, searchPams, search_parms, storageData, table_name, v_crud_list;
     table_name = window.bz.getUrlParm()[2];
     v_crud_list = {};
     count = 0;
@@ -11,47 +11,6 @@
     window.onbeforeunload = function(event) {
       if (_onbeforeunloadCleanStorage) {
         return window.sessionStorage.clear();
-      }
-    };
-    getHashPram = function(key) {
-      var _hash, _hashItem, _hashStr, _hashs, j, len;
-      _hashStr = window.location.hash.replace('#', '');
-      if (!_hashStr || _hashStr === "") {
-        return void 0;
-      }
-      _hashs = _hashStr.split(";");
-      for (j = 0, len = _hashs.length; j < len; j++) {
-        _hashItem = _hashs[j];
-        _hash = _hashItem.split("=");
-        if (key === _hash[0]) {
-          return _hash[1];
-        }
-      }
-      return void 0;
-    };
-    setHashPram = function(key, value) {
-      var _hash, _hashItem, _hashStr, _hashs, _newHashStr, j, len;
-      _hashStr = window.location.hash.replace('#', '');
-      if (!getHashPram(key) && value) {
-        return window.location.hash = _hashStr + key + "=" + value + ";";
-      } else {
-        _hashs = _hashStr.split(";");
-        _newHashStr = "";
-        for (j = 0, len = _hashs.length; j < len; j++) {
-          _hashItem = _hashs[j];
-          if (!_hashItem || _hashItem === "") {
-            continue;
-          }
-          _hash = _hashItem.split("=");
-          if (key === _hash[0]) {
-            if (value !== "") {
-              _newHashStr = _newHashStr + key + "=" + value + ";";
-            }
-          } else {
-            _newHashStr = _newHashStr + _hash[0] + "=" + _hash[1] + ";";
-          }
-        }
-        return window.location.hash = _newHashStr;
       }
     };
     if (window.sessionStorage) {
@@ -69,7 +28,7 @@
             if (searchKeyValue[0] === "" || searchKeyValue[1] === "") {
               continue;
             }
-            setHashPram(searchKeyValue[0], searchKeyValue[1]);
+            window.bz.setHashPram(searchKeyValue[0], searchKeyValue[1]);
           }
         }
       }
@@ -97,12 +56,12 @@
         }
       }
     }
-    if (!getHashPram("p") || isNaN(getHashPram("p"))) {
-      setHashPram("p", "1");
+    if (!window.bz.getHashPram("p") || isNaN(window.bz.getHashPram("p"))) {
+      window.bz.setHashPram("p", "1");
     }
-    _currPageNo = parseInt(getHashPram("p"));
+    _currPageNo = parseInt(window.bz.getHashPram("p"));
     load = function(currPage, beginIndex, endIndex, limit) {
-      setHashPram("p", currPage);
+      window.bz.setHashPram("p", currPage);
       if (window.sessionStorage) {
         window.sessionStorage.setItem("search_curd_list_" + table_name, window.location.hash.replace("#", ""));
       }
@@ -220,11 +179,11 @@
                 "name": s.name,
                 "value": s.value
               };
-              setHashPram("search_" + s.name, s.value);
+              window.bz.setHashPram("search_" + s.name, s.value);
               search_parms[i] = a;
               i = i + 1;
             } else {
-              setHashPram("search_" + s.name, "");
+              window.bz.setHashPram("search_" + s.name, "");
             }
           }
           return $.post('/crud_list_api/' + table_name + '?queryCount=true&find=true', JSON.stringify({
@@ -265,7 +224,7 @@
         _endPage = _endPage + 1;
       }
       if (_currPageNo > _endPage) {
-        setHashPram("p", "1");
+        window.bz.setHashPram("p", "1");
         _currPageNo = 1;
         v_crud_list.$data.pagination.currPage = _currPageNo;
       }
