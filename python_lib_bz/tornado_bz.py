@@ -337,11 +337,13 @@ def mustSubscribe(method):
             # wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
             try:
                 wechat_user_info = self.wechat.get_user_info(openid)
-            except OfficialAPIError as e:
+            except OfficialAPIError:
                 # open_id not right
+                self.wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
                 self.clear_cookie(name='openid')
                 self.redirect(self.request.uri)
-                raise e
+                print "get new access token in mustSubscribe"
+                # raise e
                 return
 
             # 没有关注的,跳转到配置的关注页面
