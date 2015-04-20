@@ -14,10 +14,13 @@ except ImportError:
 
 try:
     from wechat_sdk import WechatBasic
+    from wechat_sdk.basic import OfficialAPIError
 except ImportError:
     print 'you need run:'
     print 'sudo pip install wechat_sdk'
     raise
+
+import functools
 
 
 def getUserAccessToken(code, appid, secret):
@@ -50,44 +53,26 @@ def callPlatform(self, url):
     return r.text
 
 
-class WeChat():
-
+def tokenHandler(method):
     '''
+    create by bigzhu at 15/04/20 12:58:17 解决微信token模名失效的问题
     '''
 
-    def __init__(self, app_id, app_secret, token):
-        self.app_id = app_id
-        self.app_secret = app_secret
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        try:
+            return method(self, *args, **kwargs)
+        except OfficialAPIError:
+            print 'OfficialAPIError in tokenHandler, access_token='+self.settings['access_token']
+            self.wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
+            access_token_info = self.wechat.get_access_token()
+            self.settings['access_token'] = access_token_info['access_token']
+            print 'new access_token=' + self.settings['access_token']
+            self.settings['access_token_expires_at'] = access_token_info['access_token_expires_at']
+            return method(self, *args, **kwargs)
+        #return method(self, *args, **kwargs)
+    return wrapper
 
-    def getAccessToken(self):
-        """
-        create by bigzhu at 15/04/01 14:05:44 获取 accesstoken, 根据时效性缓存的以后再做
-        """
-        params = {
-            "appid": self.app_id,
-            "secret": self.app_secret,
-            "grant_type": "client_credential"
-        }
-        result = requests.get("https://api.weixin.qq.com/cgi-bin/token", params=params).json()
-        access_token = result['access_token']
-        return {'access_token': access_token}
-
-    def getWeChatIP(self):
-        '''
-        create by bigzhu at 15/04/01 14:34:08 获取微信的 server 的 ip
-        '''
-        return requests.get("https://api.weixin.qq.com/cgi-bin/getcallbackip", params=self.getAccessToken()).json()
-
-    def addKF(self, acct, name, passwd):
-        '''
-        create by bigzhu at 15/04/01 14:34:29 添加客服   客服账号,客服名称,客服密码 (参数错误)
-        '''
-        kf = {
-            "kf_account": acct,
-            "nickname": name,
-            "password": passwd,
-        }
-        return requests.post("https://api.weixin.qq.com/customservice/kfaccount/add", params=self.getAccessToken(), data=kf).json()
 
 if __name__ == '__main__':
     wechat = WechatBasic(token='JbBqbzuji22PF2db1K381Z2JdcdbUIBF', appid='wxb853fa08cbc04938', appsecret='01a74260fd9db2460a5ef3052a8aa830')

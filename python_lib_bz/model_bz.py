@@ -52,8 +52,15 @@ class crud_conf(model_oper_bz.base):
     c_type = TextField(null=True)  #
     seq = IntegerField(null=True)  # DEFAULT 0, -- 排列顺序
     sql_parm = TextField(null=True)  #
-    is_search = IntegerField(null=True)
+    is_search = IntegerField(null=True)  # 是否要在高级搜索里出现
 
+
+class timeline(model_oper_bz.base):
+    oper = TextField()  # 执行的动作
+    target_type = TextField()  # 执行的目标对象
+    target_id = IntegerField()  # 目标的 id, 用于表关联
+    other_info = JSONField(null=True)  # 其他的附加信息, 使用 json 来存放
+    user_id = IntegerField()
 
 if __name__ == '__main__':
     pass

@@ -313,7 +313,7 @@ def mustSubscribe(method):
     '''
     create by bigzhu at 15/04/08 10:25:59 wechat 使用,必须要关注
     '''
-    from wechat_sdk import WechatBasic
+    #from wechat_sdk import WechatBasic
     from wechat_sdk.basic import OfficialAPIError
 
     @functools.wraps(method)
@@ -337,16 +337,16 @@ def mustSubscribe(method):
             # wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
             try:
                 wechat_user_info = self.wechat.get_user_info(openid)
-            except OfficialAPIError:
-                # open_id not right
-                self.wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
-                access_token_info = self.wechat.get_access_token()
-                self.settings['access_token'] = access_token_info['access_token']
-                self.settings['access_token_expires_at'] = access_token_info['access_token_expires_at']
+            except OfficialAPIError as e:
+                ## open_id not right
+                #self.wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
+                #access_token_info = self.wechat.get_access_token()
+                #self.settings['access_token'] = access_token_info['access_token']
+                #self.settings['access_token_expires_at'] = access_token_info['access_token_expires_at']
                 self.clear_cookie(name='openid')
-                self.redirect(self.request.uri)
-                print "get new access token in mustSubscribe"
-                # raise e
+                #self.redirect(self.request.uri)
+                #print "get new access token in mustSubscribe"
+                raise e
                 return
 
             # 没有关注的,跳转到配置的关注页面
