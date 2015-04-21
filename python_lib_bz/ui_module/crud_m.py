@@ -55,7 +55,7 @@ class CrudOper:
         ''' % table_name
         if isTime:
             sql += " and c_type='timestamp' "
-        sql += " order by seq desc, create_date"
+        sql += " order by seq desc, created_date"
         curd_confs = list(self.pg.db.query(sql))
         # 处理 Options
         for curd_conf in curd_confs:
@@ -71,7 +71,7 @@ class CrudOper:
         where is_delete != 't'
             and c_type='input-file'
             and table_name='%s'
-        order by seq desc, create_date
+        order by seq desc, created_date
         ''' % table_name
         return list(self.pg.db.query(sql))
 
@@ -82,7 +82,7 @@ class CrudOper:
         ''' % table_name
         if isTime:
             sql += " and c_type='timestamp' "
-        sql += " order by seq desc, create_date"
+        sql += " order by seq desc, created_date"
         return list(self.pg.db.query(sql))
 
     def getWhat(self, table_name, prefix=None):
