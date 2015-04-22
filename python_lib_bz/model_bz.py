@@ -15,6 +15,7 @@ class base(Model):
     created_date = DateTimeField(null=True)
     stat_date = DateTimeField(null=True)
     is_delete = BooleanField(null=True, default=False)
+    user_id = IntegerField(null=True)
 
 
 class user_info(base):
