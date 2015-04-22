@@ -24,6 +24,7 @@
           loadListData: function() {
             var _this;
             _this = this;
+            this.module = "normal";
             return $.post('/crud_list_api/' + this.table_name).done(function(d1) {
               log(d1);
               if (d1.error !== "0") {
@@ -119,9 +120,9 @@
               if (result.error !== '0') {
                 return window.bz.showError5(result.error);
               } else if (result.error === void 0) {
-                return data.error_info = '未知错误';
+                return window.bz.showError5('未知错误');
               } else {
-                window.bz.showSuccess5("添加成功");
+                window.bz.showSuccess5("操作成功");
                 return _this.loadListData();
               }
             });
