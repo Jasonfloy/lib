@@ -14,7 +14,7 @@ from playhouse.postgres_ext import JSONField
 class base(Model):
     created_date = DateTimeField(null=True)
     stat_date = DateTimeField(null=True)
-    is_delete = BooleanField(null=True, default=False)
+    is_delete = IntegerField(null=True, default=0)
     user_id = IntegerField(null=True)
 
 

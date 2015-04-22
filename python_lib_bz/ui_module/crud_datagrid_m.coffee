@@ -20,6 +20,7 @@ $(->
                     _this = @
                     $.post('/crud_list_api/' + @table_name)
                         .done((d1)->
+                            log d1
                             if d1.error != "0"
                                 window.bz.showError5(d1.error)
                                 return

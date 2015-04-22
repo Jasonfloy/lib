@@ -86,6 +86,8 @@ def resetBaseDefault(db):
            alter column created_date set default now();
         alter table base
            alter column stat_date set default now();
+        alter table base
+           alter column is_delete set default 1;
     '''
     db.execute_sql(sql)
 

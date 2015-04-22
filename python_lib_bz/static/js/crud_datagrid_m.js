@@ -25,6 +25,7 @@
             var _this;
             _this = this;
             return $.post('/crud_list_api/' + this.table_name).done(function(d1) {
+              log(d1);
               if (d1.error !== "0") {
                 window.bz.showError5(d1.error);
                 return;
