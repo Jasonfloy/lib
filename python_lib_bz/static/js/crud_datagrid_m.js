@@ -13,32 +13,35 @@
           record: {},
           module: "normal",
           loading: true,
-          loading_target: "#" + table_name
+          loading_target: "#" + table_name,
+          checked_list: {}
         },
         created: function() {
-          var _this;
-          _this = this;
           this.table_name = table_name;
-          return $.post('/crud_list_api/' + this.table_name).done(function(d1) {
-            if (d1.error !== "0") {
-              window.bz.showError5(d1.error);
-              return;
-            }
-            _this.$set("list", d1.array);
-            return _this.loading = false;
-          });
+          return this.loadListData();
         },
         methods: {
+          loadListData: function() {
+            var _this;
+            _this = this;
+            return $.post('/crud_list_api/' + this.table_name).done(function(d1) {
+              if (d1.error !== "0") {
+                window.bz.showError5(d1.error);
+                return;
+              }
+              _this.$set("list", d1.array);
+              return _this.loading = false;
+            });
+          },
           checkBox: function() {
-            var checked_list;
-            checked_list = _.where(this.list, {
+            this.checked_list = _.where(this.list, {
               "checked": true
             });
-            if (checked_list.length === 0) {
+            if (this.checked_list.length === 0) {
               return this.module = 'normal';
-            } else if (checked_list.length === 1) {
+            } else if (this.checked_list.length === 1) {
               return this.module = 'select_one';
-            } else if (checked_list.length > 1) {
+            } else if (this.checked_list.length > 1) {
               return this.module = 'select_more';
             }
           },
@@ -74,22 +77,32 @@
           edit: function() {
             var id;
             $('#modal-' + this.table_name).modal();
-            id = _.where(this.list, {
-              "checked": true
-            })[0].id;
+            id = this.checked_list[0].id;
             return this.getRecordDetail(id);
           },
           "new": function() {
             this.record = {};
             return $('#modal-' + this.table_name).modal();
           },
+          confirm: function() {
+            return $('#confirm-' + this.table_name).modal();
+          },
           del: function() {
-            var del_array;
-            del_array = _.pluck(_.where(this.list, {
-              "checked": true
-            }), "id");
-            log(del_array);
-            return log(del_array.join(","));
+            var _this, del_array;
+            _this = this;
+            del_array = _.pluck(this.checked_list, "id");
+            $.ajax({
+              url: '/crud_list_api/' + this.table_name,
+              type: 'DELETE',
+              data: del_array.join(",")
+            }).done(function(data) {
+              if (data.error = "0") {
+                window.bz.showSuccess5("删除成功。");
+                return _this.loadListData();
+              } else {
+                return window.bz.showError5(data.error);
+              }
+            });
           },
           moduleToggle: function() {
             if (this.module === 'edit') {
