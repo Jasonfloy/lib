@@ -127,7 +127,6 @@ Vue.directive('datepicker',
       datepicker.datepicker('update', @el.value)
     else if @el.value
       datepicker.datepicker('update', new Date(@el.value))
-      
     levels = _this.raw.split(".")
     d_str = ""
     temp_obj = _this.vm[levels[0]]

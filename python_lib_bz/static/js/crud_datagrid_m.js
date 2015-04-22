@@ -109,6 +109,7 @@
             var _this;
             _this = this;
             this.loading = true;
+            log(this.record);
             return $.post('/crud_api', JSON.stringify({
               table_name: this.table_name,
               record: this.record

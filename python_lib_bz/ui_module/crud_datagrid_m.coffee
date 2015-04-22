@@ -84,6 +84,7 @@ $(->
                 save:->
                     _this = @
                     @loading=true
+                    log @record
                     $.post('/crud_api',
                       JSON.stringify {table_name:@table_name, record:@record}
                     ).done((result)->
