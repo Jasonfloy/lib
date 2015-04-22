@@ -117,7 +117,7 @@ Vue.directive('datepicker',
           temp_obj.$add(levels[index], {})
           temp_obj = temp_obj[level]
         else if index == levels.length - 1
-          temp_obj.$add(level, d_str)
+          temp_obj[level] = d_str
         index += 1
     ).siblings(".input-group-addon")
       .on("click", ->

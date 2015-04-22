@@ -138,7 +138,7 @@
             temp_obj.$add(levels[index], {});
             temp_obj = temp_obj[level];
           } else if (index === levels.length - 1) {
-            temp_obj.$add(level, d_str);
+            temp_obj[level] = d_str;
           }
           results.push(index += 1);
         }
