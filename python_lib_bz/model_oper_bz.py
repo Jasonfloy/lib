@@ -13,13 +13,14 @@ import public_bz
 try:
     #from peewee import PostgresqlDatabase
     from peewee import Model
-    from peewee import DateTimeField
     from playhouse.postgres_ext import PostgresqlExtDatabase
     import peewee
 except ImportError:
     print 'you need install peewee, please run:'
     print 'sudo pip install peewee'
     exit(1)
+
+from model_bz import base
 
 
 def dropTable(Model, db_name, user=None, password=None):
@@ -98,6 +99,7 @@ def createBaseTable(db):
     '''
     create by bigzhu at 15/04/04 01:39:26 建立 base 表
     '''
+    from model_bz import base
     base._meta.database = db
     base.create_table(True)
 
@@ -112,10 +114,6 @@ def createAllTable(all_class, db_name):
             continue
 
 
-class base(Model):
-    created_date = DateTimeField(null=True)
-    stat_date = DateTimeField(null=True)
-
 if __name__ == '__main__':
     pass
-    #createAllTable(pg_db)
+    # createAllTable(pg_db)

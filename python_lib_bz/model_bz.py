@@ -3,13 +3,21 @@
 '''
 create by bigzhu at 15/04/06 20:13:37 存放公用的数据模型
 '''
-import model_oper_bz
 from peewee import TextField
 from peewee import IntegerField
+from peewee import DateTimeField
+from peewee import BooleanField
+from peewee import Model
 from playhouse.postgres_ext import JSONField
 
 
-class user_info(model_oper_bz.base):
+class base(Model):
+    created_date = DateTimeField(null=True)
+    stat_date = DateTimeField(null=True)
+    is_delete = BooleanField(null=True, default=False)
+
+
+class user_info(base):
 
     '''
     create by bigzhu at 15/04/04 00:47:38 用户表
@@ -27,7 +35,7 @@ class user_info(model_oper_bz.base):
     slogan = TextField(null=True)  # 自定义头像
 
 
-class comment(model_oper_bz.base):
+class comment(base):
 
     '''
     create by bigzhu at 15/04/06 20:34:12 通用的评论表模型
@@ -39,7 +47,7 @@ class comment(model_oper_bz.base):
     user_id = IntegerField()
 
 
-class crud_conf(model_oper_bz.base):
+class crud_conf(base):
 
     '''
     create by bigzhu at 15/04/17 13:22:53 curd模块用到的
@@ -55,7 +63,7 @@ class crud_conf(model_oper_bz.base):
     is_search = IntegerField(null=True)  # 是否要在高级搜索里出现
 
 
-class timeline(model_oper_bz.base):
+class timeline(base):
     oper = TextField()  # 执行的动作
     target_type = TextField()  # 执行的目标对象
     target_id = IntegerField()  # 目标的 id, 用于表关联
