@@ -69,6 +69,12 @@ def createTable(Model, db_name, user=None, password=None):
             ''' % table_name
         db.execute_sql(sql)
         resetBaseDefault(db)
+        #add table comment
+        comment = Model.__doc__
+        sql = '''
+            COMMENT ON TABLE %s IS '%s';
+        '''%(table_name, comment)
+        db.execute_sql(sql)
 
 
 def resetBaseDefault(db):
