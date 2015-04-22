@@ -74,16 +74,27 @@ $(->
                         data:  del_array.join(",")
                     .done((data)->
                         if data.error = "0"
-                            window.bz.showSuccess5("删除成功。")
+                            window.bz.showSuccess5("删除成功")
                             _this.loadListData()
                         else
                             window.bz.showError5(data.error)
                     )
                     return
+                save:->
+                    _this = @
+                    @loading=true
+                    $.post('/crud_api',
+                      JSON.stringify {table_name:@table_name, record:@record}
+                    ).done((result)->
+                        _this.loading=false
+                        $('#modal-' + _this.table_name).modal('hide')
+                        if result.error!='0'
+                            window.bz.showError5(result.error)
+                        else if result.error == undefined
+                            data.error_info = '未知错误'
+                        else
+                            window.bz.showSuccess5("添加成功")
+                            _this.loadListData()
 
-                moduleToggle: ->
-                    if @module == 'edit'
-                        @$set('module', 'normal')
-                    else if @module == 'normal'
-                        @$set('module', 'edit')
+                    )
 )

@@ -97,19 +97,32 @@
               data: del_array.join(",")
             }).done(function(data) {
               if (data.error = "0") {
-                window.bz.showSuccess5("删除成功。");
+                window.bz.showSuccess5("删除成功");
                 return _this.loadListData();
               } else {
                 return window.bz.showError5(data.error);
               }
             });
           },
-          moduleToggle: function() {
-            if (this.module === 'edit') {
-              return this.$set('module', 'normal');
-            } else if (this.module === 'normal') {
-              return this.$set('module', 'edit');
-            }
+          save: function() {
+            var _this;
+            _this = this;
+            this.loading = true;
+            return $.post('/crud_api', JSON.stringify({
+              table_name: this.table_name,
+              record: this.record
+            })).done(function(result) {
+              _this.loading = false;
+              $('#modal-' + _this.table_name).modal('hide');
+              if (result.error !== '0') {
+                return window.bz.showError5(result.error);
+              } else if (result.error === void 0) {
+                return data.error_info = '未知错误';
+              } else {
+                window.bz.showSuccess5("添加成功");
+                return _this.loadListData();
+              }
+            });
           }
         }
       }));
