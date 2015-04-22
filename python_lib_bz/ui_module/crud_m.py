@@ -51,7 +51,7 @@ class CrudOper:
 
     def getCrudConf(self, table_name, isTime=None):
         sql = '''
-        select * from crud_conf where table_name='%s' and is_delete != 't'
+        select * from crud_conf where table_name='%s' and is_delete != 1
         ''' % table_name
         if isTime:
             sql += " and c_type='timestamp' "
@@ -68,7 +68,7 @@ class CrudOper:
         sql = '''
         select name
         from crud_conf
-        where is_delete != 't'
+        where is_delete != 1
             and c_type='input-file'
             and table_name='%s'
         order by seq desc, created_date
@@ -78,7 +78,7 @@ class CrudOper:
     def getCrudListConf(self, table_name, isTime=None):
         # select * from crud_conf where table_name='%s' and grid_show=1 and is_delete != 't'
         sql = '''
-        select * from crud_conf where table_name='%s' and grid_show=1 and is_delete != 't'
+        select * from crud_conf where table_name='%s' and grid_show=1 and is_delete != 1
         ''' % table_name
         if isTime:
             sql += " and c_type='timestamp' "
@@ -150,7 +150,7 @@ class CrudOper:
         create by bigzhu at 15/03/12 12:56:43 根据给定的条件组合出查询 list 的 sql
         '''
         what = self.getWhat(table_name)
-        where = "is_delete='f'"
+        where = "is_delete != 1"
         order = "stat_date desc"
         sql = '''
             select %s,id from %s where %s order by %s
@@ -268,7 +268,7 @@ class crud_list_api(BaseHandler):
 
             self.write(json.dumps({'error': '0', "array": result_array}, cls=public_bz.ExtEncoder))
         else:
-            sql_where_parms = ' is_delete = false'
+            sql_where_parms = ' is_delete != 1'
             if find_sql:
                 sql_where_parms += find_sql
             if flag:
@@ -282,7 +282,7 @@ class crud_list_api(BaseHandler):
     def delete(self, table_name):
         self.set_header("Content-Type", "application/json")
         ids = self.request.body
-        self.pg.db.update(table_name, where="id in (%s)" % ids, is_delete=True)
+        self.pg.db.update(table_name, where="id in (%s)" % ids, is_delete=1)
         self.write(json.dumps({'error': '0'}))
 
 
@@ -318,7 +318,7 @@ class crud(ModuleHandler):
                 sql = '''
                 select r.id, f.file_name, f.file_path, f.file_type, f.suffix, 'false' as remove
                 from uploaded_file_record_ref r left join uploaded_files f on r.uploaded_file_id = f.id
-                where r.ref_table = '%s' and r.ref_column = '%s' and r.ref_record_id = '%s' and r.is_delete = '0'
+                where r.ref_table = '%s' and r.ref_column = '%s' and r.ref_record_id = '%s' and r.is_delete != 1
                 ''' % (table_name, column.name, id)
                 files = list(self.pg.db.query(sql))
                 all_files.append({
