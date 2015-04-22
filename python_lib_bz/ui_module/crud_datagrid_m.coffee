@@ -3,10 +3,13 @@ $(->
     for i in vues
         table_name = i.id
         new Vue
-            el: '#'+i.id
+            el: '#'+table_name
             data:
                 list: []
+                record:{}
                 module: "normal"
+                loading:true
+                loading_target:"#"+table_name
             created:->
                 _this = @
                 @table_name=table_name
@@ -15,36 +18,31 @@ $(->
                         if d1.error != "0"
                             window.bz.showError5(d1.error)
                             return
-                        d1.array.forEach((n)->
-                            n.checked = false
-                        )
                         _this.$set("list", d1.array)
+                        _this.loading=false
                     )
             methods:
-                detail: (event, index)->
-                    if index == "new"
-                        #window.location.href = "/crud/" + table_name
-                        $('#modal-'+@table_name).modal()
-                        return
-                    record = @list[index]
-                    if @module == 'normal'
-                        window.location.href = "/crud/" + @table_name + "#" + record.id
-                        return
-                    else if record.checked
-                        record.checked = false
-                        $(event.target).siblings(".check-column").find("input[type=checkbox]").prop('checked', false)
-                    else
-                        record.checked = true
-                        $(event.target).siblings(".check-column").find("input[type=checkbox]").prop('checked', true)
+                checkBox:->
+                    checked_list = _.where(@list, {"checked": true})
+                    if checked_list.length == 0
+                        @module='normal'
+                    else if checked_list.length == 1
+                        @module='select_one'
+                    else if checked_list.length > 1
+                        @module='select_more'
                 moduleToggle: ->
                     if @module == 'edit'
                         @$set('module', 'normal')
                     else if @module == 'normal'
                         @$set('module', 'edit')
+                searchToggle: ->
+                    $('.moreSearch').toggle()
+                    $('#gridSearch').toggle()
                 del: ->
                     del_array = _.pluck(_.where(@list, {"checked": true}), "id")
+                    log del_array
                     $.ajax
-                        url: '/crud_list_api/' + @table_name
+                        url: '/crud_list_api/' + table_name
                         type: 'DELETE'
                         data:  del_array.join(",")
                     .done((data)->
@@ -55,4 +53,5 @@ $(->
                             window.bz.showError5(data.error)
                     )
                     return
+
 )

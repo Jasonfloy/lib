@@ -7,10 +7,13 @@
       i = vues[j];
       table_name = i.id;
       results.push(new Vue({
-        el: '#' + i.id,
+        el: '#' + table_name,
         data: {
           list: [],
-          module: "normal"
+          record: {},
+          module: "normal",
+          loading: true,
+          loading_target: "#" + table_name
         },
         created: function() {
           var _this;
@@ -21,28 +24,22 @@
               window.bz.showError5(d1.error);
               return;
             }
-            d1.array.forEach(function(n) {
-              return n.checked = false;
-            });
-            return _this.$set("list", d1.array);
+            _this.$set("list", d1.array);
+            return _this.loading = false;
           });
         },
         methods: {
-          detail: function(event, index) {
-            var record;
-            if (index === "new") {
-              $('#modal-' + this.table_name).modal();
-              return;
-            }
-            record = this.list[index];
-            if (this.module === 'normal') {
-              window.location.href = "/crud/" + this.table_name + "#" + record.id;
-            } else if (record.checked) {
-              record.checked = false;
-              return $(event.target).siblings(".check-column").find("input[type=checkbox]").prop('checked', false);
-            } else {
-              record.checked = true;
-              return $(event.target).siblings(".check-column").find("input[type=checkbox]").prop('checked', true);
+          checkBox: function() {
+            var checked_list;
+            checked_list = _.where(this.list, {
+              "checked": true
+            });
+            if (checked_list.length === 0) {
+              return this.module = 'normal';
+            } else if (checked_list.length === 1) {
+              return this.module = 'select_one';
+            } else if (checked_list.length > 1) {
+              return this.module = 'select_more';
             }
           },
           moduleToggle: function() {
@@ -52,13 +49,18 @@
               return this.$set('module', 'edit');
             }
           },
+          searchToggle: function() {
+            $('.moreSearch').toggle();
+            return $('#gridSearch').toggle();
+          },
           del: function() {
             var del_array;
             del_array = _.pluck(_.where(this.list, {
               "checked": true
             }), "id");
+            log(del_array);
             $.ajax({
-              url: '/crud_list_api/' + this.table_name,
+              url: '/crud_list_api/' + table_name,
               type: 'DELETE',
               data: del_array.join(",")
             }).done(function(data) {
