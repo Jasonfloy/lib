@@ -24,6 +24,7 @@
           loadListData: function() {
             var _this;
             _this = this;
+            this.module = "normal";
             return $.post('/crud_list_api/' + this.table_name).done(function(d1) {
               log(d1);
               if (d1.error !== "0") {

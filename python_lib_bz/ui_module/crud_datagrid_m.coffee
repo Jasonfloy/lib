@@ -18,6 +18,7 @@ $(->
             methods:
                 loadListData:->
                     _this = @
+                    @module = "normal"
                     $.post('/crud_list_api/' + @table_name)
                         .done((d1)->
                             log d1
