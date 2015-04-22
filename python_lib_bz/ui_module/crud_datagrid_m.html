@@ -94,12 +94,12 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-default pull-left" data-dismiss="modal">关闭</button>
-                    <button v-on='click:save' type="button" class="btn btn-sm btn-primary" v-disable="loading" v-btn-loading="loading" v-on="click:save">保存</button>
+                    <button type="button" class="btn btn-sm btn-primary" v-disable="loading" v-btn-loading="loading" v-on="click:save">保存</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal modal-danger fade" id="confirm-{{table_name}}" tabindex="-1" role="dialog" aria-labelledby="confirm-{{table_name}}-label" aria-hidden="true">
+    <div class="modal fade" id="confirm-{{table_name}}" tabindex="-1" role="dialog" aria-labelledby="confirm-{{table_name}}-label" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
