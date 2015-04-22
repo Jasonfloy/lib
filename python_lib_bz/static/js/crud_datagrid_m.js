@@ -15,7 +15,8 @@
         created: function() {
           var _this;
           _this = this;
-          return $.post('/crud_list_api/' + table_name).done(function(d1) {
+          this.table_name = table_name;
+          return $.post('/crud_list_api/' + this.table_name).done(function(d1) {
             if (d1.error !== "0") {
               window.bz.showError5(d1.error);
               return;
@@ -30,12 +31,12 @@
           detail: function(event, index) {
             var record;
             if (index === "new") {
-              window.location.href = "/crud/" + table_name;
+              $('#modal-' + this.table_name).modal();
               return;
             }
             record = this.list[index];
             if (this.module === 'normal') {
-              window.location.href = "/crud/" + table_name + "#" + record.id;
+              window.location.href = "/crud/" + this.table_name + "#" + record.id;
             } else if (record.checked) {
               record.checked = false;
               return $(event.target).siblings(".check-column").find("input[type=checkbox]").prop('checked', false);
@@ -57,7 +58,7 @@
               "checked": true
             }), "id");
             $.ajax({
-              url: '/crud_list_api/' + table_name,
+              url: '/crud_list_api/' + this.table_name,
               type: 'DELETE',
               data: del_array.join(",")
             }).done(function(data) {

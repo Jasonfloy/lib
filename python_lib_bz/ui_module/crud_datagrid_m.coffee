@@ -1,16 +1,4 @@
 $(->
-    #table_name = window.bz.getUrlParm()[2]
-    #load = ->
-    #    $.post('/crud_list_api/' + table_name)
-    #        .done((d1)->
-    #            if d1.error != "0"
-    #                window.bz.showError5(d1.error)
-    #                return
-    #            d1.array.forEach((n)->
-    #                n.checked = false
-    #            )
-    #            v_crud_list.$set("list", d1.array)
-    #        )
     vues = $(".safe-datagrid")
     for i in vues
         table_name = i.id
@@ -20,9 +8,9 @@ $(->
                 list: []
                 module: "normal"
             created:->
-                #load()
                 _this = @
-                $.post('/crud_list_api/' + table_name)
+                @table_name=table_name
+                $.post('/crud_list_api/' + @table_name)
                     .done((d1)->
                         if d1.error != "0"
                             window.bz.showError5(d1.error)
@@ -32,15 +20,15 @@ $(->
                         )
                         _this.$set("list", d1.array)
                     )
-
             methods:
                 detail: (event, index)->
                     if index == "new"
-                        window.location.href = "/crud/" + table_name
+                        #window.location.href = "/crud/" + table_name
+                        $('#modal-'+@table_name).modal()
                         return
                     record = @list[index]
                     if @module == 'normal'
-                        window.location.href = "/crud/" + table_name + "#" + record.id
+                        window.location.href = "/crud/" + @table_name + "#" + record.id
                         return
                     else if record.checked
                         record.checked = false
@@ -56,7 +44,7 @@ $(->
                 del: ->
                     del_array = _.pluck(_.where(@list, {"checked": true}), "id")
                     $.ajax
-                        url: '/crud_list_api/' + table_name
+                        url: '/crud_list_api/' + @table_name
                         type: 'DELETE'
                         data:  del_array.join(",")
                     .done((data)->
