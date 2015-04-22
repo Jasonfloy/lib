@@ -113,10 +113,10 @@
 
   Vue.directive('datepicker', {
     bind: function(value) {
-      var _this, d_str, datepicker, index, level, levels, results, temp_obj;
+      var _this, datepicker;
       _this = this;
       datepicker = $(this.el);
-      datepicker.datepicker({
+      return datepicker.datepicker({
         format: "yyyy-mm-dd",
         language: "zh-CN",
         autoclose: true,
@@ -124,6 +124,7 @@
         clearBtn: true
       }).on("changeDate", function(e) {
         var d_str, index, level, levels, results, temp_obj;
+        console.log("changeDate", e.date);
         levels = _this.raw.split(".");
         d_str = "";
         if (e.date) {
@@ -146,31 +147,13 @@
       }).siblings(".input-group-addon").on("click", function() {
         return datepicker.datepicker("show");
       });
-      if (isNaN(this.el.value)) {
-        datepicker.datepicker('update', this.el.value);
-      } else if (this.el.value) {
-        datepicker.datepicker('update', new Date(this.el.value));
-      }
-      levels = _this.raw.split(".");
-      d_str = "";
-      temp_obj = _this.vm[levels[0]];
-      index = 1;
-      results = [];
-      while (index <= levels.length - 1) {
-        level = levels[index];
-        if (typeof temp_obj[level] === "undefined" && index < levels.length - 1) {
-          temp_obj.$add(levels[index], {});
-          temp_obj = temp_obj[level];
-        } else if (index === levels.length - 1) {
-          temp_obj.$add(level, d_str);
-        }
-        results.push(index += 1);
-      }
-      return results;
     },
-    update: function(value) {},
-    unbind: function() {
-      return console.log("unbind");
+    update: function(value) {
+      if (isNaN(value)) {
+        return $(this.el).datepicker('update', value);
+      } else if (value) {
+        return $(this.el).datepicker('update', new Date(value));
+      }
     }
   });
 

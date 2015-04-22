@@ -105,6 +105,7 @@ Vue.directive('datepicker',
       forceParse: true
       clearBtn: true
     .on("changeDate", (e)->
+      console.log "changeDate", e.date
       levels = _this.raw.split(".")
       d_str = ""
       if e.date
@@ -123,25 +124,11 @@ Vue.directive('datepicker',
       .on("click", ->
         datepicker.datepicker("show")
       )
-    if isNaN(@el.value)
-      datepicker.datepicker('update', @el.value)
-    else if @el.value
-      datepicker.datepicker('update', new Date(@el.value))
-    levels = _this.raw.split(".")
-    d_str = ""
-    temp_obj = _this.vm[levels[0]]
-    index  = 1
-    while index <= levels.length - 1
-      level = levels[index]
-      if typeof temp_obj[level] == "undefined" and index < levels.length - 1
-        temp_obj.$add(levels[index], {})
-        temp_obj = temp_obj[level]
-      else if index == levels.length - 1
-        temp_obj.$add(level, d_str)
-      index += 1
   update: (value)->
-  unbind: ->
-    console.log "unbind"
+    if isNaN(value)
+      $(@el).datepicker('update', value)
+    else if value
+      $(@el).datepicker('update', new Date(value))
 )
 #进程的图标
 Vue.directive "process-icon",
