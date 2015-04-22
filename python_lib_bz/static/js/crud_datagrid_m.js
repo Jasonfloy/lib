@@ -42,16 +42,46 @@
               return this.module = 'select_more';
             }
           },
-          moduleToggle: function() {
-            if (this.module === 'edit') {
-              return this.$set('module', 'normal');
-            } else if (this.module === 'normal') {
-              return this.$set('module', 'edit');
+          getRecordDetail: function(id) {
+            var _this, parm;
+            parm = {
+              table_name: this.table_name
+            };
+            _this = this;
+            if (id !== '') {
+              parm.id = id;
             }
+            return $.post('/crud', JSON.stringify(parm)).done(function(result) {
+              var field, record;
+              if (result.error !== '0') {
+                return window.bz.showError5(result.error);
+              } else {
+                if (result.data.length > 0) {
+                  record = result.data[0];
+                  for (field in record) {
+                    if (record[field] !== null && typeof record[field] === "object") {
+                      record[field] = JSON.stringify(record[field]);
+                    }
+                  }
+                  _this.record = result.data[0];
+                  return _this.record.id = id;
+                } else if (id !== '') {
+                  return window.bz.showError5('未找到这条数据!');
+                }
+              }
+            });
           },
-          searchToggle: function() {
-            $('.moreSearch').toggle();
-            return $('#gridSearch').toggle();
+          edit: function() {
+            var id;
+            $('#modal-' + this.table_name).modal();
+            id = _.where(this.list, {
+              "checked": true
+            })[0].id;
+            return this.getRecordDetail(id);
+          },
+          "new": function() {
+            this.record = {};
+            return $('#modal-' + this.table_name).modal();
           },
           del: function() {
             var del_array;
@@ -59,18 +89,14 @@
               "checked": true
             }), "id");
             log(del_array);
-            $.ajax({
-              url: '/crud_list_api/' + table_name,
-              type: 'DELETE',
-              data: del_array.join(",")
-            }).done(function(data) {
-              if (data.error = "0") {
-                window.bz.showSuccess5("删除成功。");
-                return load();
-              } else {
-                return window.bz.showError5(data.error);
-              }
-            });
+            return log(del_array.join(","));
+          },
+          moduleToggle: function() {
+            if (this.module === 'edit') {
+              return this.$set('module', 'normal');
+            } else if (this.module === 'normal') {
+              return this.$set('module', 'edit');
+            }
           }
         }
       }));
