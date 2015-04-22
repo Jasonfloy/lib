@@ -113,7 +113,7 @@
 
   Vue.directive('datepicker', {
     bind: function(value) {
-      var _this, d_handle, d_str, datepicker, i, j, l, len1, levels;
+      var _this, d_str, datepicker, index, level, levels, results, temp_obj;
       _this = this;
       datepicker = $(this.el);
       datepicker.datepicker({
@@ -123,13 +123,26 @@
         forceParse: true,
         clearBtn: true
       }).on("changeDate", function(e) {
-        var d_str, levels;
+        var d_str, index, level, levels, results, temp_obj;
         levels = _this.raw.split(".");
         d_str = "";
         if (e.date) {
           d_str = e.date.valueOf();
         }
-        return d_handle[levels[levels.length - 1]] = d_str;
+        temp_obj = _this.vm[levels[0]];
+        index = 1;
+        results = [];
+        while (index <= levels.length - 1) {
+          level = levels[index];
+          if (typeof temp_obj[level] === "undefined" && index < levels.length - 1) {
+            temp_obj.$add(levels[index], {});
+            temp_obj = temp_obj[level];
+          } else if (index === levels.length - 1) {
+            temp_obj.$add(level, d_str);
+          }
+          results.push(index += 1);
+        }
+        return results;
       }).siblings(".input-group-addon").on("click", function() {
         return datepicker.datepicker("show");
       });
@@ -139,27 +152,21 @@
         datepicker.datepicker('update', new Date(this.el.value));
       }
       levels = _this.raw.split(".");
-      d_handle = _this.vm.$data;
-      i = 0;
-      for (j = 0, len1 = levels.length; j < len1; j++) {
-        l = levels[j];
-        if (!d_handle[l] && (i + 1) !== levels.length) {
-          d_handle[l] = {};
-        }
-        if ((i + 1) !== levels.length) {
-          d_handle = d_handle[l];
-        }
-        i++;
-      }
       d_str = "";
-      if (this.el.value) {
-        if (isNaN(this.el.value)) {
-          d_str = Date.parse(this.el.value);
-        } else {
-          d_str = this.el.value;
+      temp_obj = _this.vm[levels[0]];
+      index = 1;
+      results = [];
+      while (index <= levels.length - 1) {
+        level = levels[index];
+        if (typeof temp_obj[level] === "undefined" && index < levels.length - 1) {
+          temp_obj.$add(levels[index], {});
+          temp_obj = temp_obj[level];
+        } else if (index === levels.length - 1) {
+          temp_obj.$add(level, d_str);
         }
-        return d_handle[levels[levels.length - 1]] = d_str;
+        results.push(index += 1);
       }
+      return results;
     },
     update: function(value) {},
     unbind: function() {
