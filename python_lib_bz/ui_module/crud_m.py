@@ -153,13 +153,15 @@ class CrudOper:
         ''' % (what, colum_name, sql, b_sql, colum_name)
         return sql
 
-    def getCrudListSql(self, table_name):
+    def getCrudListSql(self, table_name, user_id=None):
         '''
         modify by bigzhu at 15/03/12 13:57:43 需要添加 id
         create by bigzhu at 15/03/12 12:56:43 根据给定的条件组合出查询 list 的 sql
         '''
         what = self.getWhat(table_name)
         where = "is_delete != 1"
+        if user_id:
+            where += " and user_id=%s" % user_id
         order = "stat_date desc"
         sql = '''
             select %s,id from %s where %s order by %s
@@ -226,7 +228,7 @@ class crud_list_api(BaseHandler):
     def post(self, table_name):
         self.set_header("Content-Type", "application/json")
         crud_oper = CrudOper(self.pg)
-        sql = crud_oper.getCrudListSql(table_name)
+        sql = crud_oper.getCrudListSql(table_name, self.current_user)
         fields = crud_oper.getCrudConf(table_name)
         find_sql = ""
         isFind = self.get_argument("find", None)
