@@ -360,7 +360,8 @@ class crud_api(BaseHandler):
             record['stat_date'] = SQLLiteral('now()')
             self.pg.db.update(table_name, where="id=%s" % id, **record)
         else:
-            id = self.pg.db.insert(table_name, seqname='id_base_seq', **record)
+            seq = table_name+'_id_seq'
+            id = self.pg.db.insert(table_name, seqname=seq, **record)
 
         self.write(json.dumps({'error': '0', 'id': id}))
 
