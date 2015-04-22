@@ -34,7 +34,7 @@ def dropTable(Model, db_name, user=None, password=None):
     #db = PostgresqlDatabase(db_name, user=user, password=password, host='127.0.0.1')
     db = PostgresqlExtDatabase(db_name, user=user, password=password, host='127.0.0.1', register_hstore=False)
     Model._meta.database = db
-    Model.drop_table()
+    Model.drop_table(True)
     print 'drop table ' + Model.__name__
 
 
