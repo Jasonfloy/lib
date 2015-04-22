@@ -14,6 +14,15 @@ from webpy_db import SQLLiteral
 import db_bz
 
 
+def createTable(db_name):
+    '''
+    create by bigzhu at 15/04/22 18:19:38 create table
+    '''
+    import model_oper_bz
+    import model_bz
+    model_oper_bz.createTable(model_bz.crud_conf, db_name)
+
+
 class CrudOper:
 
     '''
@@ -366,7 +375,7 @@ class crud_api(BaseHandler):
             record['stat_date'] = SQLLiteral('now()')
             self.pg.db.update(table_name, where="id=%s" % id, **record)
         else:
-            seq = table_name+'_id_seq'
+            seq = table_name + '_id_seq'
             id = self.pg.db.insert(table_name, seqname=seq, **record)
 
         self.write(json.dumps({'error': '0', 'id': id}))
