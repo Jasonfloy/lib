@@ -335,6 +335,7 @@ class crud_api(BaseHandler):
 
     '''
     modify by bigzhu at 15/03/10 15:56:15 update 时候也要更新 stat_date
+    modify by bigzhu at 15/04/22 17:27:16 自动插入 user_id
     '''
 
     @tornado_bz.handleError
@@ -343,6 +344,11 @@ class crud_api(BaseHandler):
         info = json.loads(self.request.body)
         table_name = info["table_name"]
         record = info["record"]
+        if self.current_user:
+            if record.get('user_id') is None:
+                record['user_id'] = self.current_user
+        else:
+            raise Exception('请登录系统')
         # 对于配置表自身的配置要做特殊处理
         if table_name.lower() == 'crud_conf':
             name = record['name']
