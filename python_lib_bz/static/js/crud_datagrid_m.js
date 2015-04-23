@@ -82,7 +82,12 @@
             return this.getRecordDetail(id);
           },
           "new": function() {
-            this.record = {};
+            var key, new_record;
+            new_record = {};
+            for (key in this.record) {
+              new_record[key] = null;
+            }
+            this.$set("record", new_record);
             return $('#modal-' + this.table_name).modal();
           },
           confirm: function() {
