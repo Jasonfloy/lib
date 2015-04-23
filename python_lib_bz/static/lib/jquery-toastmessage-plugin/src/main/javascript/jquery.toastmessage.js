@@ -64,7 +64,11 @@
 				type: 				'notice', 			// notice, warning, error, success
                 position:           'top-right',        // top-left, top-center, top-right, middle-left, middle-center, middle-right ... Position of the toast container holding different toast. Position can be set only once at the very first call, changing the position after the first call does nothing
                 closeText:          '',                 // text which will be shown as close button, set to '' when you want to introduce an image via css
-                close:              null                // callback function when the toastmessage is closed
+                close:              null,               // callback function when the toastmessage is closed
+                successText:        '',
+                warningText:        '',
+                noticeText:         '',
+                errorText:          ''
             };
 
     var methods = {
@@ -87,7 +91,7 @@
 			toastItemOuter	= $('<div></div>').addClass('toast-item-wrapper');
 			toastItemInner	= $('<div></div>').hide().addClass('toast-item toast-type-' + localSettings.type).appendTo(toastWrapAll).html($('<p>').append (localSettings.text)).animate(localSettings.inEffect, localSettings.inEffectDuration).wrap(toastItemOuter);
 			toastItemClose	= $('<div></div>').addClass('toast-item-close').prependTo(toastItemInner).html(localSettings.closeText).click(function() { $().toastmessage('removeToast',toastItemInner, localSettings) });
-			toastItemImage  = $('<div></div>').addClass('toast-item-image').addClass('toast-item-image-' + localSettings.type).prependTo(toastItemInner);
+			toastItemImage  = $('<div></div>').addClass('toast-item-image').addClass('toast-item-image-' + localSettings.type).html(localSettings[localSettings.type + 'Text']).prependTo(toastItemInner);
 
             if(navigator.userAgent.match(/MSIE 6/i))
 			{
