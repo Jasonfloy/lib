@@ -21,7 +21,6 @@ $(->
                     @module = "normal"
                     $.post('/crud_list_api/' + @table_name)
                         .done((d1)->
-                            log d1
                             if d1.error != "0"
                                 window.bz.showError5(d1.error)
                                 return
@@ -85,7 +84,11 @@ $(->
                 save:->
                     _this = @
                     @loading=true
-                    log @record
+                    if window.bz.isEmpty @record
+                      window.bz.showError5('没有填写任何值!')
+                      _this.loading=false
+                      $('#modal-' + _this.table_name).modal('hide')
+                      return
                     $.post('/crud_api',
                       JSON.stringify {table_name:@table_name, record:@record}
                     ).done((result)->

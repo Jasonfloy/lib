@@ -270,6 +270,24 @@
   }
 
   window.bz = {
+    isEmpty: function(obj) {
+      var key;
+      if (obj === null) {
+        return true;
+      }
+      if (obj.length > 0) {
+        return false;
+      }
+      if (obj.length === 0) {
+        return true;
+      }
+      for (key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          return false;
+        }
+      }
+      return true;
+    },
     timeLen: function(that_time) {
       var day, desc, hour, interval, minute, month, now, second, year;
       second = 1000;
