@@ -105,7 +105,6 @@ Vue.directive('datepicker',
       forceParse: true
       clearBtn: true
     .on("changeDate", (e)->
-      console.log "changeDate", e.date
       levels = _this.raw.split(".")
       d_str = ""
       if e.date
@@ -129,6 +128,8 @@ Vue.directive('datepicker',
       $(@el).datepicker('update', value)
     else if value
       $(@el).datepicker('update', new Date(value))
+    else
+      $(@el).datepicker('update', '')
 )
 #进程的图标
 Vue.directive "process-icon",

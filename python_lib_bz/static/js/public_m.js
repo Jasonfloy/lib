@@ -124,7 +124,6 @@
         clearBtn: true
       }).on("changeDate", function(e) {
         var d_str, index, level, levels, results, temp_obj;
-        console.log("changeDate", e.date);
         levels = _this.raw.split(".");
         d_str = "";
         if (e.date) {
@@ -153,6 +152,8 @@
         return $(this.el).datepicker('update', value);
       } else if (value) {
         return $(this.el).datepicker('update', new Date(value));
+      } else {
+        return $(this.el).datepicker('update', '');
       }
     }
   });

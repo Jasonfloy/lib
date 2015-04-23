@@ -63,7 +63,10 @@ $(->
                     id = @checked_list[0].id
                     @getRecordDetail(id)
                 new:->
-                    @record={}
+                    new_record = {}
+                    for key of @record
+                        new_record[key] = null
+                    @$set("record", new_record)
                     $('#modal-' + @table_name).modal()
                 confirm:->
                     $('#confirm-' + @table_name).modal()
