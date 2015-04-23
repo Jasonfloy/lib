@@ -338,20 +338,20 @@ def mustSubscribe(method):
             try:
                 wechat_user_info = self.wechat.get_user_info(openid)
             except OfficialAPIError as e:
-                ## open_id not right
+                # open_id not right
                 #self.wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
                 #access_token_info = self.wechat.get_access_token()
                 #self.settings['access_token'] = access_token_info['access_token']
                 #self.settings['access_token_expires_at'] = access_token_info['access_token_expires_at']
                 self.clear_cookie(name='openid')
-                #self.redirect(self.request.uri)
-                #print "get new access token in mustSubscribe"
+                # self.redirect(self.request.uri)
+                # print "get new access token in mustSubscribe"
                 raise e
                 return
 
             # 没有关注的,跳转到配置的关注页面
             if wechat_user_info['subscribe'] == 0:
-                self.redirect('http://'+self.settings["domain"]+self.settings["subscribe"])
+                self.redirect('http://' + self.settings["domain"] + self.settings["subscribe"])
                 return
         return method(self, *args, **kwargs)
     return wrapper
@@ -368,5 +368,117 @@ def getUserId(request):
     else:
         user_id = 1
     return user_id
+
+
+class oper(BaseHandler):
+
+    '''
+    create by bigzhu at 15/04/23 16:49:57 用来操作,做一些通用的增删改
+    协议说明:
+        put: update
+        post: insert
+        get: select
+        delete: delete
+
+    参数解释:
+        t: table_name
+        w: where
+        s: sql(完整的原始sql,太危险暂时取消)
+        v: update 或者 insert 的值
+        c: 记录数,要删除的记录数
+    '''
+    @handleError
+    def get(self):
+        self.set_header("Content-Type", "application/json")
+        t = self.request.arguments.get('t')
+        w = self.request.arguments.get('w', '1=1')
+        data = self.pg.db.select(t, where=w)
+        self.write(json.dumps({'error': '0', 'data': data}, cls=public_bz.ExtEncoder))
+
+    @handleError
+    def post(self):
+        '''
+        create by bigzhu at 15/04/23 17:33:09 insert 返回 id
+        '''
+        self.set_header("Content-Type", "application/json")
+        if self.current_user:
+            pass
+        else:
+            raise Exception('必须登录才能操作')
+
+        data = json.loads(self.request.body)
+        t = data.get('t')  # table
+        v = data.get('v')  # value
+        # 插入的值有id就update,只能udpate一条,没有就 insert
+        id = v.get('id')
+        if id is not None:
+            print id
+            w = "id=%s" % id
+            trans = self.pg.db.transaction()
+            count = self.pg.db.update(t, w, **v)
+            if count == 1:
+                trans.commit()
+                return '0'
+            else:
+                trans.rollback()
+
+        seq = t + '_id_seq'
+        id = self.pg.db.insert(t, seqname=seq, **v)
+        self.write(json.dumps({'error': '0', 'id': id}))
+
+    @handleError
+    def put(self):
+        '''
+        create by bigzhu at 15/04/23 17:33:33 udpate数据,只要value有id, 可以不写where
+        '''
+        self.set_header("Content-Type", "application/json")
+        if self.current_user:
+            pass
+        else:
+            raise Exception('必须登录才能操作')
+        data = json.loads(self.request.body)
+        t = data.get('t')  # table
+        w = data.get('w')  # where
+        v = data.get('v')  # value
+        if w is None:
+            id = v.get('id')
+            if id is None:
+                raise Exception('没有足够的信息来进行update操作')
+            w = "id=%s" % id
+
+        trans = self.pg.db.transaction()
+        count = self.pg.db.update(t, w, **v)
+        if count == 1:
+            trans.commit()
+        else:
+            trans.rollback()
+            raise Exception('不允许update %s 条记录,请检查条件' % count)
+
+        self.write(json.dumps({'error': '0'}))
+
+    @handleError
+    def delete(self):
+        '''
+        create by bigzhu at 15/04/23 17:37:36 其实只是做update
+        '''
+        self.set_header("Content-Type", "application/json")
+        if self.current_user:
+            pass
+        else:
+            raise Exception('必须登录才能操作')
+        t = self.request.arguments.get('t')
+        w = self.request.arguments.get('w')
+        c = self.request.arguments.get('c')
+
+        trans = self.pg.db.transaction()
+        count = self.pg.db.update(t, w, is_delete=1)
+        print int(c)
+        if count == int(c):
+            trans.commit()
+        else:
+            trans.rollback()
+        self.write(json.dumps({'error': '0'}))
+
+
 if __name__ == '__main__':
     pass

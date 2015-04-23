@@ -105,7 +105,6 @@ Vue.directive('datepicker',
       forceParse: true
       clearBtn: true
     .on("changeDate", (e)->
-      console.log "changeDate", e.date
       levels = _this.raw.split(".")
       d_str = ""
       if e.date
@@ -129,6 +128,8 @@ Vue.directive('datepicker',
       $(@el).datepicker('update', value)
     else if value
       $(@el).datepicker('update', new Date(value))
+    else
+      $(@el).datepicker('update', '')
 )
 #进程的图标
 Vue.directive "process-icon",
@@ -229,6 +230,25 @@ if $().toastmessage
     errorText: '<i class="fa fa-exclamation-circle"></i>'
   )
 window.bz =
+  #是不是空对象
+  isEmpty : (obj) ->
+    # null and undefined are "empty"
+    if obj == null
+      return true
+    # Assume if it has a length property with a non-zero value
+    # that that property is correct.
+    if obj.length > 0
+      return false
+    if obj.length == 0
+      return true
+    # Otherwise, does it have any properties of its own?
+    # Note that this doesn't handle
+    # toString and valueOf enumeration bugs in IE < 9
+    for key of obj
+      if Object::hasOwnProperty.call(obj, key)
+        return false
+    true
+
   #计算距今的时间间隔
   timeLen : (that_time)->
     second = 1000

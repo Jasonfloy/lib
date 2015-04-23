@@ -26,7 +26,6 @@
             _this = this;
             this.module = "normal";
             return $.post('/crud_list_api/' + this.table_name).done(function(d1) {
-              log(d1);
               if (d1.error !== "0") {
                 window.bz.showError5(d1.error);
                 return;
@@ -83,7 +82,12 @@
             return this.getRecordDetail(id);
           },
           "new": function() {
-            this.record = {};
+            var key, new_record;
+            new_record = {};
+            for (key in this.record) {
+              new_record[key] = null;
+            }
+            this.$set("record", new_record);
             return $('#modal-' + this.table_name).modal();
           },
           confirm: function() {
@@ -110,7 +114,12 @@
             var _this;
             _this = this;
             this.loading = true;
-            log(this.record);
+            if (window.bz.isEmpty(this.record)) {
+              window.bz.showError5('没有填写任何值!');
+              _this.loading = false;
+              $('#modal-' + _this.table_name).modal('hide');
+              return;
+            }
             return $.post('/crud_api', JSON.stringify({
               table_name: this.table_name,
               record: this.record

@@ -124,7 +124,6 @@
         clearBtn: true
       }).on("changeDate", function(e) {
         var d_str, index, level, levels, results, temp_obj;
-        console.log("changeDate", e.date);
         levels = _this.raw.split(".");
         d_str = "";
         if (e.date) {
@@ -153,6 +152,8 @@
         return $(this.el).datepicker('update', value);
       } else if (value) {
         return $(this.el).datepicker('update', new Date(value));
+      } else {
+        return $(this.el).datepicker('update', '');
       }
     }
   });
@@ -275,6 +276,24 @@
   }
 
   window.bz = {
+    isEmpty: function(obj) {
+      var key;
+      if (obj === null) {
+        return true;
+      }
+      if (obj.length > 0) {
+        return false;
+      }
+      if (obj.length === 0) {
+        return true;
+      }
+      for (key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          return false;
+        }
+      }
+      return true;
+    },
     timeLen: function(that_time) {
       var day, desc, hour, interval, minute, month, now, second, year;
       second = 1000;
