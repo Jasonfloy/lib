@@ -6,7 +6,6 @@ create by bigzhu at 15/04/06 20:13:37 存放公用的数据模型
 from peewee import TextField
 from peewee import IntegerField
 from peewee import DateTimeField
-from peewee import BooleanField
 from peewee import Model
 from playhouse.postgres_ext import JSONField
 
@@ -20,9 +19,7 @@ class base(Model):
 
 class user_info(base):
 
-    '''
-    create by bigzhu at 15/04/04 00:47:38 用户表
-    '''
+    '''用户表'''
     user_type = TextField()  # 用户类型 google my twitter
     out_id = TextField(null=True)  # oauth2 的外部 id
     email = TextField(null=True)  # email 地址
@@ -38,9 +35,7 @@ class user_info(base):
 
 class comment(base):
 
-    '''
-    create by bigzhu at 15/04/06 20:34:12 通用的评论表模型
-    '''
+    '''评论表'''
     key_type = TextField()  # 用于那个类型 比如一个系统有多个地方都要有评论,则用这个来区别, 站点可以填为 site'
     key = TextField()  # 比如填入 site_id, 使用这个评论的元素
     comment = TextField()  # 评论
@@ -50,9 +45,7 @@ class comment(base):
 
 class crud_conf(base):
 
-    '''
-    create by bigzhu at 15/04/17 13:22:53 curd模块用到的
-    '''
+    '''curd配置'''
     name = TextField()  # 字段的名字
     description = TextField()  # 字段的描述 用于显示在 form 的前面
     options = JSONField(null=True)  # select 类型的字段的 value 和 desc json 格式存储
