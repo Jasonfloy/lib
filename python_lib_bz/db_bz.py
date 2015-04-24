@@ -62,7 +62,7 @@ def transTimeValueByTable(pg, table_name, v):
     for time_colum in time_colums:
         name = time_colum.name
         if v.get(name):
-            v[name] = SQLLiteral("to_timestamp(%s)" % v[name]/1000)
+            v[name] = SQLLiteral("to_timestamp(%s)" % float(v[name])/1000)
     return v
 
 
