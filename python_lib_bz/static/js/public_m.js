@@ -151,7 +151,7 @@
       if (isNaN(value)) {
         return $(this.el).datepicker('update', value);
       } else if (value) {
-        return $(this.el).datepicker('update', new Date(value));
+        return $(this.el).datepicker('update', new Date(parseInt(value)));
       } else {
         return $(this.el).datepicker('update', '');
       }
@@ -264,7 +264,7 @@
 
   if ($().toastmessage) {
     $().toastmessage({
-      sticky: false,
+      sticky: true,
       position: 'top-right',
       stayTime: 5000,
       closeText: '<i class="fa fa-times"></i>',
