@@ -392,8 +392,8 @@ class oper(BaseHandler):
     @handleError
     def get(self):
         self.set_header("Content-Type", "application/json")
-        t = self.request.get_arguments('t')
-        w = self.request.get_arguments('w', '1=1')
+        t = self.get_arguments('t')
+        w = self.get_arguments('w', '1=1')
         data = self.pg.db.select(t, where=w)
         self.write(json.dumps({'error': '0', 'data': data}, cls=public_bz.ExtEncoder))
 
@@ -474,9 +474,9 @@ class oper(BaseHandler):
             pass
         else:
             raise Exception('必须登录才能操作')
-        t = self.request.get_arguments('t')
-        w = self.request.get_arguments('w')
-        c = self.request.get_arguments('c')
+        t = self.get_arguments('t')
+        w = self.get_arguments('w')
+        c = self.get_arguments('c')
 
         trans = self.pg.db.transaction()
         count = self.pg.db.update(t, w, is_delete=1)
