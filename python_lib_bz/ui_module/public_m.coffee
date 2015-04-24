@@ -127,7 +127,7 @@ Vue.directive('datepicker',
     if isNaN(value)
       $(@el).datepicker('update', value)
     else if value
-      $(@el).datepicker('update', new Date(value))
+      $(@el).datepicker('update', new Date(parstInt(value)))
     else
       $(@el).datepicker('update', '')
 )
