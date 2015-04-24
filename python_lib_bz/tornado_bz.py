@@ -403,7 +403,7 @@ class oper(BaseHandler):
         '''
         self.set_header("Content-Type", "application/json")
         if self.current_user:
-            pass
+            user_id = self.current_user
         else:
             raise Exception('必须登录才能操作')
 
@@ -425,6 +425,7 @@ class oper(BaseHandler):
                 trans.rollback()
 
         seq = t + '_id_seq'
+        v['user_id'] = user_id
         id = self.pg.db.insert(t, seqname=seq, **v)
         self.write(json.dumps({'error': '0', 'id': id}))
 
