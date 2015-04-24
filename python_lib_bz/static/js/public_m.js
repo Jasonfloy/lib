@@ -266,7 +266,7 @@
     $().toastmessage({
       sticky: false,
       position: 'top-right',
-      stayTime: 6000,
+      stayTime: 5000,
       closeText: '<i class="fa fa-times"></i>',
       successText: '<i class="fa fa-check"></i>',
       warningText: '<i class="fa fa-exclamation-triangle"></i>',
