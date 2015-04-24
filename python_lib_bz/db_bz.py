@@ -60,7 +60,8 @@ def transTimeValueByTable(pg, table_name, v):
     time_colums = getTableColum(pg, table_name, just_time=True)
     for time_colum in time_colums:
         name = time_colum.name
-        v[name] = SQLLiteral("to_timestamp(%s)" % v[name])
+        if v.get(name):
+            v[name] = SQLLiteral("to_timestamp(%s)" % v[name])
     return v
 
 
