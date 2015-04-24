@@ -220,11 +220,15 @@ Vue.directive('active', (value)->
 
 if $().toastmessage
   $().toastmessage(
-    sticky: false
+    sticky: true
     position: 'top-right'
     stayTime: 5000
+    closeText: '<i class="fa fa-times"></i>'
+    successText: '<i class="fa fa-check"></i>'
+    warningText: '<i class="fa fa-exclamation-triangle"></i>',
+    noticeText: '<i class="fa fa-exclamation"></i>',
+    errorText: '<i class="fa fa-exclamation-circle"></i>'
   )
-
 window.bz =
   #是不是空对象
   isEmpty : (obj) ->
