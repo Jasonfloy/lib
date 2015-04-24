@@ -56,12 +56,13 @@ def getTableColum(pg, table_name, name=None, just_time=None):
 def transTimeValueByTable(pg, table_name, v):
     '''
     create by bigzhu at 15/04/24 14:14:52 为了让time能 insert/update 数据库
+    modify by bigzhu at 15/04/24 16:10:51 自动除以1000以应对js
     '''
     time_colums = getTableColum(pg, table_name, just_time=True)
     for time_colum in time_colums:
         name = time_colum.name
         if v.get(name):
-            v[name] = SQLLiteral("to_timestamp(%s)" % v[name])
+            v[name] = SQLLiteral("to_timestamp(%s)" % v[name]/1000)
     return v
 
 
