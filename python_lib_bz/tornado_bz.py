@@ -12,6 +12,7 @@ import functools
 import json
 import urllib
 import user_bz
+import db_bz
 from tornado.escape import utf8
 from tornado.web import RequestHandler
 
@@ -410,6 +411,8 @@ class oper(BaseHandler):
         data = json.loads(self.request.body)
         t = data.get('t')  # table
         v = data.get('v')  # value
+
+        v = db_bz.transTimeValueByTable(self.pg, t, v)
         # 插入的值有id就update,只能udpate一条,没有就 insert
         id = v.get('id')
         if id is not None:
@@ -443,6 +446,8 @@ class oper(BaseHandler):
         t = data.get('t')  # table
         w = data.get('w')  # where
         v = data.get('v')  # value
+
+        v = db_bz.transTimeValueByTable(self.pg, t, v)
         if w is None:
             id = v.get('id')
             if id is None:
