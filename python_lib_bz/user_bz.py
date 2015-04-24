@@ -61,7 +61,7 @@ class UserOper:
         '''
 
     @daemonDB
-    def getUserInfo(self, user_type="'my'", user_name=None, out_id=None):
+    def getUserInfo(self, user_type, user_name=None, out_id=None):
         sql = "select * from user_info where user_type in(%s) " % user_type
         if user_name:
             sql += " and user_name='%s' " % user_name
