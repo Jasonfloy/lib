@@ -186,7 +186,8 @@ class UserInfoHandler(BaseHandler):
         if self.current_user:
             user_info = user_bz.UserOper(self.pg).getUserInfoById(self.current_user)
             if user_info:
-                return user_info[0]
+                self.user_info = user_info[0]
+                return self.user_info
             else:
                 self.redirect("/logout")
 
