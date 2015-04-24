@@ -23,43 +23,25 @@ class UserOper:
         self.pg = pg
 
     @daemonDB
-    def login(self, user_name, password, email=None):
+    def login(self, user_name, password, user_type="'my','gov'"):
         '''
         modify by bigzhu at 15/02/25 13:57:19 加入唯一约束
         modify by bigzhu at 15/03/08 14:24:57 加入 email; 根据 email 来判断是注册还是登录
 
         登录模块,如果不存在这个用户名,则注册
-        数据模型:
-
-
-        -- Table: user_info
-
-        -- DROP TABLE user_info;
-
-        CREATE TABLE user_info
-        (
-        -- 继承 from table base:  id integer NOT NULL DEFAULT nextval('base_id_seq'::regclass),
-        -- 继承 from table base:  created_date timestamp without time zone DEFAULT now(),
-        -- 继承 from table base:  stat_date timestamp without time zone DEFAULT now(),
-          user_type text,
-          out_id text,
-          email text,
-          user_name text,
-          link text,
-          picture text,
-          gender text,
-          locale text,
-          password text,
-          original_json text,
-          CONSTRAINT user_info_out_id_key UNIQUE (out_id)
-        )
-        INHERITS (base)
-        WITH (
-          OIDS=FALSE
-        );
-
+        modify by bigzhu at 15/04/24 17:49:15 注册和登录分开
 
         '''
+        user_infos = self.getUserInfo(user_type=user_type, user_name=user_name)
+        if user_infos:
+            if user_infos[0].password == password:
+                return user_infos[0]
+            else:
+                raise Exception('密码错误!')
+        else:
+            raise Exception('用户不存在!')
+        '''
+
         user_infos = self.getUserInfo(user_name=user_name)
         if user_infos:
             if user_infos[0].password == password:
@@ -76,10 +58,11 @@ class UserOper:
                         email = user_name
             self.pg.db.insert('user_info', user_type='my', user_name=user_name, password=password, email=email)
             return self.login(user_name, password)
+        '''
 
     @daemonDB
-    def getUserInfo(self, user_type='my', user_name=None, out_id=None):
-        sql = "select * from user_info where user_type='%s' " % user_type
+    def getUserInfo(self, user_type="'my'", user_name=None, out_id=None):
+        sql = "select * from user_info where user_type in(%s) " % user_type
         if user_name:
             sql += " and user_name='%s' " % user_name
         if out_id:
