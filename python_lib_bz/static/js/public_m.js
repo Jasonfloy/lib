@@ -151,7 +151,7 @@
       if (isNaN(value)) {
         return $(this.el).datepicker('update', value);
       } else if (value) {
-        return $(this.el).datepicker('update', new Date(parstInt(value)));
+        return $(this.el).datepicker('update', new Date(parseInt(value)));
       } else {
         return $(this.el).datepicker('update', '');
       }
