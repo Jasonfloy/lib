@@ -418,7 +418,8 @@ class oper(BaseHandler):
             count = self.pg.db.update(t, w, **v)
             if count == 1:
                 trans.commit()
-                return '0'
+                self.write(json.dumps({'error': '0'}))
+                return
             else:
                 trans.rollback()
 
