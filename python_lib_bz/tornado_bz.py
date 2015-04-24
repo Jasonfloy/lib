@@ -12,6 +12,7 @@ import functools
 import json
 import urllib
 import user_bz
+import db_bz
 from tornado.escape import utf8
 from tornado.web import RequestHandler
 
@@ -391,8 +392,8 @@ class oper(BaseHandler):
     @handleError
     def get(self):
         self.set_header("Content-Type", "application/json")
-        t = self.request.arguments.get('t')
-        w = self.request.arguments.get('w', '1=1')
+        t = self.get_argument('t')
+        w = self.get_argument('w', '1=1')
         data = self.pg.db.select(t, where=w)
         self.write(json.dumps({'error': '0', 'data': data}, cls=public_bz.ExtEncoder))
 
@@ -410,6 +411,8 @@ class oper(BaseHandler):
         data = json.loads(self.request.body)
         t = data.get('t')  # table
         v = data.get('v')  # value
+
+        v = db_bz.transTimeValueByTable(self.pg, t, v)
         # 插入的值有id就update,只能udpate一条,没有就 insert
         id = v.get('id')
         if id is not None:
@@ -443,6 +446,8 @@ class oper(BaseHandler):
         t = data.get('t')  # table
         w = data.get('w')  # where
         v = data.get('v')  # value
+
+        v = db_bz.transTimeValueByTable(self.pg, t, v)
         if w is None:
             id = v.get('id')
             if id is None:
@@ -469,9 +474,9 @@ class oper(BaseHandler):
             pass
         else:
             raise Exception('必须登录才能操作')
-        t = self.request.arguments.get('t')
-        w = self.request.arguments.get('w')
-        c = self.request.arguments.get('c')
+        t = self.get_argument('t')
+        w = self.get_argument('w')
+        c = self.get_argument('c')
 
         trans = self.pg.db.transaction()
         count = self.pg.db.update(t, w, is_delete=1)
