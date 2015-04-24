@@ -81,7 +81,7 @@ class login(ModuleHandler, UserInfoHandler):
             email = login_info.get("email")
             # 密码加密
             hashed_password = hashlib.md5(password + salt).hexdigest()
-            user_info = self.user_oper.login(user_name, hashed_password, email)
+            user_info = self.user_oper.login(user_name, hashed_password)
             self.set_secure_cookie("user_id", str(user_info.id))
             self.write(json.dumps({'error': '0'}, cls=public_bz.ExtEncoder))
         elif form_type == 'forget':  # 如果是找回密码
