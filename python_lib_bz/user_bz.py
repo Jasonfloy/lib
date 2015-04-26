@@ -70,6 +70,11 @@ class UserOper:
         return list(self.pg.db.query(sql))
 
     @daemonDB
+    def getUserInfoByName(self, user_name):
+        sql = "select * from user_info where user_name ='%s' " % user_name
+        return list(self.pg.db.query(sql))
+
+    @daemonDB
     def googleLogin(self, user_info):
         '''
         google 登录信息存到 db 中

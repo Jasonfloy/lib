@@ -61,15 +61,24 @@ class login(ModuleHandler, UserInfoHandler):
         self.set_header("Content-Type", "application/json")
         login_info = json.loads(self.request.body)
         form_type = login_info.get("type")
-        if form_type == 'login':  # 如果是登录
+        if form_type == 'login':
             user_name = login_info.get("user_name")
             password = login_info.get("password")
-            email = login_info.get("email")
             # 密码加密
             hashed_password = hashlib.md5(password + salt).hexdigest()
             user_info = self.user_oper.login(user_name, hashed_password)
             self.set_secure_cookie("user_id", str(user_info.id))
             self.write(json.dumps({'error': '0'}, cls=public_bz.ExtEncoder))
+        elif form_type == 'sign_up':
+            user_name = login_info.get("user_name")
+            password = login_info.get("password")
+            #判断是不是用邮箱作为用户名来注册
+            email = user_name
+            #用户是否存在应该注册提交前判断,这里再次判断
+            user_info = self.user_oper.getUserInfoByName(user_name)
+            if user_info:
+                raise Exception('用户已经存在!可能是那一瞬间被抢注了.真遗憾,换一个吧')
+
         elif form_type == 'forget':  # 如果是找回密码
             email = login_info.get("email")
             sql_token = "select forget_token from user_info where email = '%s' and user_type = 'my'" % email
