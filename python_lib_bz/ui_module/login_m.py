@@ -39,23 +39,9 @@ class login(ModuleHandler, UserInfoHandler):
     def initialize(self):
         '''
         针对 oauth2 ,需要你重载的时候来设置为你自己的参数, 以下是 google twitter douban 的例子
-
-        # google 登录的参数
-        CLIENT_ID = '413021385046-mgcrb8l8qnc3kdg8h9tq3857ae71idke.apps.googleusercontent.com'
-        CLIENT_SECRET = 'hygluwSg-7L_WsifSC5-4OZ5'
-        self.settings["google_oauth"] = {
-            "key": CLIENT_ID,
-            "secret": CLIENT_SECRET,
-            "redirect_uri": "http://www.highwe.net/google",
-        }
-        # twitter
-        self.settings["twitter_consumer_key"] = 'YmQK6YdczdtjMPLsHjoVs8QgH'
-        self.settings["twitter_consumer_secret"] = 'ZM1fklU38SBQN5RBwvRH1yRttrrHjBS5uuOtqIqUObIGafgeRG'
-        # douban
-        self.settings["douban_api_key"] = '01be463aa2868092053ad2afe79381b6'
-        self.settings["douban_api_secret"] = 'a957e7c9cc366f86'
-        self.settings["redirect_uri"] = 'http://highwe.net/douban'
+        modify by bigzhu at 15/04/26 21:56:09 对应的oauth登录的参数,应该在对应的oauth里面来设置
         '''
+
         UserInfoHandler.initialize(self)
         oauth2 = storage()
         oauth2.google = storage(enabled=False, url='/google')
