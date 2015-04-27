@@ -120,7 +120,7 @@ class file_ref(UserInfoHandler):
                 }
                 self.pg.db.insert("uploaded_file_record_ref", **file_ref)
         if remove_files:
-            self.pg.db.update("uploaded_file_record_ref", where="id in (%s)" % ','.join(map(str, remove_files)), is_delete="T")
+            self.pg.db.update("uploaded_file_record_ref", where="id in (%s)" % ','.join(map(str, remove_files)), is_delete=1)
         self.write(json.dumps({"error": 0}))
 
 if __name__ == '__main__':

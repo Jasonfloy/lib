@@ -39,7 +39,7 @@ class login(ModuleHandler, UserInfoHandler):
     def initialize(self):
         '''
         针对 oauth2 ,需要你重载的时候来设置为你自己的参数, 以下是 google twitter douban 的例子
-        modify by bigzhu at 15/04/26 21:56:09 对应的oauth登录的参数,应该在对应的oauth里面来设置
+        modify by bigzhu at 15/04/26 21:56:09 对应的oauth登录的参数,应该在对应的oauth里面来设置,这里不用再设置了
         '''
 
         UserInfoHandler.initialize(self)

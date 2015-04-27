@@ -17,6 +17,7 @@ class UserOper:
 
     '''
     对用户相关的操作
+    create by bigzhu at 15/04/26 22:22:21 其实还是一个db操作合集,为了避免反复的传入 pg 参数而建立的 class
     '''
 
     def __init__(self, pg):
