@@ -11,15 +11,6 @@
         submit: function() {
           var data;
           data = this.$data;
-          data.error_info = false;
-          if (data.user_name === '' || data.user_name === void 0) {
-            data.error_info = '请输入用户名';
-            return;
-          }
-          if (data.password === '' || data.password === void 0) {
-            data.error_info = '请输入用密码';
-            return;
-          }
           data.loading = true;
           return $.post('/login', JSON.stringify({
             user_name: data.user_name,
@@ -36,6 +27,56 @@
               return location.pathname = '/';
             }
           });
+        },
+        check: function() {
+          if (this.user_name === '' || this.user_name === void 0) {
+            throw new Error("请输入用户名");
+          }
+          if (this.password === '' || this.password === void 0) {
+            throw new Error("请输入用密码");
+          }
+        },
+        post: function(type) {
+          var parm;
+          if (type === 'login') {
+            parm = JSON.stringify({
+              user_name: this.user_name,
+              password: this.password,
+              type: type
+            });
+          }
+          this.loading = true;
+          return $.post('/login', parm, (function(_this) {
+            return function(result, done) {
+              _this.loading = false;
+              if (result.error !== '0') {
+                if (result.error === 'user not exist' && type === 'login') {
+                  $('#confirm-ask-create').modal();
+                  return;
+                }
+                return _this.error_info = result.error;
+              } else if (result.error === void 0) {
+                return _this.error_info = '未知错误';
+              } else {
+                return location.pathname = '/';
+              }
+            };
+          })(this));
+        },
+        createUserByModal: function() {
+          return $('#go_signup').tab('show');
+        },
+        login: function() {
+          var error;
+          this.error_info = false;
+          try {
+            this.check();
+          } catch (_error) {
+            error = _error;
+            this.error_info = error.message;
+            return;
+          }
+          return this.post('login');
         },
         signup: function() {
           var data;

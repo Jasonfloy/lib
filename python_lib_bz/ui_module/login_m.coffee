@@ -5,15 +5,9 @@ $(->
       error_info:false
       loading:false
     methods:
+
       submit:->
         data = @$data
-        data.error_info = false
-        if data.user_name == '' or data.user_name == undefined
-          data.error_info = '请输入用户名'
-          return
-        if data.password == '' or data.password == undefined
-          data.error_info = '请输入用密码'
-          return
   
         data.loading=true
         $.post '/login',
@@ -30,6 +24,40 @@ $(->
               data.error_info = '未知错误'
             else
               location.pathname = '/'
+      check:->
+        if @user_name == '' or @user_name == undefined
+          throw new Error("请输入用户名")
+        if @password == '' or @password == undefined
+          throw new Error("请输入用密码")
+      post:(type)->
+        if type == 'login'
+          parm = JSON.stringify
+            user_name:@user_name
+            password:@password
+            type:type
+        @loading=true
+        $.post '/login', parm ,(result, done)=>
+          @loading=false
+          if result.error != '0'
+            #后台说这个用户没有时,提示用户创建
+            if result.error == 'user not exist' and type =='login'
+              $('#confirm-ask-create').modal()
+              return
+            @error_info = result.error
+          else if result.error == undefined
+            @error_info = '未知错误'
+          else
+            location.pathname = '/'
+      createUserByModal:->
+        $('#go_signup').tab('show')
+      login:->
+        @error_info = false
+        try
+          @check()
+        catch error
+          @error_info=error.message
+          return
+        @post('login')
       signup:->
         data = @$data
         if data.password != data.repassword

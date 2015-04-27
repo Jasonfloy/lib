@@ -30,7 +30,7 @@ class UserOper:
         modify by bigzhu at 15/03/08 14:24:57 加入 email; 根据 email 来判断是注册还是登录
             --登录模块,如果不存在这个用户名,则注册--
         modify by bigzhu at 15/04/24 17:49:15 注册和登录分开
-
+        modify by bigzhu at 15/04/27 16:49:21 没有用户时提示注册
         '''
         user_infos = self.getUserInfo(user_type=user_type, user_name=user_name)
         if user_infos:
@@ -39,7 +39,8 @@ class UserOper:
             else:
                 raise Exception('密码错误!')
         else:
-            raise Exception('用户不存在!')
+            #前台要根据这个来弹出建议用户注册的提示,请不要修改
+            raise Exception('user not exist')
         '''
 
         user_infos = self.getUserInfo(user_name=user_name)
