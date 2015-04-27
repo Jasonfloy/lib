@@ -85,7 +85,6 @@ class CrudOper:
         return list(self.pg.db.query(sql))
 
     def getCrudListConf(self, table_name, isTime=None):
-        # select * from crud_conf where table_name='%s' and grid_show=1 and is_delete != 't'
         sql = '''
         select * from crud_conf where table_name='%s' and grid_show=1 and is_delete != 1
         ''' % table_name
