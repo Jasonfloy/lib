@@ -35,6 +35,13 @@ $(->
             user_name:@user_name
             password:@password
             type:type
+        else if type == 'signup'
+          parm = JSON.stringify
+            user_name:@user_name
+            password:@password
+            email:@email
+            type:type
+            type:'signup'
         @loading=true
         $.post '/login', parm ,(result, done)=>
           @loading=false
@@ -59,11 +66,18 @@ $(->
           return
         @post('login')
       signup:->
-        data = @$data
-        if data.password != data.repassword
-          data.error_info = '两次密码不一致'
+        try
+          @check()
+        catch error
+          @error_info=error.message
           return
-        @submit()
+        if @password != @repassword
+          @error_info = '两次密码不一致'
+          return
+        if @email == '' or @email == undefined
+          @error_info = '请输入邮箱'
+          return
+        @post('signup')
 
       forget:->
         data = @$data

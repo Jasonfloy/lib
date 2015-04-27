@@ -62,6 +62,9 @@ class UserOper:
         '''
 
     @daemonDB
+    def signup(self, user_name, password, email, user_type='my'):
+        self.pg.db.insert('user_info', user_type=user_type, user_name=user_name, password=password, email=email)
+    @daemonDB
     def getUserInfo(self, user_type=None, user_name=None, out_id=None):
         '''
         create by bigzhu at 15/04/27 10:36:01 根据条件查出用户信息

@@ -44,6 +44,14 @@
               password: this.password,
               type: type
             });
+          } else if (type === 'signup') {
+            parm = JSON.stringify({
+              user_name: this.user_name,
+              password: this.password,
+              email: this.email,
+              type: type,
+              type: 'signup'
+            });
           }
           this.loading = true;
           return $.post('/login', parm, (function(_this) {
@@ -79,13 +87,23 @@
           return this.post('login');
         },
         signup: function() {
-          var data;
-          data = this.$data;
-          if (data.password !== data.repassword) {
-            data.error_info = '两次密码不一致';
+          var error;
+          try {
+            this.check();
+          } catch (_error) {
+            error = _error;
+            this.error_info = error.message;
             return;
           }
-          return this.submit();
+          if (this.password !== this.repassword) {
+            this.error_info = '两次密码不一致';
+            return;
+          }
+          if (this.email === '' || this.email === void 0) {
+            this.error_info = '请输入邮箱';
+            return;
+          }
+          return this.post('signup');
         },
         forget: function() {
           var data;
