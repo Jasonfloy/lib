@@ -66,17 +66,17 @@
                                     <span class="input-group-addon">
                                         <i class="fa fa-lock"></i>
                                     </span>
-                                    <input type="password" v-model="password" class="form-control" id="password" placeholder="请输入密码" v-on="keyup: submit | key enter,focus:cleanError">
+                                    <input type="password" v-model="password" class="form-control" id="password" placeholder="请输入密码" v-on="keyup: login | key enter,focus:cleanError">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <a v-on="click: submit" class="btn btn-primary btn-lg btn-block bz-login-btn">登录</a>
+                                <a v-on="click: login" class="btn btn-primary btn-lg btn-block bz-login-btn">登录</a>
                             </div>
                         </form>
                     </div>
                     <div class="box-footer">
                         <a class="pull-right" v-on="click:cleanError" href="#forget" aria-controls="forget" role="tab" data-toggle="tab">忘记密码</a>
-                        <a v-on="click:cleanError" v-on="click:cleanError" href="#signup" aria-controls="signup" role="tab" data-toggle="tab">新用户注册</a>
+                        <a id="go_signup" v-on="click:cleanError" v-on="click:cleanError" href="#signup" aria-controls="signup" role="tab" data-toggle="tab">新用户注册</a>
                     </div>
                 </div>
             </div>
@@ -200,9 +200,29 @@
         </div>
     </div>
     <div v-show="error_info" class="alert alert-warning alert-dismissable">
+        <!--
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        -->
         <h4><i class="icon fa fa-warning"></i>(%error_info%)</h4>
         请重新填写
+    </div>
+
+    <div class="modal fade" id="confirm-ask-create" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">建立一个吧!</h4>
+                </div>
+                <div class="modal-body">
+                    <p>系统还没有用户(%user_name%),是否建立?</p>
+                </div>
+                <div class="modal-footer">
+                    <button v-on="click:createUserByModal" type="button" class="btn btn-primary pull-left" data-dismiss="modal">确定</button>
+                    <button type="button" class="btn btn-default " data-dismiss="modal">取消</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
     </div>
 </div>
 
