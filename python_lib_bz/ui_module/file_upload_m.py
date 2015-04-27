@@ -76,7 +76,7 @@ class file_upload(UserInfoHandler):
                     r = {
                         'file_id': file_id,
                         'file_name': file_name,
-                        'file_path': "/" + file_path,
+                        'file_path': file_path,
                         'suffix': file_suffix
                     }
                     results.append(r)
