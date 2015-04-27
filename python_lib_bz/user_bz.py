@@ -28,8 +28,7 @@ class UserOper:
         '''
         modify by bigzhu at 15/02/25 13:57:19 加入唯一约束
         modify by bigzhu at 15/03/08 14:24:57 加入 email; 根据 email 来判断是注册还是登录
-
-        登录模块,如果不存在这个用户名,则注册
+            --登录模块,如果不存在这个用户名,则注册--
         modify by bigzhu at 15/04/24 17:49:15 注册和登录分开
 
         '''
@@ -62,17 +61,17 @@ class UserOper:
         '''
 
     @daemonDB
-    def getUserInfo(self, user_type, user_name=None, out_id=None):
-        sql = "select * from user_info where user_type in(%s) " % user_type
+    def getUserInfo(self, user_type=None, user_name=None, out_id=None):
+        '''
+        create by bigzhu at 15/04/27 10:36:01 根据条件查出用户信息
+        '''
+        sql = " select * from user_info where 1=1 "
+        if user_type:
+            sql += " and user_type in (%s)" % user_type
         if user_name:
             sql += " and user_name='%s' " % user_name
         if out_id:
             sql += " and out_id='%s' " % out_id
-        return list(self.pg.db.query(sql))
-
-    @daemonDB
-    def getUserInfoByName(self, user_name):
-        sql = "select * from user_info where user_name ='%s' " % user_name
         return list(self.pg.db.query(sql))
 
     @daemonDB

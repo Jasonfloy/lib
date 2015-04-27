@@ -1,59 +1,57 @@
 {% module loading_m() %}
 {% module check_ie_m() %}
-<div class="container">
-    <div id='v_login' v-loading="loading">
-        {% if oauth2 %}
-        <div class="btn-group btn-group-justified">
-            {% if oauth2.get('google') and oauth2.get('google').get('enabled') %}
-            <a class="btn btn-default btn-oauth2-google" href="{{ oauth2.get('google').get('url') }}">
-                <i class="fa fa-google-plus"></i>
-                <span class="visible-md-inline-block visible-lg-inline-block">Google</span>
-            </a>
-            {% end %} {% if oauth2.get('twitter') and oauth2.get('twitter').get('enabled') %}
-            <a class="btn btn-default btn-oauth2-twitter" href="{{ oauth2.get('twitter').get('url') }}">
-                <i class="fa fa-twitter"></i>
-                <span class="visible-md-inline-block visible-lg-inline-block">Twitter</span>
-            </a>
-            {% end %} {% if oauth2.get('facebook') and oauth2.get('facebook').get('enabled') %}
-            <a class="btn btn-default btn-oauth2-facebook" href="{{ oauth2.get('facebook').get('url') }}">
-                <i class="fa fa-facebook"></i>
-                <span class="visible-md-inline-block visible-lg-inline-block">Facebook</span>
-            </a>
-            {% end %}{% if oauth2.get('github') and oauth2.get('github').get('enabled') %}
-            <a class="btn btn-default btn-oauth2-github" href="{{ oauth2.get('github').get('url') }}">
-                <i class="fa fa-github"></i>
-                <span class="visible-md-inline-block visible-lg-inline-block">Github</span>
-            </a>
-            {% end %} {% if oauth2.get('weibo') and oauth2.get('weibo').get('enabled') %}
-            <a class="btn btn-default btn-oauth2-weibo" href="{{ oauth2.get('weibo').get('url') }}">
-                <i class="fa fa-weibo"></i>
-                <span class="visible-md-inline-block visible-lg-inline-block">Weibo</span>
-            </a>
-            {% end %} {% if oauth2.get('qq') and oauth2.get('qq').get('enabled') %}
-            <a class="btn btn-default btn-oauth2-qq" href="{{ oauth2.get('qq').get('url') }}">
-                <i class="fa fa-qq"></i>
-                <span class="visible-md-inline-block visible-lg-inline-block">QQ</span>
-            </a>
-            {% end %} {% if oauth2.get('douban') and oauth2.get('douban').get('enabled') %}
-            <a class="btn btn-default btn-oauth2-douban" href="{{ oauth2.get('douban').get('url') }}">
-                豆
-                <span class="visible-md-inline-block visible-lg-inline-block">瓣</span>
-            </a> {% end %}
-        </div>
-        <br> {% end %}
-        <div role="tabpanel">
-            <!-- Nav tabs -->
-            <!-- <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a v-on="click:cleanError" href="#login" aria-controls="login" role="tab" data-toggle="tab">登录</a></li>
-                <li role="presentation"><a v-on="click:cleanError" href="#signup" aria-controls="signup" role="tab" data-toggle="tab">注册</a></li>
-                <li role="presentation"><a v-on="click:cleanError" href="#forget" aria-controls="forget" role="tab" data-toggle="tab">忘记密码？</a></li>
-            </ul> -->
-            <!-- Tab panes -->
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="login">
-                    <div class="panel-body">
-                        <h2 class="text-center">用户登录</h2>
-                        <hr>
+<div id='v_login' v-loading="loading" class="container">
+    {% if oauth2 %}
+    <div class="btn-group btn-group-justified">
+        {% if oauth2.get('google') and oauth2.get('google').get('enabled') %}
+        <a class="btn btn-default btn-oauth2-google" href="{{ oauth2.get('google').get('url') }}">
+            <i class="fa fa-google-plus"></i>
+            <span class="visible-md-inline-block visible-lg-inline-block">Google</span>
+        </a>
+        {% end %} {% if oauth2.get('twitter') and oauth2.get('twitter').get('enabled') %}
+        <a class="btn btn-default btn-oauth2-twitter" href="{{ oauth2.get('twitter').get('url') }}">
+            <i class="fa fa-twitter"></i>
+            <span class="visible-md-inline-block visible-lg-inline-block">Twitter</span>
+        </a>
+        {% end %} {% if oauth2.get('facebook') and oauth2.get('facebook').get('enabled') %}
+        <a class="btn btn-default btn-oauth2-facebook" href="{{ oauth2.get('facebook').get('url') }}">
+            <i class="fa fa-facebook"></i>
+            <span class="visible-md-inline-block visible-lg-inline-block">Facebook</span>
+        </a>
+        {% end %}{% if oauth2.get('github') and oauth2.get('github').get('enabled') %}
+        <a class="btn btn-default btn-oauth2-github" href="{{ oauth2.get('github').get('url') }}">
+            <i class="fa fa-github"></i>
+            <span class="visible-md-inline-block visible-lg-inline-block">Github</span>
+        </a>
+        {% end %} {% if oauth2.get('weibo') and oauth2.get('weibo').get('enabled') %}
+        <a class="btn btn-default btn-oauth2-weibo" href="{{ oauth2.get('weibo').get('url') }}">
+            <i class="fa fa-weibo"></i>
+            <span class="visible-md-inline-block visible-lg-inline-block">Weibo</span>
+        </a>
+        {% end %} {% if oauth2.get('qq') and oauth2.get('qq').get('enabled') %}
+        <a class="btn btn-default btn-oauth2-qq" href="{{ oauth2.get('qq').get('url') }}">
+            <i class="fa fa-qq"></i>
+            <span class="visible-md-inline-block visible-lg-inline-block">QQ</span>
+        </a>
+        {% end %} {% if oauth2.get('douban') and oauth2.get('douban').get('enabled') %}
+        <a class="btn btn-default btn-oauth2-douban" href="{{ oauth2.get('douban').get('url') }}">
+            豆
+            <span class="visible-md-inline-block visible-lg-inline-block">瓣</span>
+        </a> {% end %}
+    </div>
+    <br>
+    {% end %}
+    <div role="tabpanel">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="login">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="text-center">用户登录</h3>
+                        <div class="box-tools pull-right">
+                            <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse"><i class="fa fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <div class="box-body">
                         <form class="form">
                             <div class="form-group">
                                 <div class="input-group input-group-lg">
@@ -75,16 +73,22 @@
                                 <a v-on="click: submit" class="btn btn-primary btn-lg btn-block bz-login-btn">登录</a>
                             </div>
                         </form>
-                        <div>
-                            <a class="pull-right" v-on="click:cleanError" href="#forget" aria-controls="forget" role="tab" data-toggle="tab">忘记密码？</a>
-                            <a v-on="click:cleanError" v-on="click:cleanError" href="#signup" aria-controls="signup" role="tab" data-toggle="tab">新用户注册</a>
-                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <a class="pull-right" v-on="click:cleanError" href="#forget" aria-controls="forget" role="tab" data-toggle="tab">忘记密码</a>
+                        <a v-on="click:cleanError" v-on="click:cleanError" href="#signup" aria-controls="signup" role="tab" data-toggle="tab">新用户注册</a>
                     </div>
                 </div>
-                <div role="tabpanel" class="tab-pane" id="signup">
-                    <div class="panel-body">
-                        <h2 class="text-center">用户注册</h2>
-                        <hr>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="signup">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="text-center">用户注册</h3>
+                        <div class="box-tools pull-right">
+                            <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse"><i class="fa fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <div class="box-body">
                         <form class="form">
                             <div class="form-group">
                                 <div class="input-group input-group-lg">
@@ -122,15 +126,22 @@
                                 <input v-on="click: signup" class="btn btn-primary btn-lg btn-block bz-signup-btn" value="注册" v-disable="loading">
                             </div>
                         </form>
-                        <div>
-                            <a v-on="click:cleanError" v-on="click:cleanError" href="#login" aria-controls="login" role="tab" data-toggle="tab">返回登录</a>
-                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <a v-on="click:cleanError" v-on="click:cleanError" href="#login" aria-controls="login" role="tab" data-toggle="tab">返回登录</a>
+
                     </div>
                 </div>
-                <div role="tabpanel" class="tab-pane" id="forget">
-                    <div class="panel-body">
-                        <h2 class="text-center">找回密码</h2>
-                        <hr>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="forget">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="text-center">找回密码</h3>
+                        <div class="box-tools pull-right">
+                            <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse"><i class="fa fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <div class="box-body">
                         <form class="form">
                             <div class="form-group">
                                 <div class="input-group input-group-lg">
@@ -144,15 +155,22 @@
                                 <input v-on="click: forget" class="btn btn-primary btn-lg btn-block bz-login-btn" type="button" value="发送邮件" v-disable="loading">
                             </div>
                         </form>
-                        <div>
-                            <a class="pull-right" v-on="click:cleanError" v-on="click:cleanError" href="#login" aria-controls="login" role="tab" data-toggle="tab">返回登录</a>
-                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <a v-on="click:cleanError" v-on="click:cleanError" href="#login" aria-controls="login" role="tab" data-toggle="tab">返回登录</a>
                     </div>
                 </div>
-                <div role="tabpanel" class="tab-pane" id="setPassword">
-                    <div class="panel-body">
-                        <h2 class="text-center">设置新密码</h2>
-                        <hr>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="setPassword">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="text-center">设置新密码</h3>
+                        <div class="box-tools pull-right">
+                            <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse"><i class="fa fa-minus"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="box-body">
                         <form class="form">
                             <div class="form-group">
                                 <div class="input-group input-group-lg">
@@ -176,10 +194,16 @@
                         </form>
                     </div>
                 </div>
-                <ul class="hide" role="tablist" id="tab"><a href="#setPassword" aria-controls="setPassword" role="tab" data-toggle="tab"></a></ul>
-
             </div>
+            <ul class="hide" role="tablist" id="tab"><a href="#setPassword" aria-controls="setPassword" role="tab" data-toggle="tab"></a></ul>
+
         </div>
-        <div v-show="error_info" class="alert alert-danger">(%error_info%)</div>
+    </div>
+    <div v-show="error_info" class="alert alert-warning alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-warning"></i>(%error_info%)</h4>
+        请重新填写
     </div>
 </div>
+
+
