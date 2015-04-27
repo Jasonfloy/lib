@@ -1,17 +1,22 @@
 <script type="text/x-template" id="file_upload_m">
 <div class="file_upload_m_control">
-    <div v-repeat="f : field.all_files">
+    <div v-repeat="f : files">
         <i v-file-icon="f.suffix"></i>
         <a v-href="f.file_path" target="_blank" v-class="remove-mark: f.remove==true">(% f.file_name %)</a>
         <i class="fa fa-times btn-remove-file" v-on="click: removeFile(f)"></i>
     </div>
+    <div v-repeat="f : append_files">
+        <i v-file-icon="f.suffix"></i>
+        <a v-href="f.file_path" target="_blank" v-class="remove-mark: f.remove==true">(% f.file_name %)</a>
+        <i class="fa fa-times btn-remove-file" v-on="click: removeFile(f)"></i>
+    </div>
+    <button class="btn-file btn btn-success" v-on="click:uploadFiles">开始上传</button> 
     <span class="file-input btn btn-sm btn-primary btn-file">
         选择文件<input v-on="change: appendFile($event)" type="file" multiple/>
     </span>
 </div>
 </script>
 <script type="text/javascript">
-all_files = []
 // 把disabled和href合并了
 Vue.directive("href", function(value){
     if(value) {
@@ -20,6 +25,7 @@ Vue.directive("href", function(value){
         $(this.el).attr("disabled", true)
     }
 });
+// 根据文件的拓展名替换不同的图标
 Vue.directive("file-icon", function(value){
     var file_icon = "fa fa-upload";
     if(value == "uploading") {
@@ -45,32 +51,95 @@ Vue.directive("file-icon", function(value){
     }
     $(this.el).attr("class", file_icon)
 });
+// component 本体
+// 使用方式 <div v-component="file_upload_m" v-with="field_name: 'test_file'" v-ref="test_file_c"></div>
+// 输入field名字，返回上传的ids
 Vue.component("file_upload_m", {
     template: "#file_upload_m",
+    computed: {
+        column: function() {
+            return this.field_name   // 上传用的字段名标记
+        }
+    },
+    attached: function() {
+        // 因为数据的显示传递会覆盖data对象，所以改成在attached方法中声明
+        this.$set("upload_ids", [])         // 上传成功后的id
+        this.$set("files", []);             // 显示的所有文件
+        this.$set("append_files", []);      // 新增的文件
+        this.$set("fd", new FormData());    // 文件上传用的formData 对象
+    },
     methods: {
         appendFile: function(e) {
-            _this = this
-            files = e.target.files
-            console.log(_this.$data.field.fd)
-            if(!_this.$data.field.fd) {
-                _this.$data.field.fd = new FormData()
-            }
+            var files = e.target.files
             for(var i in files) {
                 if(!isNaN(i)) {
-                    var f = files[i]
-                    new_file = {
-                        "column": _this.$data.field.column,
-                        "file_type": "file",
-                        "file_name": f.name
+                    var f = files[i];
+                    var fd = new FormData();
+                    fd.append("file_" + i, f);
+                    // 把文件放入到 all_files列表和 fd上传队列中
+                    var new_file = {
+                        "file_type": "file",    // 文件类型
+                        "file_name": f.name,    // 文件名 -- 来源于input[type=file]
+                        "remove": false,        // 删除标记
+                        "suffix": null,         // 文件拓展名
+                        "fd": fd
                     }
-                    _this.$data.field.all_files.push(new_file)
-                    _this.$data.field.fd.append("file_" + i, f)
+                    this.append_files.push(new_file)
                 }
             }
         },
         removeFile: function(f) {
-            f.remove = true
-            this.$data.field.remove_files.push(f.id)
+            _this = this
+            if(comfirm("是否确定删除文件:" + f.file_name + "?")) {
+                $.post("/file_ref",JSON.stringify({"remove_files": [f.id]}))
+                .done(function(d) {
+                    if(d.error == "0") {
+                        _this.files.splice(_this.files.indexOf(f), 1);
+                    } else {
+                        console.log("失败什么的");
+                    }
+                });
+            }
+        },
+        sendUploadRequest: function(fd, callback) {
+            $.ajax({
+                url: "/file_upload",
+                type:"POST",
+                data: fd,
+                processData: false,
+                contentType: false
+            }).done(callback);
+        },
+        uploadFiles: function() {
+            _this = this
+            _this.append_files.forEach(function(file, index) {
+                file.suffix = "uploading"
+                _this.sendUploadRequest(file.fd, function(d) {
+                    _this.append_files.splice(_this.append_files.indexOf(file), 1);
+                    _this.files.push(d.results[0])
+                });
+            });
+        },
+        createFileRef: function(){
+            // } else if(!data) {
+            //     params = {
+            //         "remove_files": this.remove_files
+            //     }
+            // } else {
+            //     params = {
+            //         "column": this.column,
+            //         "append_files": data.results,
+            //         "remove_files": this.remove_files,
+            //         "table_name": this.table_name,
+            //         "record_id": this.id
+            //     }
+            // }
+            // $.post(
+            //     "/file_ref",
+            //     JSON.stringify(params)
+            // ).done(function(data) {
+            //     console.log(data)
+            // });
         }
     }
 });

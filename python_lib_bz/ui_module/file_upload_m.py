@@ -40,8 +40,8 @@ class file_upload(UserInfoHandler):
         '''
         global md5
         self.set_header("Content-Type", "application/json")
+        results = []
         if self.request.files:
-            results = []
             for i in self.request.files:
                 fd = self.request.files[i]
                 for f in fd:
@@ -64,7 +64,7 @@ class file_upload(UserInfoHandler):
                         'suffix': file_suffix
                     }
                     results.append(r)
-            self.write(json.dumps({'error': 0, 'results': results}))
+        self.write(json.dumps({'error': 0, 'results': results}))
 
 
 class file_ref(UserInfoHandler):
