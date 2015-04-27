@@ -65,6 +65,7 @@ Vue.component("file_upload_m", {
         // 因为数据的显示传递会覆盖data对象，所以改成在attached方法中声明
         this.$set("upload_ids", [])         // 上传成功后的id
         this.$set("append_files", []);      // 新增的文件
+        this.$set("new_file_ids", []);      // 用于保存新增文件的文件id
         this.getExistFiles();
     },
     methods: {
@@ -103,7 +104,7 @@ Vue.component("file_upload_m", {
         removeFile: function(f) {
             _this = this
             if(confirm("是否确定删除文件:" + f.file_name + "?")) {
-                $.post("/file_ref",JSON.stringify({"remove_files": [f.id]}))
+                $.post("/file_ref",JSON.stringify({"remove_file": f.id}))
                 .done(function(d) {
                     if(d.error == "0") {
                         _this.files.splice(_this.files.indexOf(f), 1);
@@ -125,7 +126,7 @@ Vue.component("file_upload_m", {
                     processData: false,
                     contentType: false
                 }).done(function(d) {
-                    _this.upload_ids.push(d.results[0].file_id);
+                    _this.new_file_ids.push(d.results[0].file_id);
                     _this.append_files.splice(_this.append_files.indexOf(file), 1);
                     _this.files.push(d.results[0])
                 });
@@ -133,6 +134,7 @@ Vue.component("file_upload_m", {
         },
         // 默认的关联方法
         createFileRef: function(){
+            _this = this
             if(!this.id) {
                 console.log("请在调用之前先提交外部表单。");
             } else {
@@ -140,13 +142,15 @@ Vue.component("file_upload_m", {
                     "column": this.column,
                     "table_name": this.table_name,
                     "record_id": this.id,
-                    "upload_ids": this.upload_ids
+                    "new_file_ids": this.new_file_ids
                 }
                 $.post(
                     "/file_ref",
                     JSON.stringify(params)
                 ).done(function(data) {
-                    console.log(data)
+                    if(data.error == "0") {
+                        _this.$set("upload_ids", data.results);
+                    }
                 });
             }
         }

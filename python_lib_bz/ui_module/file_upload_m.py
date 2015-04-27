@@ -97,13 +97,14 @@ class file_ref(UserInfoHandler):
         self.set_header("Content-Type", "application/json")
         parms = json.loads(self.request.body)
         column = parms.get("column")
-        upload_ids = parms.get("upload_ids")
-        print upload_ids
+        new_file_ids = parms.get("new_file_ids")
         table_name = parms.get("table_name")
         record_id = parms.get("record_id")
+        remove_file = parms.get("remove_file")
         # 新增文件关联
-        if upload_ids:
-            for file_id in upload_ids:
+        results = []
+        if new_file_ids:
+            for file_id in new_file_ids:
                 file_ref = {
                     "uploaded_file_id": file_id,
                     "ref_table": table_name,
@@ -111,8 +112,11 @@ class file_ref(UserInfoHandler):
                     "ref_column": column,
                     "create_user_id": self.get_current_user()
                 }
-                self.pg.db.insert("uploaded_file_record_ref", **file_ref)
-        self.write(json.dumps({"error": 0}))
+                ref_id = self.pg.db.insert("uploaded_file_record_ref", seqname='id_base_seq', **file_ref)
+                results.append(ref_id)
+        if remove_file:
+            self.pg.db.update("uploaded_file_record_ref", where="id = %s" % remove_file, is_delete=1)
+        self.write(json.dumps({"error": 0, "results": results}))
 
 if __name__ == '__main__':
     pass
