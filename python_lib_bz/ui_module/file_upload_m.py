@@ -46,7 +46,7 @@ class file_upload(UserInfoHandler):
             where r.ref_table = '%s' and r.ref_column = '%s' and r.ref_record_id = '%s' and r.is_delete != 1
         """ % (parms[0], parms[1], parms[2])
         results = list(self.pg.db.query(sql))
-        self.write(json.dumps({'error': 0, 'results': results}))
+        self.write(json.dumps({'error': '0', 'results': results}))
 
     @tornado_bz.mustLogin
     @tornado_bz.handleError
@@ -80,7 +80,7 @@ class file_upload(UserInfoHandler):
                         'suffix': file_suffix
                     }
                     results.append(r)
-        self.write(json.dumps({'error': 0, 'results': results}))
+        self.write(json.dumps({'error': '0', 'results': results}))
 
 
 class file_ref(UserInfoHandler):
@@ -116,7 +116,7 @@ class file_ref(UserInfoHandler):
                 results.append(ref_id)
         if remove_file:
             self.pg.db.update("uploaded_file_record_ref", where="id = %s" % remove_file, is_delete=1)
-        self.write(json.dumps({"error": 0, "results": results}))
+        self.write(json.dumps({"error": '0', "results": results}))
 
 if __name__ == '__main__':
     pass

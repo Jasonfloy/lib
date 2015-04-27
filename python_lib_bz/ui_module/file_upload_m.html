@@ -54,14 +54,19 @@ Vue.directive("file-icon", function(value){
 // component 本体
 // 使用方式 <div v-component="file_upload_m" v-with="field_name: 'test_file'" v-ref="test_file_c"></div>
 // 输入field名字，返回上传的ids
-Vue.component("file_upload_m", {
+Vue.component("file-upload-m", {
     template: "#file_upload_m",
+    paramAttributes: ['table-name', 'field-name', 'record-id'],
     computed: {
         column: function() {
-            return this.field_name   // 上传用的字段名标记
+            return this.fieldName   // 上传用的字段名标记
         }
     },
     attached: function() {
+        console.log(this)
+        if(!this.tableName || !this.column) {
+            throw "组件没有正确的获取参数，请检查声明的HTML"
+        }
         // 因为数据的显示传递会覆盖data对象，所以改成在attached方法中声明
         this.$set("upload_ids", [])         // 上传成功后的id
         this.$set("append_files", []);      // 新增的文件
@@ -69,16 +74,16 @@ Vue.component("file_upload_m", {
         this.getExistFiles();
     },
     methods: {
+        // 获取已关联的文件
         getExistFiles: function() {
             _this = this
-            if(!_this.id) {
+            if(!_this.recordId) {
                 _this.$set("files", []);
             } else {
-            parms_str = [this.table_name, this.column, this.id].join("/")
+            parms_str = [this.tableName, this.column, this.recordId].join("/")
                 $.get("/file_upload/" + parms_str)
                 .done(function(d) {
                     _this.$set("files", d.results);
-                    console.log(_this.files)
                 });
             }
         },
@@ -108,9 +113,9 @@ Vue.component("file_upload_m", {
                 .done(function(d) {
                     if(d.error == "0") {
                         _this.files.splice(_this.files.indexOf(f), 1);
-                        console.log("删除成功");
+                        window.bz.showSuccess5("文件删除成功.")
                     } else {
-                        console.log("失败什么的");
+                        window.bz.showError5("删除文件时发生错误:" + d.error);
                     }
                 });
             }
@@ -126,30 +131,41 @@ Vue.component("file_upload_m", {
                     processData: false,
                     contentType: false
                 }).done(function(d) {
-                    _this.new_file_ids.push(d.results[0].file_id);
-                    _this.append_files.splice(_this.append_files.indexOf(file), 1);
-                    _this.files.push(d.results[0])
+                    if(d.error === "0") {
+                        // 记录上传成功后的ID
+                        _this.new_file_ids.push(d.results[0].file_id);
+                        // 删除append_files
+                        _this.append_files.splice(_this.append_files.indexOf(file), 1);
+                        // 放到所有文件列表
+                        _this.files.push(d.results[0])
+                        window.bz.showSuccess5("文件上传成功");
+                    } else {
+                        window.bz.showError5("文件上传时发生错误:" + d.error);
+                    }
                 });
             });
         },
         // 默认的关联方法
         createFileRef: function(){
             _this = this
-            if(!this.id) {
-                console.log("请在调用之前先提交外部表单。");
+            if(!this.recordId) {
+                throw "请在调用之前先提交外部表单。"
             } else {
                 params = {
                     "column": this.column,
-                    "table_name": this.table_name,
-                    "record_id": this.id,
+                    "table_name": this.tableName,
+                    "record_id": this.recordId,
                     "new_file_ids": this.new_file_ids
                 }
                 $.post(
                     "/file_ref",
                     JSON.stringify(params)
                 ).done(function(data) {
-                    if(data.error == "0") {
+                    if(data.error === "0") {
+                        _this.new_file_ids = []
                         _this.$set("upload_ids", data.results);
+                    } else {
+                        throw data.error
                     }
                 });
             }
