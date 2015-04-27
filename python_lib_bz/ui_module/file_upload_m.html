@@ -64,11 +64,23 @@ Vue.component("file_upload_m", {
     attached: function() {
         // 因为数据的显示传递会覆盖data对象，所以改成在attached方法中声明
         this.$set("upload_ids", [])         // 上传成功后的id
-        this.$set("files", []);             // 显示的所有文件
         this.$set("append_files", []);      // 新增的文件
-        this.$set("fd", new FormData());    // 文件上传用的formData 对象
+        this.getExistFiles();
     },
     methods: {
+        getExistFiles: function() {
+            _this = this
+            if(!_this.id) {
+                _this.$set("files", []);
+            } else {
+            parms_str = [this.table_name, this.column, this.id].join("/")
+                $.get("/file_upload/" + parms_str)
+                .done(function(d) {
+                    _this.$set("files", d.results);
+                    console.log(_this.files)
+                });
+            }
+        },
         appendFile: function(e) {
             var files = e.target.files
             for(var i in files) {
@@ -82,7 +94,7 @@ Vue.component("file_upload_m", {
                         "file_name": f.name,    // 文件名 -- 来源于input[type=file]
                         "remove": false,        // 删除标记
                         "suffix": null,         // 文件拓展名
-                        "fd": fd
+                        "fd": fd                // 上传文件用的formData
                     }
                     this.append_files.push(new_file)
                 }
@@ -90,56 +102,53 @@ Vue.component("file_upload_m", {
         },
         removeFile: function(f) {
             _this = this
-            if(comfirm("是否确定删除文件:" + f.file_name + "?")) {
+            if(confirm("是否确定删除文件:" + f.file_name + "?")) {
                 $.post("/file_ref",JSON.stringify({"remove_files": [f.id]}))
                 .done(function(d) {
                     if(d.error == "0") {
                         _this.files.splice(_this.files.indexOf(f), 1);
+                        console.log("删除成功");
                     } else {
                         console.log("失败什么的");
                     }
                 });
             }
         },
-        sendUploadRequest: function(fd, callback) {
-            $.ajax({
-                url: "/file_upload",
-                type:"POST",
-                data: fd,
-                processData: false,
-                contentType: false
-            }).done(callback);
-        },
         uploadFiles: function() {
             _this = this
             _this.append_files.forEach(function(file, index) {
                 file.suffix = "uploading"
-                _this.sendUploadRequest(file.fd, function(d) {
+                $.ajax({
+                    url: "/file_upload",
+                    type:"POST",
+                    data: file.fd,
+                    processData: false,
+                    contentType: false
+                }).done(function(d) {
+                    _this.upload_ids.push(d.results[0].file_id);
                     _this.append_files.splice(_this.append_files.indexOf(file), 1);
                     _this.files.push(d.results[0])
                 });
             });
         },
+        // 默认的关联方法
         createFileRef: function(){
-            // } else if(!data) {
-            //     params = {
-            //         "remove_files": this.remove_files
-            //     }
-            // } else {
-            //     params = {
-            //         "column": this.column,
-            //         "append_files": data.results,
-            //         "remove_files": this.remove_files,
-            //         "table_name": this.table_name,
-            //         "record_id": this.id
-            //     }
-            // }
-            // $.post(
-            //     "/file_ref",
-            //     JSON.stringify(params)
-            // ).done(function(data) {
-            //     console.log(data)
-            // });
+            if(!this.id) {
+                console.log("请在调用之前先提交外部表单。");
+            } else {
+                params = {
+                    "column": this.column,
+                    "table_name": this.table_name,
+                    "record_id": this.id,
+                    "upload_ids": this.upload_ids
+                }
+                $.post(
+                    "/file_ref",
+                    JSON.stringify(params)
+                ).done(function(data) {
+                    console.log(data)
+                });
+            }
         }
     }
 });
