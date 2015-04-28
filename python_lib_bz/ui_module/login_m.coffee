@@ -76,14 +76,13 @@ $(->
         if @password_set != @repassword_set
           throw new Error("两次输入的密码不一致")
         @loading = true
-        $.post '/login',
-          JSON.stringify
-            token:hash[1]
-            password:@password_set
-            type:'setPassword'
-        ,(result, done)->
+        parm = JSON.stringify
+          token:hash[1]
+          password:@password_set
+          type:'setPassword'
+        $.post '/login', parm, (result, done)=>
           @loading = false
-          if result.error != '' && result.error != undefined
+          if result.error != '0'
             throw new Error(result.error)
           else
             window.bz.showSuccess5('设置成功，请重新登录')

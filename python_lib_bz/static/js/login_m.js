@@ -100,22 +100,26 @@
           })(this));
         },
         setPassword: function() {
+          var parm;
           if (this.password_set !== this.repassword_set) {
             throw new Error("两次输入的密码不一致");
           }
           this.loading = true;
-          return $.post('/login', JSON.stringify({
+          parm = JSON.stringify({
             token: hash[1],
             password: this.password_set,
             type: 'setPassword'
-          }), function(result, done) {
-            this.loading = false;
-            if (result.error !== '' && result.error !== void 0) {
-              throw new Error(result.error);
-            } else {
-              return window.bz.showSuccess5('设置成功，请重新登录');
-            }
           });
+          return $.post('/login', parm, (function(_this) {
+            return function(result, done) {
+              _this.loading = false;
+              if (result.error !== '0') {
+                throw new Error(result.error);
+              } else {
+                return window.bz.showSuccess5('设置成功，请重新登录');
+              }
+            };
+          })(this));
         },
         cleanError: function() {
           return this.$data.error_info = false;
