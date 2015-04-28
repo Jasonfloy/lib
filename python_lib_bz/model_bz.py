@@ -20,6 +20,9 @@ class base(Model):
 class user_info(base):
 
     '''用户表'''
+    '''
+    modify by bigzhu at 15/04/28 11:29:24 加入forget_token
+    '''
     user_type = TextField()  # 用户类型 google my twitter
     out_id = TextField(null=True)  # oauth2 的外部 id
     email = TextField(null=True)  # email 地址

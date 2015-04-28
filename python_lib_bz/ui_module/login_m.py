@@ -91,15 +91,16 @@ class login(ModuleHandler, UserInfoHandler):
 
             sql_set_token = "update user_info set forget_token = '%s' where email = '%s' and user_type = 'my'" % (forget_token, email)
             self.pg.db.query(sql_set_token)
+            send_mail = 'safe@highwe.com'
             url = 'http://' + self.request.host + self.request.uri + '#token/' + forget_token
             #content = MIMEText(loader.load("login_email_m.html").generate(user_name=email, url=url), 'html', 'utf-8')
             content = MIMEText('<a href="' + url + '">点此设置新密码</a><br><br>如果以上按钮点击无效，请将链接复制到浏览器地址栏中打开：<br>' + url, 'html', 'utf-8')
-            content['From'] = 'hold@highwe.com'
+            content['From'] = send_mail
             content['To'] = email
 
             content['Subject'] = '找回密码'
-            sendMail(content['To'], content)
-        elif form_type == 'setPassword':  # 设置新密码
+            sendMail(email, content, send_mail, 'highwe123')
+        elif form_type == 'set_password':  # 设置新密码
             password = login_info.get("password")
             hashed_password = hashlib.md5(password + salt).hexdigest()
             token = login_info.get("token")
