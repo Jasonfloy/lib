@@ -277,8 +277,11 @@
 
   window.bz = {
     setOnErrorVm: function(vm) {
-      return window.onerror = function(errorMsg, url, lineNumber, error) {
-        return vm.$set('error_info', errorMsg.replace('Uncaught Error: ', ''));
+      return window.onerror = function(errorMsg, url, lineNumber) {
+        var error;
+        error = errorMsg.replace('Uncaught Error: ', '');
+        vm.$set('error_info', error);
+        return window.bz.showError5(error);
       };
     },
     isEmpty: function(obj) {

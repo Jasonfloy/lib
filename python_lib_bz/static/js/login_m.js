@@ -8,26 +8,6 @@
         loading: false
       },
       methods: {
-        submit: function() {
-          var data;
-          data = this.$data;
-          data.loading = true;
-          return $.post('/login', JSON.stringify({
-            user_name: data.user_name,
-            password: data.password,
-            email: data.email,
-            type: 'login'
-          }), function(result, done) {
-            data.loading = false;
-            if (result.error !== '0') {
-              return data.error_info = result.error;
-            } else if (result.error === void 0) {
-              return data.error_info = '未知错误';
-            } else {
-              return location.pathname = '/';
-            }
-          });
-        },
         check: function() {
           if (this.user_name === '' || this.user_name === void 0) {
             throw new Error("请输入用户名");
@@ -49,8 +29,12 @@
               user_name: this.user_name,
               password: this.password,
               email: this.email,
-              type: type,
-              type: 'signup'
+              type: type
+            });
+          } else if (type === 'forget') {
+            parm = JSON.stringify({
+              email: this.email,
+              type: type
             });
           }
           this.loading = true;
@@ -92,28 +76,28 @@
           return this.post('signup');
         },
         forget: function() {
-          var data;
-          data = this.$data;
-          if (data.email === '' || data.email === void 0) {
-            data.error_info = '请输入邮箱';
+          var parm;
+          if (this.email === '' || this.email === void 0) {
+            this.error_info = '请输入邮箱';
             return;
           }
-          data.loading = true;
-          $.post('/login', JSON.stringify({
-            email: data.email,
+          parm = JSON.stringify({
+            email: this.email,
             type: 'forget'
-          }), function(result, done) {
-            data.loading = false;
-            if (result.error !== '' && result.error !== void 0) {
-              if (result.error === 0) {
-                return data.error_info = '您输入的邮箱不存在，请重试';
-              } else {
-                return data.error_info = '系统错误，请联系管理员';
-              }
-            } else {
-              return data.error_info = '确认邮件已发送到您的邮箱中，请查收并设置新密码';
-            }
           });
+          this.loading = true;
+          return $.post('/login', parm, (function(_this) {
+            return function(result, done) {
+              _this.loading = false;
+              if (result.error !== '0') {
+                return _this.error_info = result.error;
+              } else if (result.error === void 0) {
+                return _this.error_info = '未知错误';
+              } else {
+                return window.bz.showSuccess5('邮件已经发送,请查看你的邮箱来修改密码!');
+              }
+            };
+          })(this));
         },
         setPassword: function() {
           var data;

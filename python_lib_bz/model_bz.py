@@ -31,6 +31,8 @@ class user_info(base):
     password = TextField(null=True)  # 密码
     original_json = TextField(null=True)  # ?
     slogan = TextField(null=True)  # 自定义头像
+    forget_token = TextField(null=True)  # 找回密码的token
+
 
 
 class comment(base):

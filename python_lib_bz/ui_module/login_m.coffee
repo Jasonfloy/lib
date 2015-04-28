@@ -5,29 +5,12 @@ $(->
       error_info:false
       loading:false
     methods:
-      submit:->
-        data = @$data
-  
-        data.loading=true
-        $.post '/login',
-          JSON.stringify
-            user_name:data.user_name
-            password:data.password
-            email:data.email
-            type:'login'
-        ,(result, done)->
-            data.loading=false
-            if result.error!='0'
-              data.error_info = result.error
-            else if result.error == undefined
-              data.error_info = '未知错误'
-            else
-              location.pathname = '/'
       check:->
         if @user_name == '' or @user_name == undefined
           throw new Error("请输入用户名")
         if @password == '' or @password == undefined
           throw new Error("请输入用密码")
+      #通用的post,传入type
       post:(type)->
         if type == 'login'
           parm = JSON.stringify
@@ -40,7 +23,10 @@ $(->
             password:@password
             email:@email
             type:type
-            type:'signup'
+        else if type == 'forget'
+          parm = JSON.stringify
+            email:@email
+            type:type
         @loading=true
         $.post '/login', parm ,(result, done)=>
           @loading=false
@@ -69,29 +55,22 @@ $(->
           @error_info = '请输入邮箱'
           return
         @post('signup')
-
       forget:->
-        data = @$data
-        if data.email == '' or data.email == undefined
-          data.error_info = '请输入邮箱'
+        if @email == '' or @email == undefined
+          @error_info = '请输入邮箱'
           return
-
-        data.loading=true
-        $.post '/login',
-          JSON.stringify
-            email:data.email
-            type:'forget'
-        ,(result, done)->
-            data.loading = false
-            if result.error != '' && result.error != undefined
-              if result.error == 0
-                data.error_info = '您输入的邮箱不存在，请重试'
-              else
-                data.error_info = '系统错误，请联系管理员'
-            else
-              data.error_info = '确认邮件已发送到您的邮箱中，请查收并设置新密码'
-
-        return
+        parm = JSON.stringify
+          email:@email
+          type:'forget'
+        @loading=true
+        $.post '/login', parm, (result, done)=>
+          @loading=false
+          if result.error != '0'
+            @error_info = result.error
+          else if result.error == undefined
+            @error_info = '未知错误'
+          else
+            window.bz.showSuccess5('邮件已经发送,请查看你的邮箱来修改密码!')
 
       setPassword:->
         data = @$data

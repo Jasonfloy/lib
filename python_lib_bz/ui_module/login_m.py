@@ -82,11 +82,9 @@ class login(ModuleHandler, UserInfoHandler):
             self.set_secure_cookie("user_id", str(user_info.id))
         elif form_type == 'forget':  # 如果是找回密码
             email = login_info.get("email")
-            sql_token = "select forget_token from user_info where email = '%s' and user_type = 'my'" % email
-            data_token = self.pg.db.query(sql_token)
-            if len(data_token) < 1:
-                self.write(json.dumps({'error': len(data_token)}, cls=public_bz.ExtEncoder))
-                return
+            user_info = self.user_oper.getUserInfo(email=email)
+            if not user_info:
+                raise Exception('没有邮箱为%s的用户!'%email)
             forget_token = str(uuid.uuid4())
             # if len(data_token[0].forget_token) > 1:
             #     forget_token = data_token[0].forget_token
@@ -101,8 +99,6 @@ class login(ModuleHandler, UserInfoHandler):
 
             content['Subject'] = '找回密码'
             sendMail(content['To'], content)
-
-            self.write(json.dumps({'result': '成功'}, cls=public_bz.ExtEncoder))
         elif form_type == 'setPassword':  # 设置新密码
             password = login_info.get("password")
             hashed_password = hashlib.md5(password + salt).hexdigest()
