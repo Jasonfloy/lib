@@ -75,26 +75,12 @@
           return $('#go_signup').tab('show');
         },
         login: function() {
-          var error;
           this.error_info = false;
-          try {
-            this.check();
-          } catch (_error) {
-            error = _error;
-            this.error_info = error.message;
-            return;
-          }
+          this.check();
           return this.post('login');
         },
         signup: function() {
-          var error;
-          try {
-            this.check();
-          } catch (_error) {
-            error = _error;
-            this.error_info = error.message;
-            return;
-          }
+          this.check();
           if (this.password !== this.repassword) {
             this.error_info = '两次密码不一致';
             return;
@@ -155,6 +141,7 @@
         }
       }
     });
+    window.bz.setOnErrorVm(v_login);
     hash = window.bz.getHashParms();
     if (hash[0] === "#token") {
       return $('#tab a').tab('show');

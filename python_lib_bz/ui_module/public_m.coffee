@@ -230,6 +230,10 @@ if $().toastmessage
     errorText: '<i class="fa fa-exclamation-circle"></i>'
   )
 window.bz =
+  setOnErrorVm:(vm)->
+    window.onerror = (errorMsg, url, lineNumber, error)->
+      vm.$set('error_info', errorMsg.replace('Uncaught Error: ', ''))
+
   #是不是空对象
   isEmpty : (obj) ->
     # null and undefined are "empty"

@@ -5,7 +5,6 @@ $(->
       error_info:false
       loading:false
     methods:
-
       submit:->
         data = @$data
   
@@ -59,18 +58,10 @@ $(->
         $('#go_signup').tab('show')
       login:->
         @error_info = false
-        try
-          @check()
-        catch error
-          @error_info=error.message
-          return
+        @check()
         @post('login')
       signup:->
-        try
-          @check()
-        catch error
-          @error_info=error.message
-          return
+        @check()
         if @password != @repassword
           @error_info = '两次密码不一致'
           return
@@ -123,6 +114,8 @@ $(->
 
       cleanError:->
         @$data.error_info = false
+
+  window.bz.setOnErrorVm(v_login)
 
 
   hash = window.bz.getHashParms()
