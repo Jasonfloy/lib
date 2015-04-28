@@ -99,6 +99,7 @@ class login(ModuleHandler, UserInfoHandler):
             content['To'] = email
 
             content['Subject'] = '找回密码'
+            send_mail = self.settings.get('send_mail', 'hold@highwe.com')
             sendMail(email, content, send_mail, 'highwe123')
         elif form_type == 'setPassword':  # 设置新密码
             password = login_info.get("password")
