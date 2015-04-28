@@ -276,6 +276,14 @@
   }
 
   window.bz = {
+    setOnErrorVm: function(vm) {
+      return window.onerror = function(errorMsg, url, lineNumber) {
+        var error;
+        error = errorMsg.replace('Uncaught Error: ', '');
+        vm.$set('error_info', error);
+        return window.bz.showError5(error);
+      };
+    },
     isEmpty: function(obj) {
       var key;
       if (obj === null) {

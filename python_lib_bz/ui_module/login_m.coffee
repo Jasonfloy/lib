@@ -5,30 +5,12 @@ $(->
       error_info:false
       loading:false
     methods:
-
-      submit:->
-        data = @$data
-  
-        data.loading=true
-        $.post '/login',
-          JSON.stringify
-            user_name:data.user_name
-            password:data.password
-            email:data.email
-            type:'login'
-        ,(result, done)->
-            data.loading=false
-            if result.error!='0'
-              data.error_info = result.error
-            else if result.error == undefined
-              data.error_info = '未知错误'
-            else
-              location.pathname = '/'
       check:->
         if @user_name == '' or @user_name == undefined
           throw new Error("请输入用户名")
         if @password == '' or @password == undefined
           throw new Error("请输入用密码")
+      #通用的post,传入type
       post:(type)->
         if type == 'login'
           parm = JSON.stringify
@@ -41,7 +23,10 @@ $(->
             password:@password
             email:@email
             type:type
-            type:'signup'
+        else if type == 'forget'
+          parm = JSON.stringify
+            email:@email
+            type:type
         @loading=true
         $.post '/login', parm ,(result, done)=>
           @loading=false
@@ -59,18 +44,10 @@ $(->
         $('#go_signup').tab('show')
       login:->
         @error_info = false
-        try
-          @check()
-        catch error
-          @error_info=error.message
-          return
+        @check()
         @post('login')
       signup:->
-        try
-          @check()
-        catch error
-          @error_info=error.message
-          return
+        @check()
         if @password != @repassword
           @error_info = '两次密码不一致'
           return
@@ -78,51 +55,42 @@ $(->
           @error_info = '请输入邮箱'
           return
         @post('signup')
-
       forget:->
-        data = @$data
-        if data.email == '' or data.email == undefined
-          data.error_info = '请输入邮箱'
+        if @email == '' or @email == undefined
+          @error_info = '请输入邮箱'
           return
-
-        data.loading=true
-        $.post '/login',
-          JSON.stringify
-            email:data.email
-            type:'forget'
-        ,(result, done)->
-            data.loading = false
-            if result.error != '' && result.error != undefined
-              if result.error == 0
-                data.error_info = '您输入的邮箱不存在，请重试'
-              else
-                data.error_info = '系统错误，请联系管理员'
-            else
-              data.error_info = '确认邮件已发送到您的邮箱中，请查收并设置新密码'
-
-        return
+        parm = JSON.stringify
+          email:@email
+          type:'forget'
+        @loading=true
+        $.post '/login', parm, (result, done)=>
+          @loading=false
+          if result.error != '0'
+            @error_info = result.error
+          else if result.error == undefined
+            @error_info = '未知错误'
+          else
+            window.bz.showSuccess5('邮件已经发送,请查看你的邮箱来修改密码!')
 
       setPassword:->
-        data = @$data
-        if data.password_set != data.repassword_set
-          data.error_info = '两次输入的密码不一致'
-          return
-        data.loading = true
-        $.post '/login',
-          JSON.stringify
-            token:hash[1]
-            password:data.password_set
-            type:'setPassword'
-        ,(result, done)->
-          data.loading = false
-          if result.error != '' && result.error != undefined
-            data.error_info = '您的链接已失效，请重新获取邮件'
+        if @password_set != @repassword_set
+          throw new Error("两次输入的密码不一致")
+        @loading = true
+        parm = JSON.stringify
+          token:hash[1]
+          password:@password_set
+          type:'setPassword'
+        $.post '/login', parm, (result, done)=>
+          @loading = false
+          if result.error != '0'
+            throw new Error(result.error)
           else
-            data.error_info = '设置成功，请重新登录'
-
+            window.bz.showSuccess5('设置成功，请重新登录')
 
       cleanError:->
         @$data.error_info = false
+
+  window.bz.setOnErrorVm(v_login)
 
 
   hash = window.bz.getHashParms()

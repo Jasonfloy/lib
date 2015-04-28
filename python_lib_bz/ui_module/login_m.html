@@ -52,31 +52,29 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        <form class="form">
-                            <div class="form-group">
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-envelope"></i>
-                                    </span>
-                                    <input type="text" v-model="user_name" class="form-control" id="user" placeholder="请输入邮箱/用户名" v-on="focus:cleanError">
-                                </div>
+                        <div class="form-group">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-envelope"></i>
+                                </span>
+                                <input type="text" v-model="user_name" class="form-control" id="user" placeholder="请输入邮箱/用户名" v-on="focus:cleanError">
                             </div>
-                            <div class="form-group">
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-lock"></i>
-                                    </span>
-                                    <input type="password" v-model="password" class="form-control" id="password" placeholder="请输入密码" v-on="keyup: login | key enter,focus:cleanError">
-                                </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-lock"></i>
+                                </span>
+                                <input type="password" v-model="password" class="form-control" id="password" placeholder="请输入密码" v-on="keyup: login | key enter,focus:cleanError">
                             </div>
-                            <div class="form-group">
-                                <a v-on="click: login" class="btn btn-primary btn-lg btn-block bz-login-btn">登录</a>
-                            </div>
-                        </form>
+                        </div>
+                        <div class="form-group">
+                            <a v-on="click: login" class="btn btn-primary btn-lg btn-block bz-login-btn">登录</a>
+                        </div>
                     </div>
                     <div class="box-footer">
                         <a class="pull-right" v-on="click:cleanError" href="#forget" aria-controls="forget" role="tab" data-toggle="tab">忘记密码</a>
-                        <a id="go_signup" v-on="click:cleanError" v-on="click:cleanError" href="#signup" aria-controls="signup" role="tab" data-toggle="tab">新用户注册</a>
+                        <a id="go_signup" v-on="click:cleanError" href="#signup" aria-controls="signup" role="tab" data-toggle="tab">新用户注册</a>
                     </div>
                 </div>
             </div>
@@ -89,43 +87,41 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        <form class="form">
-                            <div class="form-group">
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-user"></i>
-                                    </span>
-                                    <input type="text" v-model="user_name" class="form-control" placeholder="请输入用户名" v-on="focus:cleanError">
-                                </div>
+                        <div class="form-group">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-user"></i>
+                                </span>
+                                <input type="text" v-model="user_name" class="form-control" placeholder="请输入用户名" v-on="focus:cleanError">
                             </div>
-                            <div class="form-group">
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-envelope"></i>
-                                    </span>
-                                    <input type="text" v-model="email" class="form-control" placeholder="请输入邮箱地址" v-on="focus:cleanError">
-                                </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-envelope"></i>
+                                </span>
+                                <input type="text" v-model="email" class="form-control" placeholder="请输入邮箱地址" v-on="focus:cleanError">
                             </div>
-                            <div class="form-group">
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-lock"></i>
-                                    </span>
-                                    <input type="password" v-model="password" class="form-control" id="password" placeholder="请输入密码" v-on="keyup: signup | key enter,focus:cleanError">
-                                </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-lock"></i>
+                                </span>
+                                <input type="password" v-model="password" class="form-control" id="password" placeholder="请输入密码" v-on="keyup: signup | key enter,focus:cleanError">
                             </div>
-                            <div class="form-group">
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-lock"></i>
-                                    </span>
-                                    <input type="password" v-model="repassword" class="form-control" id="password" placeholder="再次输入密码" v-on="keyup: signup | key enter,focus:cleanError">
-                                </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-lock"></i>
+                                </span>
+                                <input type="password" v-model="repassword" class="form-control" id="password" placeholder="再次输入密码" v-on="keyup: signup | key enter,focus:cleanError">
                             </div>
-                            <div class="form-group">
-                                <input v-on="click: signup" class="btn btn-primary btn-lg btn-block bz-signup-btn" value="注册" v-disable="loading">
-                            </div>
-                        </form>
+                        </div>
+                        <div class="form-group">
+                            <input v-on="click: signup" class="btn btn-primary btn-lg btn-block bz-signup-btn" value="注册" v-disable="loading">
+                        </div>
                     </div>
                     <div class="box-footer">
                         <a v-on="click:cleanError" v-on="click:cleanError" href="#login" aria-controls="login" role="tab" data-toggle="tab">返回登录</a>
@@ -142,19 +138,18 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        <form class="form">
-                            <div class="form-group">
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-envelope"></i>
-                                    </span>
-                                    <input type="text" v-model="email" class="form-control" placeholder="请输入您的邮箱" v-on="focus:cleanError">
-                                </div>
+                        <div class="form-group">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-envelope"></i>
+                                </span>
+                                <input type="text" v-model="email" class="form-control" placeholder="请输入您的邮箱" v-on="keyup: forget | key enter,focus:cleanError">
                             </div>
-                            <div class="form-group">
-                                <input v-on="click: forget" class="btn btn-primary btn-lg btn-block bz-login-btn" type="button" value="发送邮件" v-disable="loading">
-                            </div>
-                        </form>
+                        </div>
+                        <div class="form-group">
+                            <button v-on="click: forget" class="btn btn-primary btn-lg btn-block bz-login-btn" type="button" v-disable="loading">发送邮件</button>
+
+                        </div>
                     </div>
                     <div class="box-footer">
                         <a v-on="click:cleanError" v-on="click:cleanError" href="#login" aria-controls="login" role="tab" data-toggle="tab">返回登录</a>
@@ -171,40 +166,37 @@
                     </div>
 
                     <div class="box-body">
-                        <form class="form">
-                            <div class="form-group">
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-lock"></i>
-                                    </span>
-                                    <input type="password" v-model="password_set" class="form-control" id="password" placeholder="请输入新密码" v-on="keyup: setPassword | key enter,focus:cleanError">
-                                </div>
+                        <div class="form-group">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-lock"></i>
+                                </span>
+                                <input type="password" v-model="password_set" class="form-control" id="password" placeholder="请输入新密码" v-on="keyup: setPassword | key enter,focus:cleanError">
                             </div>
-                            <div class="form-group">
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-lock"></i>
-                                    </span>
-                                    <input type="password" v-model="repassword_set" class="form-control" id="password" placeholder="请再次输入新密码" v-on="keyup: setPassword | key enter,focus:cleanError">
-                                </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-lock"></i>
+                                </span>
+                                <input type="password" v-model="repassword_set" class="form-control" id="password" placeholder="请再次输入新密码" v-on="keyup: setPassword | key enter,focus:cleanError">
                             </div>
-                            <div class="form-group">
-                                <input v-on="click: setPassword" class="btn btn-primary btn-lg btn-block bz-login-btn" value="提交" v-disable="loading">
-                            </div>
-                        </form>
+                        </div>
+                        <div class="form-group">
+                            <input v-on="click: setPassword" class="btn btn-primary btn-lg btn-block bz-login-btn" value="提交" v-disable="loading">
+                        </div>
                     </div>
                 </div>
             </div>
             <ul class="hide" role="tablist" id="tab"><a href="#setPassword" aria-controls="setPassword" role="tab" data-toggle="tab"></a></ul>
-
         </div>
     </div>
     <div v-show="error_info" class="alert alert-warning alert-dismissable">
         <!--
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
         -->
         <h4><i class="icon fa fa-warning"></i>(%error_info%)</h4>
-        请重新填写
+        <!--请重新填写-->
     </div>
 
     <div class="modal fade" id="confirm-ask-create" tabindex="-1" role="dialog" aria-hidden="true">

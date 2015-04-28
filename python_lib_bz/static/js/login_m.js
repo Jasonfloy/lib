@@ -8,26 +8,6 @@
         loading: false
       },
       methods: {
-        submit: function() {
-          var data;
-          data = this.$data;
-          data.loading = true;
-          return $.post('/login', JSON.stringify({
-            user_name: data.user_name,
-            password: data.password,
-            email: data.email,
-            type: 'login'
-          }), function(result, done) {
-            data.loading = false;
-            if (result.error !== '0') {
-              return data.error_info = result.error;
-            } else if (result.error === void 0) {
-              return data.error_info = '未知错误';
-            } else {
-              return location.pathname = '/';
-            }
-          });
-        },
         check: function() {
           if (this.user_name === '' || this.user_name === void 0) {
             throw new Error("请输入用户名");
@@ -49,8 +29,12 @@
               user_name: this.user_name,
               password: this.password,
               email: this.email,
-              type: type,
-              type: 'signup'
+              type: type
+            });
+          } else if (type === 'forget') {
+            parm = JSON.stringify({
+              email: this.email,
+              type: type
             });
           }
           this.loading = true;
@@ -75,26 +59,12 @@
           return $('#go_signup').tab('show');
         },
         login: function() {
-          var error;
           this.error_info = false;
-          try {
-            this.check();
-          } catch (_error) {
-            error = _error;
-            this.error_info = error.message;
-            return;
-          }
+          this.check();
           return this.post('login');
         },
         signup: function() {
-          var error;
-          try {
-            this.check();
-          } catch (_error) {
-            error = _error;
-            this.error_info = error.message;
-            return;
-          }
+          this.check();
           if (this.password !== this.repassword) {
             this.error_info = '两次密码不一致';
             return;
@@ -106,55 +76,57 @@
           return this.post('signup');
         },
         forget: function() {
-          var data;
-          data = this.$data;
-          if (data.email === '' || data.email === void 0) {
-            data.error_info = '请输入邮箱';
+          var parm;
+          if (this.email === '' || this.email === void 0) {
+            this.error_info = '请输入邮箱';
             return;
           }
-          data.loading = true;
-          $.post('/login', JSON.stringify({
-            email: data.email,
+          parm = JSON.stringify({
+            email: this.email,
             type: 'forget'
-          }), function(result, done) {
-            data.loading = false;
-            if (result.error !== '' && result.error !== void 0) {
-              if (result.error === 0) {
-                return data.error_info = '您输入的邮箱不存在，请重试';
-              } else {
-                return data.error_info = '系统错误，请联系管理员';
-              }
-            } else {
-              return data.error_info = '确认邮件已发送到您的邮箱中，请查收并设置新密码';
-            }
           });
+          this.loading = true;
+          return $.post('/login', parm, (function(_this) {
+            return function(result, done) {
+              _this.loading = false;
+              if (result.error !== '0') {
+                return _this.error_info = result.error;
+              } else if (result.error === void 0) {
+                return _this.error_info = '未知错误';
+              } else {
+                return window.bz.showSuccess5('邮件已经发送,请查看你的邮箱来修改密码!');
+              }
+            };
+          })(this));
         },
         setPassword: function() {
-          var data;
-          data = this.$data;
-          if (data.password_set !== data.repassword_set) {
-            data.error_info = '两次输入的密码不一致';
-            return;
+          var parm;
+          if (this.password_set !== this.repassword_set) {
+            throw new Error("两次输入的密码不一致");
           }
-          data.loading = true;
-          return $.post('/login', JSON.stringify({
+          this.loading = true;
+          parm = JSON.stringify({
             token: hash[1],
-            password: data.password_set,
+            password: this.password_set,
             type: 'setPassword'
-          }), function(result, done) {
-            data.loading = false;
-            if (result.error !== '' && result.error !== void 0) {
-              return data.error_info = '您的链接已失效，请重新获取邮件';
-            } else {
-              return data.error_info = '设置成功，请重新登录';
-            }
           });
+          return $.post('/login', parm, (function(_this) {
+            return function(result, done) {
+              _this.loading = false;
+              if (result.error !== '0') {
+                throw new Error(result.error);
+              } else {
+                return window.bz.showSuccess5('设置成功，请重新登录');
+              }
+            };
+          })(this));
         },
         cleanError: function() {
           return this.$data.error_info = false;
         }
       }
     });
+    window.bz.setOnErrorVm(v_login);
     hash = window.bz.getHashParms();
     if (hash[0] === "#token") {
       return $('#tab a').tab('show');
