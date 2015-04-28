@@ -73,23 +73,20 @@ $(->
             window.bz.showSuccess5('邮件已经发送,请查看你的邮箱来修改密码!')
 
       setPassword:->
-        data = @$data
-        if data.password_set != data.repassword_set
-          data.error_info = '两次输入的密码不一致'
-          return
-        data.loading = true
+        if @password_set != @repassword_set
+          throw new Error("两次输入的密码不一致")
+        @loading = true
         $.post '/login',
           JSON.stringify
             token:hash[1]
-            password:data.password_set
+            password:@password_set
             type:'setPassword'
         ,(result, done)->
-          data.loading = false
+          @loading = false
           if result.error != '' && result.error != undefined
-            data.error_info = '您的链接已失效，请重新获取邮件'
+            throw new Error(result.error)
           else
-            data.error_info = '设置成功，请重新登录'
-
+            window.bz.showSuccess5('设置成功，请重新登录')
 
       cleanError:->
         @$data.error_info = false

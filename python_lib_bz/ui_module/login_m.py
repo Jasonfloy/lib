@@ -100,19 +100,13 @@ class login(ModuleHandler, UserInfoHandler):
 
             content['Subject'] = '找回密码'
             sendMail(email, content, send_mail, 'highwe123')
-        elif form_type == 'set_password':  # 设置新密码
+        elif form_type == 'setPassword':  # 设置新密码
             password = login_info.get("password")
             hashed_password = hashlib.md5(password + salt).hexdigest()
             token = login_info.get("token")
-            sql_verify = "select forget_token from user_info where forget_token = '%s' and user_type = 'my'" % token
-            data_verify = self.pg.db.query(sql_verify)
-            if len(data_verify) < 1:
-                self.write(json.dumps({'error': len(data_verify)}, cls=public_bz.ExtEncoder))
-                return
-            sql_set_password = "update user_info set password = '%s' , forget_token = '' where forget_token = '%s' and user_type = 'my'" % (hashed_password, token)
-            self.pg.db.query(sql_set_password)
-            self.write(json.dumps({'result': '成功'}, cls=public_bz.ExtEncoder))
-
+            count = self.pg.db.update('user_info', where="forget_token = '%s'" % token, password=hashed_password, forget_token='')
+            if count == 0:
+                raise Exception('token 已经失效,请不要重复提交!')
         self.write(json.dumps({'error': '0'}, cls=public_bz.ExtEncoder))
     @tornado_bz.handleError
     def put(self):

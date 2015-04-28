@@ -100,23 +100,20 @@
           })(this));
         },
         setPassword: function() {
-          var data;
-          data = this.$data;
-          if (data.password_set !== data.repassword_set) {
-            data.error_info = '两次输入的密码不一致';
-            return;
+          if (this.password_set !== this.repassword_set) {
+            throw new Error("两次输入的密码不一致");
           }
-          data.loading = true;
+          this.loading = true;
           return $.post('/login', JSON.stringify({
             token: hash[1],
-            password: data.password_set,
+            password: this.password_set,
             type: 'setPassword'
           }), function(result, done) {
-            data.loading = false;
+            this.loading = false;
             if (result.error !== '' && result.error !== void 0) {
-              return data.error_info = '您的链接已失效，请重新获取邮件';
+              throw new Error(result.error);
             } else {
-              return data.error_info = '设置成功，请重新登录';
+              return window.bz.showSuccess5('设置成功，请重新登录');
             }
           });
         },
