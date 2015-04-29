@@ -31,6 +31,7 @@
                         <input type='text' class="form-control" v-disable="!editable" v-datepicker="record.{{field.name}}"/>
                     </div>
                     {%elif field.get("c_type") == "input-file"%}
+                    <file-upload-m table-name="{{table_name}}" field-name="{{field.name}}" record-id="'(% record.id %)'" v-ref="{{field.name}}_c"></file-upload-m>
                     <div v-component="file_upload_m" v-with="field:{{field.name}}"></div>
                     {%elif field.get("c_type") == "imgupload"%}
                     {%elif field.get("c_type") == "radio" and field.get("options")%}

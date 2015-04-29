@@ -14,11 +14,21 @@
           module: "normal",
           loading: true,
           loading_target: "#" + table_name,
-          checked_list: {}
+          checked_list: {},
+          file_columns: []
         },
         created: function() {
           this.table_name = table_name;
           return this.loadListData();
+        },
+        attached: function() {
+          return this.$watch("record.id", function() {
+            var _this;
+            _this = this;
+            return this.file_columns.forEach(function(column) {
+              return _this.$[column.name + "_c"].getExistFiles();
+            });
+          });
         },
         methods: {
           loadListData: function() {
@@ -60,6 +70,7 @@
               if (result.error !== '0') {
                 return window.bz.showError5(result.error);
               } else {
+                _this.$set("file_columns", result.file_columns);
                 if (result.data.length > 0) {
                   record = result.data[0];
                   for (field in record) {
@@ -131,6 +142,9 @@
               } else if (result.error === void 0) {
                 return window.bz.showError5('未知错误');
               } else {
+                _this.file_columns.forEach(function(column) {
+                  return _this.$[column.name + "_c"].createFileRef();
+                });
                 window.bz.showSuccess5("操作成功");
                 return _this.loadListData();
               }

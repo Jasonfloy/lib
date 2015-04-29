@@ -11,10 +11,17 @@ $(->
                 loading:true
                 loading_target:"#"+table_name
                 checked_list:{} #当前选中的list
+                file_columns: []
             created:->
                 @table_name = table_name
                 @loadListData()
-
+            attached: ->
+                @$watch("record.id", ->
+                    _this = @
+                    @file_columns.forEach((column)->
+                        _this.$[column.name + "_c"].getExistFiles()
+                    )
+                )
             methods:
                 loadListData:->
                     _this = @
@@ -47,14 +54,15 @@ $(->
                         if result.error!='0'
                             window.bz.showError5(result.error)
                         else
-                            if result.data.length>0
+                            _this.$set("file_columns", result.file_columns)
+                            if result.data.length > 0
                                 record = result.data[0]
                                 for field of record
                                     if record[field] != null and typeof record[field] == "object"
                                         record[field] = JSON.stringify(record[field])
                                 _this.record = result.data[0]
                                 _this.record.id = id
-                            else if id!=''
+                            else if id != ''
                                 window.bz.showError5('未找到这条数据!')
                     )
                 edit:->
@@ -102,8 +110,10 @@ $(->
                         else if result.error == undefined
                             window.bz.showError5('未知错误')
                         else
+                            _this.file_columns.forEach((column)->
+                                _this.$[column.name + "_c"].createFileRef()
+                            )
                             window.bz.showSuccess5("操作成功")
                             _this.loadListData()
-
                     )
 )

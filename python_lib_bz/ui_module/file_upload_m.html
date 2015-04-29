@@ -10,7 +10,7 @@
         <a v-href="f.file_path" target="_blank" v-class="remove-mark: f.remove==true">(% f.file_name %)</a>
         <i class="fa fa-times btn-remove-file" v-on="click: removeFile(f)"></i>
     </div>
-    <button class="btn-file btn btn-success" v-on="click:uploadFiles">开始上传</button> 
+    <button type="button" class="btn btn-success btn-sm" v-on="click:uploadFiles">开始上传</button> 
     <span class="file-input btn btn-sm btn-primary btn-file">
         选择文件<input v-on="change: appendFile($event)" type="file" multiple/>
     </span>
@@ -63,7 +63,6 @@ Vue.component("file-upload-m", {
         }
     },
     attached: function() {
-        console.log(this)
         if(!this.tableName || !this.column) {
             throw "组件没有正确的获取参数，请检查声明的HTML"
         }
@@ -80,10 +79,13 @@ Vue.component("file-upload-m", {
             if(!_this.recordId) {
                 _this.$set("files", []);
             } else {
-            parms_str = [this.tableName, this.column, this.recordId].join("/")
-                $.get("/file_upload/" + parms_str)
-                .done(function(d) {
-                    _this.$set("files", d.results);
+                var parms_str = [this.tableName, this.column, this.recordId].join("/")
+                _this.closureAjax(function(__this){
+                    $.get("/file_upload/" + parms_str)
+                    .done(function(d) {
+                        __this.$set("files", d.results);
+                        console.log("set:", __this.column, __this.files)
+                    });
                 });
             }
         },
@@ -112,7 +114,12 @@ Vue.component("file-upload-m", {
                 $.post("/file_ref",JSON.stringify({"remove_file": f.id}))
                 .done(function(d) {
                     if(d.error == "0") {
-                        _this.files.splice(_this.files.indexOf(f), 1);
+                        if(_this.files.indexOf(f) >= 0) {
+                            _this.files.splice(_this.files.indexOf(f), 1);
+                        }
+                        if(_this.append_files.indexOf(f) >= 0) {
+                            _this.append_files.splice(_this.append_files.indexOf(f), 1);
+                        }
                         window.bz.showSuccess5("文件删除成功.")
                     } else {
                         window.bz.showError5("删除文件时发生错误:" + d.error);
@@ -124,31 +131,33 @@ Vue.component("file-upload-m", {
             _this = this
             _this.append_files.forEach(function(file, index) {
                 file.suffix = "uploading"
-                $.ajax({
-                    url: "/file_upload",
-                    type:"POST",
-                    data: file.fd,
-                    processData: false,
-                    contentType: false
-                }).done(function(d) {
-                    if(d.error === "0") {
-                        // 记录上传成功后的ID
-                        _this.new_file_ids.push(d.results[0].file_id);
-                        // 删除append_files
-                        _this.append_files.splice(_this.append_files.indexOf(file), 1);
-                        // 放到所有文件列表
-                        _this.files.push(d.results[0])
-                        window.bz.showSuccess5("文件上传成功");
-                    } else {
-                        window.bz.showError5("文件上传时发生错误:" + d.error);
-                    }
+                _this.closureAjax(function(__this){
+                    $.ajax({
+                        url: "/file_upload",
+                        type:"POST",
+                        data: file.fd,
+                        processData: false,
+                        contentType: false
+                    }).done(function(d) {
+                        if(d.error === "0") {
+                            // 记录上传成功后的ID
+                            __this.new_file_ids.push(d.results[0].file_id);
+                            // 删除append_files
+                            __this.append_files.splice(__this.append_files.indexOf(file), 1);
+                            // 放到所有文件列表
+                            __this.files.push(d.results[0])
+                            window.bz.showSuccess5("文件上传成功");
+                        } else {
+                            window.bz.showError5("文件上传时发生错误:" + d.error);
+                        }
+                    });
                 });
             });
         },
         // 默认的关联方法
         createFileRef: function(){
             _this = this
-            if(!this.recordId) {
+            if(!_this.recordId) {
                 throw "请在调用之前先提交外部表单。"
             } else {
                 params = {
@@ -157,18 +166,25 @@ Vue.component("file-upload-m", {
                     "record_id": this.recordId,
                     "new_file_ids": this.new_file_ids
                 }
-                $.post(
-                    "/file_ref",
-                    JSON.stringify(params)
-                ).done(function(data) {
-                    if(data.error === "0") {
-                        _this.new_file_ids = []
-                        _this.$set("upload_ids", data.results);
-                    } else {
-                        throw data.error
-                    }
+                _this.closureAjax(function(__this){
+                    $.post(
+                        "/file_ref",
+                        JSON.stringify(params)
+                    ).done(function(data) {
+                        if(data.error === "0") {
+                            __this.new_file_ids = []
+                            __this.$set("upload_ids", data.results);
+                        } else {
+                            throw data.error
+                        }
+                    });
                 });
             }
+        },
+        // 封装闭包的ajax提交
+        // 因为回调方法外部的参数会被覆盖，所以
+        closureAjax:function(func) {
+            return func(this)
         }
     }
 });

@@ -179,7 +179,7 @@ class crud_m(my_ui_module.MyUIModule):
 
         crud_oper = CrudOper(self.pg)
         fields = crud_oper.getCrudConf(table_name)
-        return self.render_string(self.html_name, fields=fields)
+        return self.render_string(self.html_name, fields=fields, table_name=table_name)
 
     def css_files(self):
         return ''
@@ -318,27 +318,15 @@ class crud(ModuleHandler):
         table_name = info["table_name"]
         id = info.get("id")
         data = []
-        all_files = []
         if id:
             crud_oper = CrudOper(self.pg)
             what = crud_oper.getWhat(table_name)
             data = list(self.pg.db.select(table_name, what=what, where="id=%s" % id))
-            file_upload_columns = crud_oper.getFileUploadCoulumn(table_name)
-            for column in file_upload_columns:
-                sql = '''
-                select r.id, f.file_name, f.file_path, f.file_type, f.suffix, 'false' as remove
-                from uploaded_file_record_ref r left join uploaded_files f on r.uploaded_file_id = f.id
-                where r.ref_table = '%s' and r.ref_column = '%s' and r.ref_record_id = '%s' and r.is_delete != 1
-                ''' % (table_name, column.name, id)
-                files = list(self.pg.db.query(sql))
-                all_files.append({
-                    "column": column.name,
-                    "files": files
-                })
+            file_columns = crud_oper.getFileUploadCoulumn(table_name)
         table_desc = db_bz.getTableDesc(self.pg, table_name)
         if table_desc is None:
             raise Exception("需要设定修改维护的系统(biao)的说明")
-        self.write(json.dumps({'error': '0', 'data': data, 'table_desc': table_desc, 'all_files': all_files}, cls=public_bz.ExtEncoder))
+        self.write(json.dumps({'error': '0', 'data': data, 'table_desc': table_desc, 'file_columns': file_columns}, cls=public_bz.ExtEncoder))
 
 
 class crud_api(BaseHandler):

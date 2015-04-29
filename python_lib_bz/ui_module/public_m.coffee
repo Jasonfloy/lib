@@ -220,7 +220,7 @@ Vue.directive('active', (value)->
 
 if $().toastmessage
   $().toastmessage(
-    sticky: true
+    sticky: false
     position: 'top-right'
     stayTime: 5000
     closeText: '<i class="fa fa-times"></i>'
