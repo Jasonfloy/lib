@@ -15,7 +15,13 @@ $(->
             created:->
                 @table_name = table_name
                 @loadListData()
-
+            attached: ->
+                @$watch("record.id", ->
+                    _this = @
+                    @file_columns.forEach((column)->
+                        _this.$[column.name + "_c"].getExistFiles()
+                    )
+                )
             methods:
                 loadListData:->
                     _this = @
@@ -104,9 +110,9 @@ $(->
                         else if result.error == undefined
                             window.bz.showError5('未知错误')
                         else
-                            for column in _this.file_columns
-                                console.log column
-                                console.log _this.$[column.name + "_c"]
+                            _this.file_columns.forEach((column)->
+                                _this.$[column.name + "_c"].createFileRef()
+                            )
                             window.bz.showSuccess5("操作成功")
                             _this.loadListData()
                     )

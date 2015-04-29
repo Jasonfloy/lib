@@ -68,9 +68,8 @@
                                     <input type='text' class="form-control" v-datepicker="record.{{field.name}}"/>
                                 </div>
                                 {%elif field.get("c_type") == "input-file"%}
-                                (%record.id%)
                                 <div style="padding: 7px 0px;">
-                                    <file-upload-m table-name="{{table_name}}" field-name="{{field.name}}_c" record-id="(%record.id%)" v-ref="{{field.name}}_c"></file-upload-m>
+                                    <file-upload-m table-name="{{table_name}}" field-name="{{field.name}}" record-id="(%record.id%)" v-ref="{{field.name}}_c"></file-upload-m>
                                 </div>
                                 {%elif field.get("c_type") == "imgupload"%}
                                 {%elif field.get("c_type") == "radio" and field.get("options")%}

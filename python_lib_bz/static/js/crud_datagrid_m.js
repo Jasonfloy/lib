@@ -21,6 +21,15 @@
           this.table_name = table_name;
           return this.loadListData();
         },
+        attached: function() {
+          return this.$watch("record.id", function() {
+            var _this;
+            _this = this;
+            return this.file_columns.forEach(function(column) {
+              return _this.$[column.name + "_c"].getExistFiles();
+            });
+          });
+        },
         methods: {
           loadListData: function() {
             var _this;
@@ -126,7 +135,6 @@
               table_name: this.table_name,
               record: this.record
             })).done(function(result) {
-              var column, k, len1, ref;
               _this.loading = false;
               $('#modal-' + _this.table_name).modal('hide');
               if (result.error !== '0') {
@@ -134,12 +142,9 @@
               } else if (result.error === void 0) {
                 return window.bz.showError5('未知错误');
               } else {
-                ref = _this.file_columns;
-                for (k = 0, len1 = ref.length; k < len1; k++) {
-                  column = ref[k];
-                  console.log(column);
-                  console.log(_this.$[column.name + "_c"]);
-                }
+                _this.file_columns.forEach(function(column) {
+                  return _this.$[column.name + "_c"].createFileRef();
+                });
                 window.bz.showSuccess5("操作成功");
                 return _this.loadListData();
               }
