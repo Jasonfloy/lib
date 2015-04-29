@@ -82,40 +82,32 @@ class login(ModuleHandler, UserInfoHandler):
             self.set_secure_cookie("user_id", str(user_info.id))
         elif form_type == 'forget':  # 如果是找回密码
             email = login_info.get("email")
-            sql_token = "select forget_token from user_info where email = '%s' and user_type = 'my'" % email
-            data_token = self.pg.db.query(sql_token)
-            if len(data_token) < 1:
-                self.write(json.dumps({'error': len(data_token)}, cls=public_bz.ExtEncoder))
-                return
+            user_info = self.user_oper.getUserInfo(email=email)
+            if not user_info:
+                raise Exception('没有邮箱为%s的用户!'%email)
             forget_token = str(uuid.uuid4())
             # if len(data_token[0].forget_token) > 1:
             #     forget_token = data_token[0].forget_token
 
             sql_set_token = "update user_info set forget_token = '%s' where email = '%s' and user_type = 'my'" % (forget_token, email)
             self.pg.db.query(sql_set_token)
+            send_mail = 'safe@highwe.com'
             url = 'http://' + self.request.host + self.request.uri + '#token/' + forget_token
             #content = MIMEText(loader.load("login_email_m.html").generate(user_name=email, url=url), 'html', 'utf-8')
             content = MIMEText('<a href="' + url + '">点此设置新密码</a><br><br>如果以上按钮点击无效，请将链接复制到浏览器地址栏中打开：<br>' + url, 'html', 'utf-8')
-            content['From'] = 'hold@highwe.com'
+            content['From'] = send_mail
             content['To'] = email
 
             content['Subject'] = '找回密码'
-            sendMail(content['To'], content)
-
-            self.write(json.dumps({'result': '成功'}, cls=public_bz.ExtEncoder))
+            send_mail = self.settings.get('send_mail', 'hold@highwe.com')
+            sendMail(email, content, send_mail, 'highwe123')
         elif form_type == 'setPassword':  # 设置新密码
             password = login_info.get("password")
             hashed_password = hashlib.md5(password + salt).hexdigest()
             token = login_info.get("token")
-            sql_verify = "select forget_token from user_info where forget_token = '%s' and user_type = 'my'" % token
-            data_verify = self.pg.db.query(sql_verify)
-            if len(data_verify) < 1:
-                self.write(json.dumps({'error': len(data_verify)}, cls=public_bz.ExtEncoder))
-                return
-            sql_set_password = "update user_info set password = '%s' , forget_token = '' where forget_token = '%s' and user_type = 'my'" % (hashed_password, token)
-            self.pg.db.query(sql_set_password)
-            self.write(json.dumps({'result': '成功'}, cls=public_bz.ExtEncoder))
-
+            count = self.pg.db.update('user_info', where="forget_token = '%s'" % token, password=hashed_password, forget_token='')
+            if count == 0:
+                raise Exception('token 已经失效,请不要重复提交!')
         self.write(json.dumps({'error': '0'}, cls=public_bz.ExtEncoder))
     @tornado_bz.handleError
     def put(self):
@@ -269,4 +261,5 @@ class douban(BaseHandler, tornado_auth_bz.DoubanOAuth2Mixin):
 
 
 if __name__ == '__main__':
-    pass
+    import doctest
+    doctest.testmod()

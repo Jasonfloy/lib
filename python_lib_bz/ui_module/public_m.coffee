@@ -231,9 +231,10 @@ if $().toastmessage
   )
 window.bz =
   setOnErrorVm:(vm)->
-    window.onerror = (errorMsg, url, lineNumber, error)->
-      vm.$set('error_info', errorMsg.replace('Uncaught Error: ', ''))
-
+    window.onerror = (errorMsg, url, lineNumber)->
+      error = errorMsg.replace('Uncaught Error: ', '')
+      vm.$set('error_info', error)
+      window.bz.showError5(error)
   #是不是空对象
   isEmpty : (obj) ->
     # null and undefined are "empty"
