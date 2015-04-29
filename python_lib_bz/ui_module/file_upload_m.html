@@ -70,7 +70,7 @@ Vue.component("file-upload-m", {
         this.$set("upload_ids", [])         // 上传成功后的id
         this.$set("append_files", []);      // 新增的文件
         this.$set("new_file_ids", []);      // 用于保存新增文件的文件id
-        this.getExistFiles();
+        this.getExistFiles();               // 初始化的时候调用一次获取当前文件
     },
     methods: {
         // 获取已关联的文件
@@ -114,6 +114,7 @@ Vue.component("file-upload-m", {
                 $.post("/file_ref",JSON.stringify({"remove_file": f.id}))
                 .done(function(d) {
                     if(d.error == "0") {
+                        // 删除文件的时候把append_files和files里的清掉
                         if(_this.files.indexOf(f) >= 0) {
                             _this.files.splice(_this.files.indexOf(f), 1);
                         }
@@ -182,7 +183,6 @@ Vue.component("file-upload-m", {
             }
         },
         // 封装闭包的ajax提交
-        // 因为回调方法外部的参数会被覆盖，所以
         closureAjax:function(func) {
             return func(this)
         }
