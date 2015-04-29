@@ -33,6 +33,8 @@ class UserOper:
         modify by bigzhu at 15/04/27 16:49:21 没有用户时提示注册
         '''
         user_infos = self.getUserInfo(user_type=user_type, user_name=user_name)
+        if not user_infos:
+            user_infos = self.getUserInfo(email=user_name)
         if user_infos:
             if user_infos[0].password == password:
                 return user_infos[0]
