@@ -114,7 +114,12 @@ Vue.component("file-upload-m", {
                 $.post("/file_ref",JSON.stringify({"remove_file": f.id}))
                 .done(function(d) {
                     if(d.error == "0") {
-                        _this.files.splice(_this.files.indexOf(f), 1);
+                        if(_this.files.indexOf(f) >= 0) {
+                            _this.files.splice(_this.files.indexOf(f), 1);
+                        }
+                        if(_this.append_files.indexOf(f) >= 0) {
+                            _this.append_files.splice(_this.append_files.indexOf(f), 1);
+                        }
                         window.bz.showSuccess5("文件删除成功.")
                     } else {
                         window.bz.showError5("删除文件时发生错误:" + d.error);
