@@ -25,7 +25,6 @@ def makeTree(nodes):
                 addChilren(parent_node, node)
             # 父节点还没加入到 tree 中
             else:
-                print parent_node
                 parent_node = findNode(nodes, node.parent_id)
                 addChilren(parent_node, node)
     return tree
@@ -55,6 +54,50 @@ def findNode(nodes, id):
                 return target_node
 
 
+def makeSelectTree(nodes):
+    '''
+    '''
+    tree = []
+    for node in nodes:
+        if node.parent_id == 0:
+            tree.append(node)
+        else:
+            parent_node = findSelectNode(tree, node.parent_id)
+            if parent_node:
+                addSelectChilren(parent_node, node)
+            # 父节点还没加入到 tree 中
+            else:
+                parent_node = findSelectNode(nodes, node.parent_id)
+                addSelectChilren(parent_node, node)
+    return tree
+
+
+def addSelectChilren(parent_node, child_node):
+    '''
+    加入子节点
+    '''
+    parent_id = str(parent_node.get('id'))
+    if parent_node.get(parent_id):
+        parent_node[parent_id].append(child_node)
+    else:
+        parent_node[parent_id] = [child_node]
+
+
+def findSelectNode(nodes, id):
+    '''
+    在树里面查找节点
+    '''
+    for node in nodes:
+        if node.id == id:
+            return node
+        # 递归查找其子节点
+        if node.get(str(id)):
+            target_node = findSelectNode(node[str(id)], id)
+            if target_node:
+                return target_node
+
+
+
 if __name__ == '__main__':
     nodes = []
 
@@ -82,7 +125,5 @@ if __name__ == '__main__':
     node.id = 7
     node.parent_id = 6
     nodes.append(node)
-
-
 
     print makeTree(nodes)
