@@ -405,3 +405,13 @@ window.bz =
         return true
     else
         return false
+  resolve: (obj, path, value) ->
+    r=path.split(".")
+    if r.length >1
+      key = r.shift()
+      if !obj[key]
+        obj[key]={}
+      return window.bz.resolve(obj[key], r.join("."), value)
+    else
+      obj[path] = value||{}
+      return obj[path]
