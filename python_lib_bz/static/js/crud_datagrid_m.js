@@ -14,7 +14,8 @@
           module: "normal",
           loading: true,
           loading_target: "#" + table_name,
-          checked_list: {}
+          checked_list: {},
+          file_columns: []
         },
         created: function() {
           this.table_name = table_name;
@@ -60,6 +61,7 @@
               if (result.error !== '0') {
                 return window.bz.showError5(result.error);
               } else {
+                _this.$set("file_columns", result.file_columns);
                 if (result.data.length > 0) {
                   record = result.data[0];
                   for (field in record) {
@@ -124,6 +126,7 @@
               table_name: this.table_name,
               record: this.record
             })).done(function(result) {
+              var column, k, len1, ref;
               _this.loading = false;
               $('#modal-' + _this.table_name).modal('hide');
               if (result.error !== '0') {
@@ -131,6 +134,12 @@
               } else if (result.error === void 0) {
                 return window.bz.showError5('未知错误');
               } else {
+                ref = _this.file_columns;
+                for (k = 0, len1 = ref.length; k < len1; k++) {
+                  column = ref[k];
+                  console.log(column);
+                  console.log(_this.$[column.name + "_c"]);
+                }
                 window.bz.showSuccess5("操作成功");
                 return _this.loadListData();
               }

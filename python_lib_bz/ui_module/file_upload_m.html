@@ -10,7 +10,7 @@
         <a v-href="f.file_path" target="_blank" v-class="remove-mark: f.remove==true">(% f.file_name %)</a>
         <i class="fa fa-times btn-remove-file" v-on="click: removeFile(f)"></i>
     </div>
-    <button class="btn-file btn btn-success" v-on="click:uploadFiles">开始上传</button> 
+    <button type="button" class="btn btn-success btn-sm" v-on="click:uploadFiles">开始上传</button> 
     <span class="file-input btn btn-sm btn-primary btn-file">
         选择文件<input v-on="change: appendFile($event)" type="file" multiple/>
     </span>
