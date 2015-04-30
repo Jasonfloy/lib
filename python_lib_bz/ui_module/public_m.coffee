@@ -104,6 +104,7 @@ Vue.directive('datepicker',
       autoclose: true
       forceParse: true
       clearBtn: true
+      startDate: '1980-01-01'
     .on("changeDate", (e)->
       levels = _this.raw.split(".")
       d_str = ""

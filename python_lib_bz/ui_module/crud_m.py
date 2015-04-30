@@ -69,7 +69,6 @@ class CrudOper:
         # 处理 Options
         for curd_conf in curd_confs:
             if curd_conf.sql_parm:
-                print curd_conf.sql_parm
                 curd_conf.options = self.getOptions(curd_conf.sql_parm)
         return curd_confs
 
@@ -120,8 +119,8 @@ class CrudOper:
                 if record.get(field.name) is None or record[field.name] == '':
                     record[field.name] = SQLLiteral("null")
                 else:
-                    record[field.name] = float(record[field.name]) / 1000
-                    record[field.name] = SQLLiteral("to_timestamp(%s)" % record[field.name])
+                    s = "to_timestamp(%s)" % str(float(record[field.name]) / 1000)
+                    record[field.name] = SQLLiteral(s)
         return record
 
     def joinCrudListSql(self, table_name, sql, colum_name, sql_parm):
