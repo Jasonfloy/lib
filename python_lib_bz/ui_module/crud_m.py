@@ -318,6 +318,7 @@ class crud(ModuleHandler):
         table_name = info["table_name"]
         id = info.get("id")
         data = []
+        file_columns = []
         if id:
             crud_oper = CrudOper(self.pg)
             what = crud_oper.getWhat(table_name)
