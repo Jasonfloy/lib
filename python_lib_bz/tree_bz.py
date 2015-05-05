@@ -16,10 +16,15 @@ def makeTree(nodes):
     放到 children 节点
     '''
     tree = []
+    #节点所在层
+    level = 1
     for node in nodes:
         if node.parent_id == 0:
+            node.level = 1
             tree.append(node)
         else:
+            level += 1
+            node.level = level
             parent_node = findNode(tree, node.parent_id)
             if parent_node:
                 addChilren(parent_node, node)
@@ -112,18 +117,26 @@ if __name__ == '__main__':
     nodes.append(node)
 
     node = storage()
-    node.id = 4
+    node.id = 3
     node.parent_id = 2
     nodes.append(node)
 
     node = storage()
-    node.id = 5
-    node.parent_id = 1
+    node.id = 4
+    node.parent_id = 3
+    nodes.append(node)
+
+
+
+
+
+    node = storage()
+    node.id = 8
+    node.parent_id = 0
     nodes.append(node)
 
     node = storage()
-    node.id = 7
-    node.parent_id = 6
+    node.id = 9
+    node.parent_id = 8
     nodes.append(node)
-
     print makeTree(nodes)
