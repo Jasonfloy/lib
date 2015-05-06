@@ -16,6 +16,8 @@ def makeTree(nodes):
     放到 children 节点
     '''
     tree = []
+    # 为了确定节点所在层，使用parent_id进行排序
+    nodes = sorted(nodes, key=lambda k: k.parent_id)
     for node in nodes:
         if node.parent_id == 0:
             tree.append(node)
@@ -97,13 +99,12 @@ def findSelectNode(nodes, id):
                 return target_node
 
 
-
 if __name__ == '__main__':
     nodes = []
 
     node = storage()
-    node.id = 1
-    node.parent_id = 0
+    node.id = 3
+    node.parent_id = 2
     nodes.append(node)
 
     node = storage()
@@ -112,18 +113,22 @@ if __name__ == '__main__':
     nodes.append(node)
 
     node = storage()
-    node.id = 4
-    node.parent_id = 2
-    nodes.append(node)
-
-    node = storage()
     node.id = 5
     node.parent_id = 1
     nodes.append(node)
 
     node = storage()
-    node.id = 7
-    node.parent_id = 6
+    node.id = 1
+    node.parent_id = 0
     nodes.append(node)
 
+    node = storage()
+    node.id = 8
+    node.parent_id = 0
+    nodes.append(node)
+
+    node = storage()
+    node.id = 9
+    node.parent_id = 8
+    nodes.append(node)
     print makeTree(nodes)

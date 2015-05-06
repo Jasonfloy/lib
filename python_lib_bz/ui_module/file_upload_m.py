@@ -71,7 +71,7 @@ class file_upload(UserInfoHandler):
                     img = open(file_path, 'w')
                     img.write(file_body)
                     img.close()
-                    new_file = storage(file_name=file_name, file_path=file_path, file_hash=file_hash, file_type="file", suffix=file_suffix, seqname='id_base_seq')
+                    new_file = storage(file_name=file_name, file_path=file_path, file_hash=file_hash, file_type="file", suffix=file_suffix, seqname='uploaded_files_id_seq')
                     file_id = self.pg.db.insert("uploaded_files", **new_file)
                     r = {
                         'file_id': file_id,
@@ -112,7 +112,7 @@ class file_ref(UserInfoHandler):
                     "ref_column": column,
                     "create_user_id": self.get_current_user()
                 }
-                ref_id = self.pg.db.insert("uploaded_file_record_ref", seqname='id_base_seq', **file_ref)
+                ref_id = self.pg.db.insert("uploaded_file_record_ref", seqname='uploaded_file_record_ref_id_seq', **file_ref)
                 results.append(ref_id)
         if remove_file:
             self.pg.db.update("uploaded_file_record_ref", where="id = %s" % remove_file, is_delete=1)

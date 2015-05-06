@@ -121,7 +121,8 @@
         language: "zh-CN",
         autoclose: true,
         forceParse: true,
-        clearBtn: true
+        clearBtn: true,
+        startDate: '1980-01-01'
       }).on("changeDate", function(e) {
         var d_str, index, level, levels, results, temp_obj;
         levels = _this.raw.split(".");
