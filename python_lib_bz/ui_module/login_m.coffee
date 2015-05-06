@@ -6,9 +6,9 @@ $(->
       loading:false
     methods:
       check:->
-        if @user_name == '' or @user_name == undefined
+        if @user_name in ['', undefined]
           throw new Error("请输入用户名")
-        if @password == '' or @password == undefined
+        if @password in ['', undefined]
           throw new Error("请输入用密码")
       #通用的post,传入type
       post:(type)->
@@ -51,12 +51,12 @@ $(->
         if @password != @repassword
           @error_info = '两次密码不一致'
           return
-        if @email == '' or @email == undefined
+        if @email in ['', undefined]
           @error_info = '请输入邮箱'
           return
         @post('signup')
       forget:->
-        if @email == '' or @email == undefined
+        if @email in ['', undefined]
           @error_info = '请输入邮箱'
           return
         parm = JSON.stringify

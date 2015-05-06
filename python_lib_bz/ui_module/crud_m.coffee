@@ -1,6 +1,5 @@
 $(->
-
-    Vue.directive('model-checkbox', 
+    Vue.directive('model-checkbox',
         twoWay: true
         bind:(value) -> 
             @checkboxChange = (->
@@ -41,11 +40,11 @@ $(->
             ).bind(@)
             @el.addEventListener('change', @checkboxChange)
             @checkboxChange()
-        update:(value) -> 
+        update:(value) ->
             _checkedValues = @vm.$data.record.sex
             if _checkedValues && _checkedValues.indexOf(@el.value) != -1
                 @el.checked = true
-        unbind:() -> 
+        unbind:() ->
             @el.removeEventListener('change', @checkboxChange)
     )
     

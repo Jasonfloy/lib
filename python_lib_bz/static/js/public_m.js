@@ -499,8 +499,8 @@
         return window.bz.resolve(obj[key], r.join("."), value);
       } else {
         obj[path] = value || {};
-        return obj[path];
       }
+      return this;
     }
   };
 
