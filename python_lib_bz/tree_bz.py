@@ -8,23 +8,21 @@ from public_bz import storage
 
 def makeTree(nodes):
     '''
+    modify by liuyong at 15/05/06 09:52:44
     node.id = 0
     node.parent_id = 0
     node.children = []
 
+    node.level 节点所在层
     根据 node.id 和 node.parent_id 将铺平的数据组织成树状
     放到 children 节点
     '''
     tree = []
-    #节点所在层
-    level = 1
     for node in nodes:
         if node.parent_id == 0:
             node.level = 1
             tree.append(node)
         else:
-            level += 1
-            node.level = level
             parent_node = findNode(tree, node.parent_id)
             if parent_node:
                 addChilren(parent_node, node)
@@ -37,8 +35,10 @@ def makeTree(nodes):
 
 def addChilren(parent_node, child_node):
     '''
+    modify by liuyong at 15/05/06 09:52:52
     加入子节点
     '''
+    child_node.level = parent_node.level + 1
     if parent_node.get('children'):
         parent_node.children.append(child_node)
     else:
@@ -102,7 +102,6 @@ def findSelectNode(nodes, id):
                 return target_node
 
 
-
 if __name__ == '__main__':
     nodes = []
 
@@ -117,18 +116,14 @@ if __name__ == '__main__':
     nodes.append(node)
 
     node = storage()
-    node.id = 3
-    node.parent_id = 2
+    node.id = 5
+    node.parent_id = 1
     nodes.append(node)
 
     node = storage()
-    node.id = 4
-    node.parent_id = 3
+    node.id = 3
+    node.parent_id = 2
     nodes.append(node)
-
-
-
-
 
     node = storage()
     node.id = 8
