@@ -15,13 +15,13 @@ $(->
             created:->
                 @table_name = table_name
                 @loadListData()
-            attached: ->
-                @$watch("record.id", ->
+                @getRecordDetail()  # 初始化的时候需要设置 file_columns 的参数
+            watch:
+                "record.id": ->
                     _this = @
-                    @file_columns.forEach((column)->
+                    _this.file_columns.forEach((column)->
                         _this.$[column.name + "_c"].getExistFiles()
                     )
-                )
             methods:
                 loadListData:->
                     _this = @
@@ -62,7 +62,7 @@ $(->
                                         record[field] = JSON.stringify(record[field])
                                 _this.record = result.data[0]
                                 _this.record.id = id
-                            else if id != ''
+                            else if id != '' and typeof id != "undefined"
                                 window.bz.showError5('未找到这条数据!')
                     )
                 edit:->
@@ -96,12 +96,12 @@ $(->
                     _this = @
                     @loading=true
                     if window.bz.isEmpty @record
-                      window.bz.showError5('没有填写任何值!')
-                      _this.loading=false
-                      $('#modal-' + _this.table_name).modal('hide')
-                      return
+                        window.bz.showError5('没有填写任何值!')
+                        _this.loading=false
+                        $('#modal-' + _this.table_name).modal('hide')
+                        return
                     $.post('/crud_api',
-                      JSON.stringify {table_name:@table_name, record:@record}
+                        JSON.stringify {table_name:@table_name, record:@record}
                     ).done((result)->
                         _this.loading=false
                         $('#modal-' + _this.table_name).modal('hide')
@@ -110,8 +110,10 @@ $(->
                         else if result.error == undefined
                             window.bz.showError5('未知错误')
                         else
+                            _this.$set("record.id", result.id)
                             _this.file_columns.forEach((column)->
-                                _this.$[column.name + "_c"].createFileRef()
+                                _this.$[column.name + "_c"].createFileRef(result.id)
+                                _this.$[column.name + "_c"].clear()
                             )
                             window.bz.showSuccess5("操作成功")
                             _this.loadListData()

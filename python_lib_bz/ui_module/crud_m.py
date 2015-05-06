@@ -310,19 +310,18 @@ class crud(ModuleHandler):
     def post(self):
         '''
         modify by bigzhu at 15/03/10 12:50:39 如果没有 id, 就只是查出 table_desc 返回去
-        appedn by zhangrui 为了实现文件上传功能, 需要在这里查出c_type='input-file'的字段名 与 记录关联的文件
+        append by zhangrui 为了实现文件上传功能, 需要在这里查出c_type='input-file'的字段名 与 记录关联的文件
         '''
         self.set_header("Content-Type", "application/json")
         info = json.loads(self.request.body)
         table_name = info["table_name"]
         id = info.get("id")
         data = []
-        file_columns = []
+        crud_oper = CrudOper(self.pg)
+        file_columns = crud_oper.getFileUploadCoulumn(table_name)
         if id:
-            crud_oper = CrudOper(self.pg)
             what = crud_oper.getWhat(table_name)
             data = list(self.pg.db.select(table_name, what=what, where="id=%s" % id))
-            file_columns = crud_oper.getFileUploadCoulumn(table_name)
         table_desc = db_bz.getTableDesc(self.pg, table_name)
         if table_desc is None:
             raise Exception("需要设定修改维护的系统(biao)的说明")

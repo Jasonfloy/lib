@@ -19,16 +19,17 @@
         },
         created: function() {
           this.table_name = table_name;
-          return this.loadListData();
+          this.loadListData();
+          return this.getRecordDetail();
         },
-        attached: function() {
-          return this.$watch("record.id", function() {
+        watch: {
+          "record.id": function() {
             var _this;
             _this = this;
-            return this.file_columns.forEach(function(column) {
+            return _this.file_columns.forEach(function(column) {
               return _this.$[column.name + "_c"].getExistFiles();
             });
-          });
+          }
         },
         methods: {
           loadListData: function() {
@@ -80,7 +81,7 @@
                   }
                   _this.record = result.data[0];
                   return _this.record.id = id;
-                } else if (id !== '') {
+                } else if (id !== '' && typeof id !== "undefined") {
                   return window.bz.showError5('未找到这条数据!');
                 }
               }
@@ -142,8 +143,10 @@
               } else if (result.error === void 0) {
                 return window.bz.showError5('未知错误');
               } else {
+                _this.$set("record.id", result.id);
                 _this.file_columns.forEach(function(column) {
-                  return _this.$[column.name + "_c"].createFileRef();
+                  _this.$[column.name + "_c"].createFileRef(result.id);
+                  return _this.$[column.name + "_c"].clear();
                 });
                 window.bz.showSuccess5("操作成功");
                 return _this.loadListData();
