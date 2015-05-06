@@ -18,6 +18,8 @@ def makeTree(nodes):
     放到 children 节点
     '''
     tree = []
+    # 为了确定节点所在层，使用parent_id进行排序
+    nodes = sorted(nodes, key=lambda k: k.parent_id)
     for node in nodes:
         if node.parent_id == 0:
             node.level = 1
@@ -106,8 +108,8 @@ if __name__ == '__main__':
     nodes = []
 
     node = storage()
-    node.id = 1
-    node.parent_id = 0
+    node.id = 3
+    node.parent_id = 2
     nodes.append(node)
 
     node = storage()
@@ -121,8 +123,8 @@ if __name__ == '__main__':
     nodes.append(node)
 
     node = storage()
-    node.id = 3
-    node.parent_id = 2
+    node.id = 1
+    node.parent_id = 0
     nodes.append(node)
 
     node = storage()
