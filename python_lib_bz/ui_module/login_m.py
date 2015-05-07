@@ -81,7 +81,7 @@ class login(ModuleHandler, UserInfoHandler):
             user_type = login_info.get("user_type", 'my')
 
             self.user_oper.signup(user_name, hashed_password, email, user_type)
-            user_info = self.user_oper.login(user_name, hashed_password)
+            user_info = self.user_oper.login(user_name, hashed_password, "'%s'" % user_type)
             self.set_secure_cookie("user_id", str(user_info.id))
         elif form_type == 'forget':  # 如果是找回密码
             email = login_info.get("email")
