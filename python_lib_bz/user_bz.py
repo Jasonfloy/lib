@@ -24,7 +24,7 @@ class UserOper:
         self.pg = pg
 
     @daemonDB
-    def login(self, user_name, password, user_type="'my','gov'"):
+    def login(self, user_name, password, user_type="'my','gov','agency'"):
         '''
         modify by bigzhu at 15/02/25 13:57:19 加入唯一约束
         modify by bigzhu at 15/03/08 14:24:57 加入 email; 根据 email 来判断是注册还是登录

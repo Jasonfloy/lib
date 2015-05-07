@@ -16,9 +16,6 @@
           if ((ref1 = this.password) === '' || ref1 === (void 0)) {
             throw new Error("请输入用密码");
           }
-          if (this.user_type === '') {
-            throw new Error("请选择用户类型");
-          }
         },
         post: function(type) {
           var parm;
@@ -78,6 +75,9 @@
           if ((ref = this.email) === '' || ref === (void 0)) {
             this.error_info = '请输入邮箱';
             return;
+          }
+          if (this.user_type === '') {
+            throw new Error("请选择用户类型");
           }
           return this.post('signup');
         },
