@@ -10,6 +10,8 @@ $(->
           throw new Error("请输入用户名")
         if @password in ['', undefined]
           throw new Error("请输入用密码")
+        if @user_type is ''
+          throw new Error("请选择用户类型")
       #通用的post,传入type
       post:(type)->
         if type == 'login'
@@ -20,6 +22,7 @@ $(->
         else if type == 'signup'
           parm = JSON.stringify
             user_name:@user_name
+            user_type:@user_type
             password:@password
             email:@email
             type:type
@@ -54,6 +57,8 @@ $(->
         if @email in ['', undefined]
           @error_info = '请输入邮箱'
           return
+            
+
         @post('signup')
       forget:->
         if @email in ['', undefined]

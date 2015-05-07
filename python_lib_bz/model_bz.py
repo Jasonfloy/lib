@@ -37,7 +37,6 @@ class user_info(base):
     forget_token = TextField(null=True)  # 找回密码的token
 
 
-
 class comment(base):
 
     '''评论表'''

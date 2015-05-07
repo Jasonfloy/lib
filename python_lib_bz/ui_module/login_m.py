@@ -26,8 +26,8 @@ class login_m(my_ui_module.MyUIModule):
 
     '''登录的页面'''
 
-    def render(self, oauth2):
-        return self.render_string(self.html_name, oauth2=oauth2)
+    def render(self, oauth2, user_types=[]):
+        return self.render_string(self.html_name, oauth2=oauth2, user_types=user_types)
 
 
 class login(ModuleHandler, UserInfoHandler):
@@ -72,19 +72,22 @@ class login(ModuleHandler, UserInfoHandler):
             user_name = login_info.get("user_name")
             password = login_info.get("password")
             email = login_info.get("email")
-            #用户是否存在应该注册提交前判断,这里再次判断
+            # 用户是否存在应该注册提交前判断,这里再次判断
             user_info = self.user_oper.getUserInfo(user_name=user_name)
             if user_info:
                 raise Exception('用户已经存在!可能是那一瞬间被抢注了.真遗憾,换一个吧')
             hashed_password = hashlib.md5(password + salt).hexdigest()
-            self.user_oper.signup(user_name, hashed_password, email)
+
+            user_type = login_info.get("user_type", 'my')
+
+            self.user_oper.signup(user_name, hashed_password, email, user_type)
             user_info = self.user_oper.login(user_name, hashed_password)
             self.set_secure_cookie("user_id", str(user_info.id))
         elif form_type == 'forget':  # 如果是找回密码
             email = login_info.get("email")
             user_info = self.user_oper.getUserInfo(email=email)
             if not user_info:
-                raise Exception('没有邮箱为%s的用户!'%email)
+                raise Exception('没有邮箱为%s的用户!' % email)
             forget_token = str(uuid.uuid4())
             # if len(data_token[0].forget_token) > 1:
             #     forget_token = data_token[0].forget_token
@@ -109,6 +112,7 @@ class login(ModuleHandler, UserInfoHandler):
             if count == 0:
                 raise Exception('token 已经失效,请不要重复提交!')
         self.write(json.dumps({'error': '0'}, cls=public_bz.ExtEncoder))
+
     @tornado_bz.handleError
     def put(self):
         self.set_header("Content-Type", "application/json")

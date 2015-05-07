@@ -16,6 +16,9 @@
           if ((ref1 = this.password) === '' || ref1 === (void 0)) {
             throw new Error("请输入用密码");
           }
+          if (this.user_type === '') {
+            throw new Error("请选择用户类型");
+          }
         },
         post: function(type) {
           var parm;
@@ -28,6 +31,7 @@
           } else if (type === 'signup') {
             parm = JSON.stringify({
               user_name: this.user_name,
+              user_type: this.user_type,
               password: this.password,
               email: this.email,
               type: type
