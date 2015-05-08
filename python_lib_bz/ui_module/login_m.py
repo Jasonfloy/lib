@@ -126,6 +126,8 @@ class login(ModuleHandler, UserInfoHandler):
                 geetest_challenge = login_info.get("geetest_challenge")
                 geetest_validate = login_info.get("geetest_validate")
                 geetest_seccode = login_info.get("geetest_seccode")
+                if not geetest_challenge:
+                    raise Exception('未取到验证码')
                 gt = geetest(captcha_id, private_key)
                 result = gt.geetest_validate(geetest_challenge, geetest_validate, geetest_seccode)
                 if not result:
