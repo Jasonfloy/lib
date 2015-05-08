@@ -18,8 +18,56 @@ from tornado_bz import ModuleHandler
 from tornado_bz import BaseHandler
 from public_bz import storage
 from ui_module import my_ui_module
+from hashlib import md5
+import urllib2
 
 salt = "hold is watching you"
+captcha_id = "a90c68898a94d4bca5825facf40d07d7"
+private_key = "ff897f66927e005f30a654c782cdd0e7"
+
+
+class geetest(object):
+
+    """docstring for gt 极验证"""
+
+    def __init__(self, id, key):
+        self.PRIVATE_KEY = key
+        self.CAPTCHA_ID = id
+        self.PY_VERSION = "2.15.4.1.1"
+
+    def geetest_register(self):
+        apireg = "http://api.geetest.com/register.php?"
+        regurl = apireg + "gt=%s" % self.CAPTCHA_ID
+        try:
+            result = urllib2.urlopen(regurl, timeout=2).read()
+        except:
+            result = ""
+        return result
+
+    def geetest_validate(self, challenge, validate, seccode):
+        apiserver = "http://api.geetest.com/validate.php"
+        if validate == self.md5value(self.PRIVATE_KEY + 'geetest' + challenge):
+            query = 'seccode=' + seccode + "&sdk=python_" + self.PY_VERSION
+            print query
+            backinfo = self.postvalues(apiserver, query)
+            if backinfo == self.md5value(seccode):
+                return 1
+            else:
+                return 0
+        else:
+            return 0
+
+    def postvalues(self, apiserver, data):
+        req = urllib2.Request(apiserver)
+        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
+        response = opener.open(req, data)
+        backinfo = response.read()
+        return backinfo
+
+    def md5value(self, values):
+        m = md5()
+        m.update(values)
+        return m.hexdigest()
 
 
 class login_m(my_ui_module.MyUIModule):
@@ -27,7 +75,14 @@ class login_m(my_ui_module.MyUIModule):
     '''登录的页面'''
 
     def render(self, oauth2, user_types=[]):
-        return self.render_string(self.html_name, oauth2=oauth2, user_types=user_types)
+        gt = geetest(captcha_id, private_key)
+        challenge = gt.geetest_register()
+        BASE_URL = "api.geetest.com/get.php?gt="
+        if len(challenge) == 32:
+            url = "http://%s%s&challenge=%s" % (BASE_URL, captcha_id, challenge)
+            print url
+            #httpsurl = "https://%s%s&challenge=%s" % (BASE_URL, captcha_id, challenge)
+        return self.render_string(self.html_name, oauth2=oauth2, user_types=user_types, url=url)
 
 
 class login(ModuleHandler, UserInfoHandler):
@@ -52,6 +107,8 @@ class login(ModuleHandler, UserInfoHandler):
 
         # 用户操作相关的
         self.user_oper = user_bz.UserOper(self.pg)
+        #是否要验证
+        self.validate = False
 
     def get(self):
         self.myRender(oauth2=self.oauth2)
@@ -64,6 +121,15 @@ class login(ModuleHandler, UserInfoHandler):
         if form_type == 'login':
             user_name = login_info.get("user_name")
             password = login_info.get("password")
+            #验证码
+            geetest_challenge = login_info.get("geetest_challenge")
+            geetest_validate = login_info.get("geetest_validate")
+            geetest_seccode = login_info.get("geetest_seccode")
+            if self.validate:
+                gt = geetest(captcha_id, private_key)
+                result = gt.geetest_validate(geetest_challenge, geetest_validate, geetest_seccode)
+                if not result:
+                    raise Exception('验证码不正确!')
             # 密码加密
             hashed_password = hashlib.md5(password + salt).hexdigest()
             user_info = self.user_oper.login(user_name, hashed_password)

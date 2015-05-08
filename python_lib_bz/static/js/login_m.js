@@ -23,7 +23,10 @@
             parm = JSON.stringify({
               user_name: this.user_name,
               password: this.password,
-              type: type
+              type: type,
+              geetest_challenge: $('.geetest_challenge').val(),
+              geetest_validate: $('.geetest_validate').val(),
+              geetest_seccode: $('.geetest_seccode').val()
             });
           } else if (type === 'signup') {
             parm = JSON.stringify({

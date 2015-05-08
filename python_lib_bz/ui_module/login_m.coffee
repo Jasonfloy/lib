@@ -12,11 +12,17 @@ $(->
           throw new Error("请输入用密码")
       #通用的post,传入type
       post:(type)->
+
         if type == 'login'
+
           parm = JSON.stringify
             user_name:@user_name
             password:@password
             type:type
+            #尝试取验证的数据
+            geetest_challenge : $('.geetest_challenge').val()
+            geetest_validate : $('.geetest_validate').val()
+            geetest_seccode : $('.geetest_seccode').val()
         else if type == 'signup'
           parm = JSON.stringify
             user_name:@user_name

@@ -68,6 +68,14 @@
                                 <input type="password" v-model="password" class="form-control" id="password" placeholder="请输入密码" v-on="keyup: login | key enter,focus:cleanError">
                             </div>
                         </div>
+                        {% try %}
+                        {% if url %}
+                            <script type="text/javascript" src="{{url}}"></script>
+                        <br>
+                        <br>
+                        {% end %}
+                        {% except %}
+                        {% end %}
                         <div class="form-group">
                             <a v-on="click: login" class="btn btn-primary btn-lg btn-block bz-login-btn">登录</a>
                         </div>
@@ -125,12 +133,12 @@
                                 <span class="input-group-addon">
                                     <i class="fa fa-users"></i>
                                 </span>
-                            <select v-model="user_type" class="form-control">
-                                <option value="" disabled selected>用户类型</option>
-                                {%for user_type in user_types%}
-                                <option value="{{user_type['value']}}">{{user_type['name']}}</option>
-                                {%end%}
-                            </select>
+                                <select v-model="user_type" class="form-control">
+                                    <option value="" disabled selected>用户类型</option>
+                                    {%for user_type in user_types%}
+                                    <option value="{{user_type['value']}}">{{user_type['name']}}</option>
+                                    {%end%}
+                                </select>
                             </div>
                         </div>
                         {%end%}
