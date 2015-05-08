@@ -121,11 +121,11 @@ class login(ModuleHandler, UserInfoHandler):
         if form_type == 'login':
             user_name = login_info.get("user_name")
             password = login_info.get("password")
-            #验证码
-            geetest_challenge = login_info.get("geetest_challenge")
-            geetest_validate = login_info.get("geetest_validate")
-            geetest_seccode = login_info.get("geetest_seccode")
             if self.validate:
+                #验证码
+                geetest_challenge = login_info.get("geetest_challenge")
+                geetest_validate = login_info.get("geetest_validate")
+                geetest_seccode = login_info.get("geetest_seccode")
                 gt = geetest(captcha_id, private_key)
                 result = gt.geetest_validate(geetest_challenge, geetest_validate, geetest_seccode)
                 if not result:
