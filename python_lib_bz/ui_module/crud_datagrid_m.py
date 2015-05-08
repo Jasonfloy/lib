@@ -35,7 +35,7 @@ class crud_datagrid_m(my_ui_module.MyUIModule):
         table_desc = db_bz.getTableDesc(self.pg, table_name)
         if table_desc is None:
             raise Exception("需要设定修改维护的系统(biao)的说明")
-        return self.render_string(self.html_name, table_name=table_name, fields=show_fields, more_fields=more_fields, table_desc=table_desc)
+        return self.render_string(self.html_name, table_name=table_name, fields=show_fields, all_fields=fields, table_desc=table_desc)
 
     def css_files(self):
         return ''
