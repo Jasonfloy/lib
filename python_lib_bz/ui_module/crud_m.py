@@ -184,6 +184,23 @@ class crud_m(my_ui_module.MyUIModule):
         return ''
 
 
+class crud_check_m(my_ui_module.MyUIModule):
+
+    '''
+    create by bigzhu at 15/03/09 09:37:26 crud 的通用操作页面
+    modify by bigzhu at 15/03/09 09:37:45 改用要传参数到 js 里面,因此不用 file 改用embedded 的方式
+    '''
+
+    def render(self, table_name):
+
+        crud_oper = CrudOper(self.pg)
+        fields = crud_oper.getCrudConf(table_name)
+        return self.render_string(self.html_name, fields=fields, table_name=table_name)
+
+    def css_files(self):
+        return ''
+
+
 class crud_list_m(my_ui_module.MyUIModule):
 
     '''
@@ -326,6 +343,31 @@ class crud(ModuleHandler):
         if table_desc is None:
             raise Exception("需要设定修改维护的系统(biao)的说明")
         self.write(json.dumps({'error': '0', 'data': data, 'table_desc': table_desc, 'file_columns': file_columns}, cls=public_bz.ExtEncoder))
+
+
+class crud_check(ModuleHandler):
+
+    '''
+    审核功能的crud
+    created by zhangwh at 2015-5-11 16:30
+    '''
+
+    def get(self, table_name):
+        self.myRender(table_name=table_name)
+
+    @tornado_bz.handleError
+    def post(self):
+        self.set_header("Content-Type", "application/json")
+        info = json.loads(self.request.body)
+        table_name = info["table_name"]
+        id = info.get("id")
+        data = []
+        crud_oper = CrudOper(self.pg)
+        if id:
+            what = crud_oper.getWhat(table_name)
+            data = list(self.pg.db.select(table_name, what=what, where="id=%s" % id))
+
+        self.write(json.dumps({'error': '0', 'data': data}, cls=public_bz.ExtEncoder))
 
 
 class crud_api(BaseHandler):

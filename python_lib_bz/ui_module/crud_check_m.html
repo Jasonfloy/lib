@@ -1,0 +1,61 @@
+{% module loading_m() %}
+<div id="v_crud_check" class="box">
+    <div class="box-header with-border">
+        <div class="box-title">数据审核</div>
+        <div class="btn-group pull-right" role="group">
+            <button type="button" class="btn btn-sm btn-primary" v-disable="loading" v-btn-loading="loading" v-on="click:save">通过审核</button>
+            <button type="button" class="btn btn-sm btn-default" v-on="click:jump2List">关闭</button>
+        </div>
+    </div>
+    <div  class="box-body">
+        <form class="form-horizontal">
+            {% for field in fields %}
+            <div class="form-group">
+                <label class="col-sm-4 col-md-3 col-lg-2 control-label">{{field.description}}</label>
+                <div class="col-sm-8 col-md-9 col-lg-10">
+                    {% if field.get("c_type") == "select" and field.get("options")%}
+                    <select class="form-control" v-disable="!editable" v-model="record.{{field.name}}">
+                        {% for option in field.options%}
+                        <option value="{{option.get('value')}}">{{option.get('text')}}</option>
+                        {% end %}
+                    </select>
+                    {%elif field.get("c_type") == "timestamp"%}
+                    <div class='input-group date' id='{{field.name}}'>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                        <input type='text' class="form-control" v-disable="!editable" v-datepicker="record.{{field.name}}"/>
+                    </div>
+                    {%elif field.get("c_type") == "input-file"%}
+                    <file-upload-m table-name="{{table_name}}" field-name="{{field.name}}" record-id="'(% record.id %)'" v-ref="{{field.name}}_c"></file-upload-m>
+                    <div v-component="file_upload_m" v-with="field:{{field.name}}"></div>
+                    {%elif field.get("c_type") == "imgupload"%}
+                    {%elif field.get("c_type") == "radio" and field.get("options")%}
+                        {% for option in field.options%}
+                        <label class="radio-inline">
+                            <input type="radio" v-disable="!editable" value="{{option.get('value')}}" v-model="record.{{field.name}}" />{{option.get('text')}}
+                        </label>
+                        {% end %}
+                    {%elif field.get("c_type") == "checkbox" and field.get("options")%}
+                        {% set index=1 %}
+                        {% for option in field.options%}
+                        <label class="checkbox-inline">
+                            <input type="checkbox" v-disable="!editable" value="{{option.get('value')}}" v-model-checkbox="record.{{field.name}}" />{{option.get('text')}}
+                        </label>
+                        {% set index=index+1 %}
+                        {% end %}
+                    {%else%}
+                    <input class="form-control" v-disable="!editable" v-model="record.{{field.name}}">
+                    {%end%}
+                </div>
+            </div>
+            {% end %}
+            <div class="form-group">
+                <div class="btn-group pull-right" role="group" style="margin-right:15px;">
+                    <button type="button" class="btn btn-sm btn-primary" v-disable="loading" v-btn-loading="loading" v-on="click:save">通过审核</button>
+                    <button type="button" class="btn btn-sm btn-default" v-on="click:jump2List">关闭</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
