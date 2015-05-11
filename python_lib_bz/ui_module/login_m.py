@@ -48,7 +48,6 @@ class geetest(object):
         apiserver = "http://api.geetest.com/validate.php"
         if validate == self.md5value(self.PRIVATE_KEY + 'geetest' + challenge):
             query = 'seccode=' + seccode + "&sdk=python_" + self.PY_VERSION
-            print query
             backinfo = self.postvalues(apiserver, query)
             if backinfo == self.md5value(seccode):
                 return 1
@@ -74,15 +73,14 @@ class login_m(my_ui_module.MyUIModule):
 
     '''登录的页面'''
 
-    def render(self, oauth2, user_types=[]):
-        gt = geetest(captcha_id, private_key)
-        challenge = gt.geetest_register()
-        BASE_URL = "api.geetest.com/get.php?gt="
-        if len(challenge) == 32:
-            url = "http://%s%s&challenge=%s" % (BASE_URL, captcha_id, challenge)
-            print url
-            #httpsurl = "https://%s%s&challenge=%s" % (BASE_URL, captcha_id, challenge)
-        return self.render_string(self.html_name, oauth2=oauth2, user_types=user_types, url=url)
+    def render(self, oauth2, user_types=[], validate_url=None):
+        if validate_url:
+            gt = geetest(captcha_id, private_key)
+            challenge = gt.geetest_register()
+            BASE_URL = "api.geetest.com/get.php?gt="
+            if len(challenge) == 32:
+                validate_url = "http://%s%s&challenge=%s" % (BASE_URL, captcha_id, challenge)
+        return self.render_string(self.html_name, oauth2=oauth2, user_types=user_types, validate_url=validate_url)
 
 
 class login(ModuleHandler, UserInfoHandler):
