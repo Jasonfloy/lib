@@ -1,0 +1,31 @@
+{% module loading_m() %}
+{% module pagination_m() %}
+<div id="v_crud_check_list" v-loading="loading; this" class="box safe-datagrid">
+    <div class="box-header with-border">
+        <h3 class="box-title">待审核的纪录</h3>
+    </div>
+    <div style="min-height: 410px;">
+        <table class="table table-hover">
+            <tr>
+                <th></th>
+                {% for field in fields %}
+                <th>{{field.description}}</th>
+                {% end %}
+                <th></th>
+            </tr>
+            <tr v-on="click:detail(r.id)" v-repeat="r : records">
+                <td></td>
+                {% for field in fields %}
+                    {% if field.c_type == 'timestamp' %}
+                      <td v-dateformat="'yyyy-MM-dd':r.{{ field.name }}"></td>
+                    {% else %}
+                      <td v-ellipsis="8:r.{{ field.name }}"></td>
+                    {% end %}
+                {% end %}
+                <td></td>
+            </tr>
+        </table>
+    </div>
+    <div class="box-body" v-component="vue_pagination"></div>
+</div>
+

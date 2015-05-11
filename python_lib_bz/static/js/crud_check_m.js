@@ -6,9 +6,7 @@
       data: {
         editable: false,
         record: {},
-        loading: false,
-        table_desc: '',
-        test: 'test'
+        loading: false
       },
       created: function() {
         return this.loadData();
@@ -17,11 +15,12 @@
         getTableName: function() {
           var parm;
           parm = window.bz.getUrlParm();
+          console.log("parm: ", parm);
           return parm[2];
         },
         jump2List: function() {
           var path;
-          path = '/crud_list/' + this.getTableName();
+          path = '/crud_check_list/' + this.getTableName();
           return location.pathname = path;
         },
         save: function() {
@@ -43,20 +42,19 @@
           });
         },
         loadData: function() {
-          var id, parm, table_name;
+          var _this, id, parm, table_name;
+          _this = this;
           table_name = this.getTableName();
           parm = window.bz.getHashParms();
           id = parm[0].replace('#', '');
-          parm = {
-            table_name: table_name
-          };
-          if (id !== '') {
-            parm.id = id;
-          }
-          return $.post('/crud_check', JSON.stringify(parm)).done(function(result) {
+          return $.post('/crud_check', JSON.stringify({
+            'table_name': table_name,
+            'id': id
+          })).done(function(result) {
             var field, record;
+            console.log(result);
             if (result.error !== '0') {
-              return window.bz.showError5(result.error);
+              window.bz.showError5(result.error);
             } else {
               if (result.data.length > 0) {
                 record = result.data[0];
@@ -65,13 +63,12 @@
                     record[field] = JSON.stringify(record[field]);
                   }
                 }
-                v_crud_check.$data.record = result.data[0];
-                v_crud_check.$data.record.id = id;
-                return console.log("record: ", v_crud_check.$data.record);
+                _this.record = record;
               } else if (id !== '') {
-                return window.bz.showError5('未找到这条数据!');
+                window.bz.showError5('未找到这条数据!');
               }
             }
+            return console.log("record:", _this.record);
           });
         }
       }
