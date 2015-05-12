@@ -1,8 +1,16 @@
 {% module loading_m() %}
 {% module pagination_m() %}
 <div id="v_crud_check_list" v-loading="loading; this" class="box safe-datagrid">
-    <div class="box-header with-border">
-        <h3 class="box-title">待审核的纪录</h3>
+    <div class="box-header with-border row">
+        <div class="col-sm-4">
+            <h3 class="box-title">(%checked_text%)的纪录</h3>
+        </div>
+        <div class="col-sm-8">
+            <div class="pull-right">
+                <select v-model="checked" v-on="change: checkedSelect" options="options">
+                </select>
+            </div>
+        </div>
     </div>
     <div style="min-height: 410px;">
         <table class="table table-hover">
@@ -16,11 +24,11 @@
             <tr v-on="click:detail(r.id)" v-repeat="r : records">
                 <td></td>
                 {% for field in fields %}
-                    {% if field.c_type == 'timestamp' %}
-                      <td v-dateformat="'yyyy-MM-dd':r.{{ field.name }}"></td>
-                    {% else %}
-                      <td v-ellipsis="8:r.{{ field.name }}"></td>
-                    {% end %}
+                {% if field.c_type == 'timestamp' %}
+                <td v-dateformat="'yyyy-MM-dd':r.{{ field.name }}"></td>
+                {% else %}
+                <td v-ellipsis="8:r.{{ field.name }}"></td>
+                {% end %}
                 {% end %}
                 <td></td>
             </tr>

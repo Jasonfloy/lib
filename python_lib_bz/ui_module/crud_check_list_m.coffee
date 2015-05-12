@@ -7,15 +7,17 @@ $(->
             beginIndex = 0
 
         table_name = window.bz.getUrlParm()[2]
+        checked = 'nocheck'
         if v_crud_check_list
             v_crud_check_list.table_name = table_name
+            checked = v_crud_check_list.checked
 
-        $.get('/crud_check_list_api/' + table_name + '?limit=' + limit + '&offset=' + beginIndex).done((data) ->
+        $.get('/crud_check_list_api/' + table_name + '?limit=' + limit + '&offset=' + beginIndex + '&checked=' + checked).done((data) ->
                 if data.error == "0"
                     v_crud_check_list.records = data.records
                     v_crud_check_list.pagination.resultCount = data.count
                 else
-                    window.bz.showError5(d1.error)
+                    window.bz.showError5(data.error)
             )
             
    
@@ -24,6 +26,13 @@ $(->
             data:
                 records: []
                 table_name: ''
+                checked: 'nocheck'
+                checked_text: '待审核'
+                options: [
+                    {text: '待审核', value: 'nocheck'},
+                    {text: '未通过', value: 'nopass'},
+                    {text: '已通过', value: 'pass'}
+                ]
                 pagination:
                     showFL: true #是否显示第一页,最后一页
                     showFN: true #是否显示上一页,下一页
@@ -35,7 +44,13 @@ $(->
                     onInitedLoadCurrPageData: false
 
             methods:
-                detail: (record_id)->
+                detail:(record_id) ->
                     window.location.href = "/crud_check/" + @table_name + "#" + record_id
+
+                checkedSelect:(e) ->
+                    #@checked_text = $(e.target).find("option:selected").text()
+                    @checked_text = option.text for option in @options when option.value == @checked
+                    selectPage()
+
 
 )
