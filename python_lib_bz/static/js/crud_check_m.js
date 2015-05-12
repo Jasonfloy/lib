@@ -42,7 +42,7 @@
           });
         },
         loadData: function() {
-          var _this, id, parm, table_name;
+          var id, parm, table_name, _this;
           _this = this;
           table_name = this.getTableName();
           parm = window.bz.getHashParms();
