@@ -1,12 +1,12 @@
 (function() {
   $(function() {
-    var i, j, len, results, table_name, vues;
+    var i, table_name, vues, _i, _len, _results;
     vues = $(".safe-datagrid");
-    results = [];
-    for (j = 0, len = vues.length; j < len; j++) {
-      i = vues[j];
+    _results = [];
+    for (_i = 0, _len = vues.length; _i < _len; _i++) {
+      i = vues[_i];
       table_name = i.id;
-      results.push(new Vue({
+      _results.push(new Vue({
         el: '#' + table_name,
         data: {
           list: [],
@@ -58,7 +58,7 @@
             }
           },
           getRecordDetail: function(id) {
-            var _this, parm;
+            var parm, _this;
             parm = {
               table_name: this.table_name
             };
@@ -97,6 +97,9 @@
             var key, new_record;
             new_record = {};
             for (key in this.record) {
+              if (key === 'id') {
+                continue;
+              }
               new_record[key] = null;
             }
             this.$set("record", new_record);
@@ -106,7 +109,7 @@
             return $('#confirm-' + this.table_name).modal();
           },
           del: function() {
-            var _this, del_array;
+            var del_array, _this;
             _this = this;
             del_array = _.pluck(this.checked_list, "id");
             $.ajax({
@@ -156,7 +159,7 @@
         }
       }));
     }
-    return results;
+    return _results;
   });
 
 }).call(this);

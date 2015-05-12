@@ -72,6 +72,7 @@ $(->
                 new:->
                     new_record = {}
                     for key of @record
+                        if key == 'id' then continue
                         new_record[key] = null
                     @$set("record", new_record)
                     $('#modal-' + @table_name).modal()

@@ -187,12 +187,11 @@ class crud_m(my_ui_module.MyUIModule):
 class crud_check_m(my_ui_module.MyUIModule):
 
     '''
-    create by bigzhu at 15/03/09 09:37:26 crud 的通用操作页面
-    modify by bigzhu at 15/03/09 09:37:45 改用要传参数到 js 里面,因此不用 file 改用embedded 的方式
+    create by zhangwh at 15/05/11 21:15
+    审核detail模块
     '''
 
     def render(self, table_name):
-
         crud_oper = CrudOper(self.pg)
         fields = crud_oper.getCrudConf(table_name)
         return self.render_string(self.html_name, fields=fields, table_name=table_name)
@@ -227,10 +226,39 @@ class crud_list_m(my_ui_module.MyUIModule):
         return ''
 
 
+class crud_check_list_m(my_ui_module.MyUIModule):
+
+    '''
+    create by zhangwh at 15/05/11 21:18
+    显示list
+    '''
+
+    def render(self, table_name):
+        crud_oper = CrudOper(self.pg)
+        fields = crud_oper.getCrudConf(table_name)
+        show_fields = []
+        show_fields = [field for field in fields if field.grid_show == 1]
+
+        return self.render_string(self.html_name, fields=show_fields)
+
+    def css_files(self):
+        return ''
+
+
 class crud_list(ModuleHandler):
 
     '''
     crud list 实现
+    '''
+
+    def get(self, table_name):
+        self.myRender(table_name=table_name)
+
+
+class crud_check_list(ModuleHandler):
+
+    '''
+    审核模块list显示
     '''
 
     def get(self, table_name):
@@ -312,6 +340,31 @@ class crud_list_api(BaseHandler):
         self.write(json.dumps({'error': '0'}))
 
 
+class crud_check_list_api(BaseHandler):
+
+    '''
+    create by zhangwh at 15/05/11 22:19
+    '''
+
+    def get(self, table):
+        self.set_header("Content-Type", "application/json")
+
+        limit = self.get_argument('limit', 10)
+        offset = self.get_argument('offset', 1)
+        checked = self.get_argument('checked', 'nocheck')
+        if int(offset) > 0:
+            offset = int(offset) - 1
+
+        sql = "select * from %s where checked='%s' order by created_date desc limit %d offset %d" % (table, str(checked), int(limit), int(offset))
+        records = list(self.pg.db.query(sql))
+
+        sql = "select count(*) from %s" % table
+        count = list(self.pg.db.query(sql))
+
+        data = json.dumps({'error': '0', 'records': records, 'count': count[0].count}, cls=public_bz.ExtEncoder)
+        self.write(data)
+
+
 class crud(ModuleHandler):
 
     '''
@@ -358,10 +411,11 @@ class crud_check(ModuleHandler):
     @tornado_bz.handleError
     def post(self):
         self.set_header("Content-Type", "application/json")
+
+        data = []
         info = json.loads(self.request.body)
         table_name = info["table_name"]
         id = info.get("id")
-        data = []
         crud_oper = CrudOper(self.pg)
         if id:
             what = crud_oper.getWhat(table_name)
