@@ -99,7 +99,7 @@ class UserOper:
              "locale": "zh-CN"
             }
         '''
-        user_infos = self.getUserInfo(user_type='google', out_id=user_info['id'])
+        user_infos = self.getUserInfo(user_type="'google'", out_id=user_info['id'])
         if user_infos:
             return user_infos[0]
         else:
@@ -120,7 +120,7 @@ class UserOper:
         '''
         twitter 登录信息存到 db 中
         '''
-        user_infos = self.getUserInfo(user_type='twitter', out_id=user_info['id'])
+        user_infos = self.getUserInfo(user_type="'twitter'", out_id=user_info['id'])
         if user_infos:
             return user_infos[0]
         else:
@@ -141,7 +141,7 @@ class UserOper:
         '''
         douban 登录信息存到 db 中
         '''
-        user_infos = self.getUserInfo(user_type='douban', out_id=user_info['id'])
+        user_infos = self.getUserInfo(user_type="'douban'", out_id=user_info['id'])
         if user_infos:
             return user_infos[0]
         else:
@@ -170,7 +170,7 @@ class UserOper:
              "locale": "zh-CN"
             }
         '''
-        user_infos = self.getUserInfo(user_type='github', out_id=user_info['id'])
+        user_infos = self.getUserInfo(user_type="'github'", out_id=user_info['id'])
         if user_infos:
             return user_infos[0]
         else:
