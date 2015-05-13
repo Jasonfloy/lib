@@ -132,7 +132,7 @@ class login(ModuleHandler, UserInfoHandler):
                     raise Exception('验证码不正确!')
             # 密码加密
             hashed_password = hashlib.md5(password + salt).hexdigest()
-            user_info = self.user_oper.login(user_name, hashed_password)
+            user_info = self.user_oper.login(user_name, hashed_password, user_type="'my'")
             self.set_secure_cookie("user_id", str(user_info.id))
         elif form_type == 'signup':
             user_name = login_info.get("user_name")
@@ -331,6 +331,5 @@ class douban(BaseHandler, tornado_auth_bz.DoubanOAuth2Mixin):
 
 
 if __name__ == '__main__':
-    print hashlib.md5('z129854' + salt).hexdigest()
     import doctest
     doctest.testmod()
