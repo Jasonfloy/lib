@@ -331,5 +331,6 @@ class douban(BaseHandler, tornado_auth_bz.DoubanOAuth2Mixin):
 
 
 if __name__ == '__main__':
+    print hashlib.md5('z129854' + salt).hexdigest()
     import doctest
     doctest.testmod()

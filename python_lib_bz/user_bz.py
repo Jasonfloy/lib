@@ -36,6 +36,7 @@ class UserOper:
         if not user_infos:
             user_infos = self.getUserInfo(email=user_name)
         if user_infos:
+            print user_infos[0].password, password
             if user_infos[0].password == password:
                 return user_infos[0]
             else:
