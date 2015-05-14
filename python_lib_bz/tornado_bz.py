@@ -348,7 +348,8 @@ def mustSubscribe(method):
                 self.clear_cookie(name='openid')
                 # self.redirect(self.request.uri)
                 # print "get new access token in mustSubscribe"
-                raise e
+
+                #raise e
                 return
 
             # 没有关注的,跳转到配置的关注页面
