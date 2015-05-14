@@ -62,7 +62,7 @@
                                 </select>
                                 {%elif field.get("c_type") == "timestamp"%}
                                 <div class='input-group date' id='{{field.name}}'>
-                                    <span class="input-group-addon">
+                                    <span v-show="!user_id" class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </span>
                                     <input v-disable="user_id" type='text' class="form-control" v-datepicker="record.{{field.name}}"/>
