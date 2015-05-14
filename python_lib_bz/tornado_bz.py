@@ -352,6 +352,7 @@ def mustSubscribe(method):
                 # print "get new access token in mustSubscribe"
 
                 #raise e
+                self.write("微信服务器异常，请关闭后，重新打开")
                 return
 
             # 没有关注的,跳转到配置的关注页面
