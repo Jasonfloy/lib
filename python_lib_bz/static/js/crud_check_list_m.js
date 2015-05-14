@@ -10,7 +10,7 @@
         beginIndex = 0;
       }
       table_name = window.bz.getUrlParm()[2];
-      checked = 'nocheck';
+      checked = '';
       if (v_crud_check_list) {
         v_crud_check_list.table_name = table_name;
         checked = v_crud_check_list.checked;
@@ -29,12 +29,12 @@
       data: {
         records: [],
         table_name: '',
-        checked: 'nocheck',
+        checked: '',
         checked_text: '待审核',
         options: [
           {
             text: '待审核',
-            value: 'nocheck'
+            value: ''
           }, {
             text: '未通过',
             value: 'nopass'
