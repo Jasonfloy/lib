@@ -461,11 +461,12 @@ class crud_api(BaseHandler):
         id = record.get("id")
         if id:
             record['stat_date'] = SQLLiteral('now()')
-            self.pg.db.update(table_name, where="id=%s" % id, **record)
+            count = self.pg.db.update(table_name, where="id=%s and user_id=%s" % (id, self.current_user), **record)
+            if count==0:
+                raise Exception('更新记录失败')
         else:
             seq = table_name + '_id_seq'
             id = self.pg.db.insert(table_name, seqname=seq, **record)
-
         self.write(json.dumps({'error': '0', 'id': id}))
 
 if __name__ == '__main__':
