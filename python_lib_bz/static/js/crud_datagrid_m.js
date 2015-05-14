@@ -1,11 +1,12 @@
 (function() {
   $(function() {
-    var i, j, len, results, table_name, vues;
+    var i, j, len, results, table_name, user_id, vues;
     vues = $(".safe-datagrid");
     results = [];
     for (j = 0, len = vues.length; j < len; j++) {
       i = vues[j];
       table_name = i.id;
+      user_id = window.bz.getHashPram("user_id");
       results.push(new Vue({
         el: '#' + table_name,
         data: {
@@ -19,6 +20,8 @@
         },
         created: function() {
           this.table_name = table_name;
+          this.user_id = user_id;
+          this.initModule();
           this.loadListData();
           return this.getRecordDetail();
         },
@@ -32,11 +35,28 @@
           }
         },
         methods: {
+          clickLine: function(r) {
+            if (this.user_id) {
+              $('#modal-' + this.table_name).modal();
+              return this.getRecordDetail(r.id);
+            }
+          },
+          initModule: function() {
+            if (this.user_id) {
+              return this.module = "look";
+            } else {
+              return this.module = "normal";
+            }
+          },
           loadListData: function() {
-            var _this;
+            var _this, url;
             _this = this;
-            this.module = "normal";
-            return $.post('/crud_list_api/' + this.table_name).done(function(d1) {
+            this.initModule();
+            url = '/crud_list_api/' + this.table_name;
+            if (this.user_id) {
+              url += '?user_id=' + this.user_id;
+            }
+            return $.post(url).done(function(d1) {
               if (d1.error !== "0") {
                 window.bz.showError5(d1.error);
                 return;
@@ -50,7 +70,7 @@
               "checked": true
             });
             if (this.checked_list.length === 0) {
-              return this.module = 'normal';
+              return this.initModule();
             } else if (this.checked_list.length === 1) {
               return this.module = 'select_one';
             } else if (this.checked_list.length > 1) {
@@ -97,6 +117,9 @@
             var key, new_record;
             new_record = {};
             for (key in this.record) {
+              if (key === 'id') {
+                continue;
+              }
               new_record[key] = null;
             }
             this.$set("record", new_record);

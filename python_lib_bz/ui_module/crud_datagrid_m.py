@@ -5,12 +5,12 @@ create by bigzhu at 15/04/21 14:59:10 用来在页面上的datagrid,没有search
 '''
 
 from ui_module import my_ui_module
-from tornado_bz import BaseHandler
-from tornado_bz import ModuleHandler
-import tornado_bz
-import json
-import public_bz
-from webpy_db import SQLLiteral
+#from tornado_bz import BaseHandler
+#from tornado_bz import ModuleHandler
+#import tornado_bz
+#import json
+#import public_bz
+#from webpy_db import SQLLiteral
 from ui_module import crud_m
 import db_bz
 
@@ -21,7 +21,11 @@ class crud_datagrid_m(my_ui_module.MyUIModule):
     create by bigzhu at 15/04/21 15:18:49 datagrid
     '''
 
-    def render(self, table_name):
+    def render(self, table_name, user_id=None):
+        '''
+        modify by bigzhu at 15/05/14 10:17:51 加入查看审核状态,传入 user_id 就是查看其他的人,只能查看
+        modify by bigzhu at 15/05/14 10:48:31 是编辑还是审核查看,不再让后台知道了
+        '''
         self.table_name = table_name
         crud_oper = crud_m.CrudOper(self.pg)
         fields = crud_oper.getCrudConf(table_name)

@@ -24,7 +24,7 @@ class UserOper:
         self.pg = pg
 
     @daemonDB
-    def login(self, user_name, password, user_type=None):
+    def login(self, user_name, password, user_type='my'):
         '''
         modify by bigzhu at 15/02/25 13:57:19 加入唯一约束
         modify by bigzhu at 15/03/08 14:24:57 加入 email; 根据 email 来判断是注册还是登录
@@ -36,6 +36,7 @@ class UserOper:
         if not user_infos:
             user_infos = self.getUserInfo(email=user_name)
         if user_infos:
+            print user_infos[0].password, password
             if user_infos[0].password == password:
                 return user_infos[0]
             else:
@@ -99,7 +100,7 @@ class UserOper:
              "locale": "zh-CN"
             }
         '''
-        user_infos = self.getUserInfo(user_type='google', out_id=user_info['id'])
+        user_infos = self.getUserInfo(user_type="'google'", out_id=user_info['id'])
         if user_infos:
             return user_infos[0]
         else:
@@ -120,7 +121,7 @@ class UserOper:
         '''
         twitter 登录信息存到 db 中
         '''
-        user_infos = self.getUserInfo(user_type='twitter', out_id=user_info['id'])
+        user_infos = self.getUserInfo(user_type="'twitter'", out_id=user_info['id'])
         if user_infos:
             return user_infos[0]
         else:
@@ -141,7 +142,7 @@ class UserOper:
         '''
         douban 登录信息存到 db 中
         '''
-        user_infos = self.getUserInfo(user_type='douban', out_id=user_info['id'])
+        user_infos = self.getUserInfo(user_type="'douban'", out_id=user_info['id'])
         if user_infos:
             return user_infos[0]
         else:
@@ -170,7 +171,7 @@ class UserOper:
              "locale": "zh-CN"
             }
         '''
-        user_infos = self.getUserInfo(user_type='github', out_id=user_info['id'])
+        user_infos = self.getUserInfo(user_type="'github'", out_id=user_info['id'])
         if user_infos:
             return user_infos[0]
         else:
