@@ -350,6 +350,7 @@ def mustSubscribe(method):
                 self.clear_cookie(name='openid')
                 # self.redirect(self.request.uri)
                 # print "get new access token in mustSubscribe"
+
                 #raise e
                 return
 

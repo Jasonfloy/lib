@@ -7,7 +7,7 @@ $(->
             beginIndex = 0
 
         table_name = window.bz.getUrlParm()[2]
-        checked = 'nocheck'
+        checked = ''
         if v_crud_check_list
             v_crud_check_list.table_name = table_name
             checked = v_crud_check_list.checked
@@ -26,10 +26,10 @@ $(->
             data:
                 records: []
                 table_name: ''
-                checked: 'nocheck'
+                checked: ''
                 checked_text: '待审核'
                 options: [
-                    {text: '待审核', value: 'nocheck'},
+                    {text: '待审核', value: ''},
                     {text: '未通过', value: 'nopass'},
                     {text: '已通过', value: 'pass'}
                 ]
@@ -44,8 +44,9 @@ $(->
                     onInitedLoadCurrPageData: false
 
             methods:
-                detail:(record_id) ->
-                    window.location.href = "/crud_check/" + @table_name + "#" + record_id
+                detail:(user_id) ->
+                    #window.location.href = "/crud_check/" + @table_name + "#" + record_id
+                    window.location.href = "/" + @table_name + "#user_id=" + user_id
 
                 checkedSelect:(e) ->
                     #@checked_text = $(e.target).find("option:selected").text()

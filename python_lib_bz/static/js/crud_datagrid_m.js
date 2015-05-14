@@ -1,12 +1,13 @@
 (function() {
   $(function() {
-    var i, table_name, vues, _i, _len, _results;
+    var i, j, len, results, table_name, user_id, vues;
     vues = $(".safe-datagrid");
-    _results = [];
-    for (_i = 0, _len = vues.length; _i < _len; _i++) {
-      i = vues[_i];
+    results = [];
+    for (j = 0, len = vues.length; j < len; j++) {
+      i = vues[j];
       table_name = i.id;
-      _results.push(new Vue({
+      user_id = window.bz.getHashPram("user_id");
+      results.push(new Vue({
         el: '#' + table_name,
         data: {
           list: [],
@@ -19,6 +20,8 @@
         },
         created: function() {
           this.table_name = table_name;
+          this.user_id = user_id;
+          this.initModule();
           this.loadListData();
           return this.getRecordDetail();
         },
@@ -32,11 +35,28 @@
           }
         },
         methods: {
+          clickLine: function(r) {
+            if (this.user_id) {
+              $('#modal-' + this.table_name).modal();
+              return this.getRecordDetail(r.id);
+            }
+          },
+          initModule: function() {
+            if (this.user_id) {
+              return this.module = "look";
+            } else {
+              return this.module = "normal";
+            }
+          },
           loadListData: function() {
-            var _this;
+            var _this, url;
             _this = this;
-            this.module = "normal";
-            return $.post('/crud_list_api/' + this.table_name).done(function(d1) {
+            this.initModule();
+            url = '/crud_list_api/' + this.table_name;
+            if (this.user_id) {
+              url += '?user_id=' + this.user_id;
+            }
+            return $.post(url).done(function(d1) {
               if (d1.error !== "0") {
                 window.bz.showError5(d1.error);
                 return;
@@ -50,7 +70,7 @@
               "checked": true
             });
             if (this.checked_list.length === 0) {
-              return this.module = 'normal';
+              return this.initModule();
             } else if (this.checked_list.length === 1) {
               return this.module = 'select_one';
             } else if (this.checked_list.length > 1) {
@@ -58,7 +78,7 @@
             }
           },
           getRecordDetail: function(id) {
-            var parm, _this;
+            var _this, parm;
             parm = {
               table_name: this.table_name
             };
@@ -109,7 +129,7 @@
             return $('#confirm-' + this.table_name).modal();
           },
           del: function() {
-            var del_array, _this;
+            var _this, del_array;
             _this = this;
             del_array = _.pluck(this.checked_list, "id");
             $.ajax({
@@ -159,7 +179,7 @@
         }
       }));
     }
-    return _results;
+    return results;
   });
 
 }).call(this);

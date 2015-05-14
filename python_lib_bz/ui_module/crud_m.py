@@ -266,12 +266,16 @@ class crud_check_list(ModuleHandler):
 
 
 class crud_list_api(BaseHandler):
+    '''
+    modify by bigzhu at 15/05/14 11:24:54 对于传入了user_id的,只查这个user_id
+    '''
 
     @tornado_bz.handleError
     def post(self, table_name):
         self.set_header("Content-Type", "application/json")
         crud_oper = CrudOper(self.pg)
-        sql = crud_oper.getCrudListSql(table_name, self.current_user)
+        user_id = self.get_argument('user_id', self.current_user)
+        sql = crud_oper.getCrudListSql(table_name, user_id)
         fields = crud_oper.getCrudConf(table_name)
         find_sql = ""
         isFind = self.get_argument("find", None)
@@ -351,11 +355,13 @@ class crud_check_list_api(BaseHandler):
 
         limit = self.get_argument('limit', 10)
         offset = self.get_argument('offset', 1)
-        checked = self.get_argument('checked', 'nocheck')
+        checked = self.get_argument('checked', '')
         if int(offset) > 0:
             offset = int(offset) - 1
-
-        sql = "select * from %s where checked='%s' order by created_date desc limit %d offset %d" % (table, str(checked), int(limit), int(offset))
+        if checked == '':
+            sql = "select * from %s where checked is null order by created_date desc limit %d offset %d" % (table, int(limit), int(offset))
+        else:
+            sql = "select * from %s where checked='%s' order by created_date desc limit %d offset %d" % (table, str(checked), int(limit), int(offset))
         records = list(self.pg.db.query(sql))
 
         sql = "select count(*) from %s" % table
@@ -457,11 +463,12 @@ class crud_api(BaseHandler):
         id = record.get("id")
         if id:
             record['stat_date'] = SQLLiteral('now()')
-            self.pg.db.update(table_name, where="id=%s" % id, **record)
+            count = self.pg.db.update(table_name, where="id=%s and user_id=%s" % (id, self.current_user), **record)
+            if count==0:
+                raise Exception('更新记录失败')
         else:
             seq = table_name + '_id_seq'
             id = self.pg.db.insert(table_name, seqname=seq, **record)
-
         self.write(json.dumps({'error': '0', 'id': id}))
 
 if __name__ == '__main__':
