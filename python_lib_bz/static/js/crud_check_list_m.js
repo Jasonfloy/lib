@@ -55,8 +55,8 @@
         }
       },
       methods: {
-        detail: function(record_id) {
-          return window.location.href = "/crud_check/" + this.table_name + "#" + record_id;
+        detail: function(user_id) {
+          return window.location.href = "/" + this.table_name + "#user_id=" + user_id;
         },
         checkedSelect: function(e) {
           var i, len, option, ref;
