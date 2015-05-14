@@ -2,6 +2,8 @@ $(->
     vues = $(".safe-datagrid")
     for i in vues
         table_name = i.id
+        #有user_id时候,是查看其他人的
+        user_id = window.bz.getHashPram("user_id")
         new Vue
             el: '#'+table_name
             data:
@@ -14,6 +16,7 @@ $(->
                 file_columns: []
             created:->
                 @table_name = table_name
+                @user_id = user_id
                 @loadListData()
                 @getRecordDetail()  # 初始化的时候需要设置 file_columns 的参数
             watch:
@@ -26,7 +29,10 @@ $(->
                 loadListData:->
                     _this = @
                     @module = "normal"
-                    $.post('/crud_list_api/' + @table_name)
+                    url = '/crud_list_api/' + @table_name
+                    if @user_id
+                        url += '?user_id=' + @user_id
+                    $.post(url)
                         .done((d1)->
                             if d1.error != "0"
                                 window.bz.showError5(d1.error)

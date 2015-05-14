@@ -266,12 +266,16 @@ class crud_check_list(ModuleHandler):
 
 
 class crud_list_api(BaseHandler):
+    '''
+    modify by bigzhu at 15/05/14 11:24:54 对于传入了user_id的,只查这个user_id
+    '''
 
     @tornado_bz.handleError
     def post(self, table_name):
         self.set_header("Content-Type", "application/json")
         crud_oper = CrudOper(self.pg)
-        sql = crud_oper.getCrudListSql(table_name, self.current_user)
+        user_id = self.get_argument('user_id', self.current_user)
+        sql = crud_oper.getCrudListSql(table_name, user_id)
         fields = crud_oper.getCrudConf(table_name)
         find_sql = ""
         isFind = self.get_argument("find", None)
