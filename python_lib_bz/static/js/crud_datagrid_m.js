@@ -21,6 +21,7 @@
         created: function() {
           this.table_name = table_name;
           this.user_id = user_id;
+          this.initModule();
           this.loadListData();
           return this.getRecordDetail();
         },
@@ -34,10 +35,23 @@
           }
         },
         methods: {
+          clickLine: function(r) {
+            if (this.user_id) {
+              $('#modal-' + this.table_name).modal();
+              return this.getRecordDetail(r.id);
+            }
+          },
+          initModule: function() {
+            if (this.user_id) {
+              return this.module = "look";
+            } else {
+              return this.module = "normal";
+            }
+          },
           loadListData: function() {
             var _this, url;
             _this = this;
-            this.module = "normal";
+            this.initModule();
             url = '/crud_list_api/' + this.table_name;
             if (this.user_id) {
               url += '?user_id=' + this.user_id;
@@ -56,7 +70,7 @@
               "checked": true
             });
             if (this.checked_list.length === 0) {
-              return this.module = 'normal';
+              return this.initModule();
             } else if (this.checked_list.length === 1) {
               return this.module = 'select_one';
             } else if (this.checked_list.length > 1) {

@@ -17,6 +17,8 @@ $(->
             created:->
                 @table_name = table_name
                 @user_id = user_id
+                @initModule()
+
                 @loadListData()
                 @getRecordDetail()  # 初始化的时候需要设置 file_columns 的参数
             watch:
@@ -26,9 +28,20 @@ $(->
                         _this.$[column.name + "_c"].getExistFiles()
                     )
             methods:
+                #点击这一行数据,只有在look模式有作用
+                clickLine:(r)->
+                    if @user_id
+                        $('#modal-' + @table_name).modal()
+                        @getRecordDetail(r.id)
+                #初始化 module
+                initModule:->
+                    if @user_id
+                        @module = "look"
+                    else
+                        @module = "normal"
                 loadListData:->
                     _this = @
-                    @module = "normal"
+                    @initModule()
                     url = '/crud_list_api/' + @table_name
                     if @user_id
                         url += '?user_id=' + @user_id
@@ -43,7 +56,7 @@ $(->
                 checkBox:->
                     @checked_list = _.where(@list, {"checked": true})
                     if @checked_list.length == 0
-                        @module='normal'
+                        @initModule()
                     else if @checked_list.length == 1
                         @module='select_one'
                     else if @checked_list.length > 1
