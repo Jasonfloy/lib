@@ -352,7 +352,15 @@ def mustSubscribe(method):
                 # print "get new access token in mustSubscribe"
 
                 #raise e
-                self.write("微信服务器异常，请关闭后，重新打开")
+                error = '''
+                <html>
+                    <script type="text/javascript">
+                    alert("微信服务器异常，请关闭后，重新打开");
+                    WeixinJSBridge.call('closeWindow');
+                    </script>
+                </html>
+                '''
+                self.write(error)
                 return
 
             # 没有关注的,跳转到配置的关注页面
