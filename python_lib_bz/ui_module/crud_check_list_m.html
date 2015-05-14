@@ -21,7 +21,7 @@
                 {% end %}
                 <th></th>
             </tr>
-            <tr v-on="click:detail(r.id)" v-repeat="r : records">
+            <tr v-on="click:detail(r.user_id)" v-repeat="r : records">
                 <td></td>
                 {% for field in fields %}
                 {% if field.c_type == 'timestamp' %}
