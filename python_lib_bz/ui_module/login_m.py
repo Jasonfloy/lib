@@ -133,7 +133,6 @@ class login(ModuleHandler, UserInfoHandler):
             # 密码加密
             hashed_password = hashlib.md5(password + salt).hexdigest()
             user_info = self.user_oper.login(user_name, hashed_password)
-            print 'set user_id=',str(user_info.id)
             self.set_secure_cookie("user_id", str(user_info.id))
         elif form_type == 'signup':
             user_name = login_info.get("user_name")

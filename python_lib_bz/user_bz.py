@@ -38,7 +38,7 @@ class UserOper:
         if user_infos:
             for user_info in user_infos:
                 if user_info.password == password:
-                    return user_infos[0]
+                    return user_info
             raise Exception('密码错误!')
         else:
             # 前台要根据这个来弹出建议用户注册的提示,请不要修改
