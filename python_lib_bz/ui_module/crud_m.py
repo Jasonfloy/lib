@@ -359,12 +359,17 @@ class crud_check_list_api(BaseHandler):
         if int(offset) > 0:
             offset = int(offset) - 1
         if checked == '':
-            sql = "select * from %s where checked is null order by created_date desc limit %d offset %d" % (table, int(limit), int(offset))
+            sql = "select * from %s where is_delete=0 and checked is null order by created_date desc limit %d offset %d" % (table, int(limit), int(offset))
         else:
-            sql = "select * from %s where checked='%s' order by created_date desc limit %d offset %d" % (table, str(checked), int(limit), int(offset))
+            sql = "select * from %s where is_delete=0 and checked='%s' order by created_date desc limit %d offset %d" % (table, str(checked), int(limit), int(offset))
         records = list(self.pg.db.query(sql))
 
-        sql = "select count(*) from %s" % table
+        agency = list(self.pg.db.query("select user_id, name from agency_info"))
+        agency_dict = dict([(row.user_id, row.name) for row in agency])
+        for row in records:
+            row.agency_name = agency_dict[row.user_id]
+
+        sql = "select count(*) from %s where is_delete=0" % table
         count = list(self.pg.db.query(sql))
 
         data = json.dumps({'error': '0', 'records': records, 'count': count[0].count}, cls=public_bz.ExtEncoder)

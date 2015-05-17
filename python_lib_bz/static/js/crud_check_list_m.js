@@ -55,8 +55,12 @@
         }
       },
       methods: {
-        detail: function(user_id) {
-          return window.location.href = "/" + this.table_name + "#user_id=" + user_id;
+        detail: function(user_id, id) {
+          if (this.table_name === "agency_info") {
+            return window.location.href = "/" + this.table_name + "#user_id=" + user_id;
+          } else {
+            return window.location.href = "/" + this.table_name + "_detail#id=" + id + "&user_id=" + user_id;
+          }
         },
         checkedSelect: function(e) {
           var i, len, option, ref;
