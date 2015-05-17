@@ -36,13 +36,12 @@ class UserOper:
         if not user_infos:
             user_infos = self.getUserInfo(email=user_name)
         if user_infos:
-            print user_infos[0].password, password
-            if user_infos[0].password == password:
-                return user_infos[0]
-            else:
-                raise Exception('密码错误!')
+            for user_info in user_infos:
+                if user_info.password == password:
+                    return user_info
+            raise Exception('密码错误!')
         else:
-            #前台要根据这个来弹出建议用户注册的提示,请不要修改
+            # 前台要根据这个来弹出建议用户注册的提示,请不要修改
             raise Exception('user not exist')
         '''
 
@@ -67,6 +66,7 @@ class UserOper:
     @daemonDB
     def signup(self, user_name, password, email, user_type='my'):
         self.pg.db.insert('user_info', user_type=user_type, user_name=user_name, password=password, email=email)
+
     @daemonDB
     def getUserInfo(self, user_type=None, user_name=None, out_id=None, email=None):
         '''

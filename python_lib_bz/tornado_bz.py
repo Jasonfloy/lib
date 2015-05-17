@@ -322,6 +322,7 @@ def mustSubscribe(method):
     def wrapper(self, *args, **kwargs):
         openid = self.get_secure_cookie("openid")
         if openid is None:
+            print 'cookie openid is None'
             # 连openid 都没有,首先要获取 openid
             params = {
                 "appid": self.settings['appid'],
@@ -340,6 +341,7 @@ def mustSubscribe(method):
             try:
                 wechat_user_info = self.wechat.get_user_info(openid)
             except OfficialAPIError as e:
+                print e
                 # open_id not right
                 #self.wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
                 #access_token_info = self.wechat.get_access_token()
@@ -348,7 +350,17 @@ def mustSubscribe(method):
                 self.clear_cookie(name='openid')
                 # self.redirect(self.request.uri)
                 # print "get new access token in mustSubscribe"
+
                 raise e
+                #error = '''
+                #<html>
+                #    <script type="text/javascript">
+                #    alert("微信服务器异常，请关闭后，重新打开");
+                #    WeixinJSBridge.call('closeWindow');
+                #    </script>
+                #</html>
+                #'''
+                #self.write(error)
                 return
 
             # 没有关注的,跳转到配置的关注页面

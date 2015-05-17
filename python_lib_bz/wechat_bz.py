@@ -62,7 +62,8 @@ def tokenHandler(method):
     def wrapper(self, *args, **kwargs):
         try:
             return method(self, *args, **kwargs)
-        except OfficialAPIError:
+        except OfficialAPIError as e:
+            print e
             print 'OfficialAPIError in tokenHandler, access_token='+self.settings['access_token']
             self.wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
             access_token_info = self.wechat.get_access_token()

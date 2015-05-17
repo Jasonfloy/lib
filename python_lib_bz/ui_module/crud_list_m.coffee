@@ -75,9 +75,9 @@ $(->
             )
             
             
-    Vue.directive('on-search', 
+    Vue.directive('on-search',
         twoWay: true
-        bind:(value) -> 
+        bind:(value) ->
             eventAndFun = @raw.split(":")
             @["search_fn_" + eventAndFun[0] + eventAndFun[1]] = (->
                 @vm[eventAndFun[1]]()
@@ -91,8 +91,8 @@ $(->
             else
                 eventName = "on" + eventAndFun[0]
                 @el[eventName] = @["search_fn_" + eventAndFun[0] + eventAndFun[1]]
-        update:(value) -> 
-        unbind:() -> 
+        update:(value) ->
+        unbind:() ->
             eventNameKey = @raw.split(":")[0]
             eventName = "on" + eventNameKey
             @el[eventName] = undefined
@@ -193,5 +193,4 @@ $(->
         
 
     )
-
-)    
+)
