@@ -15,9 +15,9 @@ def connect():
         port=5432,
         host=DB_IP,
         dbn='postgres',
-        db='safe',
-        user='safe',
-        pw='safe')
+        db='base',
+        user='base',
+        pw='base')
     print '开始连接数据库 %s' % DB_IP
 
 connect()

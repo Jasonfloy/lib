@@ -22,7 +22,8 @@ def testAll():
     print 'starting test path:', path
     for importer, modname, ispkg in pkgutil.iter_modules([path]):
         if not ispkg:
+            print 'test ', modname
             module = importer.find_module(modname).load_module(modname)
             doctest.testmod(module)
 if __name__ == '__main__':
-    pass
+    testAll()

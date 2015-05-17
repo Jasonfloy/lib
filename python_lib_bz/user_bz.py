@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 from db_bz import daemonDB
 import re
-
+import hashlib
+salt = "hold is watching you"
 
 def createTable(db_name):
     '''
@@ -18,6 +19,8 @@ class UserOper:
     '''
     对用户相关的操作
     create by bigzhu at 15/04/26 22:22:21 其实还是一个db操作合集,为了避免反复的传入 pg 参数而建立的 class
+    >>> import test_pg as pg
+    >>> f = UserOper(pg)
     '''
 
     def __init__(self, pg):
@@ -31,7 +34,15 @@ class UserOper:
             --登录模块,如果不存在这个用户名,则注册--
         modify by bigzhu at 15/04/24 17:49:15 注册和登录分开
         modify by bigzhu at 15/04/27 16:49:21 没有用户时提示注册
+        modify by bigzhu at 15/05/17 16:12:29 密码加密放到函数内
+        modify by bigzhu at 15/05/17 17:01:12 添加用户登录的测试,使用base数据库
+        >>> import test_pg as pg
+        >>> f = UserOper(pg)
+        >>> f.login('bigzhu', 'bigzhu')
+        <Storage {'picture': None, 'stat_date': datetime.datetime(2015, 5, 17, 16, 59, 52, 996169), 'user_type': u'my', 'link': None, 'slogan': None, 'password': u'd87ea4af61d5b75d2a367cfcd90a89e3', 'id': 2, 'forget_token': None, 'user_id': None, 'is_delete': 0, 'gender': None, 'locale': None, 'created_date': datetime.datetime(2015, 5, 17, 16, 59, 52, 996169), 'out_id': None, 'original_json': None, 'user_name': u'bigzhu', 'email': u'zyf@highwe.com'}>
         '''
+
+        password = hashlib.md5(password + salt).hexdigest()
         user_infos = self.getUserInfo(user_type=user_type, user_name=user_name)
         if not user_infos:
             user_infos = self.getUserInfo(email=user_name)
@@ -64,7 +75,8 @@ class UserOper:
         '''
 
     @daemonDB
-    def signup(self, user_name, password, email, user_type='my'):
+    def signup(self, user_name, password, email, user_type):
+        password = hashlib.md5(password + salt).hexdigest()
         self.pg.db.insert('user_info', user_type=user_type, user_name=user_name, password=password, email=email)
 
     @daemonDB
