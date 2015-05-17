@@ -44,10 +44,13 @@ $(->
                     onInitedLoadCurrPageData: false
 
             methods:
-                detail:(user_id) ->
+                detail:(user_id, id) ->
                     #window.location.href = "/crud_check/" + @table_name + "#" + record_id
-                    window.location.href = "/" + @table_name + "#user_id=" + user_id
-
+                    if @table_name == "agency_info"
+                        window.location.href = "/" + @table_name + "#user_id=" + user_id
+                    else
+                        window.location.href = "/" + @table_name + "_detail#id=" + id + "&user_id=" + user_id
+                        
                 checkedSelect:(e) ->
                     #@checked_text = $(e.target).find("option:selected").text()
                     @checked_text = option.text for option in @options when option.value == @checked

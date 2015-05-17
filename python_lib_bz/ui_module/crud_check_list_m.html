@@ -7,7 +7,7 @@
         </div>
         <div class="col-sm-8">
             <div class="pull-right">
-                <select v-model="checked" v-on="change: checkedSelect" options="options">
+                <select class="form-control" v-model="checked" v-on="change: checkedSelect" options="options">
                 </select>
             </div>
         </div>
@@ -21,13 +21,15 @@
                 {% end %}
                 <th></th>
             </tr>
-            <tr v-on="click:detail(r.user_id)" v-repeat="r : records">
+            <tr v-on="click:detail(r.user_id, r.id)" v-repeat="r : records">
                 <td></td>
                 {% for field in fields %}
                 {% if field.c_type == 'timestamp' %}
                 <td v-dateformat="'yyyy-MM-dd':r.{{ field.name }}"></td>
+                {% elif field.name == 'user_id' %}
+                <td v-ellipsis="16:r.agency_name"></td>
                 {% else %}
-                <td v-ellipsis="8:r.{{ field.name }}"></td>
+                <td v-ellipsis="18:r.{{ field.name }}"></td>
                 {% end %}
                 {% end %}
                 <td></td>
