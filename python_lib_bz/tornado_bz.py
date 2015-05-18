@@ -337,7 +337,7 @@ def mustSubscribe(method):
             self.redirect(auth_url)
             return
         else:
-            exists_users = list(self.pg.db.select('wechat_user', where="openid=%s" % openid))
+            exists_users = list(self.pg.db.select('wechat_user', where="openid='%s'" % openid))
             if not exists_users:
                 try:
                     print "get_user_info access_token = ", self.settings['access_token']
