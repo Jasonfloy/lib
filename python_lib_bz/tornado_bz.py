@@ -363,9 +363,9 @@ def mustSubscribe(method):
             if wechat_user_info['subscribe'] == 0:
                 self.redirect('http://' + self.settings["domain"] + self.settings["subscribe"])
                 return
-            else:
-                print 'add user'
-                self.pg.db.insert('wechat_user', **wechat_user_info)
+            #else:
+            #    print 'add user'
+            #    self.pg.db.insert('wechat_user', **wechat_user_info)
 
         return method(self, *args, **kwargs)
     return wrapper
