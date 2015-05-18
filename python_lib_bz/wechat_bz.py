@@ -70,14 +70,13 @@ def tokenHandler(method):
             access_token_info = self.wechat.get_access_token()
             self.settings['access_token'] = access_token_info['access_token']
             print 'new access_token=' + self.settings['access_token']
-            self.settings['access_token_expires_at'] = access_token_info['access_token_expires_at']
+            self.settings['access_token_expires_at'] = str(access_token_info['access_token_expires_at'])
             return method(self, *args, **kwargs)
         #return method(self, *args, **kwargs)
     return wrapper
 
 
 if __name__ == '__main__':
-    wechat = WechatBasic(token='JbBqbzuji22PF2db1K381Z2JdcdbUIBF', appid='wxb853fa08cbc04938', appsecret='01a74260fd9db2460a5ef3052a8aa830')
     # print wechat.get_access_token()
     print wechat.get_menu()
     # print we_chat.getAccessToken()
