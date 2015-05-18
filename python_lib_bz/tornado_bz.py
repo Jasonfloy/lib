@@ -343,7 +343,6 @@ def mustSubscribe(method):
                     print "get_user_info openid = ", openid
                     wechat_user_info = self.wechat.get_user_info(openid, lang='zh_CN')
                 except OfficialAPIError as e:
-                    print e
                     print public_bz.getExpInfoAll()
                     # open_id not right
                     #self.wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
@@ -354,7 +353,9 @@ def mustSubscribe(method):
                     # self.redirect(self.request.uri)
                     # print "get new access token in mustSubscribe"
 
-                    raise e
+                    error = public_bz.getExpInfo()
+                    if error.find('40001') != -1:
+                        raise e
                     #if str(e) == 'OfficialAPIError: 40001: invalid credential, access_token is invalid or not latest':
                     #else:
                     #    'not rasie'
