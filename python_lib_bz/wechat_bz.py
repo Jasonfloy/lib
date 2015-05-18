@@ -21,6 +21,7 @@ except ImportError:
     raise
 
 import functools
+import public_bz
 
 
 def getUserAccessToken(code, appid, secret):
@@ -63,7 +64,7 @@ def tokenHandler(method):
         try:
             return method(self, *args, **kwargs)
         except OfficialAPIError as e:
-            print e
+            print public_bz.getExpInfoAll()
             print 'OfficialAPIError in tokenHandler, access_token='+self.settings['access_token']
             self.wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
             access_token_info = self.wechat.get_access_token()
