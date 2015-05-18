@@ -322,7 +322,6 @@ def mustSubscribe(method):
     def wrapper(self, *args, **kwargs):
         openid = self.get_secure_cookie("openid")
         if openid is None:
-            print 'cookie openid is None'
             # 连openid 都没有,首先要获取 openid
             params = {
                 "appid": self.settings['appid'],
