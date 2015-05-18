@@ -85,7 +85,9 @@ def tokenHandler(method):
             return method(self, *args, **kwargs)
         except OfficialAPIError:
             print public_bz.getExpInfoAll()
-            self.settings, self.wechat = initWechat(self.settings)
+            settings, self.wechat = initWechat(self.settings)
+            print settings
+            print self.settings
             return method(self, *args, **kwargs)
     return wrapper
 
