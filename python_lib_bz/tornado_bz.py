@@ -338,7 +338,7 @@ def mustSubscribe(method):
             return
         else:
             try:
-                print "get_user_info access_token = ", settings['access_token']
+                print "get_user_info access_token = ", self.settings['access_token']
                 wechat_user_info = self.wechat.get_user_info(openid, lang='zh_CN')
             except OfficialAPIError as e:
                 print e
