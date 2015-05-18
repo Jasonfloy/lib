@@ -57,7 +57,8 @@ def callPlatform(self, url):
 def initWechat(settings):
     '''
     create by bigzhu at 15/05/18 14:42:20 初始化wechat,获取必要的信息,返回 settings
-    >>> initWechat({'token':'jhxh4lkwscelseyumc4jmoymmqkz1le1', 'appid':'wx2427206f53ca5191', 'appsecret':'96c12db489bf34bddc5b8929f2745937'}) # doctest:+ELLIPSIS
+    >>> initWechat({'token':'jhxh4lkwscelseyumc4jmoymmqkz1le1', 'appid':'wx2427206f53ca5191', 'appsecret':'96c12db489bf34bddc5b8929f2745937'}) #doctest:+ELLIPSIS
+    new access_token= ...
     ({'access_token_expires_at': 1..., 'access_token': u'...', 'jsapi_ticket': u'...', 'appsecret': '96c12db489bf34bddc5b8929f2745937', 'token': 'jhxh4lkwscelseyumc4jmoymmqkz1le1', 'appid': 'wx2427206f53ca5191', 'jsapi_ticket_expires_at': ...}, <wechat_sdk.basic.WechatBasic object at ...>)
     '''
 
