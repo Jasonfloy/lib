@@ -10,7 +10,6 @@
         beginIndex = 0;
       }
       table_name = window.bz.getUrlParm()[2];
-      checked = 'submit';
       if (v_crud_check_list) {
         v_crud_check_list.table_name = table_name;
         checked = v_crud_check_list.checked;

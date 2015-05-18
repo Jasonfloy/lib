@@ -356,6 +356,9 @@ class crud_check_list_api(BaseHandler):
         limit = self.get_argument('limit', 10)
         offset = self.get_argument('offset', 1)
         checked = self.get_argument('checked', 'submit')
+        if checked == 'undefined':
+            checked = 'submit'
+
         if int(offset) > 0:
             offset = int(offset) - 1
         sql = "select * from %s where is_delete=0 and checked='%s' order by created_date desc limit %d offset %d" % (table, str(checked), int(limit), int(offset))
