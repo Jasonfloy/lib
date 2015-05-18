@@ -62,9 +62,10 @@ def initWechat(settings):
     ({'access_token_expires_at': 1..., 'access_token': u'...', 'jsapi_ticket': u'...', 'appsecret': '96c12db489bf34bddc5b8929f2745937', 'token': 'jhxh4lkwscelseyumc4jmoymmqkz1le1', 'appid': 'wx2427206f53ca5191', 'jsapi_ticket_expires_at': ...}, <wechat_sdk.basic.WechatBasic object at ...>)
     '''
 
-    wechat = WechatBasic(token=settings["token"], appid=settings["appid"], appsecret=settings["appsecret"])
+    wechat = WechatBasic(token=settings["token"],
+                         appid=settings["appid"],
+                         appsecret=settings["appsecret"])
     token = wechat.get_access_token()
-
     settings['access_token'] = token['access_token']
     settings['access_token_expires_at'] = token['access_token_expires_at']
 
