@@ -57,28 +57,37 @@ def callPlatform(self, url):
 def tokenHandler(method):
     '''
     create by bigzhu at 15/04/20 12:58:17 解决微信token模名失效的问题
+    modify by bigzhu at 15/05/18 14:51:18 改用统一的初始化方法
     '''
 
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         try:
             return method(self, *args, **kwargs)
-        except OfficialAPIError as e:
+        except OfficialAPIError:
             print public_bz.getExpInfoAll()
-            print 'OfficialAPIError in tokenHandler, access_token='+self.settings['access_token']
-            self.wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
-            access_token_info = self.wechat.get_access_token()
-            self.settings['access_token'] = access_token_info['access_token']
-            print 'new access_token=' + self.settings['access_token']
-            self.settings['access_token_expires_at'] = str(access_token_info['access_token_expires_at'])
+            self.settings, self.wechat = initWechat(self.settings)
             return method(self, *args, **kwargs)
-        #return method(self, *args, **kwargs)
     return wrapper
 
 
+def initWechat(settings):
+    '''
+    create by bigzhu at 15/05/18 14:42:20 初始化wechat,获取必要的信息,返回 settings
+    >>> initWechat({'token':'jhxh4lkwscelseyumc4jmoymmqkz1le1', 'appid':'wx2427206f53ca5191', 'appsecret':'96c12db489bf34bddc5b8929f2745937'}) # doctest:+ELLIPSIS
+    ({'access_token_expires_at': 1..., 'access_token': u'...', 'jsapi_ticket': u'...', 'appsecret': '96c12db489bf34bddc5b8929f2745937', 'token': 'jhxh4lkwscelseyumc4jmoymmqkz1le1', 'appid': 'wx2427206f53ca5191', 'jsapi_ticket_expires_at': ...}, <wechat_sdk.basic.WechatBasic object at ...>)
+    '''
+
+    wechat = WechatBasic(token=settings["token"], appid=settings["appid"], appsecret=settings["appsecret"])
+    token = wechat.get_access_token()
+
+    settings['access_token'] = token['access_token']
+    settings['access_token_expires_at'] = token['access_token_expires_at']
+
+    ticket_info = wechat.get_jsapi_ticket()
+    settings['jsapi_ticket'] = ticket_info['jsapi_ticket']
+    settings['jsapi_ticket_expires_at'] = ticket_info['jsapi_ticket_expires_at']
+    return settings, wechat
+
 if __name__ == '__main__':
-    # print wechat.get_access_token()
-    print wechat.get_menu()
-    # print we_chat.getAccessToken()
-    # print we_chat.getWeChatIP()
-    # print we_chat.addKF('bigzhu','大猪', '123')
+    pass

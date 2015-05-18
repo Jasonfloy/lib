@@ -343,28 +343,20 @@ def mustSubscribe(method):
                     wechat_user_info = self.wechat.get_user_info(openid, lang='zh_CN')
                 except OfficialAPIError as e:
                     print public_bz.getExpInfoAll()
-                    # open_id not right
-                    #self.wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
-                    #access_token_info = self.wechat.get_access_token()
-                    #self.settings['access_token'] = access_token_info['access_token']
-                    #self.settings['access_token_expires_at'] = access_token_info['access_token_expires_at']
                     self.clear_cookie(name='openid')
-                    # self.redirect(self.request.uri)
-                    # print "get new access token in mustSubscribe"
-
                     error = public_bz.getExpInfo()
                     if error.find('40001') != -1:
                         raise e
-                    else:
-                        error_info = '''
-                        <html>
-                            <script type="text/javascript">
-                            alert("微信服务器异常，请关闭后，重新打开");
-                            WeixinJSBridge.call('closeWindow');
-                            </script>
-                        </html>
-                        '''
-                        self.write(error_info)
+                    #else:
+                    #    error_info = '''
+                    #    <html>
+                    #        <script type="text/javascript">
+                    #        alert("微信服务器异常，请关闭后，重新打开");
+                    #        WeixinJSBridge.call('closeWindow');
+                    #        </script>
+                    #    </html>
+                    #    '''
+                    #    self.write(error_info)
                     return
 
                 # 没有关注的,跳转到配置的关注页面
