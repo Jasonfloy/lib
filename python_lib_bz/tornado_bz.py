@@ -342,6 +342,7 @@ def mustSubscribe(method):
                 wechat_user_info = self.wechat.get_user_info(openid)
             except OfficialAPIError as e:
                 print e
+                print public_bz.getExpInfoAll()
                 # open_id not right
                 #self.wechat = WechatBasic(token=self.settings['token'], appid=self.settings['appid'], appsecret=self.settings['appsecret'])
                 #access_token_info = self.wechat.get_access_token()
