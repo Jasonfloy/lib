@@ -356,18 +356,16 @@ def mustSubscribe(method):
                     error = public_bz.getExpInfo()
                     if error.find('40001') != -1:
                         raise e
-                    #if str(e) == 'OfficialAPIError: 40001: invalid credential, access_token is invalid or not latest':
-                    #else:
-                    #    'not rasie'
-                    #error = '''
-                    #<html>
-                    #    <script type="text/javascript">
-                    #    alert("微信服务器异常，请关闭后，重新打开");
-                    #    WeixinJSBridge.call('closeWindow');
-                    #    </script>
-                    #</html>
-                    #'''
-                    #self.write(error)
+                    else:
+                        error_info = '''
+                        <html>
+                            <script type="text/javascript">
+                            alert("微信服务器异常，请关闭后，重新打开");
+                            WeixinJSBridge.call('closeWindow');
+                            </script>
+                        </html>
+                        '''
+                        self.write(error_info)
                     return
 
                 # 没有关注的,跳转到配置的关注页面
