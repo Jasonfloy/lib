@@ -70,6 +70,7 @@ def initWechat(settings):
     ticket_info = wechat.get_jsapi_ticket()
     settings['jsapi_ticket'] = ticket_info['jsapi_ticket']
     settings['jsapi_ticket_expires_at'] = ticket_info['jsapi_ticket_expires_at']
+    print 'new access_token=', settings['access_token']
     return settings, wechat
 
 
