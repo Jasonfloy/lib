@@ -54,23 +54,6 @@ def callPlatform(self, url):
     return r.text
 
 
-def tokenHandler(method):
-    '''
-    create by bigzhu at 15/04/20 12:58:17 解决微信token模名失效的问题
-    modify by bigzhu at 15/05/18 14:51:18 改用统一的初始化方法
-    '''
-
-    @functools.wraps(method)
-    def wrapper(self, *args, **kwargs):
-        try:
-            return method(self, *args, **kwargs)
-        except OfficialAPIError:
-            print public_bz.getExpInfoAll()
-            self.settings, self.wechat = initWechat(self.settings)
-            return method(self, *args, **kwargs)
-    return wrapper
-
-
 def initWechat(settings):
     '''
     create by bigzhu at 15/05/18 14:42:20 初始化wechat,获取必要的信息,返回 settings
@@ -88,6 +71,24 @@ def initWechat(settings):
     settings['jsapi_ticket'] = ticket_info['jsapi_ticket']
     settings['jsapi_ticket_expires_at'] = ticket_info['jsapi_ticket_expires_at']
     return settings, wechat
+
+
+def tokenHandler(method):
+    '''
+    create by bigzhu at 15/04/20 12:58:17 解决微信token模名失效的问题
+    modify by bigzhu at 15/05/18 14:51:18 改用统一的初始化方法
+    '''
+
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        try:
+            return method(self, *args, **kwargs)
+        except OfficialAPIError:
+            print public_bz.getExpInfoAll()
+            self.settings, self.wechat = initWechat(self.settings)
+            return method(self, *args, **kwargs)
+    return wrapper
+
 
 if __name__ == '__main__':
     pass
