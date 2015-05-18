@@ -130,9 +130,7 @@ class login(ModuleHandler, UserInfoHandler):
                 result = gt.geetest_validate(geetest_challenge, geetest_validate, geetest_seccode)
                 if not result:
                     raise Exception('验证码不正确!')
-            # 密码加密
-            hashed_password = hashlib.md5(password + salt).hexdigest()
-            user_info = self.user_oper.login(user_name, hashed_password)
+            user_info = self.user_oper.login(user_name, password)
             self.set_secure_cookie("user_id", str(user_info.id))
         elif form_type == 'signup':
             user_name = login_info.get("user_name")
@@ -142,12 +140,11 @@ class login(ModuleHandler, UserInfoHandler):
             user_info = self.user_oper.getUserInfo(user_name=user_name)
             if user_info:
                 raise Exception('用户已经存在!可能是那一瞬间被抢注了.真遗憾,换一个吧')
-            hashed_password = hashlib.md5(password + salt).hexdigest()
 
             user_type = login_info.get("user_type", 'my')
 
-            self.user_oper.signup(user_name, hashed_password, email, user_type)
-            user_info = self.user_oper.login(user_name, hashed_password, "'%s'" % user_type)
+            self.user_oper.signup(user_name, password, email, user_type)
+            user_info = self.user_oper.login(user_name, password, "'%s'" % user_type)
             self.set_secure_cookie("user_id", str(user_info.id))
         elif form_type == 'forget':  # 如果是找回密码
             email = login_info.get("email")
