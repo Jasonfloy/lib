@@ -354,7 +354,10 @@ def mustSubscribe(method):
                     # self.redirect(self.request.uri)
                     # print "get new access token in mustSubscribe"
 
-                    raise e
+                    if str(e) == 'OfficialAPIError: 40001: invalid credential, access_token is invalid or not latest':
+                        raise e
+                    else:
+                        'not rasie'
                     #error = '''
                     #<html>
                     #    <script type="text/javascript">
