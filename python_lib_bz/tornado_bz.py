@@ -333,7 +333,6 @@ def mustSubscribe(method):
             }
             auth_url = "https://open.weixin.qq.com/connect/oauth2/authorize?%s#wechat_redirect"
             auth_url = auth_url % urllib.urlencode(params)
-            print 'openid is None redirect to ', auth_url
             self.redirect(auth_url)
             return
         else:
