@@ -333,13 +333,13 @@ def mustSubscribe(method):
             }
             auth_url = "https://open.weixin.qq.com/connect/oauth2/authorize?%s#wechat_redirect"
             auth_url = auth_url % urllib.urlencode(params)
+            print 'openid is None redirect to ', auth_url
             self.redirect(auth_url)
             return
         else:
             #exists_users = list(self.pg.db.select('wechat_user', where="openid='%s'" % openid))
             #if not exists_users:
             try:
-                #print "get_user_info openid = ", openid
                 wechat_user_info = self.wechat.get_user_info(openid, lang='zh_CN')
             except OfficialAPIError as e:
                 print public_bz.getExpInfoAll()
