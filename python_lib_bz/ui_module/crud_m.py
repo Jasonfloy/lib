@@ -151,7 +151,7 @@ class CrudOper:
         ''' % (what, colum_name, sql, b_sql, colum_name)
         return sql
 
-    def getCrudListSql(self, table_name, user_id=None):
+    def getCrudListSql(self, table_name, user_id=None, parent_record_id=None):
         '''
         modify by bigzhu at 15/03/12 13:57:43 需要添加 id
         create by bigzhu at 15/03/12 12:56:43 根据给定的条件组合出查询 list 的 sql
@@ -160,6 +160,8 @@ class CrudOper:
         where = "is_delete != 1"
         if user_id:
             where += " and user_id=%s" % user_id
+        if parent_record_id:
+            where += " and record_id=%s" % parent_record_id
         order = "stat_date desc"
         sql = '''
             select %s,id from %s where %s order by %s
@@ -275,7 +277,10 @@ class crud_list_api(BaseHandler):
         self.set_header("Content-Type", "application/json")
         crud_oper = CrudOper(self.pg)
         user_id = self.get_argument('user_id', self.current_user)
-        sql = crud_oper.getCrudListSql(table_name, user_id)
+
+        # parent_record_id 为中介服务机构不良信息 里存放 datagrid 的页面id
+        parent_record_id = self.get_argument('record_id', None)
+        sql = crud_oper.getCrudListSql(table_name, user_id, parent_record_id)
         fields = crud_oper.getCrudConf(table_name)
         find_sql = ""
         isFind = self.get_argument("find", None)
@@ -312,6 +317,7 @@ class crud_list_api(BaseHandler):
             else:
                 offset = str(int(offset) - 1)
             sql = 'select * from (' + sql + ') tpage limit ' + str(int(limit)) + ' offset ' + str(int(offset))
+            print sql
             cert_array = list(self.pg.db.query(sql))
 
             # 解决crud_list页面select显示为value的问题
