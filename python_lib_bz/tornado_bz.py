@@ -339,7 +339,6 @@ def mustSubscribe(method):
             #exists_users = list(self.pg.db.select('wechat_user', where="openid='%s'" % openid))
             #if not exists_users:
             try:
-                print "get_user_info openid = ", openid
                 wechat_user_info = self.wechat.get_user_info(openid, lang='zh_CN')
             except OfficialAPIError as e:
                 print public_bz.getExpInfoAll()
