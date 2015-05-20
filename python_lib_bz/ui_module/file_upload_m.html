@@ -30,6 +30,36 @@
 </div>
 </script>
 <script type="text/javascript">
+// 当datagrid引用了file_upload字段的时候，根据传入的参数查出已经上传的文件
+Vue.directive("file-list", function(value) {
+    params = this.arg.split(".");
+    if(params.length < 2) {
+        throw "file-list 指令中的参数不足，请检查是否指定表名与字段名."
+    }
+    if(!$) {
+        throw "JQuery没有正确引用."
+    }
+    table_name = params[0];
+    column = params[1];
+    var parms_str = [table_name, column, value].join("/");
+
+    (function(_this, str) {
+        return $.get("/file_upload/" + str)
+                .done(function(d) {
+                    html = "";
+                    if(d.results.length == 0) {
+                        return
+                    }
+                    for(var i in d.results) {
+                        var f = d.results[i]
+                        html += "<div><a href='/" + f.file_path + "'' target='_blank'>" + f.file_name + "</a></div>"
+                    }
+                    console.log($(_this.el).html())
+                    $(_this.el).html(html)
+                });
+    }(this, parms_str));
+});
+
 // 把disabled和href合并了
 Vue.directive("href", function(value){
     if(value) {
