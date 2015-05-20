@@ -268,6 +268,7 @@ class crud_check_list(ModuleHandler):
 
 
 class crud_list_api(BaseHandler):
+
     '''
     modify by bigzhu at 15/05/14 11:24:54 对于传入了user_id的,只查这个user_id
     '''
@@ -361,15 +362,13 @@ class crud_check_list_api(BaseHandler):
 
         limit = self.get_argument('limit', 10)
         offset = self.get_argument('offset', 1)
-        checked = self.get_argument('checked', 'submit')
-        if checked == 'undefined':
-            checked = 'submit'
-
+        audit_state = self.get_argument('audit_state', 'submit')
+        if audit_state == 'undefined':
+            audit_state = 'submit'
         if int(offset) > 0:
             offset = int(offset) - 1
-        sql = "select * from %s where is_delete=0 and checked='%s' order by created_date desc limit %d offset %d" % (table, str(checked), int(limit), int(offset))
+        sql = "select * from %s where is_delete=0 and audit_state='%s' order by created_date desc limit %d offset %d" % (table, str(audit_state), int(limit), int(offset))
         records = list(self.pg.db.query(sql))
-
         agency = list(self.pg.db.query("select user_id, name from agency_info"))
         agency_dict = dict([(row.user_id, row.name) for row in agency])
         for row in records:
@@ -475,7 +474,7 @@ class crud_api(BaseHandler):
         if id:
             record['stat_date'] = SQLLiteral('now()')
             count = self.pg.db.update(table_name, where="id=%s and user_id=%s" % (id, self.current_user), **record)
-            if count==0:
+            if count == 0:
                 raise Exception('更新记录失败')
         else:
             seq = table_name + '_id_seq'
