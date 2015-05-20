@@ -25,6 +25,7 @@ input[readonly] {
 }
 .btn-remove-file {
   cursor: pointer;
+  color: red;
 }
 .remove-mark {
   text-decoration: line-through;

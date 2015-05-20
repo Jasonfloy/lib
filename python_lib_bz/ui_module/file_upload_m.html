@@ -1,16 +1,30 @@
 <script type="text/x-template" id="file_upload_m">
 <div class="file_upload_m_control">
-    <div v-repeat="f : files">
-        <i v-file-icon="f.suffix"></i>
-        <a v-href="f.file_path" target="_blank" v-class="remove-mark: f.remove==true">(% f.file_name %)</a>
-        <i class="fa fa-times btn-remove-file" v-on="click: removeFile(f)"></i>
-    </div>
+    <table class="table">
+        <tr v-repeat="f : files">
+            <td>
+                <i v-file-icon="f.suffix"></i>
+                <a v-href="f.file_path" target="_blank" v-class="remove-mark: f.remove==true">(% f.file_name %)</a>
+            </td>
+            <td v-if="!disabled_b">
+                <i class="fa fa-times btn-remove-file" v-on="click: removeFile(f)"></i>
+            </td>
+        </tr>
+    </table>
     <div v-repeat="f : append_files">
-        <i v-file-icon="f.suffix"></i>
-        <a v-href="f.file_path" target="_blank" v-class="remove-mark: f.remove==true">(% f.file_name %)</a>
-        <i class="fa fa-times btn-remove-file" v-on="click: removeFile(f)"></i>
+        <table class="table">
+            <tr v-repeat="f : files">
+                <td>
+                    <i v-file-icon="f.suffix"></i>
+                    <a v-href="f.file_path" target="_blank" v-class="remove-mark: f.remove==true">(% f.file_name %)</a>
+                </td>
+                <td v-if="!disabled_b">
+                    <i class="fa fa-times btn-remove-file" v-on="click: removeFile(f)"></i>
+                </td>
+            </tr>
+        </table>
     </div>
-    <span class="file-input btn btn-sm btn-success btn-file">
+    <span class="file-input btn btn-sm btn-success btn-file" v-if="!disabled_b">
         选择文件<input v-on="change: appendFile($event)" type="file" multiple/>
     </span>
 </div>
@@ -55,10 +69,23 @@ Vue.directive("file-icon", function(value){
 // 输入field名字，返回上传的ids
 Vue.component("file-upload-m", {
     template: "#file_upload_m",
-    paramAttributes: ['table-name', 'field-name', 'record-id'],
+    paramAttributes: ['table-name', 'field-name', 'record-id', 'disabled'],
     computed: {
         column: function() {
             return this.fieldName   // 上传用的字段名标记
+        },
+        disabled_b: function() {
+            if(!this.disabled) {
+                return false
+            } else {
+                var bool = true;
+                try {
+                    bool = new Function("return " + this.disabled)
+                } catch (e) {
+                    bool = true;
+                }
+                return bool
+            }
         }
     },
     attached: function() {
