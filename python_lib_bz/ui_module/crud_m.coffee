@@ -1,6 +1,7 @@
 $(->
-    Vue.directive('model-checkbox', twoWay: true
-        bind:(value) -> 
+    Vue.directive('model-checkbox',
+        twoWay: true
+        bind:(value) ->
             @checkboxChange = (->
                 if @el.checked
                     dataKeys = @raw.split(".")
