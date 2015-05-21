@@ -62,10 +62,10 @@
           }
         },
         checkedSelect: function(e) {
-          var i, len, option, ref;
-          ref = this.options;
-          for (i = 0, len = ref.length; i < len; i++) {
-            option = ref[i];
+          var option, _i, _len, _ref;
+          _ref = this.options;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            option = _ref[_i];
             if (option.value === this.checked) {
               this.checked_text = option.text;
             }
