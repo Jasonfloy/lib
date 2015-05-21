@@ -67,11 +67,16 @@
                         </div>
                         {% try %}
                         {% if validate_url %}
+                        {%if validate_url == 'bigzhu' %}
+                        <input id="validate" class="hide" value="bigzhu">
+                        {%else%}
                         <div style="margin-left:9.5em">
                             <script type="text/javascript" src="{{validate_url}}"></script>
                         </div>
                         <br>
                         <br>
+                        {% end %}
+
                         {% end %}
                         {% except %}
                         {% end %}
