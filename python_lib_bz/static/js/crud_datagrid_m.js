@@ -1,13 +1,13 @@
 (function() {
   $(function() {
-    var i, table_name, user_id, vues, _i, _len, _results;
+    var i, j, len, results, table_name, user_id, vues;
     vues = $(".safe-datagrid");
-    _results = [];
-    for (_i = 0, _len = vues.length; _i < _len; _i++) {
-      i = vues[_i];
+    results = [];
+    for (j = 0, len = vues.length; j < len; j++) {
+      i = vues[j];
       table_name = i.id;
       user_id = window.bz.getHashPram("user_id");
-      _results.push(new Vue({
+      results.push(new Vue({
         el: '#' + table_name,
         data: {
           list: [],
@@ -49,7 +49,7 @@
             }
           },
           loadListData: function() {
-            var url, _this;
+            var _this, url;
             _this = this;
             this.initModule();
             url = '/crud_list_api/' + this.table_name;
@@ -78,7 +78,7 @@
             }
           },
           getRecordDetail: function(id) {
-            var parm, _this;
+            var _this, parm;
             parm = {
               table_name: this.table_name
             };
@@ -129,7 +129,7 @@
             return $('#confirm-' + this.table_name).modal();
           },
           del: function() {
-            var del_array, _this;
+            var _this, del_array;
             _this = this;
             del_array = _.pluck(this.checked_list, "id");
             $.ajax({
@@ -179,7 +179,7 @@
         }
       }));
     }
-    return _results;
+    return results;
   });
 
 }).call(this);

@@ -2,7 +2,7 @@
   $(function() {
     var selectPage, v_crud_check_list;
     selectPage = function(currPage, beginIndex, endIndex, limit) {
-      var checked, table_name;
+      var audit_state, table_name;
       if (!limit) {
         limit = 10;
       }
@@ -12,9 +12,9 @@
       table_name = window.bz.getUrlParm()[2];
       if (v_crud_check_list) {
         v_crud_check_list.table_name = table_name;
-        checked = v_crud_check_list.checked;
+        audit_state = v_crud_check_list.audit_state;
       }
-      return $.get('/crud_check_list_api/' + table_name + '?limit=' + limit + '&offset=' + beginIndex + '&checked=' + checked).done(function(data) {
+      return $.get('/crud_check_list_api/' + table_name + '?limit=' + limit + '&offset=' + beginIndex + '&audit_state=' + audit_state).done(function(data) {
         if (data.error === "0") {
           v_crud_check_list.records = data.records;
           return v_crud_check_list.pagination.resultCount = data.count;
@@ -28,8 +28,8 @@
       data: {
         records: [],
         table_name: '',
-        checked: 'submit',
-        checked_text: '待审核',
+        audit_state: 'submit',
+        audit_state_text: '待审核',
         options: [
           {
             text: '待审核',
@@ -62,12 +62,12 @@
           }
         },
         checkedSelect: function(e) {
-          var option, _i, _len, _ref;
-          _ref = this.options;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            option = _ref[_i];
-            if (option.value === this.checked) {
-              this.checked_text = option.text;
+          var i, len, option, ref;
+          ref = this.options;
+          for (i = 0, len = ref.length; i < len; i++) {
+            option = ref[i];
+            if (option.value === this.audit_state) {
+              this.audit_state_text = option.text;
             }
           }
           return selectPage();
