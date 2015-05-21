@@ -6,6 +6,7 @@ import functools
 import time
 from webpy_db import SQLLiteral
 
+
 def daemonDB(method):
     '''
     自动重连数据库的一个装饰器
@@ -14,7 +15,7 @@ def daemonDB(method):
     def wrapper(self, *args, **kwargs):
         try:
             return method(self, *args, **kwargs)
-        except(psycopg2.OperationalError, psycopg2.InterfaceError):
+        except(psycopg2.OperationalError, psycopg2.InterfaceError, psycopg2.DatabaseError):
             print public_bz.getExpInfo()
             self.pg.connect()
             time.sleep(5)
@@ -68,5 +69,4 @@ def transTimeValueByTable(pg, table_name, v):
 
 
 if __name__ == '__main__':
-    import test_pg as pg
-    transValueByTable(pg, 'user_info', 'haha')
+    pass
