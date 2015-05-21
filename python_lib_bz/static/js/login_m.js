@@ -26,7 +26,8 @@
               type: type,
               geetest_challenge: $('.geetest_challenge').val(),
               geetest_validate: $('.geetest_validate').val(),
-              geetest_seccode: $('.geetest_seccode').val()
+              geetest_seccode: $('.geetest_seccode').val(),
+              validate: $('#validate').val()
             });
           } else if (type === 'signup') {
             parm = JSON.stringify({

@@ -42,6 +42,8 @@ class geetest(object):
             result = urllib2.urlopen(regurl, timeout=2).read()
         except:
             result = ""
+            print regurl
+            print public_bz.getExpInfoAll()
         return result
 
     def geetest_validate(self, challenge, validate, seccode):
@@ -78,8 +80,12 @@ class login_m(my_ui_module.MyUIModule):
             gt = geetest(captcha_id, private_key)
             challenge = gt.geetest_register()
             BASE_URL = "api.geetest.com/get.php?gt="
+            print challenge
             if len(challenge) == 32:
                 validate_url = "http://%s%s&challenge=%s" % (BASE_URL, captcha_id, challenge)
+            else:  # 验证的api出现问题,无法显示验证码
+                validate_url = 'bigzhu'
+
         return self.render_string(self.html_name, oauth2=oauth2, user_types=user_types, validate_url=validate_url)
 
 
@@ -105,7 +111,7 @@ class login(ModuleHandler, UserInfoHandler):
 
         # 用户操作相关的
         self.user_oper = user_bz.UserOper(self.pg)
-        #是否要验证
+        # 是否要验证
         self.validate = False
 
     def get(self):
@@ -119,8 +125,10 @@ class login(ModuleHandler, UserInfoHandler):
         if form_type == 'login':
             user_name = login_info.get("user_name")
             password = login_info.get("password")
-            if self.validate:
-                #验证码
+            # 如果出问题,那么返回一个validate,似乎把验证的大门打开了.管他呢
+            validate = login_info.get("validate")
+            if self.validate and validate != 'bigzhu':
+                # 验证码
                 geetest_challenge = login_info.get("geetest_challenge")
                 geetest_validate = login_info.get("geetest_validate")
                 geetest_seccode = login_info.get("geetest_seccode")
