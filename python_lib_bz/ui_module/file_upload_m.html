@@ -30,8 +30,9 @@
 </div>
 </script>
 <script type="text/javascript">
-// 当datagrid引用了file_upload字段的时候，根据传入的参数查出已经上传的文件
+// 当datagrid中需要显示file_upload字段的时候，根据传入的参数查出已经上传的文件
 Vue.directive("file-list", function(value) {
+    // 拼接参数，处理异常情况
     params = this.arg.split(".");
     if(params.length < 2) {
         throw "file-list 指令中的参数不足，请检查是否指定表名与字段名."
@@ -42,7 +43,7 @@ Vue.directive("file-list", function(value) {
     table_name = params[0];
     column = params[1];
     var parms_str = [table_name, column, value].join("/");
-
+    // 闭包ajax
     (function(_this, str) {
         return $.get("/file_upload/" + str)
                 .done(function(d) {
@@ -54,7 +55,7 @@ Vue.directive("file-list", function(value) {
                         var f = d.results[i]
                         html += "<div><a href='/" + f.file_path + "'' target='_blank'>" + f.file_name + "</a></div>"
                     }
-                    console.log($(_this.el).html())
+                    // 拼装字符串，注入到list中
                     $(_this.el).html(html)
                 });
     }(this, parms_str));
@@ -177,6 +178,7 @@ Vue.component("file-upload-m", {
                         if(_this.append_files.indexOf(f) >= 0) {
                             _this.append_files.splice(_this.append_files.indexOf(f), 1);
                         }
+                        console.log(_this.files)
                         window.bz.showSuccess5("文件删除成功.")
                     } else {
                         window.bz.showError5("删除文件时发生错误:" + d.error);
@@ -197,8 +199,6 @@ Vue.component("file-upload-m", {
                         contentType: false
                     }).done(function(d) {
                         if(d.error === "0") {
-                            // 记录上传成功后的ID
-                            __this.new_file_ids.push(d.results[0].file_id);
                             // 删除append_files
                             __this.append_files.splice(__this.append_files.indexOf(file), 1);
                             // 放到所有文件列表
@@ -218,6 +218,12 @@ Vue.component("file-upload-m", {
                 throw "请在调用之前先提交外部表单。"      // 如果组件参数和调用参数都没有，就抛出异常
             } else if (recordId) {
                 _this.recordId = recordId             // 如果参数存在，就赋值给当前的recordId
+            }
+
+            // 记录上传成功后的ID
+            for(var i in _this.files) {
+                var f = _this.files[i]
+                this.new_file_ids.push(f.file_id)
             }
             params = {
                 "column": this.column,
@@ -246,6 +252,7 @@ Vue.component("file-upload-m", {
         clear: function() {
             this.$set("upload_ids", []);        // 上传成功后的id
             this.$set("append_files", []);      // 新增的文件
+            this.$set("files", []);             // 已上传文件
             this.$set("new_file_ids", []);      // 用于保存新增文件的文件id
         }
     }

@@ -105,7 +105,7 @@ $(->
                         type: 'DELETE'
                         data:  del_array.join(",")
                     .done((data)->
-                        if data.error = "0"
+                        if data.error == "0"
                             window.bz.showSuccess5("删除成功")
                             _this.loadListData()
                         else
