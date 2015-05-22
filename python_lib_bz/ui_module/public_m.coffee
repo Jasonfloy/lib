@@ -374,7 +374,6 @@ window.bz =
   # 获取hash参数的值
   getHashPram: (key) ->
     _hashStr = window.location.hash.replace('#','')
-    console.log _hashStr
     if(!_hashStr || _hashStr == "")
       return undefined
     _hashs = _hashStr.split(";")
