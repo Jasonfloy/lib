@@ -10,9 +10,9 @@ $(->
 
         if v_crud_check_list
             v_crud_check_list.table_name = table_name
-            checked = v_crud_check_list.checked
+            audit_state = v_crud_check_list.audit_state
 
-        $.get('/crud_check_list_api/' + table_name + '?limit=' + limit + '&offset=' + beginIndex + '&checked=' + checked).done((data) ->
+        $.get('/crud_check_list_api/' + table_name + '?limit=' + limit + '&offset=' + beginIndex + '&audit_state=' + audit_state).done((data) ->
                 if data.error == "0"
                     v_crud_check_list.records = data.records
                     v_crud_check_list.pagination.resultCount = data.count
@@ -26,8 +26,8 @@ $(->
             data:
                 records: []
                 table_name: ''
-                checked: 'submit'
-                checked_text: '待审核'
+                audit_state: 'submit'
+                audit_state_text: '待审核'
                 options: [
                     {text: '待审核', value: 'submit'},
                     {text: '未通过', value: 'nopass'},
@@ -54,8 +54,7 @@ $(->
                         window.location.href = "/" + @table_name + "_detail#id=" + id + "&user_id=" + user_id
                         
                 checkedSelect:(e) ->
-                    #@checked_text = $(e.target).find("option:selected").text()
-                    @checked_text = option.text for option in @options when option.value == @checked
+                    @audit_state_text = option.text for option in @options when option.value == @audit_state
                     selectPage()
 
 

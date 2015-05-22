@@ -23,7 +23,7 @@
           return location.pathname = path;
         },
         save: function(checked) {
-          var record, table_name, _this;
+          var _this, record, table_name;
           _this = this;
           this.loading = true;
           table_name = this.getTableName();
@@ -48,7 +48,7 @@
           });
         },
         loadData: function() {
-          var id, parm, table_name, _this;
+          var _this, id, parm, table_name;
           _this = this;
           table_name = this.getTableName();
           parm = window.bz.getHashParms();

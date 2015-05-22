@@ -3,11 +3,11 @@
 <div id="v_crud_check_list" v-loading="loading; this" class="box safe-datagrid">
     <div class="box-header with-border row">
         <div class="col-sm-4">
-            <h3 class="box-title">(%checked_text%)的记录</h3>
+            <h3 class="box-title">(%audit_state_text%)的记录</h3>
         </div>
         <div class="col-sm-8">
             <div class="pull-right">
-                <select class="form-control" v-model="checked" v-on="change: checkedSelect" options="options">
+                <select class="form-control" v-model="audit_state" v-on="change: checkedSelect" options="options">
                 </select>
             </div>
         </div>
