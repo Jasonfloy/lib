@@ -142,7 +142,7 @@
               type: 'DELETE',
               data: del_array.join(",")
             }).done(function(data) {
-              if (data.error = "0") {
+              if (data.error === "0") {
                 window.bz.showSuccess5("删除成功");
                 return _this.loadListData();
               } else {

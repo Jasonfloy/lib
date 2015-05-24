@@ -444,7 +444,6 @@
     getHashPram: function(key) {
       var _hash, _hashItem, _hashStr, _hashs, j, len1;
       _hashStr = window.location.hash.replace('#', '');
-      console.log(_hashStr);
       if (!_hashStr || _hashStr === "") {
         return void 0;
       }
