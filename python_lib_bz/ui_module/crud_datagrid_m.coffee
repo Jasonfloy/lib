@@ -33,6 +33,10 @@ $(->
                     if @user_id
                         $('#modal-' + @table_name).modal()
                         @getRecordDetail(r.id)
+                look:(r)->
+                    @module = "look"
+                    $('#modal-' + @table_name).modal()
+                    @getRecordDetail(r.id)
                 #初始化 module
                 initModule:->
                     if @user_id
