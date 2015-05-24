@@ -93,6 +93,7 @@ $(->
                     id = @checked_list[0].id
                     @getRecordDetail(id)
                 new:->
+                    @module = "normal"
                     new_record = {}
                     for key of @record
                         if key == 'id' then continue

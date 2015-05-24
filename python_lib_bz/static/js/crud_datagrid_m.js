@@ -120,6 +120,7 @@
           },
           "new": function() {
             var key, new_record;
+            this.module = "normal";
             new_record = {};
             for (key in this.record) {
               if (key === 'id') {
