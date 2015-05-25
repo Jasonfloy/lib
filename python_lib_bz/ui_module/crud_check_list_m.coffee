@@ -48,10 +48,9 @@ $(->
                     #window.location.href = "/crud_check/" + @table_name + "#" + record_id
                     if @table_name == "agency_info"
                         window.location.href = "/" + @table_name + "#user_id=" + user_id
-                    else if @table_name == 'agency_service_manage'
-                        window.location.href = "/" + @table_name + "_detail/" + id + "#user_id=" + user_id
                     else
-                        window.location.href = "/" + @table_name + "_detail#id=" + id + "&user_id=" + user_id
+                        #window.location.href = "/" + @table_name + "_detail#id=" + id + "&user_id=" + user_id
+                        window.location.href = "/" + @table_name + "_detail/" + id + "#user_id=" + user_id
                         
                 checkedSelect:(e) ->
                     @audit_state_text = option.text for option in @options when option.value == @audit_state

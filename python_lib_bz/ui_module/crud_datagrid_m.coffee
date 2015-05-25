@@ -9,7 +9,8 @@ $(->
             data:
                 list: []
                 record:{}
-                module: "normal"
+                stat: "normal" # or look(查看) or check(审查)
+                select: 'null' #选中的个数
                 loading:true
                 loading_target:"#"+table_name
                 checked_list:{} #当前选中的list
@@ -17,7 +18,7 @@ $(->
             created:->
                 @table_name = table_name
                 @user_id = user_id
-                @initModule()
+                @initStat()
 
                 @loadListData()
                 @getRecordDetail()  # 初始化的时候需要设置 file_columns 的参数
@@ -28,20 +29,21 @@ $(->
                         _this.$[column.name + "_c"].getExistFiles()
                     )
             methods:
-                #点击这一行数据,只有在look模式有作用
-                clickLine:(r)->
+                look:(r)->
+                    if @stat == 'normal'
+                        @stat= "look"
+                    $('#modal-' + @table_name).modal()
+                    @getRecordDetail(r.id)
+                #初始化 stat
+                initStat:->
+                    log @user_id
                     if @user_id
-                        $('#modal-' + @table_name).modal()
-                        @getRecordDetail(r.id)
-                #初始化 module
-                initModule:->
-                    if @user_id
-                        @module = "look"
+                        @stat = "check"
                     else
-                        @module = "normal"
+                        @stat = "normal"
                 loadListData:->
                     _this = @
-                    @initModule()
+                    @initStat()
                     url = '/crud_list_api/' + @table_name
                     if @user_id
                         url += '?user_id=' + @user_id
@@ -56,11 +58,11 @@ $(->
                 checkBox:->
                     @checked_list = _.where(@list, {"checked": true})
                     if @checked_list.length == 0
-                        @initModule()
+                        @select='null'
                     else if @checked_list.length == 1
-                        @module='select_one'
+                        @select='select_one'
                     else if @checked_list.length > 1
-                        @module='select_more'
+                        @select='select_more'
                 #查出表单内容,用于编辑
                 getRecordDetail:(id)->
                     parm = {table_name:@table_name}
@@ -85,10 +87,12 @@ $(->
                                 window.bz.showError5('未找到这条数据!')
                     )
                 edit:->
+                    @stat = "normal"
                     $('#modal-' + @table_name).modal()
                     id = @checked_list[0].id
                     @getRecordDetail(id)
                 new:->
+                    @stat = "normal"
                     new_record = {}
                     for key of @record
                         if key == 'id' then continue

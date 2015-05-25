@@ -12,7 +12,8 @@
         data: {
           list: [],
           record: {},
-          module: "normal",
+          stat: "normal",
+          select: 'null',
           loading: true,
           loading_target: "#" + table_name,
           checked_list: {},
@@ -21,7 +22,7 @@
         created: function() {
           this.table_name = table_name;
           this.user_id = user_id;
-          this.initModule();
+          this.initStat();
           this.loadListData();
           return this.getRecordDetail();
         },
@@ -35,23 +36,25 @@
           }
         },
         methods: {
-          clickLine: function(r) {
-            if (this.user_id) {
-              $('#modal-' + this.table_name).modal();
-              return this.getRecordDetail(r.id);
+          look: function(r) {
+            if (this.stat === 'normal') {
+              this.stat = "look";
             }
+            $('#modal-' + this.table_name).modal();
+            return this.getRecordDetail(r.id);
           },
-          initModule: function() {
+          initStat: function() {
+            log(this.user_id);
             if (this.user_id) {
-              return this.module = "look";
+              return this.stat = "check";
             } else {
-              return this.module = "normal";
+              return this.stat = "normal";
             }
           },
           loadListData: function() {
             var url, _this;
             _this = this;
-            this.initModule();
+            this.initStat();
             url = '/crud_list_api/' + this.table_name;
             if (this.user_id) {
               url += '?user_id=' + this.user_id;
@@ -70,11 +73,11 @@
               "checked": true
             });
             if (this.checked_list.length === 0) {
-              return this.initModule();
+              return this.select = 'null';
             } else if (this.checked_list.length === 1) {
-              return this.module = 'select_one';
+              return this.select = 'select_one';
             } else if (this.checked_list.length > 1) {
-              return this.module = 'select_more';
+              return this.select = 'select_more';
             }
           },
           getRecordDetail: function(id) {
@@ -109,12 +112,14 @@
           },
           edit: function() {
             var id;
+            this.stat = "normal";
             $('#modal-' + this.table_name).modal();
             id = this.checked_list[0].id;
             return this.getRecordDetail(id);
           },
           "new": function() {
             var key, new_record;
+            this.stat = "normal";
             new_record = {};
             for (key in this.record) {
               if (key === 'id') {

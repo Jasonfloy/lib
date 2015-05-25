@@ -146,8 +146,9 @@ class login(ModuleHandler, UserInfoHandler):
             email = login_info.get("email")
             # 用户是否存在应该注册提交前判断,这里再次判断
             user_info = self.user_oper.getUserInfo(user_name=user_name)
+            print user_info
             if user_info:
-                raise Exception('用户已经存在!可能是那一瞬间被抢注了.真遗憾,换一个吧')
+                raise Exception('用户已经存在,请换一个用户名')
 
             user_type = login_info.get("user_type", 'my')
 
