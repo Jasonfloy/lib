@@ -405,7 +405,14 @@ class oper(BaseHandler):
         self.set_header("Content-Type", "application/json")
         t = self.get_argument('t')
         w = self.get_argument('w', '1=1')
-        data = self.pg.db.select(t, where=w)
+        limit = self.get_argument('limit', None)
+        page = self.get_argument('page', None)
+        if limit:
+            offset = (int(page) - 1) * int(limit)
+            data = self.pg.db.select(t, where=w, limit=limit, offset=offset)
+        else:
+            data = self.pg.db.select(t, where=w)
+
         self.write(json.dumps({'error': '0', 'data': data}, cls=public_bz.ExtEncoder))
 
     @handleError
