@@ -114,6 +114,9 @@ class login(ModuleHandler, UserInfoHandler):
         # 是否要验证
         self.validate = False
 
+        #salt
+        self.salt = "hold is watching you"
+
     def get(self):
         self.myRender(oauth2=self.oauth2)
 
