@@ -25,7 +25,7 @@
         </table>
     </div>
     <span class="file-input btn btn-sm btn-success btn-file" v-if="!disabled_b">
-        选择文件<input v-on="change: appendFile($event)" type="file" multiple/>
+        选择文件<input class="input_file" v-on="change: appendFile($event)" type="file" multiple/>
     </span>
 </div>
 </script>
@@ -250,10 +250,11 @@ Vue.component("file-upload-m", {
             return func(this)
         },
         clear: function() {
-            this.$set("upload_ids", []);        // 上传成功后的id
-            this.$set("append_files", []);      // 新增的文件
-            this.$set("files", []);             // 已上传文件
-            this.$set("new_file_ids", []);      // 用于保存新增文件的文件id
+            this.$set("upload_ids", []);            // 上传成功后的id
+            this.$set("append_files", []);          // 新增的文件
+            this.$set("files", []);                 // 已上传文件
+            this.$set("new_file_ids", []);          // 用于保存新增文件的文件id
+            $(this.$el).find(".input_file").val("") // 清空file选择
         }
     }
 });
