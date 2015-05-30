@@ -113,7 +113,7 @@
 
   Vue.directive('datepicker', {
     bind: function(value) {
-      var datepicker, _this;
+      var _this, datepicker;
       _this = this;
       datepicker = $(this.el);
       return datepicker.datepicker({
@@ -124,7 +124,7 @@
         clearBtn: true,
         startDate: '1980-01-01'
       }).on("changeDate", function(e) {
-        var d_str, index, level, levels, temp_obj, _results;
+        var d_str, index, level, levels, results, temp_obj;
         levels = _this.raw.split(".");
         d_str = "";
         if (e.date) {
@@ -132,7 +132,7 @@
         }
         temp_obj = _this.vm[levels[0]];
         index = 1;
-        _results = [];
+        results = [];
         while (index <= levels.length - 1) {
           level = levels[index];
           if (typeof temp_obj[level] === "undefined" && index < levels.length - 1) {
@@ -141,9 +141,9 @@
           } else if (index === levels.length - 1) {
             temp_obj[level] = d_str;
           }
-          _results.push(index += 1);
+          results.push(index += 1);
         }
-        return _results;
+        return results;
       }).siblings(".input-group-addon").on("click", function() {
         return datepicker.datepicker("show");
       });
@@ -208,7 +208,7 @@
   Vue.directive('a-active', {
     bind: function() {
       var href, path;
-      href = $(this.el).attr('href');
+      href = $(this.el).find("a").attr('href');
       href = encodeURI(href);
       path = window.location.pathname;
       if (path.search(href) !== -1) {
@@ -392,7 +392,7 @@
       return $("<div/>").text(value).html();
     },
     dateFormat: function(timestramp, mask) {
-      var date, matched_array, o, regStr, res, _this;
+      var _this, date, matched_array, o, regStr, res;
       date = new Date(timestramp);
       _this = this;
       o = {
@@ -442,14 +442,14 @@
       return desc;
     },
     getHashPram: function(key) {
-      var _hash, _hashItem, _hashStr, _hashs, _i, _len;
+      var _hash, _hashItem, _hashStr, _hashs, j, len1;
       _hashStr = window.location.hash.replace('#', '');
       if (!_hashStr || _hashStr === "") {
         return void 0;
       }
       _hashs = _hashStr.split(";");
-      for (_i = 0, _len = _hashs.length; _i < _len; _i++) {
-        _hashItem = _hashs[_i];
+      for (j = 0, len1 = _hashs.length; j < len1; j++) {
+        _hashItem = _hashs[j];
         _hash = _hashItem.split("=");
         if (key === _hash[0]) {
           return _hash[1];
@@ -458,15 +458,15 @@
       return void 0;
     },
     setHashPram: function(key, value) {
-      var _hash, _hashItem, _hashStr, _hashs, _i, _len, _newHashStr;
+      var _hash, _hashItem, _hashStr, _hashs, _newHashStr, j, len1;
       _hashStr = window.location.hash.replace('#', '');
       if (!window.bz.getHashPram(key) && value) {
         return window.location.hash = _hashStr + key + "=" + value + ";";
       } else {
         _hashs = _hashStr.split(";");
         _newHashStr = "";
-        for (_i = 0, _len = _hashs.length; _i < _len; _i++) {
-          _hashItem = _hashs[_i];
+        for (j = 0, len1 = _hashs.length; j < len1; j++) {
+          _hashItem = _hashs[j];
           if (!_hashItem || _hashItem === "") {
             continue;
           }

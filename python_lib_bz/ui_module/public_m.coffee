@@ -178,7 +178,7 @@ Vue.directive "process-icon",
 #根据 a 的是否是当前 url 的一部分来判断是否设置 active
 Vue.directive 'a-active',
   bind:  ->
-    href = $(this.el).attr('href')
+    href = $(this.el).find("a").attr('href')
     href = encodeURI(href)
     path = window.location.pathname
     if path.search(href) != -1

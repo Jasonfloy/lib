@@ -10,8 +10,8 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 import public_bz
-#host='192.168.1.3'
-host='127.0.0.1'
+host = 'mygit'
+# host='127.0.0.1'
 try:
     #from peewee import PostgresqlDatabase
     from peewee import Model
@@ -73,11 +73,11 @@ def createTable(Model, db_name, user=None, password=None):
             ''' % table_name
         db.execute_sql(sql)
         resetBaseDefault(db)
-        #add table comment
+        # add table comment
         comment = Model.__doc__
         sql = '''
             COMMENT ON TABLE %s IS '%s';
-        '''%(table_name, comment)
+        ''' % (table_name, comment)
         db.execute_sql(sql)
 
 
