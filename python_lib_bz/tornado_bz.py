@@ -409,11 +409,11 @@ class oper(BaseHandler):
         page = self.get_argument('page', None)
         if limit:
             offset = (int(page) - 1) * int(limit)
-            data = self.pg.db.select(t, where=w, limit=limit, offset=offset)
+            data = list(self.pg.db.select(t, where=w, limit=limit, offset=offset))
         else:
-            data = self.pg.db.select(t, where=w)
+            data = list(self.pg.db.select(t, where=w))
 
-        self.write(json.dumps({'error': '0', 'data': data}, cls=public_bz.ExtEncoder))
+        self.write(json.dumps({'error': '0', 'data': data[0]}, cls=public_bz.ExtEncoder))
 
     @handleError
     def post(self):

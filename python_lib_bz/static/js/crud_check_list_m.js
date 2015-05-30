@@ -35,10 +35,7 @@
             text: '待审核',
             value: 'submit'
           }, {
-            text: '未通过',
-            value: 'nopass'
-          }, {
-            text: '已通过',
+            text: '已审核',
             value: 'pass'
           }
         ],
@@ -62,10 +59,10 @@
           }
         },
         checkedSelect: function(e) {
-          var option, _i, _len, _ref;
-          _ref = this.options;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            option = _ref[_i];
+          var i, len, option, ref;
+          ref = this.options;
+          for (i = 0, len = ref.length; i < len; i++) {
+            option = ref[i];
             if (option.value === this.audit_state) {
               this.audit_state_text = option.text;
             }
