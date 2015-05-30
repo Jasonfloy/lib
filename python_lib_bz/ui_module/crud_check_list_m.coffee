@@ -29,9 +29,8 @@ $(->
                 audit_state: 'submit'
                 audit_state_text: '待审核'
                 options: [
-                    {text: '待审核', value: 'submit'},
-                    {text: '未通过', value: 'nopass'},
-                    {text: '已通过', value: 'pass'}
+                    {text: '待确认', value: 'submit'},
+                    {text: '已确认', value: 'pass'}
                 ]
                 pagination:
                     showFL: true #是否显示第一页,最后一页
