@@ -43,7 +43,7 @@ class file_upload(UserInfoHandler):
         sql = """
             select r.id, f.file_name, f.file_path, f.file_type, f.suffix, 'false' as remove
             from uploaded_file_record_ref r left join uploaded_files f on r.uploaded_file_id = f.id
-            where r.ref_table = '%s' and r.ref_column = '%s' and r.ref_record_id = '%s' and r.is_delete != 1
+            where r.ref_table = '%s' and r.ref_column = '%s' and r.ref_record_id = '%s' and r.is_delete != 1 and r.uploaded_file_id is not null
         """ % (parms[0], parms[1], parms[2])
         results = list(self.pg.db.query(sql))
         self.write(json.dumps({'error': '0', 'results': results}))
