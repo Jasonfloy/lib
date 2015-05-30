@@ -35,10 +35,7 @@
             text: '待审核',
             value: 'submit'
           }, {
-            text: '未通过',
-            value: 'nopass'
-          }, {
-            text: '已通过',
+            text: '已审核',
             value: 'pass'
           }
         ],
