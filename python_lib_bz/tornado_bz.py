@@ -413,7 +413,7 @@ class oper(BaseHandler):
         else:
             data = list(self.pg.db.select(t, where=w))
 
-        self.write(json.dumps({'error': '0', 'data': data[0]}, cls=public_bz.ExtEncoder))
+        self.write(json.dumps({'error': '0', 'data': data}, cls=public_bz.ExtEncoder))
 
     @handleError
     def post(self):
