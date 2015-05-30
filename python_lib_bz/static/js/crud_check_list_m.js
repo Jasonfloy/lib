@@ -32,10 +32,10 @@
         audit_state_text: '待审核',
         options: [
           {
-            text: '待审核',
+            text: '待确认',
             value: 'submit'
           }, {
-            text: '已审核',
+            text: '已确认',
             value: 'pass'
           }
         ],
