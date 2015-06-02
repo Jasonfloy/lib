@@ -263,6 +263,25 @@
     }
   });
 
+  Vue.directive('regexp', function(value) {
+    var r, reg;
+    if (!window.regexp) {
+      window.regexp = [];
+    }
+    if (value) {
+      reg = new RegExp(this.arg);
+      r = reg.test(value);
+      if (r) {
+        return window.regexp[this.expression] = r;
+      } else {
+        return $(this.el).css('border-color', '#ff0000');
+      }
+    } else {
+      window.regexp[this.expression] = false;
+      return $(this.el).css('border-color', '#ff0000');
+    }
+  });
+
   if ($().toastmessage) {
     $().toastmessage({
       sticky: false,
