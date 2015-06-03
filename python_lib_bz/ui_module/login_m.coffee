@@ -12,9 +12,7 @@ $(->
           throw new Error("请输入用密码")
       #通用的post,传入type
       post:(type)->
-
         if type == 'login'
-
           parm = JSON.stringify
             user_name:@user_name
             password:@password
@@ -25,6 +23,12 @@ $(->
             geetest_seccode : $('.geetest_seccode').val()
             validate: $('#validate').val()
         else if type == 'signup'
+          console.log window.regexp
+          for key of window.regexp
+            value = window.regexp[key]
+            console.log value
+            if value == false
+              throw new Error("您的邮箱无法验证，请填写正确的邮箱。")
           parm = JSON.stringify
             user_name:@user_name
             user_type:@user_type
@@ -101,7 +105,6 @@ $(->
         @$data.error_info = false
 
   window.bz.setOnErrorVm(v_login)
-
 
   hash = window.bz.getHashParms()
   if hash[0] == "#token"

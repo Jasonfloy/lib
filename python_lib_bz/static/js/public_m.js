@@ -266,7 +266,7 @@
   Vue.directive('regexp', function(value) {
     var r, reg;
     if (!window.regexp) {
-      window.regexp = [];
+      window.regexp = {};
     }
     if (value) {
       reg = new RegExp(this.arg);

@@ -223,7 +223,7 @@ Vue.directive('active', (value)->
 #正则表达式的指令
 Vue.directive('regexp',(value)->
   if not window.regexp
-    window.regexp = []
+    window.regexp = {}
   if value
     reg = new RegExp(@arg)
     r = reg.test(value)
