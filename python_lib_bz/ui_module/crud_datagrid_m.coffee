@@ -111,7 +111,7 @@ $(->
                     .done((data)->
                         if data.error == "0"
                             window.bz.showSuccess5("删除成功")
-                            _this.stat = "normal"
+                            _this.initStat()
                             _this.loadListData()
                         else
                             window.bz.showError5(data.error)
