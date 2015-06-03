@@ -112,6 +112,7 @@ $(->
                         if data.error == "0"
                             window.bz.showSuccess5("删除成功")
                             _this.initStat()
+                            _this.select='null'
                             _this.loadListData()
                         else
                             window.bz.showError5(data.error)
