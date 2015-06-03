@@ -44,7 +44,7 @@
             return this.getRecordDetail(r.id);
           },
           initStat: function() {
-            log(this.user_id);
+            this.select = 'null';
             if (this.user_id) {
               return this.stat = "check";
             } else {
@@ -145,7 +145,6 @@
               if (data.error === "0") {
                 window.bz.showSuccess5("删除成功");
                 _this.initStat();
-                _this.select = 'null';
                 return _this.loadListData();
               } else {
                 return window.bz.showError5(data.error);

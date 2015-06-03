@@ -36,7 +36,7 @@ $(->
                     @getRecordDetail(r.id)
                 #初始化 stat
                 initStat:->
-                    log @user_id
+                    @select='null'
                     if @user_id
                         @stat = "check"
                     else
@@ -112,7 +112,6 @@ $(->
                         if data.error == "0"
                             window.bz.showSuccess5("删除成功")
                             _this.initStat()
-                            _this.select='null'
                             _this.loadListData()
                         else
                             window.bz.showError5(data.error)
