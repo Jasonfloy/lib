@@ -1,6 +1,6 @@
 <script type="text/x-template" id="file_upload_m">
 <div class="file_upload_m_control">
-    <table class="table">
+    <table class="table" v-show="files.length > 0">
         <tr v-repeat="f : files">
             <td>
                 <i v-file-icon="f.suffix"></i>
@@ -11,7 +11,7 @@
             </td>
         </tr>
     </table>
-    <table class="table">
+    <table class="table" v-show="append_files.length > 0">
         <tr v-repeat="f : append_files">
             <td>
                 <i v-file-icon="f.suffix"></i>
