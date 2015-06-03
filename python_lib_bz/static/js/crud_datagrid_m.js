@@ -144,6 +144,7 @@
             }).done(function(data) {
               if (data.error === "0") {
                 window.bz.showSuccess5("删除成功");
+                _this.stat = "normal";
                 return _this.loadListData();
               } else {
                 return window.bz.showError5(data.error);
