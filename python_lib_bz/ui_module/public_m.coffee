@@ -228,6 +228,7 @@ Vue.directive('regexp',(value)->
     reg = new RegExp(@arg)
     r = reg.test(value)
     if r
+      $(@el).css('border-color','#d2d6de')
       window.regexp[@expression] = r
     else
       $(@el).css('border-color','#ff0000')

@@ -272,6 +272,7 @@
       reg = new RegExp(this.arg);
       r = reg.test(value);
       if (r) {
+        $(this.el).css('border-color', '#d2d6de');
         return window.regexp[this.expression] = r;
       } else {
         return $(this.el).css('border-color', '#ff0000');
