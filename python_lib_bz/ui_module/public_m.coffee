@@ -234,7 +234,6 @@ Vue.directive('regexp',(value)->
       $(@el).css('border-color','#ff0000')
   else
     window.regexp[@expression] = false
-    $(@el).css('border-color','#ff0000')
 )
 
 if $().toastmessage

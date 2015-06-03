@@ -278,8 +278,7 @@
         return $(this.el).css('border-color', '#ff0000');
       }
     } else {
-      window.regexp[this.expression] = false;
-      return $(this.el).css('border-color', '#ff0000');
+      return window.regexp[this.expression] = false;
     }
   });
 
