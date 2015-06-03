@@ -29,7 +29,7 @@
         records: [],
         table_name: '',
         audit_state: 'submit',
-        audit_state_text: '待审核',
+        audit_state_text: '待确认',
         options: [
           {
             text: '待确认',

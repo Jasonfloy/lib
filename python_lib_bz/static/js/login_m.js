@@ -18,7 +18,7 @@
           }
         },
         post: function(type) {
-          var parm;
+          var key, parm, value;
           if (type === 'login') {
             parm = JSON.stringify({
               user_name: this.user_name,
@@ -30,6 +30,14 @@
               validate: $('#validate').val()
             });
           } else if (type === 'signup') {
+            console.log(window.regexp);
+            for (key in window.regexp) {
+              value = window.regexp[key];
+              console.log(value);
+              if (value === false) {
+                throw new Error("您的邮箱无法验证，请填写正确的邮箱。");
+              }
+            }
             parm = JSON.stringify({
               user_name: this.user_name,
               user_type: this.user_type,
