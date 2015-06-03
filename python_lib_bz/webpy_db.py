@@ -946,8 +946,8 @@ class PostgresDB(DB):
                 seqname = None
 
         if seqname:
-            # query += "; SELECT currval('%s')" % seqname
-            pass
+            query += "; SELECT currval('%s')" % seqname
+            #pass
 
         return query
 
