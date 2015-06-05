@@ -25,7 +25,7 @@ except ImportError:
 from model_bz import base
 
 
-def dropTable(Model, db_name, user=None, password=None):
+def dropTable(Model, db_name, user=None, password=None, host='127.0.0.1'):
     '''
     create by bigzhu at 15/04/04 13:12:02 还是需要一个删除表的功能
     '''
@@ -41,7 +41,7 @@ def dropTable(Model, db_name, user=None, password=None):
     print 'drop table ' + Model.__name__
 
 
-def createTable(Model, db_name, user=None, password=None):
+def createTable(Model, db_name, user=None, password=None, host='127.0.0.1'):
     '''
     create by bigzhu at 15/04/04 01:08:30 建立数据库表; peewee 要在定义时候指定 db 相当不人性化,修正
     modify by bigzhu at 15/04/04 01:32:46 没有这个数据库的时候,直接返回建立数据的语句
