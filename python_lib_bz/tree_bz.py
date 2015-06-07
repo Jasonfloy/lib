@@ -28,7 +28,10 @@ def makeTree(nodes):
             # 父节点还没加入到 tree 中
             else:
                 parent_node = findNode(nodes, node.parent_id)
-                addChilren(parent_node, node)
+                if parent_node:
+                    addChilren(parent_node, node)
+                else:
+                    print 'parent_id= %s not found parent' % node.parent_id
     return tree
 
 
