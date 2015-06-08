@@ -77,6 +77,9 @@ span.input-group-addon i {
   border-color: #C6BEB5 !important;
   border: 0px 1px 1px 1px !important;
 }
+.gt_logo_button {
+  cursor: default !important;
+}
 .gt_help_button {
   display: none !important;
 }

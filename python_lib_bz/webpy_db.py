@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 Database API
 (part of web.py)
@@ -756,6 +758,8 @@ class DB:
 
         if values:
             _keys = SQLQuery.join(values.keys(), ', ')
+            #modify by bigzhu at 15/06/05 11:58:53 把key设进来,用来自有没有指定ip
+            self.insert_keys = values.keys()
             _values = SQLQuery.join([sqlparam(v) for v in values.values()], ', ')
             sql_query = "INSERT INTO %s " % tablename + q(_keys) + ' VALUES ' + q(_values)
         else:
@@ -945,9 +949,12 @@ class PostgresDB(DB):
             if seqname not in self._get_all_sequences():
                 seqname = None
 
+        #modify by bigzhu at 15/06/05 12:05:13 insert里如果有id的话,是不能查这个seq的
+        if 'id' in self.insert_keys or 'ID' in self.insert_keys:
+            seqname = None
         if seqname:
-            # query += "; SELECT currval('%s')" % seqname
-            pass
+            query += "; SELECT currval('%s')" % seqname
+            #pass
 
         return query
 
