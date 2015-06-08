@@ -815,7 +815,8 @@ class DB:
                 return None
             else:
                 return out
-
+        #modify by bigzhu at 15/06/08 15:24:34 把key设进来,用来自有没有指定ip
+        self.insert_keys = values[0].keys()
         keys = values[0].keys()
         #@@ make sure all keys are valid
 

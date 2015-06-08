@@ -19,6 +19,7 @@ from tornado.web import RequestHandler
 from tornado import escape
 
 from tornado.util import bytes_type, unicode_type
+OK = '0'
 
 
 class BaseHandler(RequestHandler):
@@ -337,7 +338,7 @@ def mustSubscribe(method):
             return
         else:
             #exists_users = list(self.pg.db.select('wechat_user', where="openid='%s'" % openid))
-            #if not exists_users:
+            # if not exists_users:
             try:
                 wechat_user_info = self.wechat.get_user_info(openid, lang='zh_CN')
             except OfficialAPIError as e:
@@ -362,7 +363,7 @@ def mustSubscribe(method):
             if wechat_user_info['subscribe'] == 0:
                 self.redirect('http://' + self.settings["domain"] + self.settings["subscribe"])
                 return
-            #else:
+            # else:
             #    print 'add user'
             #    self.pg.db.insert('wechat_user', **wechat_user_info)
 
@@ -504,6 +505,63 @@ class oper(BaseHandler):
         else:
             trans.rollback()
         self.write(json.dumps({'error': '0'}))
+
+
+class oper_post(BaseHandler):
+
+    '''
+    通用操作,http 协议太难用了,全用 post搞定
+    create by bigzhu at 15/06/07 12:38:39
+    '''
+    @handleError
+    def post(self):
+        '''
+        type: insert delete query select
+        create by bigzhu at 15/06/07 12:40:20
+        '''
+        self.set_header("Content-Type", "application/json")
+        if self.current_user:
+            user_id = self.current_user
+        else:
+            raise Exception('必须登录才能操作')
+
+        data = json.loads(self.request.body)
+        oper_type = data.get('type')
+        if oper_type == 'insert':
+            v = data.get('v')
+            t = data.get('t')
+            v = db_bz.transTimeValueByTable(self.pg, t, v)
+            # 插入的值有id就update,只能udpate一条,没有就 insert
+            id = v.get('id')
+            if id is not None:
+                w = "id=%s" % id
+                trans = self.pg.db.transaction()
+                count = self.pg.db.update(t, w, **v)
+                if count == 1:
+                    trans.commit()
+                    self.write(json.dumps({'error': OK}))
+                    return
+                else:
+                    trans.rollback()
+
+            seq = t + '_id_seq'
+            v['user_id'] = user_id
+            id = self.pg.db.insert(t, seqname=seq, **v)
+            self.write(json.dumps({'error': OK, 'id': id}))
+            return
+        elif oper_type == 'delete':
+            t = data.get('t')
+            ids = data.get('ids')
+            w = 'id in (%s) ' % ids
+            c = data.get('c')
+            trans = self.pg.db.transaction()
+            count = self.pg.db.update(t, w, is_delete=1)
+            if count == int(c):
+                trans.commit()
+            else:
+                trans.rollback()
+                raise Exception("按条件找到%s条,指定要删除%s条,取消删除" % (count, c))
+            self.write(json.dumps({'error': '0'}))
 
 
 if __name__ == '__main__':
