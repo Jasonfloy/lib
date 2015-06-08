@@ -478,6 +478,8 @@ class crud_api(BaseHandler):
                 raise Exception('更新记录失败')
         else:
             seq = table_name + '_id_seq'
+            if 'created_date' in record.keys():
+                del record['created_date']
             id = self.pg.db.insert(table_name, seqname=seq, **record)
         self.write(json.dumps({'error': '0', 'id': id}))
 

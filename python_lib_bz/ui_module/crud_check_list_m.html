@@ -21,7 +21,7 @@
                 {% end %}
                 <th></th>
             </tr>
-            <tr v-on="click:detail(r.user_id, r.id)" v-repeat="r : records">
+            <tr v-repeat="r : records">
                 <td></td>
                 {% for field in fields %}
                 {% if field.c_type == 'timestamp' %}
@@ -32,7 +32,7 @@
                 <td v-ellipsis="18:r.{{ field.name }}"></td>
                 {% end %}
                 {% end %}
-                <td></td>
+                <td><button type="button" class="btn btn-xs btn-primary" v-on="click:detail(r.user_id, r.id)" >查看详情</button></td>
             </tr>
         </table>
     </div>
