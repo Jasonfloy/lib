@@ -102,6 +102,23 @@ def findSelectNode(nodes, id):
                 return target_node
 
 
+def findParent(nodes, parent_id):
+    #查找ID的父元素
+    for node in nodes:
+        if node.id == parent_id:
+            return node
+
+
+def findParentList(nodes, parent_id):
+    #查找元素的所有父元素
+    ParentList = []
+    node = findParent(nodes, parent_id)
+    while node:
+        ParentList.append(node)
+        node = findParent(nodes, node.parent_id)
+    return ParentList
+
+
 if __name__ == '__main__':
     nodes = []
 
@@ -134,4 +151,5 @@ if __name__ == '__main__':
     node.id = 9
     node.parent_id = 8
     nodes.append(node)
-    print makeTree(nodes)
+    #print makeTree(nodes)
+    print findParentList(nodes, 2)
