@@ -6,7 +6,7 @@
 from public_bz import storage
 
 
-def makeTree(nodes):
+def makeTree(nodes, parent_id=0):
     '''
     node.id = 0
     node.parent_id = 0
@@ -19,7 +19,7 @@ def makeTree(nodes):
     # 为了确定节点所在层，使用parent_id进行排序
     nodes = sorted(nodes, key=lambda k: k.parent_id)
     for node in nodes:
-        if node.parent_id == 0:
+        if node.parent_id == parent_id:
             tree.append(node)
         else:
             parent_node = findNode(tree, node.parent_id)
