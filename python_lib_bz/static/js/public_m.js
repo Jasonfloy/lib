@@ -122,7 +122,8 @@
         autoclose: true,
         forceParse: true,
         clearBtn: true,
-        startDate: '1980-01-01'
+        startDate: '1980-01-01',
+        orientation: "top left"
       }).on("changeDate", function(e) {
         var d_str, index, level, levels, results, temp_obj;
         levels = _this.raw.split(".");

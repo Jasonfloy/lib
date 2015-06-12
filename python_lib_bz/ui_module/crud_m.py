@@ -308,7 +308,7 @@ class crud_list_api(BaseHandler):
             if flag:
                 sql += find_sql
             else:
-                sql = sql.replace("order", find_sql + " order ")  # load时拼条件
+                sql = sql.replace("order", find_sql + "order ")  # load时拼条件
             limit = self.get_argument('limit', None)
             offset = self.get_argument('offset', None)
             if not limit:
@@ -318,7 +318,6 @@ class crud_list_api(BaseHandler):
             else:
                 offset = str(int(offset) - 1)
             sql = 'select * from (' + sql + ') tpage limit ' + str(int(limit)) + ' offset ' + str(int(offset))
-            # print sql
             cert_array = list(self.pg.db.query(sql))
 
             # 解决crud_list页面select显示为value的问题
