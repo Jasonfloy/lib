@@ -759,7 +759,8 @@ class DB:
         if values:
             _keys = SQLQuery.join(values.keys(), ', ')
             #modify by bigzhu at 15/06/05 11:58:53 把key设进来,用来自有没有指定ip
-            self.insert_keys = values.keys()
+            #modify by bigzhu at 15/06/12 09:38:35 不再取keys,显示传入seq再取seq
+            #self.insert_keys = values.keys()
             _values = SQLQuery.join([sqlparam(v) for v in values.values()], ', ')
             sql_query = "INSERT INTO %s " % tablename + q(_keys) + ' VALUES ' + q(_values)
         else:
@@ -815,10 +816,11 @@ class DB:
                 return None
             else:
                 return out
-        #modify by bigzhu at 15/06/08 15:24:34 把key设进来,用来自有没有指定ip
-        self.insert_keys = values[0].keys()
         keys = values[0].keys()
         #@@ make sure all keys are valid
+        #modify by bigzhu at 15/06/08 15:24:34 把key设进来,用来自有没有指定ip
+        #modify by bigzhu at 15/06/12 09:39:49 取消
+        #self.insert_keys = keys
 
         for v in values:
             if v.keys() != keys:
@@ -944,18 +946,18 @@ class PostgresDB(DB):
         self._sequences = None
 
     def _process_insert_query(self, query, tablename, seqname):
-        if seqname is None:
-            # when seqname is not provided guess the seqname and make sure it exists
-            seqname = tablename + "_id_seq"
-            if seqname not in self._get_all_sequences():
-                seqname = None
+        #modify by bigzhu at 15/06/12 09:40:24 不再猜seq
+        #if seqname is None:
+        #    # when seqname is not provided guess the seqname and make sure it exists
+        #    seqname = tablename + "_id_seq"
+        #    if seqname not in self._get_all_sequences():
+        #        seqname = None
 
         #modify by bigzhu at 15/06/05 12:05:13 insert里如果有id的话,是不能查这个seq的
-        if 'id' in self.insert_keys or 'ID' in self.insert_keys:
-            seqname = None
+        #if 'id' in self.insert_keys or 'ID' in self.insert_keys:
+        #    seqname = None
         if seqname:
             query += "; SELECT currval('%s')" % seqname
-            #pass
 
         return query
 
