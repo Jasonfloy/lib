@@ -30,6 +30,7 @@
 <script type="text/javascript">
 // 当datagrid中需要显示file_upload字段的时候，根据传入的参数查出已经上传的文件
 Vue.directive("file-list", function(value) {
+    console.log(value)
     // 拼接参数，处理异常情况
     params = this.arg.split(".");
     if(params.length < 2) {
@@ -51,7 +52,7 @@ Vue.directive("file-list", function(value) {
                     }
                     for(var i in d.results) {
                         var f = d.results[i]
-                        html += "<div><a href='/" + f.file_path + "'' target='_blank'>" + f.file_name + "</a></div>"
+                        html += "<div><a href='" + f.file_path + "'' target='_blank'>" + f.file_name + "</a></div>"
                     }
                     // 拼装字符串，注入到list中
                     $(_this.el).html(html)
@@ -138,6 +139,7 @@ Vue.component("file-upload-m", {
                 _this.closureAjax(function(__this){
                     $.get("/file_upload/" + parms_str)
                     .done(function(d) {
+                        console.log(d);
                         __this.$set("files", d.results);
                     });
                 });
