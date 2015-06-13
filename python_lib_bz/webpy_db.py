@@ -816,14 +816,16 @@ class DB:
                 return None
             else:
                 return out
-        keys = values[0].keys()
+        #modify by bigzhu at 15/06/13 16:13:06 加入sort
+        keys = sorted(values[0].keys())
         #@@ make sure all keys are valid
         #modify by bigzhu at 15/06/08 15:24:34 把key设进来,用来自有没有指定ip
         #modify by bigzhu at 15/06/12 09:39:49 取消
         #self.insert_keys = keys
 
+        #modify by bigzhu at 15/06/13 16:12:28 要加入 sorted,某些情况下会不一致
         for v in values:
-            if v.keys() != keys:
+            if sorted(v.keys()) != keys:
                 raise ValueError, 'Not all rows have the same keys'
 
         sql_query = SQLQuery('INSERT INTO %s (%s) VALUES ' % (tablename, ', '.join(keys)))
