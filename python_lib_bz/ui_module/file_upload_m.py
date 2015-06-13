@@ -3,7 +3,6 @@
 import tornado_bz
 import json
 import time
-import tornado
 import hashlib
 from tornado_bz import UserInfoHandler
 from ui_module import my_ui_module
@@ -76,7 +75,7 @@ class file_upload(UserInfoHandler):
                     r = {
                         'file_id': file_id,
                         'file_name': file_name,
-                        'file_path': file_path,
+                        'file_path': '/' + file_path,
                         'suffix': file_suffix
                     }
                     results.append(r)

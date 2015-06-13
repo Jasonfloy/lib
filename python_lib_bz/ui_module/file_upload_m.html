@@ -51,7 +51,7 @@ Vue.directive("file-list", function(value) {
                     }
                     for(var i in d.results) {
                         var f = d.results[i]
-                        html += "<div><a href='/" + f.file_path + "'' target='_blank'>" + f.file_name + "</a></div>"
+                        html += "<div><a href='" + f.file_path + "'' target='_blank'>" + f.file_name + "</a></div>"
                     }
                     // 拼装字符串，注入到list中
                     $(_this.el).html(html)
@@ -62,7 +62,7 @@ Vue.directive("file-list", function(value) {
 // 把disabled和href合并了
 Vue.directive("href", function(value){
     if(value) {
-        $(this.el).removeAttr("disabled").attr("href", "/" + value)
+        $(this.el).removeAttr("disabled").attr("href", value)
     } else {
         $(this.el).attr("disabled", true)
     }
@@ -75,23 +75,23 @@ Vue.directive("file-icon", function(value){
     } else if([".xls", ".xlsx"].indexOf(value) >= 0) {
         file_icon = "fa fa-file-excel-o";
     } else if([".doc", ".docx"].indexOf(value) >= 0) {
-        file_icon = "fa fa-file-word-o"
+        file_icon = "fa fa-file-word-o";
     } else if([".doc", ".docx"].indexOf(value) >= 0) {
-        file_icon = "fa fa-file-word-o"
+        file_icon = "fa fa-file-word-o";
     } else if([".ppt", ".pptx"].indexOf(value) >= 0) {
-        file_icon = "fa fa-file-powerpoint-o"
+        file_icon = "fa fa-file-powerpoint-o";
     } else if([".zip", ".rar", ".7z"].indexOf(value) >= 0) {
-        file_icon = "fa fa-file-archive-o"
+        file_icon = "fa fa-file-archive-o";
     } else if([".txt"].indexOf(value) >= 0) {
-        file_icon = "fa fa-file-text-o"
+        file_icon = "fa fa-file-text-o";
     } else if([".pdf"].indexOf(value) >= 0) {
-        file_icon = "fa fa-file-pdf-o"
+        file_icon = "fa fa-file-pdf-o";
     } else if([".png", ".jpeg", ".jpg", ".gif"].indexOf(value) >= 0) {
-        file_icon = "fa fa-file-image-o"
+        file_icon = "fa fa-file-image-o";
     } else if(value) {
-        file_icon = "fa fa-file-o"
+        file_icon = "fa fa-file-o";
     }
-    $(this.el).attr("class", file_icon)
+    $(this.el).attr("class", file_icon);
 });
 // component 本体
 // 使用方式 <div v-component="file_upload_m" v-with="field_name: 'test_file'" v-ref="test_file_c"></div>
@@ -101,25 +101,25 @@ Vue.component("file-upload-m", {
     paramAttributes: ['table-name', 'field-name', 'record-id', 'disabled'],
     computed: {
         column: function() {
-            return this.fieldName   // 上传用的字段名标记
+            return this.fieldName;   // 上传用的字段名标记;
         },
         disabled_b: function() {
             if(!this.disabled) {
-                return false
+                return false;
             } else {
                 var bool = true;
                 try {
-                    bool = new Function("return " + this.disabled)
+                    bool = new Function("return " + this.disabled);
                 } catch (e) {
                     bool = true;
                 }
-                return bool
+                return bool;
             }
         }
     },
     attached: function() {
         if(!this.tableName || !this.column) {
-            throw "组件没有正确的获取参数，请检查声明的HTML"
+            throw "组件没有正确的获取参数，请检查声明的HTML";
         }
         // 因为数据的显示传递会覆盖data对象，所以改成在attached方法中声明
         this.$set("upload_ids", []);        // 上传成功后的id
@@ -130,11 +130,11 @@ Vue.component("file-upload-m", {
     methods: {
         // 获取已关联的文件
         getExistFiles: function() {
-            _this = this
+            _this = this;
             if(!_this.recordId) {
                 _this.$set("files", []);
             } else {
-                var parms_str = [this.tableName, this.column, this.recordId].join("/")
+                var parms_str = [this.tableName, this.column, this.recordId].join("/");
                 _this.closureAjax(function(__this){
                     $.get("/file_upload/" + parms_str)
                     .done(function(d) {
@@ -144,7 +144,7 @@ Vue.component("file-upload-m", {
             }
         },
         appendFile: function(e) {
-            var files = e.target.files
+            var files = e.target.files;
             for(var i in files) {
                 if(!isNaN(i)) {
                     var f = files[i];
@@ -158,7 +158,7 @@ Vue.component("file-upload-m", {
                         "suffix": null,         // 文件拓展名
                         "fd": fd                // 上传文件用的formData
                     }
-                    this.append_files.push(new_file)
+                    this.append_files.push(new_file);
                 }
             }
             this.uploadFiles()
@@ -176,7 +176,7 @@ Vue.component("file-upload-m", {
                         if(_this.append_files.indexOf(f) >= 0) {
                             _this.append_files.splice(_this.append_files.indexOf(f), 1);
                         }
-                        window.bz.showSuccess5("文件删除成功.")
+                        window.bz.showSuccess5("文件删除成功.");
                     } else {
                         window.bz.showError5("删除文件时发生错误:" + d.error);
                     }
@@ -186,7 +186,7 @@ Vue.component("file-upload-m", {
         uploadFiles: function() {
             _this = this
             _this.append_files.forEach(function(file, index) {
-                file.suffix = "uploading"
+                file.suffix = "uploading";
                 _this.closureAjax(function(__this){
                     $.ajax({
                         url: "/file_upload",
@@ -199,7 +199,7 @@ Vue.component("file-upload-m", {
                             // 删除append_files
                             __this.append_files.splice(__this.append_files.indexOf(file), 1);
                             // 放到所有文件列表
-                            __this.files.push(d.results[0])
+                            __this.files.push(d.results[0]);
                             window.bz.showSuccess5("文件上传成功");
                         } else {
                             window.bz.showError5("文件上传时发生错误:" + d.error);
@@ -210,17 +210,17 @@ Vue.component("file-upload-m", {
         },
         // 默认的关联方法
         createFileRef: function(recordId){
-            _this = this
+            _this = this;
             if(!_this.recordId && !recordId) {
-                throw "请在调用之前先提交外部表单。"      // 如果组件参数和调用参数都没有，就抛出异常
+                throw "请在调用之前先提交外部表单。";      // 如果组件参数和调用参数都没有，就抛出异常
             } else if (recordId) {
-                _this.recordId = recordId             // 如果参数存在，就赋值给当前的recordId
+                _this.recordId = recordId;             // 如果参数存在，就赋值给当前的recordId
             }
 
             // 记录上传成功后的ID
             for(var i in _this.files) {
-                var f = _this.files[i]
-                this.new_file_ids.push(f.file_id)
+                var f = _this.files[i];
+                this.new_file_ids.push(f.file_id);
             }
             params = {
                 "column": this.column,
@@ -234,24 +234,24 @@ Vue.component("file-upload-m", {
                     JSON.stringify(params)
                 ).done(function(data) {
                     if(data.error === "0") {
-                        __this.new_file_ids = []
+                        __this.new_file_ids = [];
                         __this.$set("upload_ids", data.results);
                     } else {
-                        throw data.error
+                        throw data.error;
                     }
                 });
             });
         },
         // 封装闭包的ajax提交
         closureAjax:function(func) {
-            return func(this)
+            return func(this);
         },
         clear: function() {
             this.$set("upload_ids", []);            // 上传成功后的id
             this.$set("append_files", []);          // 新增的文件
             this.$set("files", []);                 // 已上传文件
             this.$set("new_file_ids", []);          // 用于保存新增文件的文件id
-            $(this.$el).find(".input_file").val("") // 清空file选择
+            $(this.$el).find(".input_file").val("");// 清空file选择
         }
     }
 });
