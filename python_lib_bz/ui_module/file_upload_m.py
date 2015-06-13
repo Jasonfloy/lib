@@ -3,7 +3,6 @@
 import tornado_bz
 import json
 import time
-import tornado
 import hashlib
 from tornado_bz import UserInfoHandler
 from ui_module import my_ui_module
@@ -66,7 +65,7 @@ class file_upload(UserInfoHandler):
                     file_body = f["body"]
                     md5.update(file_body)
                     file_hash = md5.hexdigest()
-                    file_path = "static/uploaded_files/%s_%s_%s" % (self.current_user, int(time.time()), file_name)
+                    file_path = "/static/uploaded_files/%s_%s_%s" % (self.current_user, int(time.time()), file_name)
                     # hash
                     img = open(file_path, 'w')
                     img.write(file_body)

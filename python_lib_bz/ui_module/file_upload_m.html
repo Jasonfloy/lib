@@ -30,7 +30,6 @@
 <script type="text/javascript">
 // 当datagrid中需要显示file_upload字段的时候，根据传入的参数查出已经上传的文件
 Vue.directive("file-list", function(value) {
-    console.log(value)
     // 拼接参数，处理异常情况
     params = this.arg.split(".");
     if(params.length < 2) {
@@ -63,7 +62,7 @@ Vue.directive("file-list", function(value) {
 // 把disabled和href合并了
 Vue.directive("href", function(value){
     if(value) {
-        $(this.el).removeAttr("disabled").attr("href", "/" + value)
+        $(this.el).removeAttr("disabled").attr("href", value)
     } else {
         $(this.el).attr("disabled", true)
     }
