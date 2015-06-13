@@ -136,7 +136,7 @@ Vue.component("file-upload-m", {
             } else {
                 var parms_str = [this.tableName, this.column, this.recordId].join("/");
                 _this.closureAjax(function(__this){
-                    $.get("/file_upload/" + parms_str);
+                    $.get("/file_upload/" + parms_str)
                     .done(function(d) {
                         console.log(d);
                         __this.$set("files", d.results);
