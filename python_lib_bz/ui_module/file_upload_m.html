@@ -138,7 +138,6 @@ Vue.component("file-upload-m", {
                 _this.closureAjax(function(__this){
                     $.get("/file_upload/" + parms_str)
                     .done(function(d) {
-                        console.log(d);
                         __this.$set("files", d.results);
                     });
                 });
