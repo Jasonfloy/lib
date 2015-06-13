@@ -27,10 +27,16 @@ class MyUIModule(UIModule):
 
         self.LIB_PATH = "/lib_static/lib/"
 
+        self.version = None
+
     def javascript_files(self):
+        if self.version:
+            self.js_file += '?v=%s' % self.version
         return self.js_file
 
     def css_files(self):
+        if self.version:
+            self.css_file += '?v=%s' % self.version
         return self.css_file
 
     '''

@@ -76,6 +76,7 @@ class login_m(my_ui_module.MyUIModule):
     '''登录的页面'''
 
     def render(self, oauth2, user_types=[], validate_url=None):
+        self.version = 1
         if validate_url:
             gt = geetest(captcha_id, private_key)
             challenge = gt.geetest_register()
