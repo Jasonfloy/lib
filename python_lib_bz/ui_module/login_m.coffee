@@ -110,4 +110,8 @@ $(->
   if hash[0] == "#token"
     $ '#tab a'
       .tab('show')
+  url = window.bz.getUrlParm()
+  if url[1] == "profile"
+    $ '#tab a'
+      .tab('show')
 )

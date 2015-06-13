@@ -1,6 +1,6 @@
 (function() {
   $(function() {
-    var hash, v_login;
+    var hash, url, v_login;
     v_login = new Vue({
       el: '#v_login',
       data: {
@@ -147,6 +147,10 @@
     window.bz.setOnErrorVm(v_login);
     hash = window.bz.getHashParms();
     if (hash[0] === "#token") {
+      $('#tab a').tab('show');
+    }
+    url = window.bz.getUrlParm();
+    if (url[1] === "profile") {
       return $('#tab a').tab('show');
     }
   });
