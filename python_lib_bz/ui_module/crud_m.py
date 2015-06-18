@@ -347,7 +347,8 @@ class crud_list_api(BaseHandler):
         self.set_header("Content-Type", "application/json")
         ids = self.request.body
         self.pg.db.update(table_name, where="id in (%s)" % ids, is_delete=1)
-        self.write(json.dumps({'error': '0'}))
+        data = json.dumps({'error': '0'})
+        self.write(data)
 
 
 class crud_check_list_api(BaseHandler):
