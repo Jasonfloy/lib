@@ -31,25 +31,25 @@ class MyUIModule(UIModule):
 
         self.version = None
 
-        #有多个js 和css文件的情况
-        self.js_files = []
-        self.css_files = []
+        #应对有多个js和css文件的情况
+        self.all_js_files = []
+        self.all_css_files = []
 
     def javascript_files(self):
         if self.version:
             self.js_file += '?v=%s' % self.version
-        if self.js_files:
-            self.js_files.append(self.js_file)
-            return self.js_files
+        if self.all_js_files:
+            self.all_js_files.append(self.js_file)
+            return self.all_js_files
         else:
             return self.js_file
 
     def css_files(self):
         if self.version:
             self.css_file += '?v=%s' % self.version
-        if self.css_files:
-            self.css_files.append(self.css_file)
-            return self.css_files
+        if self.all_css_files:
+            self.all_css_files.append(self.css_file)
+            return self.all_css_files
         else:
             return self.css_file
     '''
