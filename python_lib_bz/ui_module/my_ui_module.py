@@ -12,6 +12,7 @@ class MyUIModule(UIModule):
     create by bigzhu at 15/03/07 21:12:30 改成 file 了,没法用模板了
     modify by bigzhu at 15/03/06 17:04:03 加入file
     modify by bigzhu at 15/06/13 14:13:39 加入version,以更新js,css
+    modify by bigzhu at 15/06/19 15:40:48 支持有多个js 和 css 的情况
     '''
 
     def __init__(self, handler):
@@ -30,16 +31,27 @@ class MyUIModule(UIModule):
 
         self.version = None
 
+        #有多个js 和css文件的情况
+        self.js_files = []
+        self.css_files = []
+
     def javascript_files(self):
         if self.version:
             self.js_file += '?v=%s' % self.version
-        return self.js_file
+        if self.js_files:
+            self.js_files.append(self.js_file)
+            return self.js_files
+        else:
+            return self.js_file
 
     def css_files(self):
         if self.version:
             self.css_file += '?v=%s' % self.version
-        return self.css_file
-
+        if self.css_files:
+            self.css_files.append(self.css_file)
+            return self.css_files
+        else:
+            return self.css_file
     '''
     def embedded_css(self):
         return self.render_string(self.css_name)
