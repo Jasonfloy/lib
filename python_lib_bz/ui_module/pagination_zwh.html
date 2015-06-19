@@ -2,9 +2,9 @@
 <nav>
     <ul class="pagination">
         {% if previous %}
-            <li><a href="{{ get_page_url(previous) }}"><span aria-hidden="true">&larr;</span></a></li>
+            <li><a href="{{ get_page_url(previous) }}"><span aria-hidden="true">&laquo;</span></a></li>
         {% else %}
-            <li class="disabled"><span aria-hidden="true">&larr;</span></li>
+            <li class="disabled"><span aria-hidden="true">&laquo;</span></li>
         {% end %}
 
         {% for page_num in iter_pages() %}
@@ -20,9 +20,9 @@
         {% end %}
 
         {% if next %}
-            <li><a href="{{ get_page_url(next) }}"><span aria-hidden="true">&rarr;</span></a></li>
+            <li><a href="{{ get_page_url(next) }}"><span aria-hidden="true">&raquo;</span></a></li>
         {% else %}
-            <li class="disabled"><span aria-hidden="true">&rarr;</span></li>
+            <li class="disabled"><span aria-hidden="true">&raquo;</span></li>
         {% end %}
 
     </ul>
