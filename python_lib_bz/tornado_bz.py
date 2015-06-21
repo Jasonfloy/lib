@@ -284,7 +284,6 @@ def mustLoginApi(method):
     '''
     必须要登录 api
     create by bigzhu at 15/06/21 08:00:56
-    >>> mustLoginApi('1')
     '''
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
