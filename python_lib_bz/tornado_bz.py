@@ -280,6 +280,21 @@ def handleError(method):
     return wrapper
 
 
+def mustLoginApi(method):
+    '''
+    必须要登录 api
+    create by bigzhu at 15/06/21 08:00:56
+    >>> mustLoginApi('1')
+    '''
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        if self.current_user:
+            pass
+        else:
+            raise Exception('must login')
+        return method(self, *args, **kwargs)
+    return wrapper
+
 def mustLogin(method):
     '''
     必须要登录,否则弹回登录页面
