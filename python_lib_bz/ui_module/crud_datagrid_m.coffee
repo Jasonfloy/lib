@@ -4,6 +4,10 @@ $(->
         table_name = i.id
         #有user_id时候,是查看其他人的
         user_id = window.bz.getHashPram("user_id")
+        if user_id
+            ids = user_id.split("_")
+            if ids.length > 1
+                user_id = null
         new Vue
             el: '#'+table_name
             data:
