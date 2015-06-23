@@ -29,6 +29,8 @@
                 {% for field in fields %}
                 {% if field.c_type == 'timestamp' %}
                 <td v-dateformat="'yyyy-MM-dd':r.{{ field.name }}"></td>
+                {% elif field.c_type == 'input-file'%}
+                <td v-datagrid-file-list="{{ table_name }}.{{ field.name }}: r.id"></td>
                 {% else %}
                 <td v-ellipsis="20:r.{{ field.name }}"></td>
                 {% end %}
@@ -49,6 +51,7 @@
                 <div class="modal-body">
                     <form class="form-horizontal">
                         {% for field in all_fields %}
+                        {% if field.name != 'created_date' %}
                         <div class="form-group">
                             <label class="col-sm-4 col-md-3 col-lg-2 control-label">{{field.description}}</label>
                             <div class="col-sm-8 col-md-9 col-lg-10">
@@ -89,6 +92,7 @@
                                 {%end%}
                             </div>
                         </div>
+                        {% end %}
                         {% end %}
                     </form>
                 </div>
