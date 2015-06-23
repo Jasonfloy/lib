@@ -447,7 +447,6 @@ class crud_api(BaseHandler):
     modify by bigzhu at 15/03/10 15:56:15 update 时候也要更新 stat_date
     modify by bigzhu at 15/04/22 17:27:16 自动插入 user_id
     '''
-
     @tornado_bz.handleError
     def post(self):
         self.set_header("Content-Type", "application/json")
@@ -474,7 +473,11 @@ class crud_api(BaseHandler):
         id = record.get("id")
         if id:
             record['stat_date'] = SQLLiteral('now()')
-            count = self.pg.db.update(table_name, where="id=%s and user_id=%s" % (id, self.current_user), **record)
+            user_id = record.get('user_id')
+            if user_id:
+                count = self.pg.db.update(table_name, where="id=%s and user_id=%s" % (id, user_id), **record)
+            else:
+                count = self.pg.db.update(table_name, where="id=%s and user_id=%s" % (id, self.current_user), **record)
             if count == 0:
                 raise Exception('更新记录失败')
         else:
@@ -483,6 +486,7 @@ class crud_api(BaseHandler):
                 del record['created_date']
             id = self.pg.db.insert(table_name, seqname=seq, **record)
         self.write(json.dumps({'error': '0', 'id': id}))
+
 
 if __name__ == '__main__':
     pass
