@@ -18,7 +18,7 @@
     <div style="min-height: 100px;">
         <table class="table table-hover">
             <tr>
-                <th v-show="!user_id"></th>
+                <th v-show="user_id_edit || !user_id"></th>
                 {% for field in fields %}
                 <th>{{field.description}}</th>
                 {% end %}
@@ -60,7 +60,7 @@
                                 </select>
                                 {%elif field.get("c_type") == "timestamp"%}
                                 <div class='input-group date' id='{{field.name}}'>
-                                    <span v-show="!user_id" class="input-group-addon">
+                                    <span v-show="user_id_edit || !user_id" class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </span>
                                     <input v-disable="stat=='look' || stat=='check'" type='text' class="form-control" v-datepicker="record.{{field.name}}"/>
