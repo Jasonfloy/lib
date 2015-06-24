@@ -1,10 +1,11 @@
 $ ->
+    input = '<input id="image-file" type="file" />'
     myCustomTemplates = image: (context) ->
       locale = context.locale
       options = context.options
       '
         <li>
-            <span class="file-input btn btn-default btn-file glyphicon glyphicon-picture">
+            <span id="file-span" class="file-input btn btn-default btn-file glyphicon glyphicon-picture">
                 <input id="image-file" type="file" />
             </span>
         </li>
@@ -18,7 +19,7 @@ $ ->
 
     editor = the_wysiwyg.data("wysihtml5").editor
 
-    $('#image-file').change (e)->
+    selectFile = (e)->
         files = e.target.files
         for i of files
             if !isNaN(i)
@@ -37,7 +38,7 @@ $ ->
             type: 'POST'
             data: new_file.fd
             processData: false
-            contentType: false).done (d) ->
+            contentType: false).done (d) =>
                 if d.error == '0'
                     log editor
                     log $('#wysiwyg').data("wysihtml5")
@@ -51,4 +52,9 @@ $ ->
                         window.bz.showError5 '请在编辑器中点击要插入图片的位置'
                 else
                     window.bz.showError5 '文件上传时发生错误:' + d.error
+                $(this).remove()
+                $('#image-file').change (selectFile)
+                $(input).change(selectFile).appendTo($('#file-span'))
                 return
+
+    $('#image-file').change (selectFile)
