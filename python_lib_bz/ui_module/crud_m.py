@@ -473,7 +473,7 @@ class crud_api(BaseHandler):
         id = record.get("id")
         if id:
             record['stat_date'] = SQLLiteral('now()')
-            user_id = record.get('user_id')
+            user_id = record.get('user_id')  # 企业信息管理中政府用户编辑企业信息要用企业的user_id
             if user_id:
                 count = self.pg.db.update(table_name, where="id=%s and user_id=%s" % (id, user_id), **record)
             else:
