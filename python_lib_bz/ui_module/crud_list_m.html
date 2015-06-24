@@ -76,7 +76,7 @@
                     {% if field.c_type == 'timestamp' %}
                       <td v-dateformat="'yyyy-MM-dd':r.{{ field.name }}"></td>
                     {% else %}
-                      <td v-ellipsis="8:r.{{ field.name }}"></td>
+                      <td v-ellipsis="80:r.{{ field.name }}"></td>
                     {% end %}
                 {% end %}
                 <td></td>
