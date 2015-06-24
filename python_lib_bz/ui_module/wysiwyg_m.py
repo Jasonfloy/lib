@@ -13,10 +13,13 @@ class wysiwyg_m(my_ui_module.MyUIModule):
 
     def __init__(self, handler):
         my_ui_module.MyUIModule.__init__(self, handler)
-        self.all_js_files = [self.LIB_PATH+'bootstrap3-wysiwyg/dist/bootstrap3-wysihtml5.all.min.js',
+        self.all_js_files = [self.LIB_PATH+'bootstrap3-wysiwyg/dist/bootstrap3-wysihtml5.all.js',
                              self.LIB_PATH+'bootstrap3-wysiwyg/dist/locales/bootstrap-wysihtml5.zh-CN.js',
                              ]
-        self.all_css_files = [self.LIB_PATH+'bootstrap3-wysiwyg/dist/bootstrap3-wysihtml5.min.css']
+        self.all_css_files = [self.LIB_PATH+'bootstrap3-wysiwyg/dist/bootstrap3-wysihtml5.min.css',
+                              self.CSS_PATH+'file_upload_m.css',
+                              ]
+
 
     def render(self):
         return self.render_string(self.html_name)
