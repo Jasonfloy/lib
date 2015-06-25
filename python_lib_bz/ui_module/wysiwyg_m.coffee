@@ -63,7 +63,6 @@ $ ->
         editor = $('#wysiwyg').data("wysihtml5").editor
 
         editor.on("change", ->
-            log bind.record.content
-            bind.record.content = $('#wysiwyg').val()
+            bind.setRichText($('#wysiwyg').val())
         )
         $('#image-file').change (selectFile)

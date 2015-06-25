@@ -86,6 +86,9 @@
         }
       },
       methods: {
+        setRichText: function(value) {
+          return this.record.content = value;
+        },
         toggleEdit: function() {
           if (this.$data.editable) {
             return this.$data.editable = false;

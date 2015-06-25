@@ -74,8 +74,7 @@
       });
       editor = $('#wysiwyg').data("wysihtml5").editor;
       editor.on("change", function() {
-        log(bind.record.content);
-        return bind.record.content = $('#wysiwyg').val();
+        return bind.setRichText($('#wysiwyg').val());
       });
       return $('#image-file').change(selectFile);
     };
