@@ -79,6 +79,12 @@
         table_desc: '',
         files: []
       },
+      watch: {
+        'record': function() {
+          $('#wysiwyg').html(this.record.content);
+          return window.bz.initWysiwyg(this);
+        }
+      },
       methods: {
         toggleEdit: function() {
           if (this.$data.editable) {
@@ -199,22 +205,24 @@
         } else if (id !== '') {
           window.bz.showError5('未找到这条数据!');
         }
-        if (result.all_files.length > 0) {
-          ref = result.all_files;
-          results = [];
-          for (j = 0, len = ref.length; j < len; j++) {
-            f = ref[j];
-            v_crud.$set(f.column, {
-              "fd": null,
-              "all_files": f.files,
-              "remove_files": []
-            });
-            results.push(v_crud.$data.files.push({
-              "column": f.column,
-              "temp": v_crud.$data[f.column]
-            }));
+        if (result.all_files) {
+          if (result.all_files.length > 0) {
+            ref = result.all_files;
+            results = [];
+            for (j = 0, len = ref.length; j < len; j++) {
+              f = ref[j];
+              v_crud.$set(f.column, {
+                "fd": null,
+                "all_files": f.files,
+                "remove_files": []
+              });
+              results.push(v_crud.$data.files.push({
+                "column": f.column,
+                "temp": v_crud.$data[f.column]
+              }));
+            }
+            return results;
           }
-          return results;
         }
       }
     });

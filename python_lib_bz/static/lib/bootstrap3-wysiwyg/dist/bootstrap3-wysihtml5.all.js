@@ -7307,6 +7307,7 @@ wysihtml5.dom.getAttributes = function(node) {
   for (attr in node.attributes) {
     if ((node.attributes.hasOwnProperty && node.attributes.hasOwnProperty(attr)) || (!node.attributes.hasOwnProperty && Object.prototype.hasOwnProperty.call(node.attributes, attr)))  {
       if (node.attributes[attr].specified) {
+
         if (nodeName == "IMG" && node.attributes[attr].name.toLowerCase() == "src" && wysihtml5.dom.isLoadedImage(node) === true) {
           attributes['src'] = node.src;
         } else if (wysihtml5.lang.array(['rowspan', 'colspan']).contains(node.attributes[attr].name.toLowerCase()) && HAS_GET_ATTRIBUTE_BUG) {
@@ -7323,9 +7324,11 @@ wysihtml5.dom.getAttributes = function(node) {
 };;/**
    * Check whether the given node is a proper loaded image
    * FIXME: Returns undefined when unknown (Chrome, Safari)
+   * modify by bigzhu : must return true; make sure load image ok
 */
 
 wysihtml5.dom.isLoadedImage = function (node) {
+  return true
   try {
     return node.complete && !node.mozMatchesSelector(":-moz-broken");
   } catch(e) {
@@ -11973,6 +11976,7 @@ wysihtml5.commands.formatCode = {
 wysihtml5.views.View = Base.extend(
   /** @scope wysihtml5.views.View.prototype */ {
   constructor: function(parent, textareaElement, config) {
+    // bigzhu call base
     this.parent   = parent;
     this.element  = textareaElement;
     this.config   = config;
@@ -12169,6 +12173,7 @@ wysihtml5.views.View = Base.extend(
       this.editableArea  = this.sandbox.getIframe();
 
       var textareaElement = this.textarea.element;
+
       dom.insert(this.editableArea).after(textareaElement);
 
       this._createWysiwygFormField();
@@ -12181,6 +12186,7 @@ wysihtml5.views.View = Base.extend(
           hiddenField.type   = "hidden";
           hiddenField.name   = "_wysihtml5_mode";
           hiddenField.value  = 1;
+
           dom.insert(hiddenField).after(this.textarea.element);
         }
     },
@@ -13297,8 +13303,11 @@ wysihtml5.views.View = Base.extend(
       // Add class name to body, to indicate that the editor is supported
       wysihtml5.dom.addClass(document.body, this.config.bodyClassName);
 
+      //bigzhu: why Composer will remove img src
       this.composer = new wysihtml5.views.Composer(this, this.editableElement, this.config);
+
       this.currentView = this.composer;
+
 
       if (typeof(this.config.parser) === "function") {
         this._initParser();
@@ -14612,8 +14621,6 @@ function program17(depth0,data) {
       this.toolbar = this.createToolbar(el, toolbarOpts);
       this.editor =  this.createEditor(toolbarOpts);
 
-      console.log(toolbarOpts)
-      console.log(this.createEditor(toolbarOpts))
     };
 
     Wysihtml5.prototype = {
@@ -14781,7 +14788,6 @@ function program17(depth0,data) {
       bypassDefaults: function(options) {
         return this.each(function () {
           var $this = $(this);
-          console.log('bigzhu');
           $this.data('wysihtml5', new Wysihtml5($this, options));
         });
       },

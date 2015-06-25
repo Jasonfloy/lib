@@ -1,4 +1,4 @@
-$(->
+$ ->
     Vue.directive('model-checkbox',
         twoWay: true
         bind:(value) ->
@@ -57,6 +57,10 @@ $(->
             oper:''
             table_desc:''
             files:[]
+        watch:
+            'record':->
+                $('#wysiwyg').html(@record.content)
+                window.bz.initWysiwyg(@)
         methods:
             toggleEdit:->
                 if @$data.editable
@@ -118,10 +122,10 @@ $(->
             AllDone()
             return
         else if not data
-            params = 
+            params =
                 "remove_files": file.temp.remove_files
         else
-            params = 
+            params =
                 "column": file.column
                 "append_files": data.results
                 "remove_files": file.temp.remove_files
@@ -158,9 +162,10 @@ $(->
             else if id!=''
                 window.bz.showError5('未找到这条数据!')
             # 生成数据交换属性, 并且打包到files中
-            if result.all_files.length > 0
-                for f in result.all_files
-                    v_crud.$set(f.column, {"fd": null, "all_files": f.files, "remove_files": []})
-                    v_crud.$data.files.push({"column": f.column, "temp": v_crud.$data[f.column]})
+            if result.all_files
+                if result.all_files.length > 0
+                    for f in result.all_files
+                        v_crud.$set(f.column, {"fd": null, "all_files": f.files, "remove_files": []})
+                        v_crud.$data.files.push({"column": f.column, "temp": v_crud.$data[f.column]})
     )
-)
+
