@@ -421,7 +421,6 @@ class oper(BaseHandler):
         t = self.get_argument('t')
         w = self.get_argument('w', '1=1')
         order = self.get_argument('order', None)
-        print order
         if order:
             data = list(self.pg.db.select(t, where=w, order=order))
         else:
