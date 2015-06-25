@@ -280,6 +280,20 @@ def handleError(method):
     return wrapper
 
 
+def mustLoginApi(method):
+    '''
+    必须要登录 api
+    create by bigzhu at 15/06/21 08:00:56
+    '''
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        if self.current_user:
+            pass
+        else:
+            raise Exception('must login')
+        return method(self, *args, **kwargs)
+    return wrapper
+
 def mustLogin(method):
     '''
     必须要登录,否则弹回登录页面
@@ -406,11 +420,9 @@ class oper(BaseHandler):
         self.set_header("Content-Type", "application/json")
         t = self.get_argument('t')
         w = self.get_argument('w', '1=1')
-        limit = self.get_argument('limit', None)
-        page = self.get_argument('page', None)
-        if limit:
-            offset = (int(page) - 1) * int(limit)
-            data = list(self.pg.db.select(t, where=w, limit=limit, offset=offset))
+        order = self.get_argument('order', None)
+        if order:
+            data = list(self.pg.db.select(t, where=w, order=order))
         else:
             data = list(self.pg.db.select(t, where=w))
 

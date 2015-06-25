@@ -8,6 +8,7 @@ from public_bz import storage
 from tornado_bz import UserInfoHandler
 import json
 import tornado
+from ui_module import my_ui_module
 OK = '0'
 
 
@@ -20,13 +21,15 @@ def createTable(db_name):
     model_oper_bz.createTable(model_bz.comment, db_name)
 
 
-class comment_reply_m(tornado.web.UIModule):
+class comment_reply_m(my_ui_module.MyUIModule):
 
-    '''modify by bigzhu at 15/02/22 14:22:10 因为要递归,所以得单独独立出来
+    '''
+    modify by bigzhu at 15/02/22 14:22:10 因为要递归,所以得单独独立出来
+    modify by bigzhu at 15/06/19 15:15:21 use self.html_name
     '''
 
     def render(self, comments):
-        return self.render_string("comment_reply_m.html", comments=comments)
+        return self.render_string(self.html_name, comments=comments)
 
 
 class comment_m(my_ui_module.MyUIModule):

@@ -9,12 +9,16 @@ CSS_PATH = "/lib_static/css/"
 class MyUIModule(UIModule):
 
     '''
-    modify by bigzhu at 15/03/06 17:04:03 加入file
     create by bigzhu at 15/03/07 21:12:30 改成 file 了,没法用模板了
+    modify by bigzhu at 15/03/06 17:04:03 加入file
+    modify by bigzhu at 15/06/13 14:13:39 加入version,以更新js,css
+    modify by bigzhu at 15/06/19 15:40:48 支持有多个js 和 css 的情况
     '''
 
     def __init__(self, handler):
         UIModule.__init__(self, handler)
+        self.CSS_PATH = CSS_PATH
+        self.JS_PATH = JS_PATH
         self.pg = self.handler.settings['pg']
 
         self.class_name = self.__class__.__name__
@@ -27,12 +31,29 @@ class MyUIModule(UIModule):
 
         self.LIB_PATH = "/lib_static/lib/"
 
+        self.version = None
+
+        #应对有多个js和css文件的情况
+        self.all_js_files = []
+        self.all_css_files = []
+
     def javascript_files(self):
-        return self.js_file
+        if self.version:
+            self.js_file += '?v=%s' % self.version
+        if self.all_js_files:
+            self.all_js_files.append(self.js_file)
+            return self.all_js_files
+        else:
+            return self.js_file
 
     def css_files(self):
-        return self.css_file
-
+        if self.version:
+            self.css_file += '?v=%s' % self.version
+        if self.all_css_files:
+            self.all_css_files.append(self.css_file)
+            return self.all_css_files
+        else:
+            return self.css_file
     '''
     def embedded_css(self):
         return self.render_string(self.css_name)

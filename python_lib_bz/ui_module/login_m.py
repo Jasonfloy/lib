@@ -76,6 +76,7 @@ class login_m(my_ui_module.MyUIModule):
     '''登录的页面'''
 
     def render(self, oauth2, user_types=[], validate_url=None):
+        self.version = 1
         if validate_url:
             gt = geetest(captcha_id, private_key)
             challenge = gt.geetest_register()
@@ -182,10 +183,16 @@ class login(ModuleHandler, UserInfoHandler):
         elif form_type == 'setPassword':  # 设置新密码
             password = login_info.get("password")
             hashed_password = hashlib.md5(password + salt).hexdigest()
-            token = login_info.get("token")
-            count = self.pg.db.update('user_info', where="forget_token = '%s'" % token, password=hashed_password, forget_token='')
-            if count == 0:
-                raise Exception('token 已经失效,请不要重复提交!')
+            if self.current_user:
+                count = self.pg.db.update('user_info', where="id = %s" % self.current_user,
+                                          password=hashed_password, forget_token='')
+                if count == 0:
+                    raise Exception('没有这个用户')
+            else:
+                token = login_info.get("token")
+                count = self.pg.db.update('user_info', where="forget_token = '%s'" % token, password=hashed_password, forget_token='')
+                if count == 0:
+                    raise Exception('token 已经失效,请不要重复提交!')
         self.write(json.dumps({'error': '0'}, cls=public_bz.ExtEncoder))
 
     @tornado_bz.handleError

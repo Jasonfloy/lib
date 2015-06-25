@@ -184,7 +184,7 @@ def getCountryCodeByIP(ip):
     根据 ip 地址取到所属的国家编码
     modify by bigzhu at 15/05/17 11:28:52 add test
     >>> getCountryCodeByIP('www.baidu.com')
-    u'CN'
+    u'HK'
     '''
     country_code = "not found"
     url = 'http://freegeoip.net/json/' + ip

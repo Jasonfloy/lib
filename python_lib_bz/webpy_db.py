@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Database API
 (part of web.py)
@@ -298,6 +296,8 @@ def reparam(string_, dictionary):
         <sql: 's IN (1, 2)'>
     """
     dictionary = dictionary.copy() # eval mucks with it
+    # disable builtins to avoid risk for remote code exection.
+    dictionary['__builtins__'] = object()
     vals = []
     result = []
     for live, chunk in _interpolate(string_):
@@ -328,6 +328,8 @@ def sqlify(obj):
         return "'t'"
     elif obj is False:
         return "'f'"
+    elif isinstance(obj, long):
+        return str(obj)
     elif datetime and isinstance(obj, datetime.datetime):
         return repr(obj.isoformat())
     else:
@@ -615,11 +617,22 @@ class DB:
         #@@@ for backward-compatibility
         elif isinstance(where, (list, tuple)) and len(where) == 2:
             where = SQLQuery(where[0], where[1])
+        elif isinstance(where, dict):
+            where = self._where_dict(where)
         elif isinstance(where, SQLQuery):
             pass
         else:
             where = reparam(where, vars)
         return where
+
+    def _where_dict(self, where):
+        where_clauses = []
+        for k, v in where.iteritems():
+            where_clauses.append(k + ' = ' + sqlquote(v))
+        if where_clauses:
+            return SQLQuery.join(where_clauses, " AND ")
+        else:
+            return None
 
     def query(self, sql_query, vars=None, processed=False, _test=False):
         """
@@ -675,6 +688,8 @@ class DB:
             <sql: 'SELECT * FROM foo'>
             >>> db.select(['foo', 'bar'], where="foo.bar_id = bar.id", limit=5, _test=True)
             <sql: 'SELECT * FROM foo, bar WHERE foo.bar_id = bar.id LIMIT 5'>
+            >>> db.select('foo', where={'id': 5}, _test=True)
+            <sql: 'SELECT * FROM foo WHERE id = 5'>
         """
         if vars is None: vars = {}
         sql_clauses = self.sql_clauses(what, tables, where, group, order, limit, offset)
@@ -696,15 +711,7 @@ class DB:
             >>> db.where('foo', _test=True)
             <sql: 'SELECT * FROM foo'>
         """
-        where_clauses = []
-        for k, v in kwargs.iteritems():
-            where_clauses.append(k + ' = ' + sqlquote(v))
-
-        if where_clauses:
-            where = SQLQuery.join(where_clauses, " AND ")
-        else:
-            where = None
-
+        where = self._where_dict(kwargs)
         return self.select(table, what=what, order=order,
                group=group, limit=limit, offset=offset, _test=_test,
                where=where)
@@ -728,6 +735,8 @@ class DB:
         #@@@
         elif isinstance(val, (list, tuple)) and len(val) == 2:
             nout = SQLQuery(val[0], val[1]) # backwards-compatibility
+        elif sql == 'WHERE' and isinstance(val, dict):
+            nout = self._where_dict(val)
         elif isinstance(val, SQLQuery):
             nout = val
         else:
@@ -758,8 +767,6 @@ class DB:
 
         if values:
             _keys = SQLQuery.join(values.keys(), ', ')
-            #modify by bigzhu at 15/06/05 11:58:53 把key设进来,用来自有没有指定ip
-            self.insert_keys = values.keys()
             _values = SQLQuery.join([sqlparam(v) for v in values.values()], ', ')
             sql_query = "INSERT INTO %s " % tablename + q(_keys) + ' VALUES ' + q(_values)
         else:
@@ -804,7 +811,7 @@ class DB:
             >>> db.supports_multiple_insert = True
             >>> values = [{"name": "foo", "email": "foo@example.com"}, {"name": "bar", "email": "bar@example.com"}]
             >>> db.multiple_insert('person', values=values, _test=True)
-            <sql: "INSERT INTO person (name, email) VALUES ('foo', 'foo@example.com'), ('bar', 'bar@example.com')">
+            <sql: "INSERT INTO person (email, name) VALUES ('foo@example.com', 'foo'), ('bar@example.com', 'bar')">
         """
         if not values:
             return []
@@ -815,13 +822,13 @@ class DB:
                 return None
             else:
                 return out
-        #modify by bigzhu at 15/06/08 15:24:34 把key设进来,用来自有没有指定ip
-        self.insert_keys = values[0].keys()
-        keys = values[0].keys()
+
+        keys = sorted(values[0].keys())
         #@@ make sure all keys are valid
 
         for v in values:
-            if v.keys() != keys:
+		    # make sure keys are sorted, keep compare correct
+            if sorted(v.keys()) != keys:
                 raise ValueError, 'Not all rows have the same keys'
 
         sql_query = SQLQuery('INSERT INTO %s (%s) VALUES ' % (tablename, ', '.join(keys)))
@@ -944,18 +951,15 @@ class PostgresDB(DB):
         self._sequences = None
 
     def _process_insert_query(self, query, tablename, seqname):
-        if seqname is None:
-            # when seqname is not provided guess the seqname and make sure it exists
-            seqname = tablename + "_id_seq"
-            if seqname not in self._get_all_sequences():
-                seqname = None
+        # modify by bigzhu: when seqname is not provided, no need guess. if you set 'id' key in pg94 will cause psycopg2.OperationalError: currval of sequence "xxx" is not yet defined in this session
+        #if seqname is None:
+        #    # when seqname is not provided guess the seqname and make sure it exists
+        #    seqname = tablename + "_id_seq"
+        #    if seqname not in self._get_all_sequences():
+        #        seqname = None
 
-        #modify by bigzhu at 15/06/05 12:05:13 insert里如果有id的话,是不能查这个seq的
-        if 'id' in self.insert_keys or 'ID' in self.insert_keys:
-            seqname = None
         if seqname:
             query += "; SELECT currval('%s')" % seqname
-            #pass
 
         return query
 
