@@ -420,11 +420,10 @@ class oper(BaseHandler):
         self.set_header("Content-Type", "application/json")
         t = self.get_argument('t')
         w = self.get_argument('w', '1=1')
-        limit = self.get_argument('limit', None)
-        page = self.get_argument('page', None)
-        if limit:
-            offset = (int(page) - 1) * int(limit)
-            data = list(self.pg.db.select(t, where=w, limit=limit, offset=offset))
+        order = self.get_argument('order', None)
+        print order
+        if order:
+            data = list(self.pg.db.select(t, where=w, order=order))
         else:
             data = list(self.pg.db.select(t, where=w))
 
