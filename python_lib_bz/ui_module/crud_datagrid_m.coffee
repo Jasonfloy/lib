@@ -27,10 +27,13 @@ $(->
         table_name = i.id
         #有user_id时候,是查看其他人的
         user_id = window.bz.getHashPram("user_id")
+        user_id_edit = null
         if user_id
             ids = user_id.split("_")
             if ids.length > 1
-                user_id = null
+                 user_id_edit = ids[0]
+            else
+                 user_id = ids[0]
         new Vue
             el: '#'+table_name
             data:
@@ -45,6 +48,7 @@ $(->
             created:->
                 @table_name = table_name
                 @user_id = user_id
+                @user_id_edit = user_id_edit
                 @initStat()
 
                 @loadListData()
@@ -64,7 +68,7 @@ $(->
                 #初始化 stat
                 initStat:->
                     @select='null'
-                    if @user_id
+                    if @user_id and not user_id_edit
                         @stat = "check"
                     else
                         @stat = "normal"
@@ -72,8 +76,10 @@ $(->
                     _this = @
                     @initStat()
                     url = '/crud_list_api/' + @table_name
-                    if @user_id
+                    if @user_id and not user_id_edit
                         url += '?user_id=' + @user_id
+                    else
+                        url += '?user_id=' + @user_id_edit
                     $.post(url)
                         .done((d1)->
                             if d1.error != "0"
@@ -152,6 +158,8 @@ $(->
                         _this.loading=false
                         $('#modal-' + _this.table_name).modal('hide')
                         return
+                    if _this.user_id_edit
+                        _this.$set("record.user_id", _this.user_id_edit)
                     $.post('/crud_api',
                         JSON.stringify {table_name:@table_name, record:@record}
                     ).done((result)->

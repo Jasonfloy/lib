@@ -14611,6 +14611,9 @@ function program17(depth0,data) {
       }
       this.toolbar = this.createToolbar(el, toolbarOpts);
       this.editor =  this.createEditor(toolbarOpts);
+
+      console.log(toolbarOpts)
+      console.log(this.createEditor(toolbarOpts))
     };
 
     Wysihtml5.prototype = {
@@ -14625,7 +14628,7 @@ function program17(depth0,data) {
         options = $.extend(true, {}, options);
         options.toolbar = this.toolbar[0];
         
-        this.initializeEditor(this.el[0], options);
+        return this.initializeEditor(this.el[0], options);
       },
 
 
@@ -14778,6 +14781,7 @@ function program17(depth0,data) {
       bypassDefaults: function(options) {
         return this.each(function () {
           var $this = $(this);
+          console.log('bigzhu');
           $this.data('wysihtml5', new Wysihtml5($this, options));
         });
       },

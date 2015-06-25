@@ -1,6 +1,6 @@
 (function() {
   $(function() {
-    var i, j, len, results, table_name, user_id, vues;
+    var i, ids, j, len, results, table_name, user_id, user_id_edit, vues;
     Vue.directive("datagrid-file-list", function(value) {
       var column, params, parms_str, table_name;
       params = this.arg.split(".");
@@ -34,6 +34,15 @@
       i = vues[j];
       table_name = i.id;
       user_id = window.bz.getHashPram("user_id");
+      user_id_edit = null;
+      if (user_id) {
+        ids = user_id.split("_");
+        if (ids.length > 1) {
+          user_id_edit = ids[0];
+        } else {
+          user_id = ids[0];
+        }
+      }
       results.push(new Vue({
         el: '#' + table_name,
         data: {
@@ -49,6 +58,7 @@
         created: function() {
           this.table_name = table_name;
           this.user_id = user_id;
+          this.user_id_edit = user_id_edit;
           this.initStat();
           this.loadListData();
           return this.getRecordDetail();
@@ -72,7 +82,7 @@
           },
           initStat: function() {
             this.select = 'null';
-            if (this.user_id) {
+            if (this.user_id && !user_id_edit) {
               return this.stat = "check";
             } else {
               return this.stat = "normal";
@@ -83,8 +93,10 @@
             _this = this;
             this.initStat();
             url = '/crud_list_api/' + this.table_name;
-            if (this.user_id) {
+            if (this.user_id && !user_id_edit) {
               url += '?user_id=' + this.user_id;
+            } else {
+              url += '?user_id=' + this.user_id_edit;
             }
             return $.post(url).done(function(d1) {
               if (d1.error !== "0") {
@@ -187,6 +199,9 @@
               _this.loading = false;
               $('#modal-' + _this.table_name).modal('hide');
               return;
+            }
+            if (_this.user_id_edit) {
+              _this.$set("record.user_id", _this.user_id_edit);
             }
             return $.post('/crud_api', JSON.stringify({
               table_name: this.table_name,
