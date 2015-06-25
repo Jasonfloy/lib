@@ -30,7 +30,6 @@
               validate: $('#validate').val()
             });
           } else if (type === 'signup') {
-            console.log(window.regexp);
             for (key in window.regexp) {
               value = window.regexp[key];
               console.log(value);
