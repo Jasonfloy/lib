@@ -47,7 +47,6 @@ class file_upload(UserInfoHandler):
         results = list(self.pg.db.query(sql))
         self.write(json.dumps({'error': '0', 'results': results}))
 
-    @tornado_bz.mustLogin
     @tornado_bz.handleError
     def post(self):
         '''

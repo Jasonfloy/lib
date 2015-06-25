@@ -17,6 +17,8 @@ class MyUIModule(UIModule):
 
     def __init__(self, handler):
         UIModule.__init__(self, handler)
+        self.CSS_PATH = CSS_PATH
+        self.JS_PATH = JS_PATH
         self.pg = self.handler.settings['pg']
 
         self.class_name = self.__class__.__name__

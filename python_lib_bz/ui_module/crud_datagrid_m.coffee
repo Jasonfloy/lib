@@ -1,9 +1,39 @@
 $(->
+    Vue.directive("datagrid-file-list", (value)->
+        params = this.arg.split(".")
+        if(params.length < 2)
+            throw "file-list 指令中的参数不足，请检查是否指定表名与字段名."
+        if(!$)
+            throw "JQuery没有正确引用."
+        table_name = params[0];
+        column = params[1];
+        parms_str = [table_name, column, value].join("/")
+        ((_this, str)->
+            $.get('/file_upload/' + str).done (d) ->
+                html = ''
+                if d.results.length == 0
+                    return
+                for i of d.results
+                    f = d.results[i]
+                    html += '<div><a href=\'' + f.file_path + '\'\' target=\'_blank\'>下载</a></div>'
+                # 拼装字符串，注入到list中
+                $(_this.el).html html
+                return
+        ) this, parms_str
+    )
+
     vues = $(".safe-datagrid")
     for i in vues
         table_name = i.id
         #有user_id时候,是查看其他人的
         user_id = window.bz.getHashPram("user_id")
+        user_id_edit = null
+        if user_id
+            ids = user_id.split("_")
+            if ids.length > 1
+                 user_id_edit = ids[0]
+            else
+                 user_id = ids[0]
         new Vue
             el: '#'+table_name
             data:
@@ -18,6 +48,7 @@ $(->
             created:->
                 @table_name = table_name
                 @user_id = user_id
+                @user_id_edit = user_id_edit
                 @initStat()
 
                 @loadListData()
@@ -37,7 +68,7 @@ $(->
                 #初始化 stat
                 initStat:->
                     @select='null'
-                    if @user_id
+                    if @user_id and not user_id_edit
                         @stat = "check"
                     else
                         @stat = "normal"
@@ -45,8 +76,10 @@ $(->
                     _this = @
                     @initStat()
                     url = '/crud_list_api/' + @table_name
-                    if @user_id
+                    if @user_id and not user_id_edit
                         url += '?user_id=' + @user_id
+                    else
+                        url += '?user_id=' + @user_id_edit
                     $.post(url)
                         .done((d1)->
                             if d1.error != "0"
@@ -125,6 +158,8 @@ $(->
                         _this.loading=false
                         $('#modal-' + _this.table_name).modal('hide')
                         return
+                    if _this.user_id_edit
+                        _this.$set("record.user_id", _this.user_id_edit)
                     $.post('/crud_api',
                         JSON.stringify {table_name:@table_name, record:@record}
                     ).done((result)->
