@@ -57,12 +57,11 @@ getValue = (table_name, column_name, key, callback)->
 
 Vue.directive("cascade",->
   # 拆解参数
-  parms = this.expression.split(".");
-  table_name = parms[0];
-  column_name = parms[1];
+  parms = this.expression.split(".")
+  table_name = parms[0]
+  column_name = parms[1]
   setWatch(this.vm, this.arg, table_name, column_name, this.el)
 )
-
 # 日期格式化
 Vue.directive('dateformat', (value)->
   if value

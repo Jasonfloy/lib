@@ -1,3 +1,4 @@
+
 $ ->
     input = '<input id="image-file" type="file" />'
     myCustomTemplates = image: (context) ->
@@ -12,12 +13,7 @@ $ ->
       '
     $('#wysiwyg').html('Some text dynamically set.')
 
-    the_wysiwyg = $('#wysiwyg').wysihtml5 (
-        locale: 'zh-CN'
-        customTemplates: myCustomTemplates
-    )
 
-    editor = the_wysiwyg.data("wysihtml5").editor
 
     selectFile = (e)->
         files = e.target.files
@@ -40,12 +36,13 @@ $ ->
             processData: false
             contentType: false).done (d) =>
                 if d.error == '0'
-                    log editor
-                    log $('#wysiwyg').data("wysihtml5")
+                    editor = $('#wysiwyg').data("wysihtml5").editor
 
                     file_path = d.results[0].file_path
+                    file_name = d.results[0].file_name
+                    log d.results[0]
                     try
-                        editor.composer.commands.exec("insertImage", { src: file_path, alt: "this is an image" })
+                        editor.composer.commands.exec("insertImage", { src: file_path, title: file_name, alt: file_name })
                         window.bz.showSuccess5 '文件上传成功'
                     catch error
                         log error
@@ -56,5 +53,17 @@ $ ->
                 $('#image-file').change (selectFile)
                 $(input).change(selectFile).appendTo($('#file-span'))
                 return
+    #window.bz.initWysiwyg()
+    window.bz.initWysiwyg = (bind=null)->
+        $('#wysiwyg').wysihtml5 (
+            locale: 'zh-CN'
+            customTemplates: myCustomTemplates
+        )
 
-    $('#image-file').change (selectFile)
+        editor = $('#wysiwyg').data("wysihtml5").editor
+
+        editor.on("change", ->
+            log bind.record.content
+            bind.record.content = $('#wysiwyg').val()
+        )
+        $('#image-file').change (selectFile)

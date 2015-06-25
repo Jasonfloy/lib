@@ -1,6 +1,6 @@
 (function() {
   $(function() {
-    var editor, input, myCustomTemplates, selectFile, the_wysiwyg;
+    var input, myCustomTemplates, selectFile;
     input = '<input id="image-file" type="file" />';
     myCustomTemplates = {
       image: function(context) {
@@ -11,11 +11,6 @@
       }
     };
     $('#wysiwyg').html('Some text dynamically set.');
-    the_wysiwyg = $('#wysiwyg').wysihtml5({
-      locale: 'zh-CN',
-      customTemplates: myCustomTemplates
-    });
-    editor = the_wysiwyg.data("wysihtml5").editor;
     selectFile = function(e) {
       var f, fd, files, i, new_file;
       files = e.target.files;
@@ -41,15 +36,17 @@
         contentType: false
       }).done((function(_this) {
         return function(d) {
-          var error, file_path;
+          var editor, error, file_name, file_path;
           if (d.error === '0') {
-            log(editor);
-            log($('#wysiwyg').data("wysihtml5"));
+            editor = $('#wysiwyg').data("wysihtml5").editor;
             file_path = d.results[0].file_path;
+            file_name = d.results[0].file_name;
+            log(d.results[0]);
             try {
               editor.composer.commands.exec("insertImage", {
                 src: file_path,
-                alt: "this is an image"
+                title: file_name,
+                alt: file_name
               });
               window.bz.showSuccess5('文件上传成功');
             } catch (_error) {
@@ -66,7 +63,22 @@
         };
       })(this));
     };
-    return $('#image-file').change(selectFile);
+    return window.bz.initWysiwyg = function(bind) {
+      var editor;
+      if (bind == null) {
+        bind = null;
+      }
+      $('#wysiwyg').wysihtml5({
+        locale: 'zh-CN',
+        customTemplates: myCustomTemplates
+      });
+      editor = $('#wysiwyg').data("wysihtml5").editor;
+      editor.on("change", function() {
+        log(bind.record.content);
+        return bind.record.content = $('#wysiwyg').val();
+      });
+      return $('#image-file').change(selectFile);
+    };
   });
 
 }).call(this);

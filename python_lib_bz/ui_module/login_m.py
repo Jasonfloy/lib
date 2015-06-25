@@ -143,7 +143,7 @@ class login(ModuleHandler, UserInfoHandler):
                 if not result:
                     raise Exception('验证码不正确!')
             user_info = self.user_oper.login(user_name, password)
-            self.set_secure_cookie("user_id", str(user_info.id))
+            self.set_secure_cookie("user_id", str(user_info.id), expires_days=None)
         elif form_type == 'signup':
             user_name = login_info.get("user_name")
             password = login_info.get("password")
