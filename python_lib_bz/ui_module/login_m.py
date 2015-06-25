@@ -75,7 +75,7 @@ class login_m(my_ui_module.MyUIModule):
 
     '''登录的页面'''
 
-    def render(self, oauth2, user_types=[], validate_url=None):
+    def render(self, oauth2, user_types=[], user_name=None, validate_url=None):
         self.version = 1
         if validate_url:
             gt = geetest(captcha_id, private_key)
@@ -87,7 +87,7 @@ class login_m(my_ui_module.MyUIModule):
             else:  # 验证的api出现问题,无法显示验证码
                 validate_url = 'bigzhu'
 
-        return self.render_string(self.html_name, oauth2=oauth2, user_types=user_types, validate_url=validate_url)
+        return self.render_string(self.html_name, oauth2=oauth2, user_types=user_types, user_name=user_name, validate_url=validate_url)
 
 
 class login(ModuleHandler, UserInfoHandler):
