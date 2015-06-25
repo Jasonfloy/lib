@@ -70,7 +70,7 @@ class file_upload(UserInfoHandler):
                     img = open(file_path, 'w')
                     img.write(file_body)
                     img.close()
-                    new_file = storage(file_name=file_name, file_path=file_path, file_hash=file_hash, file_type="file", suffix=file_suffix, seqname='uploaded_files_id_seq')
+                    new_file = storage(file_name=file_name, file_path="/" + file_path, file_hash=file_hash, file_type="file", suffix=file_suffix, seqname='uploaded_files_id_seq')
                     file_id = self.pg.db.insert("uploaded_files", **new_file)
                     r = {
                         'file_id': file_id,

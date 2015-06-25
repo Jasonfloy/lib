@@ -114,8 +114,9 @@ class login(ModuleHandler, UserInfoHandler):
         self.user_oper = user_bz.UserOper(self.pg)
         # 是否要验证
         self.validate = False
+        self.is_remember = True
 
-        #salt
+        # salt
         self.salt = "hold is watching you"
 
     def get(self):
@@ -126,6 +127,10 @@ class login(ModuleHandler, UserInfoHandler):
         self.set_header("Content-Type", "application/json")
         login_info = json.loads(self.request.body)
         form_type = login_info.get("type")
+        # 根据 is_remember 决定是否保存cookie
+        expires_days = None
+        if self.is_remember:
+            expires_days = 30
         if form_type == 'login':
             user_name = login_info.get("user_name")
             password = login_info.get("password")
@@ -143,7 +148,8 @@ class login(ModuleHandler, UserInfoHandler):
                 if not result:
                     raise Exception('验证码不正确!')
             user_info = self.user_oper.login(user_name, password)
-            self.set_secure_cookie("user_id", str(user_info.id))
+            self.set_secure_cookie("user_name", user_name)
+            self.set_secure_cookie("user_id", str(user_info.id), expires_days=expires_days)
         elif form_type == 'signup':
             user_name = login_info.get("user_name")
             password = login_info.get("password")
@@ -158,7 +164,7 @@ class login(ModuleHandler, UserInfoHandler):
 
             self.user_oper.signup(user_name, password, email, user_type)
             user_info = self.user_oper.login(user_name, password, "'%s'" % user_type)
-            self.set_secure_cookie("user_id", str(user_info.id))
+            self.set_secure_cookie("user_id", str(user_info.id), expires_days=expires_days)
         elif form_type == 'forget':  # 如果是找回密码
             email = login_info.get("email")
             user_info = self.user_oper.getUserInfo(email=email)
@@ -172,7 +178,7 @@ class login(ModuleHandler, UserInfoHandler):
             self.pg.db.query(sql_set_token)
             send_mail = 'safe@highwe.com'
             url = 'http://' + self.request.host + self.request.uri + '#token/' + forget_token
-            #content = MIMEText(loader.load("login_email_m.html").generate(user_name=email, url=url), 'html', 'utf-8')
+            # content = MIMEText(loader.load("login_email_m.html").generate(user_name=email, url=url), 'html', 'utf-8')
             content = MIMEText('<a href="' + url + '">点此设置新密码</a><br><br>如果以上按钮点击无效，请将链接复制到浏览器地址栏中打开：<br>' + url, 'html', 'utf-8')
             content['From'] = send_mail
             content['To'] = email

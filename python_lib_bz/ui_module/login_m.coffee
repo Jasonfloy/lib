@@ -23,7 +23,6 @@ $(->
             geetest_seccode : $('.geetest_seccode').val()
             validate: $('#validate').val()
         else if type == 'signup'
-          console.log window.regexp
           for key of window.regexp
             value = window.regexp[key]
             console.log value
