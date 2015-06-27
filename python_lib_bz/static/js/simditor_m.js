@@ -13,11 +13,11 @@
       pasteImage: true,
       defaultImage: 'assets/images/image.png',
       upload: {
-        upurl: '/upload_file',
-        upparams: null,
-        upfileKey: 'upload_file',
-        upconnectionCount: 3,
-        upleaveConfirm: '正在上传文件，如果离开上传会自动取消'
+        url: '/upload_file',
+        params: null,
+        fileKey: 'upload_file',
+        connectionCount: 3,
+        leaveConfirm: '正在上传文件，如果离开上传会自动取消'
       }
     });
   });
