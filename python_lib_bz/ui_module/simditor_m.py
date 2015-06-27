@@ -2,7 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from ui_module import my_ui_module
+import tornado_bz
 
+import json
+import hashlib
+md5 = hashlib.md5()
 
 class simditor_m(my_ui_module.MyUIModule):
 
@@ -34,6 +38,41 @@ class simditor_m(my_ui_module.MyUIModule):
             return ''
     def css_files(self):
         return self.all_css_files
+
+class upload_file(tornado_bz.BaseHandler):
+    '''
+    create by zhangrui at 15/03/12 14:50
+    文件上传相关API
+    '''
+    def post(self):
+        '''
+        新增文件
+        '''
+        global md5
+        self.set_header("Content-Type", "application/json")
+        results = []
+        if self.request.files:
+            for i in self.request.files:
+                fd = self.request.files[i]
+                for f in fd:
+                    file_name = f.get("filename")
+                    file_suffix = file_name[file_name.rfind("."):]
+                    file_body = f["body"]
+                    md5.update(file_body)
+                    file_hash = md5.hexdigest()
+                    file_path = "static/uploaded_files/%s" % (file_hash+file_suffix)
+                    real_path = "/"+file_path
+                    # hash
+                    img = open(file_path, 'w')
+                    img.write(file_body)
+                    img.close()
+                    #new_file = storage(file_name=file_name, file_path="/" + file_path, file_hash=file_hash, file_type="file", suffix=file_suffix, seqname='uploaded_files_id_seq')
+                    result = {
+                      "success": True,
+                      "msg": "上传失败信息", # 可选
+                      "file_path": real_path
+                    }
+        self.write(json.dumps(result))
 
 if __name__ == '__main__':
     pass
