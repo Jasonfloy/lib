@@ -1,4 +1,3 @@
-
 $ ->
     input = '<input id="image-file" type="file" />'
     myCustomTemplates = image: (context) ->

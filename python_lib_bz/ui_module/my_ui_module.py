@@ -4,6 +4,7 @@ from tornado.web import UIModule
 action = ''
 JS_PATH = "/lib_static/js/"
 CSS_PATH = "/lib_static/css/"
+LIB_PATH = "/lib_static/lib/"
 
 
 class MyUIModule(UIModule):
@@ -13,13 +14,15 @@ class MyUIModule(UIModule):
     modify by bigzhu at 15/03/06 17:04:03 加入file
     modify by bigzhu at 15/06/13 14:13:39 加入version,以更新js,css
     modify by bigzhu at 15/06/19 15:40:48 支持有多个js 和 css 的情况
+    modify by bigzhu at 15/06/27 22:07:41 把一些公用的依赖js/css加入到js/css list 中, 以避免潜规则依赖
     '''
 
     def __init__(self, handler):
         UIModule.__init__(self, handler)
+        self.pg = self.handler.settings['pg']
+
         self.CSS_PATH = CSS_PATH
         self.JS_PATH = JS_PATH
-        self.pg = self.handler.settings['pg']
 
         self.class_name = self.__class__.__name__
         self.css_name = self.class_name + '.css'
@@ -28,32 +31,40 @@ class MyUIModule(UIModule):
 
         self.js_file = JS_PATH + self.js_name
         self.css_file = CSS_PATH + self.css_name
-
-        self.LIB_PATH = "/lib_static/lib/"
+        self.LIB_PATH = LIB_PATH
 
         self.version = None
 
-        #应对有多个js和css文件的情况
-        self.all_js_files = []
-        self.all_css_files = []
+        # 一些公用的文件
+        self.all_js_files = [
+            self.LIB_PATH + 'vue.min.js',
+            self.LIB_PATH + 'underscore-min.js',
+            self.LIB_PATH + 'jquery-2.1.1.min.js',
+            #self.LIB_PATH + 'bootstrap-3.3.2-dist/js/bootstrap.min.js',
+            #self.LIB_PATH + 'AdminLTE-2.0.2/dist/js/app.js',
+            #self.LIB_PATH + 'AdminLTE-2.0.2/plugins/slimScroll/jquery.slimscroll.min.js',
+            #self.LIB_PATH + 'jquery-toastmessage-plugin/src/main/javascript/jquery.toastmessage.js',
+        ]
+        self.all_css_files = [
+            self.LIB_PATH + 'bootstrap-3.3.2-dist/css/bootstrap.min.css',
+            self.LIB_PATH + 'Font-Awesome/css/font-awesome.min.css',
+            self.LIB_PATH + 'ionicons-2.0.1/css/ionicons.min.css',
+            self.LIB_PATH + 'AdminLTE-2.0.2/dist/css/AdminLTE.css',
+            #self.LIB_PATH + 'AdminLTE-2.0.2/dist/css/skins/skin-blue.min.css',
+            #self.LIB_PATH + 'jquery-toastmessage-plugin/src/main/resources/css/jquery.toastmessage.css',
+        ]
 
     def javascript_files(self):
         if self.version:
             self.js_file += '?v=%s' % self.version
-        if self.all_js_files:
-            self.all_js_files.append(self.js_file)
-            return self.all_js_files
-        else:
-            return self.js_file
+        self.all_js_files.append(self.js_file)
+        return self.all_js_files
 
     def css_files(self):
         if self.version:
             self.css_file += '?v=%s' % self.version
-        if self.all_css_files:
-            self.all_css_files.append(self.css_file)
-            return self.all_css_files
-        else:
-            return self.css_file
+        self.all_css_files.append(self.css_file)
+        return self.all_css_files
     '''
     def embedded_css(self):
         return self.render_string(self.css_name)

@@ -7,12 +7,14 @@ from tornado_bz import UserInfoHandler
 from ui_module import my_ui_module
 
 
-class public_m(my_ui_module.JsCssUIModule):
+class public_m(my_ui_module.MyUIModule):
 
-    '''create by bigzhu at 15/02/21 18:34:46 就是为了提供 public.js 来用
     '''
-    pass
-
+    create by bigzhu at 15/02/21 18:34:46 就是为了提供 public.js 来用
+    modify by bigzhu at 15/06/28 01:04:50 统一使用MyUIModule
+    '''
+    def render(self):
+        return ''
 
 class cascade(UserInfoHandler):
     '''
