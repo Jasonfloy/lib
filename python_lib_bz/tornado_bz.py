@@ -63,8 +63,8 @@ class BaseHandler(RequestHandler):
             file_part = module.javascript_files()
             if file_part:
                 if isinstance(file_part, (unicode_type, bytes_type)):
-                    js_files.append(file_part)
-                    #js_files.insert(0, file_part)
+                    # js_files.append(file_part)
+                    js_files.insert(0, file_part)
                 else:
                     js_files.extend(file_part)
             embed_part = module.embedded_css()
@@ -99,10 +99,8 @@ class BaseHandler(RequestHandler):
                          '" type="text/javascript"></script>'
                          for p in paths)
             #sloc = html.rindex(b'</body>')
-            #sloc = html.rindex(b'</head>')
-            #modify by bigzhu at 15/06/27 23:55:31 js 加入在head以后,为了保障 torando 插入的js要在 js block 前
-            sloc = html.rindex(b'<head>')
-            html = html[:sloc+6] + utf8(js) + b'\n' + html[sloc+6:]
+            sloc = html.rindex(b'</head>')
+            html = html[:sloc] + utf8(js) + b'\n' + html[sloc:]
         if js_embed:
             js = b'<script type="text/javascript">\n//<![CDATA[\n' + \
                 b'\n'.join(js_embed) + b'\n//]]>\n</script>'
@@ -295,7 +293,6 @@ def mustLoginApi(method):
             raise Exception('must login')
         return method(self, *args, **kwargs)
     return wrapper
-
 
 def mustLogin(method):
     '''
