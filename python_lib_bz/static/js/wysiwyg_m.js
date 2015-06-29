@@ -10,7 +10,6 @@
         return '<li> <span id="file-span" class="file-input btn btn-default btn-file glyphicon glyphicon-picture"> <input id="image-file" type="file" /> </span> </li>';
       }
     };
-    $('#wysiwyg').html('Some text dynamically set.');
     selectFile = function(e) {
       var f, fd, files, i, new_file;
       files = e.target.files;
@@ -48,7 +47,9 @@
                 title: file_name,
                 alt: file_name
               });
+              editor.composer.commands.exec("insertLineBreak");
               window.bz.showSuccess5('文件上传成功');
+              log($('#wysiwyg').val());
             } catch (_error) {
               error = _error;
               log(error);
@@ -63,22 +64,25 @@
         };
       })(this));
     };
-    return window.bz.initWysiwyg = function(bind) {
-      var editor;
-      if (bind == null) {
-        bind = null;
+    return window.bz.initWysiwyg = function(vue) {
+      var editor, wysiwyg;
+      if (vue == null) {
+        vue = null;
       }
-      $('#wysiwyg').wysihtml5({
+      wysiwyg = $('#wysiwyg').wysihtml5({
         locale: 'zh-CN',
         customTemplates: myCustomTemplates
       });
+      $('#wysiwyg').data("vue", vue);
       editor = $('#wysiwyg').data("wysihtml5").editor;
       editor.on("change", function() {
-        log(bind.record.content);
-        return bind.record.content = $('#wysiwyg').val();
+        return vue.setRichText($('#wysiwyg').val());
       });
-      return $('#image-file').change(selectFile);
+      $('#image-file').change(selectFile);
+      return wysiwyg;
     };
   });
 
 }).call(this);
+
+//# sourceMappingURL=../map/wysiwyg_m.js.map

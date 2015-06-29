@@ -62,6 +62,8 @@ $ ->
                 $('#wysiwyg').html(@record.content)
                 window.bz.initWysiwyg(@)
         methods:
+            setRichText:(value)->
+                @record.content = value
             toggleEdit:->
                 if @$data.editable
                     @$data.editable = false
