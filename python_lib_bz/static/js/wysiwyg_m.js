@@ -1,6 +1,6 @@
 (function() {
   $(function() {
-    var editor, input, myCustomTemplates, selectFile, the_wysiwyg;
+    var input, myCustomTemplates, selectFile;
     input = '<input id="image-file" type="file" />';
     myCustomTemplates = {
       image: function(context) {
@@ -10,12 +10,6 @@
         return '<li> <span id="file-span" class="file-input btn btn-default btn-file glyphicon glyphicon-picture"> <input id="image-file" type="file" /> </span> </li>';
       }
     };
-    $('#wysiwyg').html('Some text dynamically set.');
-    the_wysiwyg = $('#wysiwyg').wysihtml5({
-      locale: 'zh-CN',
-      customTemplates: myCustomTemplates
-    });
-    editor = the_wysiwyg.data("wysihtml5").editor;
     selectFile = function(e) {
       var f, fd, files, i, new_file;
       files = e.target.files;
@@ -41,17 +35,21 @@
         contentType: false
       }).done((function(_this) {
         return function(d) {
-          var error, file_path;
+          var editor, error, file_name, file_path;
           if (d.error === '0') {
-            log(editor);
-            log($('#wysiwyg').data("wysihtml5"));
+            editor = $('#wysiwyg').data("wysihtml5").editor;
             file_path = d.results[0].file_path;
+            file_name = d.results[0].file_name;
+            log(d.results[0]);
             try {
               editor.composer.commands.exec("insertImage", {
                 src: file_path,
-                alt: "this is an image"
+                title: file_name,
+                alt: file_name
               });
+              editor.composer.commands.exec("insertLineBreak");
               window.bz.showSuccess5('文件上传成功');
+              log($('#wysiwyg').val());
             } catch (_error) {
               error = _error;
               log(error);
@@ -66,7 +64,25 @@
         };
       })(this));
     };
-    return $('#image-file').change(selectFile);
+    return window.bz.initWysiwyg = function(vue) {
+      var editor, wysiwyg;
+      if (vue == null) {
+        vue = null;
+      }
+      wysiwyg = $('#wysiwyg').wysihtml5({
+        locale: 'zh-CN',
+        customTemplates: myCustomTemplates
+      });
+      $('#wysiwyg').data("vue", vue);
+      editor = $('#wysiwyg').data("wysihtml5").editor;
+      editor.on("change", function() {
+        return vue.setRichText($('#wysiwyg').val());
+      });
+      $('#image-file').change(selectFile);
+      return wysiwyg;
+    };
   });
 
 }).call(this);
+
+//# sourceMappingURL=../map/wysiwyg_m.js.map

@@ -1,6 +1,7 @@
 
 {% module loading_m() %}
 {% module file_upload_m() %}
+{% module wysiwyg_m(html=False) %}
 <!-- required vue-component/datepicker.html -->
 <div id="v_crud" class="box">
     <div class="box-header with-border">
@@ -23,6 +24,9 @@
                         <option value="{{option.get('value')}}">{{option.get('text')}}</option>
                         {% end %}
                     </select>
+                    {%elif field.get("c_type") == "rich-text"%}
+                    <textarea id="wysiwyg" class="form-control" v-disable="!editable" v-model="record.{{field.name}}" placeholder="Enter text ..." style="width: 100%; height: 500px; font-size: 14px; line-height: 18px;"></textarea>
+
                     {%elif field.get("c_type") == "timestamp"%}
                     <div class='input-group date' id='{{field.name}}'>
                         <span class="input-group-addon">

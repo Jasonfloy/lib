@@ -10,14 +10,9 @@ $ ->
             </span>
         </li>
       '
-    $('#wysiwyg').html('Some text dynamically set.')
+    #$('#wysiwyg').html('Some text dynamically set.')
 
-    the_wysiwyg = $('#wysiwyg').wysihtml5 (
-        locale: 'zh-CN'
-        customTemplates: myCustomTemplates
-    )
 
-    editor = the_wysiwyg.data("wysihtml5").editor
 
     selectFile = (e)->
         files = e.target.files
@@ -40,13 +35,19 @@ $ ->
             processData: false
             contentType: false).done (d) =>
                 if d.error == '0'
-                    log editor
-                    log $('#wysiwyg').data("wysihtml5")
+                    editor = $('#wysiwyg').data("wysihtml5").editor
 
                     file_path = d.results[0].file_path
+                    file_name = d.results[0].file_name
+                    log d.results[0]
                     try
-                        editor.composer.commands.exec("insertImage", { src: file_path, alt: "this is an image" })
+                        editor.composer.commands.exec("insertImage", { src: file_path, title: file_name, alt: file_name })
+                        editor.composer.commands.exec("insertLineBreak")
                         window.bz.showSuccess5 '文件上传成功'
+                        #add image
+                        #vue = $('#wysiwyg').data("vue")
+                        log $('#wysiwyg').val()
+                        #vue.setRichText($('#wysiwyg').val())
                     catch error
                         log error
                         window.bz.showError5 '请在编辑器中点击要插入图片的位置'
@@ -56,5 +57,18 @@ $ ->
                 $('#image-file').change (selectFile)
                 $(input).change(selectFile).appendTo($('#file-span'))
                 return
+    #window.bz.initWysiwyg()
+    window.bz.initWysiwyg = (vue=null)->
+        wysiwyg = $('#wysiwyg').wysihtml5 (
+            locale: 'zh-CN'
+            customTemplates: myCustomTemplates
+        )
+        $('#wysiwyg').data("vue", vue)
 
-    $('#image-file').change (selectFile)
+        editor = $('#wysiwyg').data("wysihtml5").editor
+
+        editor.on("change", ->
+            vue.setRichText($('#wysiwyg').val())
+        )
+        $('#image-file').change (selectFile)
+        return wysiwyg

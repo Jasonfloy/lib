@@ -24,8 +24,11 @@ class wysiwyg_m(my_ui_module.MyUIModule):
                              ]
 
 
-    def render(self):
-        return self.render_string(self.html_name)
+    def render(self, html=True):
+        if html:
+            return self.render_string(self.html_name)
+        else:
+            return ''
 
 
 

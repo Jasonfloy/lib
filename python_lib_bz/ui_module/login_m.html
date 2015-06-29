@@ -61,7 +61,7 @@
                                 <span class="input-group-addon">
                                     <i class="fa fa-envelope"></i>
                                 </span>
-                                <input type="text" v-model="user_name" value="{{user_name}}" class="form-control" id="user" placeholder="请输入邮箱/用户名" v-on="focus:cleanError">
+                                <input type="text" v-model="user_name" value="{{user_name if user_name else ''}}" class="form-control" id="user" placeholder="请输入邮箱/用户名" v-on="focus:cleanError">
                             </div>
                         </div>
                         <div class="form-group">
@@ -81,6 +81,7 @@
                                 <div style="margin-left:9.5em">
                                     <script type="text/javascript" src="{{validate_url}}"></script>
                                 </div> 
+                                <br>
                             {% end %}
                         {% except %}
                         {% end %}
