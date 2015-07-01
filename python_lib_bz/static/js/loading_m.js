@@ -30,5 +30,3 @@
   });
 
 }).call(this);
-
-//# sourceMappingURL=../map/loading_m.js.map

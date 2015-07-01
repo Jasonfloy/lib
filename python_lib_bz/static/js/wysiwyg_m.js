@@ -84,5 +84,3 @@
   });
 
 }).call(this);
-
-//# sourceMappingURL=../map/wysiwyg_m.js.map

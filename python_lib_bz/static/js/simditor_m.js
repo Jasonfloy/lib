@@ -23,5 +23,3 @@
   });
 
 }).call(this);
-
-//# sourceMappingURL=../map/simditor_m.js.map

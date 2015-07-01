@@ -156,5 +156,3 @@
   });
 
 }).call(this);
-
-//# sourceMappingURL=../map/login_v2_m.js.map
