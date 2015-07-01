@@ -103,18 +103,25 @@ def findSelectNode(nodes, id):
 
 
 def findParent(nodes, parent_id):
-    #查找ID的父元素
+    '''
+    查找ID的父元素
+    create by liuyong at 15/06/08 14:55:33
+    '''
     for node in nodes:
         if node.id == parent_id:
             return node
 
 
 def findParentList(nodes, parent_id):
-    #查找元素的所有父元素
+    '''
+    查找元素的所有父元素
+    create by liuyong at 15/06/08 14:55:53
+    '''
     ParentList = []
     node = findParent(nodes, parent_id)
     while node:
-        ParentList.append(node)
+        #ParentList.append(node)
+        ParentList.insert(0, node)
         node = findParent(nodes, node.parent_id)
     return ParentList
 
