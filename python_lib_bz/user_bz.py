@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from db_bz import daemonDB
-import re
+# import re
 import hashlib
 salt = "hold is watching you"
+
 
 def createTable(db_name):
     '''
@@ -84,7 +85,7 @@ class UserOper:
         '''
         create by bigzhu at 15/04/27 10:36:01 根据条件查出用户信息
         '''
-        sql = " select * from user_info where 1=1 "
+        sql = " select * from user_info where is_delete=0 "
         if email:
             sql += " and email='%s' " % email
         if user_type:
