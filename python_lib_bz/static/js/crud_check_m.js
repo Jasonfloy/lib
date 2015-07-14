@@ -23,7 +23,7 @@
           return location.pathname = path;
         },
         save: function(checked) {
-          var _this, record, table_name;
+          var record, table_name, _this;
           _this = this;
           this.loading = true;
           table_name = this.getTableName();
@@ -48,7 +48,7 @@
           });
         },
         loadData: function() {
-          var _this, id, parm, table_name;
+          var id, parm, table_name, _this;
           _this = this;
           table_name = this.getTableName();
           parm = window.bz.getHashParms();
@@ -81,5 +81,3 @@
   });
 
 }).call(this);
-
-//# sourceMappingURL=../map/crud_check_m.js.map

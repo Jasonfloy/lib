@@ -22,5 +22,3 @@
   });
 
 }).call(this);
-
-//# sourceMappingURL=../map/header_m.js.map

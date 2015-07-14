@@ -5,13 +5,13 @@
       twoWay: true,
       bind: function(value) {
         this.checkboxChange = (function() {
-          var _newValuesStr, _value, _values, _valuesStr, dataContainer, dataKey, dataKeys, i, j, k, l, len, len1, len2;
+          var dataContainer, dataKey, dataKeys, i, _i, _j, _k, _len, _len1, _len2, _newValuesStr, _value, _values, _valuesStr;
           if (this.el.checked) {
             dataKeys = this.raw.split(".");
             dataContainer = this.vm.$data;
             i = 0;
-            for (j = 0, len = dataKeys.length; j < len; j++) {
-              dataKey = dataKeys[j];
+            for (_i = 0, _len = dataKeys.length; _i < _len; _i++) {
+              dataKey = dataKeys[_i];
               if (!dataContainer[dataKey] && (i + 1) !== dataKeys.length) {
                 dataContainer[dataKey] = {};
               }
@@ -29,8 +29,8 @@
             dataKeys = this.raw.split(".");
             dataContainer = this.vm.$data;
             i = 0;
-            for (k = 0, len1 = dataKeys.length; k < len1; k++) {
-              dataKey = dataKeys[k];
+            for (_j = 0, _len1 = dataKeys.length; _j < _len1; _j++) {
+              dataKey = dataKeys[_j];
               if ((i + 1) !== dataKeys.length) {
                 dataContainer = dataContainer[dataKey];
               }
@@ -42,8 +42,8 @@
             }
             _values = _valuesStr.split(",");
             _newValuesStr = "";
-            for (l = 0, len2 = _values.length; l < len2; l++) {
-              _value = _values[l];
+            for (_k = 0, _len2 = _values.length; _k < _len2; _k++) {
+              _value = _values[_k];
               if (_value !== this.el.value) {
                 if (_newValuesStr === "") {
                   _newValuesStr = _value;
@@ -191,7 +191,7 @@
       v_crud.$data.oper = '新增';
     }
     return $.post('/crud', JSON.stringify(parm)).done(function(result) {
-      var f, field, j, len, record, ref, results;
+      var f, field, record, _i, _len, _ref, _results;
       if (result.error !== '0') {
         return window.bz.showError5(result.error);
       } else {
@@ -210,21 +210,21 @@
         }
         if (result.all_files) {
           if (result.all_files.length > 0) {
-            ref = result.all_files;
-            results = [];
-            for (j = 0, len = ref.length; j < len; j++) {
-              f = ref[j];
+            _ref = result.all_files;
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              f = _ref[_i];
               v_crud.$set(f.column, {
                 "fd": null,
                 "all_files": f.files,
                 "remove_files": []
               });
-              results.push(v_crud.$data.files.push({
+              _results.push(v_crud.$data.files.push({
                 "column": f.column,
                 "temp": v_crud.$data[f.column]
               }));
             }
-            return results;
+            return _results;
           }
         }
       }
@@ -232,5 +232,3 @@
   });
 
 }).call(this);
-
-//# sourceMappingURL=../map/crud_m.js.map

@@ -1,6 +1,6 @@
 (function() {
   $(function() {
-    var i, ids, j, len, results, table_name, user_id, user_id_edit, vues;
+    var i, ids, table_name, user_id, user_id_edit, vues, _i, _len, _results;
     Vue.directive("datagrid-file-list", function(value) {
       var column, params, parms_str, table_name;
       params = this.arg.split(".");
@@ -29,9 +29,9 @@
       })(this, parms_str);
     });
     vues = $(".safe-datagrid");
-    results = [];
-    for (j = 0, len = vues.length; j < len; j++) {
-      i = vues[j];
+    _results = [];
+    for (_i = 0, _len = vues.length; _i < _len; _i++) {
+      i = vues[_i];
       table_name = i.id;
       user_id = window.bz.getHashPram("user_id");
       user_id_edit = null;
@@ -43,7 +43,7 @@
           user_id = ids[0];
         }
       }
-      results.push(new Vue({
+      _results.push(new Vue({
         el: '#' + table_name,
         data: {
           list: [],
@@ -89,7 +89,7 @@
             }
           },
           loadListData: function() {
-            var _this, url;
+            var url, _this;
             _this = this;
             this.initStat();
             url = '/crud_list_api/' + this.table_name;
@@ -120,7 +120,7 @@
             }
           },
           getRecordDetail: function(id) {
-            var _this, parm;
+            var parm, _this;
             parm = {
               table_name: this.table_name
             };
@@ -173,7 +173,7 @@
             return $('#confirm-' + this.table_name).modal();
           },
           del: function() {
-            var _this, del_array;
+            var del_array, _this;
             _this = this;
             del_array = _.pluck(this.checked_list, "id");
             $.ajax({
@@ -227,9 +227,7 @@
         }
       }));
     }
-    return results;
+    return _results;
   });
 
 }).call(this);
-
-//# sourceMappingURL=../map/crud_datagrid_m.js.map
