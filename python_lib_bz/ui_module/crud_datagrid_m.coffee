@@ -78,8 +78,10 @@ $(->
                     url = '/crud_list_api/' + @table_name
                     if @user_id and not user_id_edit
                         url += '?user_id=' + @user_id
-                    else if
+                    else if @user_id_edit
                         url += '?user_id=' + @user_id_edit
+                    else
+                        url = url
                     $.post(url)
                     .done((d1)->
                         if d1.error != "0"

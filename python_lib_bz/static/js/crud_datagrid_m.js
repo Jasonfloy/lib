@@ -1,6 +1,6 @@
 (function() {
   $(function() {
-    var i, table_name, user_id, vues, _i, _len, _results;
+    var i, ids, j, len, results, table_name, user_id, user_id_edit, vues;
     Vue.directive("datagrid-file-list", function(value) {
       var column, params, parms_str, table_name;
       params = this.arg.split(".");
@@ -29,12 +29,21 @@
       })(this, parms_str);
     });
     vues = $(".safe-datagrid");
-    _results = [];
-    for (_i = 0, _len = vues.length; _i < _len; _i++) {
-      i = vues[_i];
+    results = [];
+    for (j = 0, len = vues.length; j < len; j++) {
+      i = vues[j];
       table_name = i.id;
       user_id = window.bz.getHashPram("user_id");
-      _results.push(new Vue({
+      user_id_edit = null;
+      if (user_id) {
+        ids = user_id.split("_");
+        if (ids.length > 1) {
+          user_id_edit = ids[0];
+        } else {
+          user_id = ids[0];
+        }
+      }
+      results.push(new Vue({
         el: '#' + table_name,
         data: {
           list: [],
@@ -49,6 +58,7 @@
         created: function() {
           this.table_name = table_name;
           this.user_id = user_id;
+          this.user_id_edit = user_id_edit;
           this.initStat();
           this.loadListData();
           return this.getRecordDetail();
@@ -71,13 +81,25 @@
             return this.getRecordDetail(r.id);
           },
           initStat: function() {
-            return this.select = 'null';
+            this.select = 'null';
+            if (this.user_id && !user_id_edit) {
+              return this.stat = "check";
+            } else {
+              return this.stat = "normal";
+            }
           },
           loadListData: function() {
-            var url, _this;
+            var _this, url;
             _this = this;
             this.initStat();
             url = '/crud_list_api/' + this.table_name;
+            if (this.user_id && !user_id_edit) {
+              url += '?user_id=' + this.user_id;
+            } else if (this.user_id_edit) {
+              url += '?user_id=' + this.user_id_edit;
+            } else {
+              url = url;
+            }
             return $.post(url).done(function(d1) {
               if (d1.error !== "0") {
                 window.bz.showError5(d1.error);
@@ -100,7 +122,7 @@
             }
           },
           getRecordDetail: function(id) {
-            var parm, _this;
+            var _this, parm;
             parm = {
               table_name: this.table_name
             };
@@ -153,7 +175,7 @@
             return $('#confirm-' + this.table_name).modal();
           },
           del: function() {
-            var del_array, _this;
+            var _this, del_array;
             _this = this;
             del_array = _.pluck(this.checked_list, "id");
             $.ajax({
@@ -180,6 +202,9 @@
               $('#modal-' + _this.table_name).modal('hide');
               return;
             }
+            if (_this.user_id_edit) {
+              _this.$set("record.user_id", _this.user_id_edit);
+            }
             return $.post('/crud_api', JSON.stringify({
               table_name: this.table_name,
               record: this.record
@@ -204,7 +229,7 @@
         }
       }));
     }
-    return _results;
+    return results;
   });
 
 }).call(this);
