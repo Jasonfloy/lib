@@ -71,10 +71,11 @@ def getYearMonth(months=0, fmt='%Y%m'):
     date = datetime.datetime.now()
     for i in range(0, abs(months)):
         if months < 0:
-            date = date - datetime.datetime.timedelta(days=date.day)
+            date = date - datetime.timedelta(days=date.day)
         elif months > 0:
             max_days = calendar.monthrange(date.year, date.month)[1]
-            date = date + datetime.datetime.timedelta(days=max_days - date.day + 1)
+            date = date + datetime.timedelta(days=max_days - date.day + 1)
     return date.strftime(fmt)
 if __name__ == '__main__':
-    print timeLen(datetime.datetime(2014, 10, 3))
+    print getYearMonth(months=-2, fmt='%Y-%m')
+    #print timeLen(datetime.datetime(2014, 10, 3))
