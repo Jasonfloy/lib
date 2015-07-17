@@ -9,11 +9,11 @@
       },
       methods: {
         check: function() {
-          var _ref, _ref1;
-          if ((_ref = this.user_name) === '' || _ref === (void 0)) {
+          var ref, ref1;
+          if ((ref = this.user_name) === '' || ref === (void 0)) {
             throw new Error("请输入用户名");
           }
-          if ((_ref1 = this.password) === '' || _ref1 === (void 0)) {
+          if ((ref1 = this.password) === '' || ref1 === (void 0)) {
             throw new Error("请输入用密码");
           }
         },
@@ -78,13 +78,13 @@
           return this.post('login');
         },
         signup: function() {
-          var _ref;
+          var ref;
           this.check();
           if (this.password !== this.repassword) {
             this.error_info = '两次密码不一致';
             return;
           }
-          if ((_ref = this.email) === '' || _ref === (void 0)) {
+          if ((ref = this.email) === '' || ref === (void 0)) {
             this.error_info = '请输入邮箱';
             return;
           }
@@ -94,8 +94,8 @@
           return this.post('signup');
         },
         forget: function() {
-          var parm, _ref;
-          if ((_ref = this.email) === '' || _ref === (void 0)) {
+          var parm, ref;
+          if ((ref = this.email) === '' || ref === (void 0)) {
             this.error_info = '请输入邮箱';
             return;
           }
