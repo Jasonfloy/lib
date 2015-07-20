@@ -5,6 +5,8 @@ import psycopg2
 import functools
 import time
 from webpy_db import SQLLiteral
+from webpy_db import SQLQuery
+from webpy_db import sqlparam
 
 
 def daemonDB(method):
@@ -68,5 +70,41 @@ def transTimeValueByTable(pg, table_name, v):
     return v
 
 
+def insertIfNotExist(pg, table_name, values, where=None):
+    '''
+    create by bigzhu at 15/07/09 14:08:25 如果没有时,再insert,返回id
+        example: insertIfNotExist(test_pg, 'user_info', {'id':988, 'user_name':'bigzhu', 'user_type':'my'}, " id=988")
+    modify by bigzhu at 15/07/09 15:18:41 where 默认None时,用id
+    modify by bigzhu at 15/07/09 19:44:16 目前是用 repr 来处理内容有单引号的, 放在insert的value里没问题,但是在select里就不行了.
+    modify by bigzhu at 15/07/09 20:01:36 必须要字符串拼接的方式, 转换 string 为 <class 'webpy_db.SQLQuery'>
+    modify by bigzhu at 15/07/09 20:09:35 也不是转换的问题, 拼接了就可以执行,简直神奇
+
+    '''
+    def q(x): return "(" + x + ")"
+    _keys = SQLQuery.join(values.keys(), ', ')
+    _values = SQLQuery.join([sqlparam(v) for v in values.values()], ', ')
+
+    if where is None:
+        where = 'id = %s' % values['id']
+    sql = " INSERT INTO %s "% table_name + q(_keys) + \
+          " SELECT " + _values + \
+          " WHERE NOT EXISTS (" + \
+          "    SELECT id " +\
+          "    FROM %s " % table_name +\
+          "    WHERE %s " % where +\
+          "    ) "+\
+          " RETURNING id "
+    sql = SQLQuery(sql)
+    try:
+        result = list(pg.db.query(sql))
+    except Exception as e:
+        print sql
+        raise e
+
+    if result:
+        return result[0].id
+
 if __name__ == '__main__':
-    pass
+    import test_pg
+    print insertIfNotExist(test_pg, 'user_info', {'id':990, 'user_name':"big'zhu", 'user_type':'my'}, " id=990")
+    #print test_pg.db.insert('user_info', _test=False, user_type='my', user_name="big'zhu")
