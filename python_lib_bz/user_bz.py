@@ -45,6 +45,8 @@ class UserOper:
 
         password = hashlib.md5(password + salt).hexdigest()
         user_infos = self.getUserInfo(user_type=user_type, user_name=user_name)
+        print user_type,user_name
+        print user_infos
         if not user_infos:
             user_infos = self.getUserInfo(email=user_name)
         if user_infos:
@@ -85,7 +87,7 @@ class UserOper:
         '''
         create by bigzhu at 15/04/27 10:36:01 根据条件查出用户信息
         '''
-        sql = " select * from user_info where is_delete=0 "
+        sql = " select * from user_info where (is_delete=0 or is_delete is null)"
         if email:
             sql += " and email='%s' " % email
         if user_type:

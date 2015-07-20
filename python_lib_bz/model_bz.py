@@ -35,6 +35,7 @@ class user_info(base):
     original_json = TextField(null=True)  # ?
     slogan = TextField(null=True)  # 自定义头像
     forget_token = TextField(null=True)  # 找回密码的token
+    is_admin = IntegerField(null=True)  #是否是管理员
     birthday = DateTimeField(null=True)  # 出生日期
     post = TextField(null=True)  # 职位
 

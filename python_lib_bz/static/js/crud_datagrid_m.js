@@ -95,8 +95,10 @@
             url = '/crud_list_api/' + this.table_name;
             if (this.user_id && !user_id_edit) {
               url += '?user_id=' + this.user_id;
-            } else {
+            } else if (this.user_id_edit) {
               url += '?user_id=' + this.user_id_edit;
+            } else {
+              url = url;
             }
             return $.post(url).done(function(d1) {
               if (d1.error !== "0") {

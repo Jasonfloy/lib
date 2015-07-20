@@ -5,8 +5,8 @@ $(->
             throw "file-list 指令中的参数不足，请检查是否指定表名与字段名."
         if(!$)
             throw "JQuery没有正确引用."
-        table_name = params[0];
-        column = params[1];
+        table_name = params[0]
+        column = params[1]
         parms_str = [table_name, column, value].join("/")
         ((_this, str)->
             $.get('/file_upload/' + str).done (d) ->
@@ -78,16 +78,18 @@ $(->
                     url = '/crud_list_api/' + @table_name
                     if @user_id and not user_id_edit
                         url += '?user_id=' + @user_id
-                    else
+                    else if @user_id_edit
                         url += '?user_id=' + @user_id_edit
+                    else
+                        url = url
                     $.post(url)
-                        .done((d1)->
-                            if d1.error != "0"
-                                window.bz.showError5(d1.error)
-                                return
-                            _this.$set("list", d1.array)
-                            _this.loading=false
-                        )
+                    .done((d1)->
+                        if d1.error != "0"
+                            window.bz.showError5(d1.error)
+                            return
+                        _this.$set("list", d1.array)
+                        _this.loading=false
+                    )
                 checkBox:->
                     @checked_list = _.where(@list, {"checked": true})
                     if @checked_list.length == 0
@@ -160,6 +162,7 @@ $(->
                         return
                     if _this.user_id_edit
                         _this.$set("record.user_id", _this.user_id_edit)
+                    
                     $.post('/crud_api',
                         JSON.stringify {table_name:@table_name, record:@record}
                     ).done((result)->
