@@ -36,3 +36,4 @@ def testAll(test_lib=True):
 if __name__ == '__main__':
     testAll()
     print 'hello'
+    print 'ly'
