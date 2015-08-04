@@ -35,5 +35,4 @@ def testAll(test_lib=True):
             doctest.testmod(module)
 if __name__ == '__main__':
     testAll()
-    print 'hello'
-    print 'ly'
+    print "ly"
