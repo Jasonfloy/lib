@@ -45,7 +45,7 @@ class UserOper:
 
         password = hashlib.md5(password + salt).hexdigest()
         user_infos = self.getUserInfo(user_type=user_type, user_name=user_name)
-        print user_type,user_name
+        print user_type, user_name
         print user_infos
         if not user_infos:
             user_infos = self.getUserInfo(email=user_name)
