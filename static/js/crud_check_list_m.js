@@ -28,15 +28,15 @@
       data: {
         records: [],
         table_name: '',
-        audit_state: 'submit',
-        audit_state_text: '待确认',
+        audit_state: 'pass',
+        audit_state_text: '已确认',
         options: [
           {
-            text: '待确认',
-            value: 'submit'
-          }, {
             text: '已确认',
             value: 'pass'
+          }, {
+            text: '待确认',
+            value: 'submit'
           }
         ],
         pagination: {
@@ -58,6 +58,59 @@
             return window.location.href = "/" + this.table_name + "_detail/" + id + "#user_id=" + user_id;
           }
         },
+        edit: function(user_id, param) {
+          return window.location.href = "/" + this.table_name + "#user_id=" + user_id + "_" + param;
+        },
+        deleteButton: function(row) {
+          this.agency_id = row.id;
+          this.agency_user_id = row.user_id;
+          return $('#modal-delete').modal();
+        },
+        load: function() {
+          var _this;
+          _this = this;
+          this.loading = true;
+          return $.get('/oper?t=' + 'agency_info' + '&w=' + 'is_delete=0').done(function(data) {
+            if (data.error !== "0") {
+              window.bz.showError5(data.error);
+            } else {
+              _this.records = data.data;
+            }
+            return _this.loading = false;
+          });
+        },
+        "delete": function() {
+          var _this, agency, agency_user;
+          _this = this;
+          agency = {
+            'id': this.agency_id,
+            'is_delete': 1
+          };
+          agency_user = {
+            'id': this.agency_user_id,
+            'is_delete': 1
+          };
+          $.post('/oper', JSON.stringify({
+            't': 'agency_info',
+            'v': agency
+          })).done(function(data) {
+            if (data.error !== '0') {
+              return window.bz.showError5(data.error);
+            }
+          });
+          return $.post('/oper', JSON.stringify({
+            't': 'user_info',
+            'v': agency_user
+          })).done(function(data) {
+            if (data.error === '0') {
+              window.bz.showSuccess5('删除成功!');
+              _this.load();
+            } else {
+              window.bz.showError5(data.error);
+            }
+            return $('#modal-delete').hide();
+          });
+        },
         checkedSelect: function(e) {
           var i, len, option, ref;
           ref = this.options;
@@ -68,6 +121,26 @@
             }
           }
           return selectPage();
+        },
+        saveCheck: function(id) {
+          var _this, update_record;
+          _this = this;
+          update_record = {
+            'id': id,
+            audit_state: 'pass'
+          };
+          return $.post('/oper', JSON.stringify({
+            't': 'agency_info',
+            'v': update_record
+          })).done(function(data) {
+            if (data.error === '0') {
+              window.bz.showSuccess5('确认成功');
+              _this.loading = false;
+              return _this.load();
+            } else {
+              return window.bz.showError5(data.error);
+            }
+          });
         }
       }
     });
