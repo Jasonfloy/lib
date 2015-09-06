@@ -58,8 +58,12 @@
             return window.location.href = "/" + this.table_name + "_detail/" + id + "#user_id=" + user_id;
           }
         },
-        edit: function(user_id, param) {
-          return window.location.href = "/" + this.table_name + "#user_id=" + user_id + "_" + param;
+        edit: function(row) {
+          if (this.table_name === "agency_info") {
+            return window.location.href = "/" + this.table_name + "#user_id=" + row.user_id + "_edit";
+          } else {
+            return window.location.href = "/" + this.table_name + "_detail/" + row.id + "#user_id=" + row.user_id + "_edit";
+          }
         },
         deleteButton: function(row) {
           this.agency_id = row.id;

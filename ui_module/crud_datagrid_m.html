@@ -87,6 +87,8 @@
                                 </label>
                                 {% set index=index+1 %}
                                 {% end %}
+                                {%elif field.get("c_type") == "rich-text"%}
+                                <textarea v-disable="stat=='look' || stat=='check'" class="form-control" v-model="record.{{field.name}}" rows=3></textarea>
                                 {%else%}
                                 <input v-disable="stat=='look' || stat=='check'" class="form-control" v-model="record.{{field.name}}">
                                 {%end%}
