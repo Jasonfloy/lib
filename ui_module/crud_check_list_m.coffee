@@ -50,8 +50,11 @@ $(->
                         #window.location.href = "/" + @table_name + "_detail#id=" + id + "&user_id=" + user_id
                         window.location.href = "/" + @table_name + "_detail/" + id + "#user_id=" + user_id
 
-                edit:(user_id, param) ->
-                    window.location.href = "/" + @table_name + "#user_id=" + user_id + "_"  + param
+                edit:(row) ->
+                    if @table_name == "agency_info"
+                        window.location.href = "/" + @table_name + "#user_id=" + row.user_id + "_edit"
+                    else
+                        window.location.href = "/" + @table_name + "_detail/" + row.id + "#user_id=" + row.user_id + "_edit"
 
                 deleteButton:(row) ->
                     @agency_id = row.id
