@@ -1,0 +1,76 @@
+<div id="world-map" style="width:100%; height: {{height}}px;">
+</div>
+<script type="text/javascript">
+$(function(){
+
+    function chunk(arr, chunkSize) {
+        var R = [];
+        if (arr.length > chunkSize)
+        {
+            for (var i=0,len=arr.length; i<len; i+=chunkSize)
+                R.push(arr.slice(i,i+chunkSize));
+            return R;
+        }
+        else
+        {
+            for (var i=0,len=arr.length; i<len; i++)
+                R.push([arr[i]]);
+            return R;
+        }
+    }
+
+
+    var region_cout = {}
+    {%for code in country_code_count %}
+    region_cout["{{code.country_code}}"] = {{code.count}};
+    {%end%}
+
+
+
+    var map = new jvm.Map({
+        container: $('#world-map'),
+        map: 'world_mill_en',
+        zoomButtons : false,
+        zoomOnScroll: false,
+        backgroundColor: "{{background_color}}",
+        regionStyle: {
+            initial: {
+                fill: '{{fill_color}}',
+                "fill-opacity": 1,
+                stroke: 'none',
+                "stroke-width": 0,
+                "stroke-opacity": 1
+            }
+        },
+        onRegionTipShow: function (e, tip, code){
+            count = 0;
+            if (region_cout[code] != undefined)
+                count = region_cout[code];
+            tip.html(tip.html()+"("+count+")");
+        },
+        series: {
+            regions: [{
+                attribute: 'fill'
+            }]
+        }
+    });
+
+    const color_array=[{{color_array}}];
+
+    var count_list = _.values(region_cout); 
+    count_list = _.sortBy(count_list, function(d){ return d; });
+    var chunked_count_list = chunk(count_list, color_array.length)
+        function getColor(n){
+            for (i = 0; i < chunked_count_list.length; i++) {
+                if (_.indexOf(chunked_count_list[i], n) != -1){
+                    console.log(chunked_count_list[i]);
+                    return color_array[i];
+                }
+            }
+        }
+
+    {%for code in country_code_count %}
+    map.series.regions[0].setValues({'{{code.country_code}}': getColor({{code.count}}) });
+    {%end%}
+})
+</script>
