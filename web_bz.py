@@ -28,9 +28,9 @@ class seq(RequestHandler):
     def post(self):
         self.set_header("Content-Type", "application/json")
         data = json.loads(self.request.body)
-        table_name = login_info.get("table_name")
+        table_name = data.get("table_name")
         id = db_bz.getSeqIdByTableName(self.pg, table_name)
-        self.write(json.dumps({'error': '0', 'id':id}))
+        self.write(json.dumps({'error': '0', 'id': id}))
 
 
 class login(UserInfoHandler):

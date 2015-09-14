@@ -28,6 +28,7 @@ class file_upload_m(my_ui_module.MyUIModule):
 
 
 class file_upload(UserInfoHandler):
+
     '''
     create by zhangrui at 15/03/12 14:50
     文件上传相关API
@@ -83,6 +84,7 @@ class file_upload(UserInfoHandler):
 
 
 class file_upload_bz(UserInfoHandler):
+
     '''
     create by bigzhu at 15/09/11 11:38:52
     文件上传相关API
@@ -110,7 +112,10 @@ class file_upload_bz(UserInfoHandler):
                     img.close()
                     file_id = self.pg.db.insert("uploaded_files_bz", key=key, file_name=file_name, path='/' + file_path)
         self.write(json.dumps({'error': '0'}))
+
+
 class remove_exist_file(UserInfoHandler):
+
     '''
     create by bigzhu at 15/09/11 17:38:32 删除某个文件
     '''
@@ -123,10 +128,13 @@ class remove_exist_file(UserInfoHandler):
         data = json.loads(self.request.body)
         id = data.get('id')
         count = self.pg.db.update('uploaded_files_bz', where="id=%s" % id, is_delete=1)
-        if count !=1:
-            raise Exception('id=%s, count=%'%(id, count))
+        if count != 1:
+            raise Exception('id=%s, count=%' % (id, count))
         self.write(json.dumps({'error': '0'}, cls=public_bz.ExtEncoder))
+
+
 class get_exist_files(UserInfoHandler):
+
     '''
     create by bigzhu at 15/09/11 12:41:52 取文件列表
     '''
@@ -140,7 +148,10 @@ class get_exist_files(UserInfoHandler):
         key = data.get('key')
         files = list(self.pg.db.select('uploaded_files_bz', where="key='%s' and (is_delete=0 or is_delete is null)" % key))
         self.write(json.dumps({'error': '0', 'files': files}, cls=public_bz.ExtEncoder))
+
+
 class file_ref(UserInfoHandler):
+
     """
     create by zhangrui at 15/03/12 14:55
     文件关联方法
