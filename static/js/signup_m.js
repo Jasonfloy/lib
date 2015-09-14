@@ -3,36 +3,63 @@
     var v_signup;
     return v_signup = new Vue({
       el: '#v_signup',
+      created: function() {
+        return bz.setOnErrorVm(this);
+      },
       data: {
         error_info: false,
-        loading: false
+        loading: false,
+        user_name: '',
+        email: '',
+        password: '',
+        repassword: ''
       },
       methods: {
-        submit: function(e) {
-          var data;
-          data = this.$data;
-          data.error_info = false;
-          if (data.user_name === '' || data.user_name === void 0) {
-            data.error_info = '请输入用户名';
-            return;
+        signup: function() {
+          var key, parm, value;
+          if (!this.user_name) {
+            throw new Error("请输入用户名");
           }
-          if (data.password === '' || data.password === void 0) {
-            data.error_info = '请输入用密码';
-            return;
+          if (!this.password) {
+            throw new Error("请输入用密码");
           }
-          data.loading = true;
-          return $.post('{{action_url}}', JSON.stringify({
-            user_name: data.user_name,
-            password: data.password
-          }), function(result, done) {
-            data.loading = false;
-            if (result.error !== '0') {
-              return data.error_info = result.error;
-            } else if (result.error === void 0) {
-              return data.error_info = '未知错误';
-            } else {
-              return location.pathname = '/';
+          if (this.password !== this.repassword) {
+            throw new Error("两次密码不一致");
+          }
+          if (!this.email) {
+            throw new Error("请输入邮箱");
+          }
+          for (key in regexp) {
+            value = regexp[key];
+            if (value === false) {
+              throw new Error("您的邮箱无法验证, 请填写正确的邮箱");
             }
+          }
+          parm = JSON.stringify({
+            user_name: this.user_name,
+            user_type: this.user_type,
+            password: this.password,
+            email: this.email
+          });
+          this.loading = true;
+          return $.ajax({
+            url: '/signup',
+            type: 'POST',
+            data: parm,
+            success: (function(_this) {
+              return function(data, status, response) {
+                if (data.error !== '0') {
+                  throw new Error(data.error);
+                } else {
+                  bz.showSuccess5('注册成功, 正在自动登录');
+                  bz.delay(1500, function() {
+                    return location.pathname = '/';
+                  });
+                }
+                return _this.loading = false;
+              };
+            })(this),
+            error: function() {}
           });
         },
         cleanError: function() {

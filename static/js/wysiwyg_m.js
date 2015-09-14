@@ -35,7 +35,7 @@
         contentType: false
       }).done((function(_this) {
         return function(d) {
-          var editor, error, file_name, file_path;
+          var editor, error, error1, file_name, file_path;
           if (d.error === '0') {
             editor = $('#wysiwyg').data("wysihtml5").editor;
             file_path = d.results[0].file_path;
@@ -50,8 +50,8 @@
               editor.composer.commands.exec("insertLineBreak");
               window.bz.showSuccess5('文件上传成功');
               log($('#wysiwyg').val());
-            } catch (_error) {
-              error = _error;
+            } catch (error1) {
+              error = error1;
               log(error);
               window.bz.showError5('请在编辑器中点击要插入图片的位置');
             }
