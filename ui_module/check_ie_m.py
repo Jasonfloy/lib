@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+'''
+modify by bigzhu at 15/07/06 18:02:39 检查是否使用了ie浏览器,如果用了,引导下载chrome
+'''
 
 from ui_module import my_ui_module
 

@@ -7,6 +7,7 @@ import hashlib
 from tornado_bz import UserInfoHandler
 from ui_module import my_ui_module
 from public_bz import storage
+import public_bz
 
 
 md5 = hashlib.md5()
@@ -81,6 +82,64 @@ class file_upload(UserInfoHandler):
         self.write(json.dumps({'error': '0', 'results': results}))
 
 
+class file_upload_bz(UserInfoHandler):
+    '''
+    create by bigzhu at 15/09/11 11:38:52
+    文件上传相关API
+    '''
+    @tornado_bz.handleError
+    def post(self):
+        '''
+        新增文件
+        '''
+        self.set_header("Content-Type", "application/json")
+        results = []
+        key = self.get_argument("key")
+        if self.request.files:
+            for i in self.request.files:
+                fd = self.request.files[i]
+                for f in fd:
+                    file_name = f.get("filename")
+                    file_suffix = file_name[file_name.rfind("."):]
+                    file_body = f["body"]
+                    md5.update(file_body)
+                    file_hash = md5.hexdigest()
+                    file_path = "static/uploaded_files/%s.%s" % (file_hash, file_name)
+                    img = open(file_path, 'w')
+                    img.write(file_body)
+                    img.close()
+                    file_id = self.pg.db.insert("uploaded_files_bz", key=key, file_name=file_name, path='/' + file_path)
+        self.write(json.dumps({'error': '0'}))
+class remove_exist_file(UserInfoHandler):
+    '''
+    create by bigzhu at 15/09/11 17:38:32 删除某个文件
+    '''
+    @tornado_bz.handleError
+    def post(self):
+        '''
+        新增文件
+        '''
+        self.set_header("Content-Type", "application/json")
+        data = json.loads(self.request.body)
+        id = data.get('id')
+        count = self.pg.db.update('uploaded_files_bz', where="id=%s" % id, is_delete=1)
+        if count !=1:
+            raise Exception('id=%s, count=%'%(id, count))
+        self.write(json.dumps({'error': '0'}, cls=public_bz.ExtEncoder))
+class get_exist_files(UserInfoHandler):
+    '''
+    create by bigzhu at 15/09/11 12:41:52 取文件列表
+    '''
+    @tornado_bz.handleError
+    def post(self):
+        '''
+        新增文件
+        '''
+        self.set_header("Content-Type", "application/json")
+        data = json.loads(self.request.body)
+        key = data.get('key')
+        files = list(self.pg.db.select('uploaded_files_bz', where="key='%s' and (is_delete=0 or is_delete is null)" % key))
+        self.write(json.dumps({'error': '0', 'files': files}, cls=public_bz.ExtEncoder))
 class file_ref(UserInfoHandler):
     """
     create by zhangrui at 15/03/12 14:55

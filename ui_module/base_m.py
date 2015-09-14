@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+'''
+create by bigzhu at 15/07/06 18:01:26 用来向html加入基础的js和css, 一般放在base.html里, 避免因为没有使用 ui modules 导致没有js/css引入
+'''
 
 from ui_module import my_ui_module
 
