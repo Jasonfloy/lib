@@ -98,7 +98,8 @@ Vue.directive("file-icon", function(value){
 // 输入field名字，返回上传的ids
 Vue.component("file-upload-m", {
     template: "#file_upload_m",
-    paramAttributes: ['table-name', 'field-name', 'record-id', 'disabled'],
+    //paramAttributes: ['table-name', 'field-name', 'record-id', 'disabled'],
+    props: ['table-name', 'field-name', 'record-id', 'disabled'],
     computed: {
         column: function() {
             return this.fieldName;   // 上传用的字段名标记;
