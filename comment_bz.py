@@ -38,6 +38,6 @@ class Comment():
         return tree_bz.makeTree(comments)
 
     def addComment(self, comment, parent_id, user_id, key_type=None, key=None):
-        return self.pg.db.insert('comment', seqname='base_id_seq', key_type=key_type, key=key, comment=comment, parent_id=parent_id, user_id=user_id)
+        return self.pg.db.insert('comment', seqname='comment_id_seq', key_type=key_type, key=key, comment=comment, parent_id=parent_id, user_id=user_id)
 if __name__ == '__main__':
     pass

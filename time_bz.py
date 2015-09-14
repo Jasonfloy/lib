@@ -5,6 +5,13 @@ import calendar
 import datetime
 
 
+def unicodeToDateTIme(string):
+    '''
+    create by bigzhu at 15/07/22 16:39:46 转化 2015-07-22T08:14:10Z 格式的数据为日期
+    '''
+    return datetime.datetime.strptime(string, '%Y-%m-%dT%H:%M:%SZ')
+
+
 def datetimeToTimestamp(date_time):
     '''
     datetime 转换为 timestamp
@@ -17,10 +24,18 @@ def timestampToDateTime(timestamp, millisecond=False):
     timestamp float
     timestamp 转为 dateTime 类型, 针对 js(精度 millisecond 毫秒) 需要除以 1000
     '''
+    timestamp = float(timestamp)
     if millisecond:
         #timestamp = (decimal.Decimal(timestamp))/1000
         timestamp = timestamp / 1000
     return datetime.datetime.fromtimestamp(timestamp)
+
+
+def dateTimeToString(the_date_time):
+    '''
+    create by bigzhu at 15/08/16 16:13:51 转为string，用于sql比较
+    '''
+    return time.strftime("%Y-%m-%d", the_date_time)
 
 
 def timeLen(date_time):
@@ -76,6 +91,14 @@ def getYearMonth(months=0, fmt='%Y%m'):
             max_days = calendar.monthrange(date.year, date.month)[1]
             date = date + datetime.timedelta(days=max_days - date.day + 1)
     return date.strftime(fmt)
+
+
+def getYearMonthDay():
+    '''
+    create by bigzhu at 15/08/26 15:35:53 取年月日
+    '''
+    return getYearMonth(fmt='%Y%m%d')
 if __name__ == '__main__':
-    print getYearMonth(months=-2, fmt='%Y-%m')
-    #print timeLen(datetime.datetime(2014, 10, 3))
+    print getYearMonthDay()
+    print unicodeToDateTIme(u'2015-07-22T08:14:10Z')
+    print timestampToDateTime('1441141378')

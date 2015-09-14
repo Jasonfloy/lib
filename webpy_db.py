@@ -1,3 +1,4 @@
+
 """
 Database API
 (part of web.py)
@@ -10,6 +11,10 @@ __all__ = [
   "SQLLiteral", "sqlliteral",
   "database", 'DB',
 ]
+#add by bigzhu at 15/07/28 22:40:14 set time out
+#create by bigzhu at 15/08/13 18:21:46 add time out
+import os
+os.environ['PGOPTIONS'] = '-c statement_timeout=10000'
 
 import time, os, urllib
 try:
@@ -932,6 +937,9 @@ class PostgresDB(DB):
     def __init__(self, **keywords):
         if 'pw' in keywords:
             keywords['password'] = keywords.pop('pw')
+        #modify by bigzhu at 15/07/28 17:56:10 add timemout
+        # it not work
+        #keywords['connect_timeout'] = 3
 
         db_module = import_driver(["psycopg2", "psycopg", "pgdb"], preferred=keywords.pop('driver', None))
         if db_module.__name__ == "psycopg2":

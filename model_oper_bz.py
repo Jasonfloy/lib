@@ -23,6 +23,26 @@ except ImportError:
     exit(1)
 
 from model_bz import base
+import inspect
+
+
+def getModelAttributes(model):
+    '''
+    create by bigzhu at 15/07/11 22:31:50
+        获取model里的属性名
+    用来构造空的storage 对象
+    '''
+    attributes = inspect.getmembers(model, lambda a: not(inspect.isroutine(a)))
+    return [a[0] for a in attributes if not(a[0].startswith('_') or a[0] in ['DoesNotExist', 'dirty_fields'])]
+
+
+def reCreateTable(the_model, db_name, user=None, password=None, host=None):
+    '''
+    重建表
+    create by bigzhu at 15/07/04 14:30:22
+    '''
+    dropTable(the_model, db_name, user, password, host)
+    createTable(the_model, db_name, user, password, host)
 
 
 def dropTable(Model, db_name, user=None, password=None, host='127.0.0.1'):
@@ -33,11 +53,19 @@ def dropTable(Model, db_name, user=None, password=None, host='127.0.0.1'):
         user = db_name
     if password is None:
         password = db_name
+    if host is None:
+        host = '127.0.0.1'
+
     #db = PostgresqlDatabase(db_name, user=user, password=password, host='127.0.0.1')
     #db = PostgresqlExtDatabase(db_name, user=user, password=password, host='127.0.0.1', register_hstore=False)
     db = PostgresqlExtDatabase(db_name, user=user, password=password, host=host, register_hstore=False)
     Model._meta.database = db
-    Model.drop_table(True)
+    try:
+        Model.drop_table(True)
+    except peewee.OperationalError:
+        print public_bz.getExpInfo()
+        showDBCreate(db_name)
+        exit(1)
     print 'drop table ' + Model.__name__
 
 
@@ -51,6 +79,9 @@ def createTable(Model, db_name, user=None, password=None, host='127.0.0.1'):
         user = db_name
     if password is None:
         password = db_name
+    if host is None:
+        host = '127.0.0.1'
+
     #db = PostgresqlExtDatabase(db_name, user=user, password=password, host='127.0.0.1', register_hstore=False)
     db = PostgresqlExtDatabase(db_name, user=user, password=password, host=host, register_hstore=False)
     Model._meta.database = db
@@ -116,12 +147,26 @@ def createBaseTable(db):
     base.create_table(True)
 
 
-def createAllTable(all_class, db_name):
+def createAllTable(all_class, db_name, user=None, password=None, host=None):
     #all_class = globals().copy()
     for model in all_class:
         try:
             if issubclass(all_class[model], Model):
-                createTable(all_class[model], db_name)
+                createTable(all_class[model], db_name, user, password, host)
+        except Exception:
+            continue
+
+
+def reCreateAllTable(all_class, db_name, user=None, password=None, host=None):
+    '''
+    建立全部的 model create by bigzhu at 15/07/11 17:40:10
+    '''
+
+    for model in all_class:
+        try:
+            if issubclass(all_class[model], Model):
+                print model
+                reCreateTable(all_class[model], db_name, user=user, password=password, host=host)
         except Exception:
             continue
 

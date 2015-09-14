@@ -179,24 +179,6 @@ def runCommand(command):
     return content
 
 
-def getCountryCodeByIP(ip):
-    '''
-    根据 ip 地址取到所属的国家编码
-    modify by bigzhu at 15/05/17 11:28:52 add test
-    >>> getCountryCodeByIP('www.baidu.com')
-    u'HK'
-    '''
-    country_code = "not found"
-    url = 'http://freegeoip.net/json/' + ip
-    try:
-        info = urllib2.urlopen(url, timeout=10).read()
-        info = json.loads(info)
-        if info.get('country_code') != '':
-            country_code = info.get('country_code')
-    except Exception:
-        print getExpInfoAll()
-    return country_code
-
 if __name__ == '__main__':
     #print getExecutingPathFile()
-    print getCountryCodeByIP('www.douban.com')
+    pass

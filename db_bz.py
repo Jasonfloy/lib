@@ -18,7 +18,7 @@ def daemonDB(method):
         try:
             return method(self, *args, **kwargs)
         except(psycopg2.OperationalError, psycopg2.InterfaceError, psycopg2.DatabaseError):
-            print public_bz.getExpInfo()
+            print public_bz.getExpInfoAll()
             self.pg.connect()
             time.sleep(5)
             return wrapper(self, *args, **kwargs)
@@ -65,7 +65,7 @@ def transTimeValueByTable(pg, table_name, v):
     for time_colum in time_colums:
         name = time_colum.name
         if v.get(name):
-            time = int(v[name])/1000
+            time = int(v[name]) / 1000
             v[name] = SQLLiteral("to_timestamp(%s)" % time)
     return v
 
@@ -80,19 +80,20 @@ def insertIfNotExist(pg, table_name, values, where=None):
     modify by bigzhu at 15/07/09 20:09:35 也不是转换的问题, 拼接了就可以执行,简直神奇
 
     '''
-    def q(x): return "(" + x + ")"
+    def q(x):
+        return "(" + x + ")"
     _keys = SQLQuery.join(values.keys(), ', ')
     _values = SQLQuery.join([sqlparam(v) for v in values.values()], ', ')
 
     if where is None:
         where = 'id = %s' % values['id']
-    sql = " INSERT INTO %s "% table_name + q(_keys) + \
+    sql = " INSERT INTO %s " % table_name + q(_keys) + \
           " SELECT " + _values + \
           " WHERE NOT EXISTS (" + \
           "    SELECT id " +\
           "    FROM %s " % table_name +\
           "    WHERE %s " % where +\
-          "    ) "+\
+          "    ) " +\
           " RETURNING id "
     sql = SQLQuery(sql)
     try:
@@ -104,7 +105,33 @@ def insertIfNotExist(pg, table_name, values, where=None):
     if result:
         return result[0].id
 
+
+def insertOrUpdate(pg, table_name, values, where=None):
+    '''
+    create by bigzhu at 15/09/03 09:15:35 insert or update
+    '''
+    result = insertIfNotExist(pg, table_name, values, where=where)
+    if result is None:
+        if where is None:
+            where = 'id=%s' % (values['id'])
+        count = pg.db.update(table_name, where=where, **values)
+        return count
+    else:
+        return result
+
+
+def getSeqIdByTableName(pg, table_name):
+    '''
+    create by bigzhu at 15/09/14 10:16:29 get seq by table_name
+    '''
+    seq_name = table_name + '_id_seq'
+    sql = '''
+    select nextval('%s') as id
+    ''' % seq_name
+    id = pg.db.query(sql)[0].id
+    return id
+
 if __name__ == '__main__':
     import test_pg
-    print insertIfNotExist(test_pg, 'user_info', {'id':990, 'user_name':"big'zhu", 'user_type':'my'}, " id=990")
-    #print test_pg.db.insert('user_info', _test=False, user_type='my', user_name="big'zhu")
+    print insertIfNotExist(test_pg, 'user_info', {'id': 990, 'user_name': "big'zhu", 'user_type': 'my'}, " id=990")
+    # print test_pg.db.insert('user_info', _test=False, user_type='my', user_name="big'zhu")
