@@ -1,0 +1,69 @@
+{% module loading_m() %}
+{% module pagination_m() %}
+<div id="v_crud_check_list" v-loading="loading; this" class="box safe-datagrid">
+    <div class="box-header with-border row">
+        <div class="col-sm-4">
+            <h3 class="box-title">(%audit_state_text%)的记录</h3>
+        </div>
+        {%if (user_info and user_info.user_type=='gov' and gov_user['area_level'] == 2 and user_info.is_admin == 1) or (user_info and user_info.user_type=='check_agency')%}
+        <div class="col-sm-8">
+            <div class="pull-right">
+                <select class="form-control" v-model="audit_state" v-on="change: checkedSelect" options="options">
+                </select>
+            </div>
+        </div>
+        {%end%}
+    </div>
+    <div style="min-height: 410px;">
+        <table class="table table-hover">
+            <tr>
+                <th></th>
+                {% for field in fields %}
+                <th>{{field.description}}</th>
+                {% end %}
+                <th>操作</th>
+            </tr>
+            <tr v-repeat="r : records">
+                <td></td>
+                {% for field in fields %}
+                {% if field.c_type == 'timestamp' %}
+                <td v-dateformat="'yyyy-MM-dd':r.{{ field.name }}"></td>
+                {% elif field.name == 'user_id' %}
+                <td v-ellipsis="16:r.agency_name"></td>
+                {% else %}
+                <td v-ellipsis="18:r.{{ field.name }}"></td>
+                {% end %}
+                {% end %}
+                <td>
+                    <a href="javascript:;" v-on="click:detail(r.user_id, r.id)">查看</a>
+                    {% if (user_info and user_info.user_type=='gov' and gov_user['area_level'] == 2 and user_info.is_admin == 1) or (user_info and user_info.user_type=='check_agency') %}
+                    <a href="javascript:;" v-on="click:edit(r')">|编辑 </a>
+                    <a href="javascript:;" v-on="click:deleteButton(r) ">|删除 </a>
+                    <a href="javascript:;" v-on="click:saveCheck(r.id)" v-disable="record.audit_state == 'pass'" v-if="audit_state_text == '待确认'">|确认 </a>
+                    {% end %}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="modal fade " id="modal-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabelDelete" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <div class="modal-title text-center">
+                                        <h3>请谨慎操作!</h3>
+                                    </div>
+                                </div>
+                                <div class="modal-body">
+                                    <p>确定要删除该条记录？</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-success" v-on="click: delete">确定</button>
+                                    <button type="button" class="btn btn-fedault" data-dismiss="modal">取消</button>
+                                </div>
+                            </div>
+                        </div>
+    </div>
+    <div class="box-body" v-component="vue_pagination"></div>
+</div>
+

@@ -1,0 +1,259 @@
+<script type="text/x-template" id="file_upload_m">
+<div class="file_upload_m_control">
+    <table class="table" v-show="files.length > 0">
+        <tr v-repeat="f : files">
+            <td>
+                <i v-file-icon="f.suffix"></i>
+                <a v-href="f.file_path" target="_blank" v-class="remove-mark: f.remove==true">(% f.file_name %)</a>
+            </td>
+            <td v-if="!disabled_b">
+                <i class="fa fa-times btn-remove-file" v-on="click: removeFile(f)"></i>
+            </td>
+        </tr>
+    </table>
+    <table class="table" v-show="append_files.length > 0">
+        <tr v-repeat="f : append_files">
+            <td>
+                <i v-file-icon="f.suffix"></i>
+                <a v-href="f.file_path" target="_blank" v-class="remove-mark: f.remove==true">(% f.file_name %)</a>
+            </td>
+            <td v-if="!disabled_b">
+                <i class="fa fa-times btn-remove-file" v-on="click: removeFile(f)"></i>
+            </td>
+        </tr>
+    </table>
+    <span class="file-input btn btn-sm btn-success btn-file" v-if="!disabled_b">
+        选择文件<input class="input_file" v-on="change: appendFile($event)" type="file" multiple/>
+    </span>
+</div>
+</script>
+<script type="text/javascript">
+// 当datagrid中需要显示file_upload字段的时候，根据传入的参数查出已经上传的文件
+Vue.directive("file-list", function(value) {
+    // 拼接参数，处理异常情况
+    params = this.arg.split(".");
+    if(params.length < 2) {
+        throw "file-list 指令中的参数不足，请检查是否指定表名与字段名."
+    }
+    if(!$) {
+        throw "JQuery没有正确引用."
+    }
+    table_name = params[0];
+    column = params[1];
+    var parms_str = [table_name, column, value].join("/");
+    // 闭包ajax
+    (function(_this, str) {
+        return $.get("/file_upload/" + str)
+                .done(function(d) {
+                    html = "";
+                    if(d.results.length == 0) {
+                        return
+                    }
+                    for(var i in d.results) {
+                        var f = d.results[i]
+                        html += "<div><a href='" + f.file_path + "'' target='_blank'>" + f.file_name + "</a></div>"
+                    }
+                    // 拼装字符串，注入到list中
+                    $(_this.el).html(html)
+                });
+    }(this, parms_str));
+});
+
+// 把disabled和href合并了
+Vue.directive("href", function(value){
+    if(value) {
+        $(this.el).removeAttr("disabled").attr("href", value)
+    } else {
+        $(this.el).attr("disabled", true)
+    }
+});
+// 根据文件的拓展名替换不同的图标
+Vue.directive("file-icon", function(value){
+    var file_icon = "fa fa-upload";
+    if(value == "uploading") {
+        file_icon = "fa fa-spin fa-spinner";
+    } else if([".xls", ".xlsx"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-excel-o";
+    } else if([".doc", ".docx"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-word-o";
+    } else if([".doc", ".docx"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-word-o";
+    } else if([".ppt", ".pptx"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-powerpoint-o";
+    } else if([".zip", ".rar", ".7z"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-archive-o";
+    } else if([".txt"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-text-o";
+    } else if([".pdf"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-pdf-o";
+    } else if([".png", ".jpeg", ".jpg", ".gif"].indexOf(value) >= 0) {
+        file_icon = "fa fa-file-image-o";
+    } else if(value) {
+        file_icon = "fa fa-file-o";
+    }
+    $(this.el).attr("class", file_icon);
+});
+// component 本体
+// 使用方式 <div v-component="file_upload_m" v-with="field_name: 'test_file'" v-ref="test_file_c"></div>
+// 输入field名字，返回上传的ids
+Vue.component("file-upload-m", {
+    template: "#file_upload_m",
+    paramAttributes: ['table-name', 'field-name', 'record-id', 'disabled'],
+    //props: ['table-name', 'field-name', 'record-id', 'disabled'],
+    computed: {
+        column: function() {
+            return this.fieldName;   // 上传用的字段名标记;
+        },
+        disabled_b: function() {
+            if(!this.disabled) {
+                return false;
+            } else {
+                var bool = true;
+                try {
+                    bool = new Function("return " + this.disabled);
+                } catch (e) {
+                    bool = true;
+                }
+                return bool;
+            }
+        }
+    },
+    attached: function() {
+        if(!this.tableName || !this.column) {
+            throw "组件没有正确的获取参数，请检查声明的HTML";
+        }
+        // 因为数据的显示传递会覆盖data对象，所以改成在attached方法中声明
+        this.$set("upload_ids", []);        // 上传成功后的id
+        this.$set("append_files", []);      // 新增的文件
+        this.$set("new_file_ids", []);      // 用于保存新增文件的文件id
+        this.getExistFiles();               // 初始化的时候调用一次获取当前文件
+    },
+    methods: {
+        // 获取已关联的文件
+        getExistFiles: function() {
+            _this = this;
+            if(!_this.recordId) {
+                _this.$set("files", []);
+            } else {
+                var parms_str = [this.tableName, this.column, this.recordId].join("/");
+                _this.closureAjax(function(__this){
+                    $.get("/file_upload/" + parms_str)
+                    .done(function(d) {
+                        __this.$set("files", d.results);
+                    });
+                });
+            }
+        },
+        appendFile: function(e) {
+            var files = e.target.files;
+            for(var i in files) {
+                if(!isNaN(i)) {
+                    var f = files[i];
+                    var fd = new FormData();
+                    fd.append("file_" + i, f);
+                    // 把文件放入到 all_files列表和 fd上传队列中
+                    var new_file = {
+                        "file_type": "file",    // 文件类型
+                        "file_name": f.name,    // 文件名 -- 来源于input[type=file]
+                        "remove": false,        // 删除标记
+                        "suffix": null,         // 文件拓展名
+                        "fd": fd                // 上传文件用的formData
+                    }
+                    this.append_files.push(new_file);
+                }
+            }
+            this.uploadFiles()
+        },
+        removeFile: function(f) {
+            _this = this
+            if(confirm("是否确定删除文件:" + f.file_name + "?")) {
+                $.post("/file_ref",JSON.stringify({"remove_file": f.id}))
+                .done(function(d) {
+                    if(d.error == "0") {
+                        // 删除文件的时候把append_files和files里的清掉
+                        if(_this.files.indexOf(f) >= 0) {
+                            _this.files.splice(_this.files.indexOf(f), 1);
+                        }
+                        if(_this.append_files.indexOf(f) >= 0) {
+                            _this.append_files.splice(_this.append_files.indexOf(f), 1);
+                        }
+                        window.bz.showSuccess5("文件删除成功.");
+                    } else {
+                        window.bz.showError5("删除文件时发生错误:" + d.error);
+                    }
+                });
+            }
+        },
+        uploadFiles: function() {
+            _this = this
+            _this.append_files.forEach(function(file, index) {
+                file.suffix = "uploading";
+                _this.closureAjax(function(__this){
+                    $.ajax({
+                        url: "/file_upload",
+                        type:"POST",
+                        data: file.fd,
+                        processData: false,
+                        contentType: false
+                    }).done(function(d) {
+                        if(d.error === "0") {
+                            // 删除append_files
+                            __this.append_files.splice(__this.append_files.indexOf(file), 1);
+                            // 放到所有文件列表
+                            __this.files.push(d.results[0]);
+                            window.bz.showSuccess5("文件上传成功");
+                        } else {
+                            window.bz.showError5("文件上传时发生错误:" + d.error);
+                        }
+                    });
+                });
+            });
+        },
+        // 默认的关联方法
+        createFileRef: function(recordId){
+            _this = this;
+            if(!_this.recordId && !recordId) {
+                throw "请在调用之前先提交外部表单。";      // 如果组件参数和调用参数都没有，就抛出异常
+            } else if (recordId) {
+                _this.recordId = recordId;             // 如果参数存在，就赋值给当前的recordId
+            }
+
+            // 记录上传成功后的ID
+            for(var i in _this.files) {
+                var f = _this.files[i];
+                this.new_file_ids.push(f.file_id);
+            }
+            params = {
+                "column": this.column,
+                "table_name": this.tableName,
+                "record_id": this.recordId,
+                "new_file_ids": this.new_file_ids
+            }
+            _this.closureAjax(function(__this){
+                $.post(
+                    "/file_ref",
+                    JSON.stringify(params)
+                ).done(function(data) {
+                    if(data.error === "0") {
+                        __this.new_file_ids = [];
+                        __this.$set("upload_ids", data.results);
+                    } else {
+                        throw data.error;
+                    }
+                });
+            });
+        },
+        // 封装闭包的ajax提交
+        closureAjax:function(func) {
+            return func(this);
+        },
+        clear: function() {
+            this.$set("upload_ids", []);            // 上传成功后的id
+            this.$set("append_files", []);          // 新增的文件
+            this.$set("files", []);                 // 已上传文件
+            this.$set("new_file_ids", []);          // 用于保存新增文件的文件id
+            $(this.$el).find(".input_file").val("");// 清空file选择
+        }
+    }
+});
+</script>
