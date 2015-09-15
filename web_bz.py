@@ -7,7 +7,7 @@ create by bigzhu at 15/09/14 09:59:05
 '''
 import tornado.web
 from tornado.web import RequestHandler
-import tornado_bz
+import tornado_bz_new
 import json
 import hashlib
 import user_bz
@@ -15,8 +15,8 @@ import public_bz
 import db_bz
 import tornado_auth_bz
 
-from tornado_bz import UserInfoHandler
-from tornado_bz import BaseHandler
+from tornado_bz_new import UserInfoHandler
+from tornado_bz_new import BaseHandler
 from public_bz import storage
 
 salt = "hold is watching you"
@@ -30,7 +30,7 @@ class file_upload_bz(UserInfoHandler):
     create by bigzhu at 15/09/11 11:38:52
     文件上传相关API
     '''
-    @tornado_bz.handleError
+    @tornado_bz_new.handleError
     def post(self):
         '''
         新增文件
@@ -58,7 +58,7 @@ class remove_exist_file(UserInfoHandler):
     '''
     create by bigzhu at 15/09/11 17:38:32 删除某个文件
     '''
-    @tornado_bz.handleError
+    @tornado_bz_new.handleError
     def post(self):
         '''
         新增文件
@@ -77,7 +77,7 @@ class get_exist_files(UserInfoHandler):
     '''
     create by bigzhu at 15/09/11 12:41:52 取文件列表
     '''
-    @tornado_bz.handleError
+    @tornado_bz_new.handleError
     def post(self):
         '''
         新增文件
@@ -95,7 +95,7 @@ class seq(RequestHandler):
     取某个表的seq
     '''
 
-    @tornado_bz.handleError
+    @tornado_bz_new.handleError
     def post(self):
         self.set_header("Content-Type", "application/json")
         data = json.loads(self.request.body)
@@ -135,9 +135,9 @@ class login(UserInfoHandler):
 
     def get(self):
         print self.get_user_info()
-        self.render(tornado_bz.getTName(self), oauth2=self.oauth2)
+        self.render(tornado_bz_new.getTName(self), oauth2=self.oauth2)
 
-    @tornado_bz.handleError
+    @tornado_bz_new.handleError
     def post(self):
         self.set_header("Content-Type", "application/json")
         login_info = json.loads(self.request.body)
@@ -147,7 +147,7 @@ class login(UserInfoHandler):
         self.set_secure_cookie("user_id", str(user_info.id))
         self.write(json.dumps({'error': '0'}))
 
-    @tornado_bz.handleError
+    @tornado_bz_new.handleError
     def put(self):
         self.set_header("Content-Type", "application/json")
         reset_data = json.loads(self.request.body)
@@ -163,7 +163,7 @@ class login(UserInfoHandler):
 
 class logout(BaseHandler):
 
-    @tornado_bz.handleError
+    @tornado_bz_new.handleError
     def get(self):
         self.clear_cookie(name='user_id')
         self.redirect("/")
