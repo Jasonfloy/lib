@@ -30,8 +30,8 @@ def makeTree(nodes, parent_id=0):
                 parent_node = findNode(nodes, node.parent_id)
                 if parent_node:
                     addChilren(parent_node, node)
-                else:
-                    print 'parent_id= %s not found parent' % node.parent_id
+                #else:
+                #    print 'parent_id= %s not found parent' % node.parent_id
     return tree
 
 
