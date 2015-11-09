@@ -93,11 +93,12 @@ def getYearMonth(months=0, fmt='%Y%m'):
     return date.strftime(fmt)
 
 
-def getYearMonthDay():
+def getYearMonthDay(months=0):
     '''
     create by bigzhu at 15/08/26 15:35:53 取年月日
     '''
-    return getYearMonth(fmt='%Y%m%d')
+    return getYearMonth(months, fmt='%Y%m%d')
+
 if __name__ == '__main__':
     print getYearMonthDay()
     print unicodeToDateTIme(u'2015-07-22T08:14:10Z')
