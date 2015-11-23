@@ -17,6 +17,7 @@ import user_bz
 import db_bz
 from tornado.escape import utf8
 from tornado.web import RequestHandler
+from webpy_db import SQLLiteral
 
 from tornado import escape
 
@@ -450,7 +451,7 @@ class oper(BaseHandler):
         # 插入的值有id就update,只能udpate一条,没有就 insert
         id = v.get('id')
         if id is not None:
-            print id
+            v['stat_date'] = SQLLiteral('NOW()')
             w = "id=%s" % id
             trans = self.pg.db.transaction()
             count = self.pg.db.update(t, w, **v)
@@ -482,6 +483,7 @@ class oper(BaseHandler):
         v = data.get('v')  # value
 
         v = db_bz.transTimeValueByTable(self.pg, t, v)
+        v['stat_date'] = SQLLiteral('NOW()')
         if w is None:
             id = v.get('id')
             if id is None:
@@ -578,6 +580,7 @@ class oper_post(BaseHandler):
                 raise Exception("按条件找到%s条,指定要删除%s条,取消删除" % (count, c))
             self.write(json.dumps({'error': '0'}))
 
+
 def getAllRequestHandlers():
     '''
     create by bigzhu at 15/09/14 21:43:31 取出所有modules里的RequestHandler
@@ -593,6 +596,7 @@ def getAllRequestHandlers():
         except TypeError:
             pass
     return all_class
+
 
 def getAllUIModuleRequestHandlers():
     '''
