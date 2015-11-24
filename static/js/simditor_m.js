@@ -6,7 +6,7 @@
     if (bz.mobilecheck()) {
       toolbar = mobileToolbar;
     }
-    return editor = new Simditor({
+    return window.editor = new Simditor({
       textarea: $('#editor'),
       placeholder: '这里输入文字...',
       toolbar: toolbar,
