@@ -49,10 +49,8 @@
           list: [],
           record: {},
           stat: "normal",
-          select: 'null',
           loading: true,
           loading_target: "#" + table_name,
-          checked_list: {},
           file_columns: []
         },
         created: function() {
@@ -109,18 +107,6 @@
               return _this.loading = false;
             });
           },
-          checkBox: function() {
-            this.checked_list = _.where(this.list, {
-              "checked": true
-            });
-            if (this.checked_list.length === 0) {
-              return this.select = 'null';
-            } else if (this.checked_list.length === 1) {
-              return this.select = 'select_one';
-            } else if (this.checked_list.length > 1) {
-              return this.select = 'select_more';
-            }
-          },
           getRecordDetail: function(id) {
             var _this, parm;
             parm = {
@@ -151,11 +137,11 @@
               }
             });
           },
-          edit: function() {
+          edit: function(row) {
             var id;
             this.stat = "normal";
             $('#modal-' + this.table_name).modal();
-            id = this.checked_list[0].id;
+            id = row.id;
             return this.getRecordDetail(id);
           },
           "new": function() {
@@ -174,10 +160,10 @@
           confirm: function() {
             return $('#confirm-' + this.table_name).modal();
           },
-          del: function() {
+          del: function(row) {
             var _this, del_array;
             _this = this;
-            del_array = _.pluck(this.checked_list, "id");
+            del_array = [row.id];
             $.ajax({
               url: '/crud_list_api/' + this.table_name,
               type: 'DELETE',
