@@ -121,11 +121,10 @@ $(->
                             else if id != '' and typeof id != "undefined"
                                 window.bz.showError5('未找到这条数据!')
                     )
-                edit:->
+                edit:(row) ->
                     @stat = "normal"
                     $('#modal-' + @table_name).modal()
-                    id = @checked_list[0].id
-                    @getRecordDetail(id)
+                    @getRecordDetail(row.id)
                 new:->
                     @stat = "normal"
                     new_record = {}
@@ -134,15 +133,17 @@ $(->
                         new_record[key] = null
                     @$set("record", new_record)
                     $('#modal-' + @table_name).modal()
-                confirm:->
+
+                confirm:(id) ->
                     $('#confirm-' + @table_name).modal()
+                    @record.id = id
+
                 del: ->
                     _this = @
-                    del_array = _.pluck(@checked_list, "id")
                     $.ajax
                         url: '/crud_list_api/' + @table_name
                         type: 'DELETE'
-                        data:  del_array.join(",")
+                        data: @record.id.toString()
                     .done((data)->
                         if data.error == "0"
                             window.bz.showSuccess5("删除成功")

@@ -151,12 +151,10 @@
               }
             });
           },
-          edit: function() {
-            var id;
+          edit: function(row) {
             this.stat = "normal";
             $('#modal-' + this.table_name).modal();
-            id = this.checked_list[0].id;
-            return this.getRecordDetail(id);
+            return this.getRecordDetail(row.id);
           },
           "new": function() {
             var key, new_record;
@@ -171,17 +169,17 @@
             this.$set("record", new_record);
             return $('#modal-' + this.table_name).modal();
           },
-          confirm: function() {
-            return $('#confirm-' + this.table_name).modal();
+          confirm: function(id) {
+            $('#confirm-' + this.table_name).modal();
+            return this.record.id = id;
           },
           del: function() {
-            var _this, del_array;
+            var _this;
             _this = this;
-            del_array = _.pluck(this.checked_list, "id");
             $.ajax({
               url: '/crud_list_api/' + this.table_name,
               type: 'DELETE',
-              data: del_array.join(",")
+              data: this.record.id.toString()
             }).done(function(data) {
               if (data.error === "0") {
                 window.bz.showSuccess5("删除成功");
