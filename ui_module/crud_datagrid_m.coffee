@@ -40,10 +40,8 @@ $(->
                 list: []
                 record:{}
                 stat: "normal" # or look(查看) or check(审查)
-                select: 'null' #选中的个数
                 loading:true
                 loading_target:"#"+table_name
-                checked_list:{} #当前选中的list
                 file_columns: []
             created:->
                 @table_name = table_name
@@ -90,14 +88,6 @@ $(->
                         _this.$set("list", d1.array)
                         _this.loading=false
                     )
-                checkBox:->
-                    @checked_list = _.where(@list, {"checked": true})
-                    if @checked_list.length == 0
-                        @select='null'
-                    else if @checked_list.length == 1
-                        @select='select_one'
-                    else if @checked_list.length > 1
-                        @select='select_more'
                 #查出表单内容,用于编辑
                 getRecordDetail:(id)->
                     parm = {table_name:@table_name}

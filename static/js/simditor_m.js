@@ -1,12 +1,12 @@
 (function() {
   $(function() {
-    var editor, mobileToolbar, toolbar;
+    var mobileToolbar, toolbar;
     toolbar = ['title', 'bold', 'italic', 'underline', 'strikethrough', 'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'hr', '|', 'indent', 'outdent', 'alignment'];
     mobileToolbar = ['bold', 'underline', 'strikethrough', 'color', 'ul', 'ol'];
     if (bz.mobilecheck()) {
       toolbar = mobileToolbar;
     }
-    return editor = new Simditor({
+    return window.editor = new Simditor({
       textarea: $('#editor'),
       placeholder: '这里输入文字...',
       toolbar: toolbar,

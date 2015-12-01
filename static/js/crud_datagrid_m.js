@@ -49,10 +49,8 @@
           list: [],
           record: {},
           stat: "normal",
-          select: 'null',
           loading: true,
           loading_target: "#" + table_name,
-          checked_list: {},
           file_columns: []
         },
         created: function() {
@@ -108,18 +106,6 @@
               _this.$set("list", d1.array);
               return _this.loading = false;
             });
-          },
-          checkBox: function() {
-            this.checked_list = _.where(this.list, {
-              "checked": true
-            });
-            if (this.checked_list.length === 0) {
-              return this.select = 'null';
-            } else if (this.checked_list.length === 1) {
-              return this.select = 'select_one';
-            } else if (this.checked_list.length > 1) {
-              return this.select = 'select_more';
-            }
           },
           getRecordDetail: function(id) {
             var _this, parm;
