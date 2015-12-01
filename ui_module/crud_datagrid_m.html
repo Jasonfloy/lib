@@ -18,6 +18,7 @@
                 <th>操作</th>
             </tr>
             <tr  v-repeat="r : list">
+                <td></td>
                 {% for field in fields %}
                 {% if field.c_type == 'timestamp' %}
                 <td v-dateformat="'yyyy-MM-dd':r.{{ field.name }}"></td>
